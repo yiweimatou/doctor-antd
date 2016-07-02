@@ -38,7 +38,7 @@ const Todos = ({ todos, dispatch }) => {
 };
 
 Todos.propTypes = {
-  Todos:React.PropTypes.object,
+  todos:React.PropTypes.object,
   dispatch:React.PropTypes.func
 };
 
