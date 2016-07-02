@@ -37,7 +37,10 @@ const Todos = ({ todos, dispatch }) => {
   );
 };
 
-Todos.propTypes = {};
+Todos.propTypes = {
+  Todos:React.PropTypes.object,
+  dispatch:React.PropTypes.func
+};
 
 function filter(todos, pathname) {
   const newList = todos.list.filter(todo => {

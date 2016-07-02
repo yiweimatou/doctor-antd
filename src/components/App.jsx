@@ -11,6 +11,7 @@ const App = ({ location }) => {
 };
 
 App.propTypes = {
+  location:React.PropTypes.string
 };
 
 export default App;
