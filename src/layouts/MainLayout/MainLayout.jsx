@@ -6,14 +6,11 @@ const MainLayout = ({ children }) => {
   return (
     <div className={styles.normal}>
       <div className={styles.head}>
-        <h1>Todo App</h1>
+        <h1>管理后台</h1>
       </div>
       <div className={styles.content}>
         <div className={styles.side}>
           <h2>Filters:</h2>
-          <Link to="/">All</Link><br />
-          <Link to="/actived">Actived</Link><br />
-          <Link to="/completed">Completed</Link><br />
           <Link to="/404">404</Link><br />
         </div>
         <div className={styles.main}>
@@ -21,7 +18,7 @@ const MainLayout = ({ children }) => {
         </div>
       </div>
       <div className={styles.foot}>
-        Built with react, react-router, redux, redux-saga, ant-tool, css-modules, antd...
+        医卫码头
       </div>
     </div>
   );

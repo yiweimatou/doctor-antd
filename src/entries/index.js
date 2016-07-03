@@ -1,7 +1,6 @@
 import './index.html';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { browserHistory } from 'react-router';
@@ -9,6 +8,7 @@ import { syncHistoryWithStore, routerReducer as routing } from 'react-router-red
 import reducers from '../reducers/index';
 import SagaManager from '../sagas/SagaManager';
 import './index.less';
+import AppContainer from '../containers/AppContainer.js'
 
 //////////////////////
 // Store
@@ -40,13 +40,12 @@ if (module.hot) {
 // Render
 
 const history = syncHistoryWithStore(browserHistory, store);
-
 let render = () => {
-  const Routes = require('../routes/index');
   ReactDOM.render(
-    <Provider store={store}>
-      <Routes history={history} />
-    </Provider>
+      <AppContainer
+          history = { history }
+          store = { store }
+      />
   , document.getElementById('root'));
 };
 
