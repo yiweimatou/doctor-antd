@@ -24,7 +24,6 @@ function* getTodos() {
 function* watchTodosGet() {
   yield takeLatest('todos/get', getTodos)
 }
-
 export default function* () {
   // yield fork(watchTodosGet);
 

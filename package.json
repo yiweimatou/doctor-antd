@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "atool-test-mocha": "^0.1.4",
+    "babel-core": "^6.10.4",
     "babel-eslint": "^6.0.2",
     "babel-plugin-antd": "^0.4.0",
     "dora": "0.3.x",
@@ -37,6 +38,8 @@
     "dora-plugin-webpack-hmr": "^0.1.0",
     "eslint": "^2.10.1",
     "eslint-config-airbnb": "^9.0.1",
+    "eslint-config-standard-react": "^2.5.0",
+    "eslint-plugin-babel": "^3.3.0",
     "eslint-plugin-import": "^1.8.0",
     "eslint-plugin-jsx-a11y": "^1.2.0",
     "eslint-plugin-react": "^5.2.2",

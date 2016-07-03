@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import MainLayout from '../layouts/MainLayout/MainLayout';
+import React, { Component, PropTypes } from 'react'
+import MainLayout from '../layouts/MainLayout/MainLayout'
 
 const App = () => {
     return (
@@ -8,5 +8,4 @@ const App = () => {
         </MainLayout>
     )
 }
-
 export default App
