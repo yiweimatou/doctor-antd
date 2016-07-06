@@ -1,11 +1,28 @@
-import React, { Component, PropTypes } from 'react'
-import MainLayout from '../layouts/MainLayout/MainLayout'
+import React,{Component,PropTypes} from 'react'
+import {Router} from 'react-router'
+import {Provider} from 'react-redux'
 
-const App = () => {
-    return (
-        <MainLayout>
-            <h1>dashboard</h1>
-        </MainLayout>
-    )
+
+class App extends Component{
+    static propTypes = {
+        history:PropTypes.object.isRequired,
+        store:PropTypes.object.isRequired
+    }
+    render(){
+        const {
+            store,
+            history
+        } = this.props
+        const routes = require('../routes')(store)
+        return(
+            <Provider store={store}>
+                <Router
+                    history = { history }
+                    routes  = { routes }
+                />
+            </Provider>
+        )
+    }
 }
+
 export default App

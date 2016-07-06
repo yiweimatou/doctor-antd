@@ -13,10 +13,10 @@ module.exports = function(webpackConfig) {
     }])
 
     // Enable this if you have to support IE8.
-    // webpackConfig.module.loaders.unshift({
-    //   test: /\.jsx?$/,
-    //   loader: 'es3ify-loader',
-    // });
+    webpackConfig.module.loaders.unshift({
+      test: /\.jsx?$/,
+      loader: 'es3ify-loader',
+    });
 
     // Parse all less files as css module.
     webpackConfig.module.loaders.forEach(function(loader, index) {

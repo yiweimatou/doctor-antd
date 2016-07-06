@@ -1,10 +1,10 @@
-import App from '../components/App'
+import MainContainer from '../containers/MainContainer.js'
 import NotFound from '../components/NotFound'
 import Dashboard from '../components/Dashboard'
 
 const routes = store => ([{
     path: '/',
-    component: App,
+    component: MainContainer,
     indexRoute: {
         component: Dashboard
     },

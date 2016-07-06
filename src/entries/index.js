@@ -8,21 +8,25 @@ import { syncHistoryWithStore, routerReducer as routing } from 'react-router-red
 import reducers from '../reducers/index';
 import SagaManager from '../sagas/SagaManager';
 import './index.less';
-import AppContainer from '../containers/AppContainer.js'
+import App from '../components/App'
 
 //////////////////////
 // Store
 
 const sagaMiddleware = createSagaMiddleware();
-const initialState = {};
+const authorization = localStorage.getItem('auth')
+const initialState = authorization
+                    ?{
+                      auth:JSON.parse(authorization)
+                    }:{}
 const enhancer = compose(
   applyMiddleware(sagaMiddleware),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 );
 const store = createStore(combineReducers({
   ...reducers, routing,
-}), initialState, enhancer);
-SagaManager.startSagas(sagaMiddleware);
+}), initialState, enhancer)
+SagaManager.startSagas(sagaMiddleware)
 
 if (module.hot) {
   module.hot.accept('../reducers', () => {
@@ -42,7 +46,7 @@ if (module.hot) {
 const history = syncHistoryWithStore(browserHistory, store);
 let render = () => {
   ReactDOM.render(
-      <AppContainer
+      <App
           history = { history }
           store = { store }
       />

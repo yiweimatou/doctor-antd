@@ -1,5 +1,4 @@
-import fetch from 'isomorphic-fetch';
-import cookie from 'js-cookie';
+import fetch from 'isomorphic-fetch'
 
 const errorMessages = (res) => `${res.status} ${res.statusText}`;
 
@@ -17,30 +16,41 @@ function check404(res) {
   return res;
 }
 
-function jsonParse(res) {
-  return res.json().then(jsonResult => ({ ...res, jsonResult }));
+function checkOk(res) {
+  if (res.ok) {
+    return Promise.reject(errorMessages(res))
+  }
+  return res
+}
+
+function jsonParse (res){
+  return res.json()
 }
 
 function errorMessageParse(res) {
-  const { success, message } = res.jsonResult;
-  if (!success) {
-    return Promise.reject(message);
+  const {
+    code,
+    msg
+  } = res
+  if (code !== 200) {
+    return Promise.reject(msg)
   }
-  return res;
+  return res
 }
 
 function xFetch(url, options) {
-  const opts = { ...options };
-  opts.headers = {
-    ...opts.headers,
-    authorization: cookie.get('authorization') || '',
-  };
-
-  return fetch(url, opts)
-    .then(check401)
-    .then(check404)
+  const authorization = localStorage.getItem('authorization')
+  if (authorization) {
+    const {
+      key,
+      token
+    } = authorization
+    options.body = `key=${key}&token=${token}&${options.body}`
+  }
+  return fetch(url, options)
+    .then(checkOk)
     .then(jsonParse)
-    .then(errorMessageParse);
+    .then(errorMessageParse)
 }
 
-export default xFetch;
+export default xFetch

@@ -1,29 +1,28 @@
 import React, { Component, PropTypes } from 'react';
-import './MainLayout.css';
-import NavMenu from '../../components/NavMenu.js'
-import {Icon} from 'antd'
+import './Main.css';
+import NavMenu from './NavMenu'
+import Login from '../components/Login'
 
-class MainLayout extends Component{
-    state = {
-        collapse:false
-    }
-    collapseChangeHandler(){
-        this.setState({
-            collapse:!this.state.collapse
-        })
-    }
+class Main extends Component{
     render(){
-        const collapse = this.state.collapse
-        const { children } = this.props
+        const { auth,children,login } = this.props
         return (
             <div className="ant-layout-topaside">
+                <Login 
+                    isAuthed = {auth.isAuthed} 
+                    loading = {auth.loading}
+                    login={login}
+                />
                 <div className="ant-layout-header">
                     <div className="ant-layout-wrapper">
                         <div className="ant-layout-logo">
                             <h2>医卫码头管理后台</h2>
                         </div>
                         <div className="ant-layout-login">
-                            <h2>请登录</h2>
+                            <h2>{auth.user?
+                                    auth.user.nickname||auth.user.cname||auth.user.mobile
+                                    :''
+                                }</h2>
                         </div>
                     </div>
                 </div>
@@ -47,8 +46,10 @@ class MainLayout extends Component{
     }
 }
 
-MainLayout.propTypes = {
-    children: PropTypes.element.isRequired,
+Main.propTypes = {
+    children: PropTypes.element,
+    auth:PropTypes.object.isRequired,
+    login:PropTypes.func.isRequired
 }
 
-export default MainLayout;
+export default Main
