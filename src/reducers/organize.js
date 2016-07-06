@@ -2,7 +2,7 @@ import { handleActions } from 'redux-actions'
 
 const initialState = {
     list:[],
-    limit:9,
+    limit:6,
     offset:1,
     loading:false,
     total:0

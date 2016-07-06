@@ -7,7 +7,7 @@ const listRoute = store => ({
         store.dispatch({
             type:'organize/list',
             payload:{
-                limit:9,
+                limit:6,
                 offset:1,
                 uid
             }

@@ -16,7 +16,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({
             type:'organize/list',
             payload:{
-                limit:9,
+                limit:6,
                 offset:page,
                 uid
             }
