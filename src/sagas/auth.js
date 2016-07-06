@@ -60,9 +60,9 @@ function* loginHandler(action) {
     }
 }
 
-function* permissionChekcer() {
+// function* permissionChekcer() {
     
-}   
+// }   
 
 function* watchLogin() {
     yield* takeLatest('login/start', loginHandler)

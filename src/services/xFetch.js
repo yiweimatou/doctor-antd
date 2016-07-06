@@ -2,19 +2,19 @@ import fetch from 'isomorphic-fetch'
 
 const errorMessages = (res) => `${res.status} ${res.statusText}`;
 
-function check401(res) {
-  if (res.status === 401) {
-    location.href = '/401';
-  }
-  return res;
-}
+// function check401(res) {
+//   if (res.status === 401) {
+//     location.href = '/401';
+//   }
+//   return res;
+// }
 
-function check404(res) {
-  if (res.status === 404) {
-    return Promise.reject(errorMessages(res));
-  }
-  return res;
-}
+// function check404(res) {
+//   if (res.status === 404) {
+//     return Promise.reject(errorMessages(res));
+//   }
+//   return res;
+// }
 
 function checkOk(res) {
   if (res.ok) {

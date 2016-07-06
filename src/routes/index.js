@@ -2,7 +2,7 @@ import MainContainer from '../containers/MainContainer.js'
 import NotFound from '../components/NotFound'
 import Dashboard from '../components/Dashboard'
 
-const routes = store => ([{
+const routes = () => ([{
     path: '/',
     component: MainContainer,
     indexRoute: {
