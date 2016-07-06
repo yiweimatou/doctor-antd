@@ -2,10 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import './Main.css';
 import NavMenu from './NavMenu'
 import Login from '../components/Login'
+import { Button } from 'antd'
 
 class Main extends Component{
     render(){
-        const { auth,children,login } = this.props
+        const { auth,children,login,logout } = this.props
         return (
             <div className="ant-layout-topaside">
                 <Login 
@@ -19,10 +20,16 @@ class Main extends Component{
                             <h2>医卫码头管理后台</h2>
                         </div>
                         <div className="ant-layout-login">
-                            <h2>{auth.user?
+                            <Button 
+                                icon = 'logout'
+                                type = 'ghost'
+                                onClick = { logout }
+                            >
+                                {auth.user?
                                     auth.user.nickname||auth.user.cname||auth.user.mobile
                                     :''
-                                }</h2>
+                                }
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -32,9 +39,7 @@ class Main extends Component{
                             <NavMenu />
                         </aside>
                         <div className="ant-layout-content">
-                            <div style={{ height: 240 }}>
-                                <div style={{clear: 'both'}}>{children}</div>
-                            </div>
+                            <div style={{clear: 'both'}}>{children}</div>
                         </div>
                     </div>
                     <div className="ant-layout-footer">
@@ -49,7 +54,8 @@ class Main extends Component{
 Main.propTypes = {
     children: PropTypes.element,
     auth:PropTypes.object.isRequired,
-    login:PropTypes.func.isRequired
+    login:PropTypes.func.isRequired,
+    logout:PropTypes.func.isRequired
 }
 
 export default Main

@@ -2,6 +2,14 @@ import {
     handleActions
 } from 'redux-actions'
 
+const initialState = {
+    isAuthed: false,
+    loading: false,
+    key: 0,
+    token: '',
+    user: null,
+    lastModifyTime: 0
+}
 const auth = handleActions({
     ['login/success'](state, action) {
         const {
@@ -32,14 +40,10 @@ const auth = handleActions({
             isAuthed:false,
             lastModifyTime: action.payload.lastModifyTime
         }
+    },
+    ['logout'](){
+        return initialState
     }
-}, {
-    isAuthed: false,
-    loading: false,
-    key: 0,
-    token: '',
-    user: null,
-    lastModifyTime: 0
-})
+}, initialState)
 
 export default auth

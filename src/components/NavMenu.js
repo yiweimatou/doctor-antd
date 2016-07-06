@@ -11,10 +11,12 @@ class NavMenu extends Component {
                 <Menu.Item>
                     <Link to='/dashboard'><Icon type="laptop" />工作台</Link>
                 </Menu.Item>
-                <SubMenu key="sub1" title={<span><Icon type="user" />导航一</span>}>
-                    <Menu.Item key="1"></Menu.Item>
-                </SubMenu>
-                <SubMenu key="sub3" title={<span><Icon type="notification" />导航三</span>}>
+                <Menu.Item>
+                    <Link to='/organize/list'>
+                        <Icon type="team" />机构管理
+                    </Link>
+                </Menu.Item>
+                <SubMenu key="sub1" title={<span><Icon type="setting" />设置</span>}>
                 </SubMenu>
             </Menu>
         )

@@ -1,0 +1,9 @@
+.organize-image img {
+    display: block
+}
+.organize-card {
+    padding: 10px 16px
+}
+.organize-card p {
+    color: #999
+}

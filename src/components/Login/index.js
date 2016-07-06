@@ -50,8 +50,9 @@ class Login extends Component{
                     <Button 
                         onClick={this.submitHandler} 
                         type = 'primary'
+                        loading = {loading}
                     >
-                        {loading?'登录中':'登录'}
+                        登录
                     </Button>
                 }
             >

@@ -43,13 +43,11 @@ function* loginHandler(action) {
             payload
         })
         message.success('登录成功!')
-        localStorage.setItem('auth',JSON.stringify(Object.assign(
-            {},payload,{
-                isAuthed:true,
-                loading:false
-            })))
+        localStorage.setItem('auth', JSON.stringify(Object.assign({}, payload, {
+            isAuthed: true,
+            loading: false
+        })))
     } catch (error) {
-        console.log(error)
         message.error(error)
         yield put({
             type: 'login/failure',
@@ -60,14 +58,18 @@ function* loginHandler(action) {
     }
 }
 
-// function* permissionChekcer() {
-    
-// }   
+
+function* watchLogout() {
+    yield* takeLatest('logout',()=>{
+        localStorage.clear()
+    })
+}
 
 function* watchLogin() {
     yield* takeLatest('login/start', loginHandler)
 }
 
-export default function* () {
-    yield fork( watchLogin )
+export default function*() {
+    yield fork(watchLogin)
+    yield fork(watchLogout)
 }

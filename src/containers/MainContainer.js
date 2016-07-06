@@ -13,6 +13,11 @@ const mapDispatchToProps = dispatch =>({
                 mobile,password
             }
         })
+    },
+    logout(){
+        dispatch({
+            type:'logout'
+        })
     }
 })
 
