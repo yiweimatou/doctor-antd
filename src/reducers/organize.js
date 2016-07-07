@@ -5,7 +5,8 @@ const initialState = {
     limit:6,
     offset:1,
     loading:false,
-    total:0
+    total:0,
+    entity:null
 }
 
 const organize = handleActions({
@@ -31,6 +32,14 @@ const organize = handleActions({
     ['organize/info/success']:(state,action)=>({
         ...state,
         total:action.payload.total
+    }),
+    ['organize/get']:(state)=>({
+        ...state,
+        entity:null
+    }),
+    ['organize/get/success']:(state,action)=>({
+        ...state,
+        entity:action.payload.entity
     })
 },initialState)
 
