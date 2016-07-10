@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { browserHistory } from 'react-router';
-import { syncHistoryWithStore, routerReducer as routing } from 'react-router-redux';
+import { routerMiddleware,syncHistoryWithStore, routerReducer as routing } from 'react-router-redux';
 import reducers from '../reducers/index';
 import SagaManager from '../sagas/SagaManager';
 import './index.less';
@@ -19,8 +19,10 @@ const initialState = authorization
                     ?{
                       auth:JSON.parse(authorization)
                     }:{}
+const middleware = routerMiddleware(browserHistory)
 const enhancer = compose(
   applyMiddleware(sagaMiddleware),
+  applyMiddleware(middleware),
   window.devToolsExtension ? window.devToolsExtension() : f => f
 );
 const store = createStore(combineReducers({

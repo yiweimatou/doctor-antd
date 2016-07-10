@@ -12,11 +12,11 @@ const mapStateToProps = state=>({
 })
 
 const mapDispatchToProps = dispatch => ({
-    changeHandler:(page,uid)=>{
+    changeHandler:(page,limit,uid)=>{
         dispatch({
             type:'organize/list',
             payload:{
-                limit:6,
+                limit,
                 offset:page,
                 uid
             }

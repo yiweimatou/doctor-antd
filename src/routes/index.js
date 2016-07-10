@@ -1,7 +1,10 @@
 import MainContainer from '../containers/MainContainer.js'
 import NotFound from '../components/NotFound'
 import Dashboard from '../components/Dashboard'
-import organizeRoute from './organizeRoute.js'
+import organizeRoutes from './organizeRoutes.js'
+import lessonRoutes from './lessonRoutes.js'
+import yunbookRoutes from './yunbookRoutes'
+import sectionRoutes from './sectionRoutes.js'
 
 const routes = (store) => ([{
     path: '/',
@@ -13,10 +16,14 @@ const routes = (store) => ([{
             path: 'dashboard',
             component: Dashboard
         },
-        organizeRoute(store)
+        organizeRoutes(store),
+        lessonRoutes(store),
+        yunbookRoutes(store),
+        sectionRoutes(store)
     ]
 }, {
     path: '*',
     component: NotFound
 }])
+
 export default routes

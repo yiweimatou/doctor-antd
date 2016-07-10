@@ -1,0 +1,22 @@
+.container {
+    margin: 40px 10px 10px;
+}
+.oitem {
+    background-color: #f9f9f9;
+    margin: 10px 0;
+    padding: 10px;
+    height: 80px;
+}
+.oimg {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+.ospan {
+    display: block;
+    width: 70px;
+}
+.button {
+    float: right;
+    margin-top: -50px;
+}

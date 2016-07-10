@@ -6,7 +6,7 @@ const ApiClient = {
     get(url, params, fetchConfig = initialFetchConfig) {
         let body
         if (fetchConfig.needAuth) {
-            const auth = localStorage.getItem('auth')
+            const auth = JSON.parse(localStorage.getItem('auth'))
             const {
                 key,
                 token
@@ -36,7 +36,7 @@ const ApiClient = {
     post(url,params,fetchConfig=initialFetchConfig){
         let body
         if (fetchConfig.needAuth) {
-            const auth = localStorage.getItem('auth')
+            const auth = JSON.parse(localStorage.getItem('auth'))
             const {
                 key,
                 token
@@ -68,7 +68,7 @@ const ApiClient = {
             })
     },
     put(url,params){
-        const auth = localStorage.getItem('auth')
+        const auth = JSON.parse(localStorage.getItem('auth'))
         const {
             key,
             token
@@ -96,8 +96,8 @@ const ApiClient = {
                 }
             })
     },
-    delete(url,params){
-        const auth = localStorage.getItem('auth')
+    remove(url,params){
+        const auth = JSON.parse(localStorage.getItem('auth'))
         const {
             key,
             token

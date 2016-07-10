@@ -28,6 +28,20 @@ const showRoute = store => ({
                 oid
             }
         })
+        store.dispatch({
+            type:'organizeLesson/info',
+            payload:{
+                oid
+            }
+        })
+        store.dispatch({
+            type:'organizeLesson/list',
+            payload:{
+                oid,
+                limit:6,
+                offset:1
+            }
+        })
     },
     component:showContainer
 })
@@ -54,7 +68,7 @@ const listRoute = store => ({
     component:listContainer
 })
 
-const organizeRoute = store=>({
+const organizeRoutes = store=>({
     path:'organize',
     childRoutes:[
         listRoute(store),
@@ -62,4 +76,4 @@ const organizeRoute = store=>({
     ]
 })
 
-export default organizeRoute
+export default organizeRoutes

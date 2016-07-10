@@ -1,0 +1,9 @@
+.yunbook-image img {
+    display: block
+}
+.yunbook-card {
+    padding: 10px 16px
+}
+.yunbook-card p {
+    color: #999
+}

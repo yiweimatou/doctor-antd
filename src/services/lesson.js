@@ -1,0 +1,33 @@
+import ApiClient from './ApiClient.js'
+import { 
+    LESSON_ADD_API,
+    LESSON_GET_API,
+    LESSON_REMOVE_API,
+    LESSON_EDIT_API,
+    LESSON_LIST_API,
+    LESSON_INFO_API,
+} from '../constants/api.js'
+
+export function newLesson(params){
+    return ApiClient.post(LESSON_ADD_API,params,{needAuth:true})
+}
+
+export function getLesson(params){
+    return ApiClient.get( LESSON_GET_API,params )
+}
+
+export function deleteLesson(params){
+    return ApiClient.delete( LESSON_REMOVE_API,params )
+}
+
+export function editLesson(params){
+    return ApiClient.put( LESSON_EDIT_API,params )
+}
+
+export function listLesson(params){
+    return ApiClient.get( LESSON_LIST_API,params)
+}
+
+export function infoLesson(params){
+    return ApiClient.get(LESSON_INFO_API,params)
+}

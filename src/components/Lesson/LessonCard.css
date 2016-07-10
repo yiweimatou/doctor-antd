@@ -1,0 +1,72 @@
+.courseList {
+    width: 260px;
+    border-top: 2px solid #ddd;
+    border-left: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+}
+
+.courseTitle {
+    padding: 15px 10px;
+    text-align: center;
+    color: #333;
+    font-size: 16px;
+    line-height: 18px;
+    height: 36px;
+}
+
+.courseOther {
+    margin: 0;
+    padding: 10px 0;
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+.courseOther li {
+    list-style: none;
+    display: inline-block;
+    text-align: center;
+    border-right: 1px solid #ddd;
+    width: 50%;    
+}
+
+.courseOther li:last-child {
+    border: none;
+}
+
+.courseOther li em {
+    font-style: normal;
+    font-size: 12px;
+    color: #999;
+    display: block;
+}
+
+.courseOther li span {
+    font-size: 16px;
+    color: #333;
+    display: block
+}
+
+.newArticle {
+    background-color: #00a2e2;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+    width: 260px;
+}
+
+.newArticle a {
+    cursor: pointer;
+    height: 44px;
+    width: 100%;
+    padding: 0;
+    line-height: 44px;
+    border: none;
+    background-color: #00a2e2;
+    font-size: 16px;
+    color: #fff;
+    display: block;
+    text-align: center;
+}

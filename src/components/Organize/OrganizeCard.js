@@ -34,7 +34,6 @@ class OrganizeCard extends Component{
                             <Icon type="edit" />
                         </Link>
                         <h3>{organize.oname}</h3>
-                    <p>{organize.descript}</p>
                     
                 </div>
             </Card>

@@ -24,7 +24,7 @@ class List extends Component{
                         total={pageParams.total}
                         showTotal={total => `共 ${total} 条`}
                         defaultPageSize = {pageParams.limit}
-                        onChange = {(page)=>changeHandler(page,pageParams.uid)}
+                        onChange = {(page)=>changeHandler(page,pageParams.limit,pageParams.uid)}
                     />
                 </div>
             </div>

@@ -36,7 +36,7 @@ class Main extends Component{
                 <div className="ant-layout-wrapper">
                     <div className="ant-layout-container">
                         <aside className="ant-layout-sider">
-                            <NavMenu />
+                            <NavMenu lessons={auth.user.lessons}/>
                         </aside>
                         <div className="ant-layout-content">
                             <div style={{clear: 'both'}}>{children}</div>
