@@ -29,7 +29,6 @@ class EditLblView extends React.Component{
         this.submit = () => {
             const content = stateToHTML(this.state.editorState.getCurrentContent())
             if( content ){ 
-                console.log(content)
                 const popup  = L.popup()
                 popup.setContent(content)
                 this.state.layer.bindPopup(popup).openPopup()            

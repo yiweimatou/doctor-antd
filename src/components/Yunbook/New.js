@@ -21,7 +21,8 @@ class New extends Component{
         handleNew:PropTypes.func.isRequired
     }
     state={
-        fileList:[],
+        imgFileList:[],
+        pptFileList:[],
         action:UPLOAD_YUNBOOK_API,
         options:[]
     }
@@ -81,7 +82,7 @@ class New extends Component{
             }
             return e && e.fileList
     }
-    handleChange = (info)=> {
+    handleChange = (info,image)=> {
         let fileList = info.fileList
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
@@ -96,23 +97,46 @@ class New extends Component{
             }
             return true
         })
-        this.setState({ fileList })
+        if(image){
+            this.setState({ imgFileList:fileList })
+        }else{
+            this.setState({ pptFileList:fileList})
+        }
     }
     submitHandler=(e)=>{
         e.preventDefault()
         this.props.form.validateFields((errors,values)=>{
+            if(!values.uploadppt&&!values.uploadimg){
+                return message.error('请上传云板书')
+            }
             if(errors){
                 return
+            }
+            let cover,path,width,height,zoom
+            if(values.uploadimg){
+                cover = values.uploadimg[0].response.cover
+                path = values.uploadimg[0].response.path
+                width = values.uploadimg[0].response.width
+                height = values.uploadimg[0].response.height
+                zoom = values.uploadimg[0].response.zoom
+            }else if(values.uploadppt){
+                cover = values.uploadppt[0].response.cover
+                path = values.uploadppt[0].response.path
+                width = values.uploadppt[0].response.width
+                height = values.uploadppt[0].response.height
+                zoom = values.uploadppt[0].response.zoom
+            }else{
+                return message.error('请上传云板书')
             }
             const params = {
                 title:values.title,
                 descript:values.descript,
                 aid:values.aid[values.aid.length-1],
-                cover:values.upload[0].response.cover,
-                path:values.upload[0].response.path,
-                width:values.upload[0].response.width,
-                height:values.upload[0].response.height,
-                zoom:values.upload[0].response.zoom,
+                cover:cover,
+                path:path,
+                width:width,
+                height:height,
+                zoom:zoom,
                 status:values.status?2:1
             }
             this.props.handleNew(params)
@@ -198,36 +222,58 @@ class New extends Component{
                     >
                         <Upload
                             name='upload_file'
-                            action={this.state.action}
+                            action={UPLOAD_YUNBOOK_API}
                             listType="picture"
-                            fileList={this.state.fileList}
-                            onChange = {this.handleChange}
-                            {...getFieldProps('upload',{
+                            fileList={this.state.imgFileList}
+                            onChange = {(info)=>this.handleChange(info,true)}
+                            {...getFieldProps('uploadimg',{
                                 valuePropName:'fileList',
                                 normalize: this.normFile,
-                                rules:[{
-                                    required:true,
-                                    type:'array',
-                                    message:'请上传云板书文件'
-                                }]
                             })}
                             beforeUpload = {
                                 (file)=>{
                                     if(file.type.indexOf('image')>-1){
                                         return
-                                    }else if(file.type.indexOf('ppt')>-1){
-                                        this.setState({
-                                            action:UPLOAD_PPT_API
-                                        })
                                     }else{
-                                        message.error('请上传图片或者ppt')
+                                        message.error('请上传图片')
                                         return false
                                     }
                                 }
                             }
                         >
                             <Button type='ghost'>
-                                <Icon type="upload" /> 点击上传
+                                <Icon type="upload" /> 点击上传图片
+                            </Button>
+                        </Upload>
+                    </FormItem>
+                    <FormItem
+                        {...formItemLayout}
+                        label='上传云板书'
+                        required
+                    >
+                        <Upload
+                            name='upload_file'
+                            action={UPLOAD_PPT_API}
+                            listType="picture"
+                            fileList={this.state.pptLileList}
+                            onChange = {(info)=>this.handleChange(info,false)}
+                            {...getFieldProps('uploadppt',{
+                                valuePropName:'fileList',
+                                normalize: this.normFile
+                            })}
+                            beforeUpload = {
+                                (file)=>{
+                                    if(file.name.indexOf('ppt')>-1){
+                                        return
+                                    }else{
+                                        message.error('请上传图片')
+                                        return false
+                                    }
+                                }
+                            }
+                        >
+                            <Button type='ghost'>
+                                <Icon type="upload" /> 点击上传ppt
                             </Button>
                         </Upload>
                     </FormItem>

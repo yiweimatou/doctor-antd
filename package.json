@@ -56,8 +56,8 @@
     "lint"
   ],
   "scripts": {
-    "build": "atool-build",
+    "build": "set NODE_ENV=production&&atool-build",
     "lint": "eslint --ext .js,.jsx src/",
-    "start": "export NODE_ENV=development&&dora --plugins \"webpack,webpack-hmr,livereload?enableJs=false&injectHost=127.0.0.1,browser-history?index=/src/entries/index.html\""
+    "start": "set NODE_ENV=development&&dora --plugins \"webpack,webpack-hmr,livereload?enableJs=false&injectHost=127.0.0.1,browser-history?index=/src/entries/index.html\""
   }
 }

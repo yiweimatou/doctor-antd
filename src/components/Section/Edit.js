@@ -211,6 +211,18 @@ class Edit extends Component{
             this.props.save(params)
         })
     }
+    click = (e)=>{
+        e.preventDefault()
+        const submit = document.getElementById('_submit')
+        if(submit){
+            submit.click()
+        }else{
+            this.props.save({
+                lbl:this.state.lbl,
+                sid:this.props.section.sid
+            })
+        }
+    }
     render(){
         const {
             form,yunbook
@@ -295,7 +307,7 @@ class Edit extends Component{
                                     })}
                                 />
                             </FormItem>
-                            <button type='submit' id='_submit_'></button>
+                            <button type='submit' id='_submit'></button>
                         </Form>
                     </TabPane>
                     <TabPane key='2' tab='标注修改'>
@@ -305,7 +317,7 @@ class Edit extends Component{
                         />
                     </TabPane>
                 </Tabs>
-                <Button style={{marginTop:20}} type='primary' onClick={()=>document.getElementById('_submit_').click()}>
+                <Button style={{marginTop:20}} type='primary' onClick={this.click}>
                         保存
                 </Button>
             </div>

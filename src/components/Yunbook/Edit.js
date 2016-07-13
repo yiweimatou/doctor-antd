@@ -293,7 +293,18 @@ class Edit extends Component{
                         />
                     </TabPane>
                 </Tabs>
-                <Button style={{marginTop:20}} type='primary' onClick={()=>document.getElementById('_submit_').click()}>
+                <Button style={{marginTop:20}} type='primary' onClick={()=>{
+                        const submit = document.getElementById('_submit_')
+                        if(!submit){
+                            this.props.save({
+                                lbl:this.state.lbl,
+                                bid:this.props.yunbook.bid
+                            })
+                        }else{
+                            submit.click()
+                        }
+                    }
+                }>
                         保存
                 </Button>
             </div>
