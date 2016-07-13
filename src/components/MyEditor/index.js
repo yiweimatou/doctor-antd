@@ -25,7 +25,6 @@ class MyEditor extends React.Component{
             this.handleOpen()
         }
         this.confirmMedia = this._confirmMedia.bind(this)
-        this.handleKeyCommand = this._handleKeyCommand.bind(this)
         this.handleOpen = ()=>this.setState({open:!this.state.open})
     }
     static propTypes ={
@@ -58,6 +57,7 @@ class MyEditor extends React.Component{
         })
         this.props.setEditorState(newState)
         this.handleOpen()
+        document.querySelector('#url').value=''
     }
     
      _onURLInputKeyDown(e) {
@@ -70,9 +70,6 @@ class MyEditor extends React.Component{
         this.setState({
             urlType: type
         })
-    }
-    _addLink(){
-        this._promptForMedia('link')
     }
     _addImage(){
         this._promptForMedia('image')
@@ -100,7 +97,6 @@ class MyEditor extends React.Component{
                         editorState={editorState}
                         onChange={this.onChange}
                         blockRendererFn={mediaBlockRenderer}
-                        handleKeyCommand={this.handleKeyCommand}
                         placeholder='写点什么...'
                     />
                 </div>

@@ -17,7 +17,8 @@ class Edit extends Component{
     state = {
         lbl:'',
         options:[],
-        defaultValue:[]
+        defaultValue:[],
+        yunbook:null
     }
     static propTypes = {
         yunbook:PropTypes.object,
@@ -34,6 +35,12 @@ class Edit extends Component{
             })
         }
         if(!this.props.yunbook&&nextProps.yunbook){
+            this.setState({
+                yunbook:{
+                    ...nextProps.yunbook,
+                    lbl:this.state.lbl                    
+                }
+            })
             let a1=[],a2=[],a3=[],a4=[]
             getArea({
                 aid:nextProps.yunbook.aid
@@ -293,7 +300,7 @@ class Edit extends Component{
                     </TabPane>
                     <TabPane key='2' tab='标注修改'>
                         <EditLblView 
-                            yunbook={this.props.yunbook}
+                            yunbook={this.state.yunbook}
                             changeLbl={this.changeLbl}
                         />
                     </TabPane>
