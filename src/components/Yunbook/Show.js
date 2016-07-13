@@ -1,6 +1,8 @@
 import React from 'react'
 import 'leaflet/dist/leaflet.css'
+import 'leaflet-draw/dist/leaflet.draw.css'
 import L from 'leaflet'
+import 'leaflet-draw'
 import {connect} from 'react-redux'
 
 const styles = {
@@ -29,6 +31,40 @@ class Show extends React.Component{
             maxZoom:yunbook.zom,
             bounds:bounds,
             noWrap:true
+        }).addTo(this._map)
+        L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images'
+        if( yunbook.lbl ){
+            this._drawnItems = L.geoJson(JSON.parse(yunbook.lbl), {
+                onEachFeature: function (featureData, layer) {
+                    if (featureData.geometry.type === 'Point') {
+                        var popup = L.popup()
+                        popup.setContent(featureData.properties._popup)
+                        layer.bindPopup(popup)
+                    }
+                }
+            }).addTo(this._map)
+            for (var id in this._drawnItems._layers) {
+                var _json = this._drawnItems._layers[id].toGeoJSON()
+                _json.properties._id = this._drawnItems._layers[id]._leaflet_id
+                this._geoJson.features.push(_json)
+            }
+        }
+        new L.Control.Draw({
+            edit: {
+                featureGroup: this._drawnItems,
+                edit: {
+                    selectedPathOptions: {
+                        maintainColor: true,
+                        opacity: 0.3
+                    }
+                }
+            },
+            draw: {
+                polyline: false,
+                polygon: false,
+                rectangle: false,
+                circle: false
+            }
         }).addTo(this._map)
     } 
     render(){
