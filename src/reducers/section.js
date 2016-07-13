@@ -10,6 +10,10 @@ const initialState = {
 }
 
 const section = handleActions({
+    ['section/delete/success']:(state,action)=>({
+        ...state,
+        list:state.list.filter(item=>item.sid!==action.payload.sid)
+    }),
     ['section/get']:state=>({
         ...state,
         entity:null
@@ -37,7 +41,17 @@ const section = handleActions({
     ['section/edit/success']:(state,action)=>({
         ...state,
         loading:false,
-        entity:Object.assign({},state.entity,action.payload.params)
+        entity:Object.assign({},state.entity,action.payload.params),
+        list:state.list.map(item=>{
+            if(item.sid === action.payload.sid){
+                return {
+                    ...item,
+                    ...action.payload
+                }
+            }else{
+                return item
+            }
+        })
     }),
     ['section/edit/failure']:state=>({
         ...state,

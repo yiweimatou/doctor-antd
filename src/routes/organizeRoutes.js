@@ -1,5 +1,6 @@
 import listContainer from '../containers/organize/listContainer.js'
 import showContainer from '../containers/organize/showContainer'
+import Edit from '../components/Organize/Edit.js'
 
 const showRoute = store => ({
     path:'show/:id',
@@ -68,11 +69,31 @@ const listRoute = store => ({
     component:listContainer
 })
 
+const editRoutes = store => ({
+    path:'edit/:id',
+    component:Edit,
+    onEnter(nextState,replace){
+        const oid = nextState.params.id
+        if(!oid){
+            return replace({
+                pathname:'/'
+            })
+        }
+        store.dispatch({
+            type:'organize/get',
+            payload:{
+                oid
+            }
+        })
+    }
+})
+
 const organizeRoutes = store=>({
     path:'organize',
     childRoutes:[
         listRoute(store),
-        showRoute(store)
+        showRoute(store),
+        editRoutes(store)
     ]
 })
 

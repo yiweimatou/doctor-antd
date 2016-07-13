@@ -45,7 +45,8 @@ class New extends Component {
     handlePick=(yunbook)=>{
         this.setState({
             bid:yunbook.bid,
-            lbl:yunbook.lbl
+            lbl:yunbook.lbl,
+            currentStep:2
         })
         message.success(`引用了:${yunbook.title}`)
     }

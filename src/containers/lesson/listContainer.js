@@ -3,7 +3,6 @@ import List from '../../components/Lesson/List.js'
 
 const mapStateToProps = state => ({
     list:state.lesson.list,
-    isAdmin:true,
     uid:state.auth.key
 })
 

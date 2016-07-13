@@ -6,8 +6,26 @@ import {
     editSection,
     getSectionList,
     newSection,
-    getSectionInfo
+    getSectionInfo,
+    deleteSection
 } from '../services/section'
+
+function* handleDelete(action){
+    try{
+        yield call(deleteSection,action.payload)
+        yield put({
+            type:'section/delete/success',
+            payload:action.payload
+        })
+        message.success('删除成功!')
+    }catch(error){
+        message.error(error)
+    }
+}
+
+function* watchDelete(){
+    yield* takeLatest('section/delete',handleDelete)
+}
 
 function* handleNew(action) {
     try {
@@ -81,7 +99,7 @@ function* handleGet(action) {
             }
         })
     } catch (error) {
-        message.erro(error)
+        message.error(error)
     }
 }
 
@@ -113,6 +131,7 @@ export default function*() {
         fork(watchGet),
         fork(watchList),
         fork(watchNew),
-        fork(watchInfo)
+        fork(watchInfo),
+        fork(watchDelete)
     ]
 }

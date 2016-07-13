@@ -39,7 +39,7 @@ class MyUpload extends Component {
   }
   render(){
     const {
-        getFieldProps,
+        getFieldProps,//eslint-disable-line
         ...props
     } =  this.props
     return (

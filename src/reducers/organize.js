@@ -10,6 +10,18 @@ const initialState = {
 }
 
 const organize = handleActions({
+    ['organzie/edit']:state=>({
+        ...state,
+        loading:true
+    }),
+    ['organize/edit/success']:state=>({
+        ...state,
+        loading:false
+    }),
+    ['organize/edit/failure']:state=>({
+        ...state,
+        loading:false
+    }),
     ['organize/list']:(state)=>({
         ...state,
         loading:true

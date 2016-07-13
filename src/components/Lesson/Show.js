@@ -5,6 +5,7 @@ import SelectContainer from '../../containers/organize/selectContainer.js'
 import './Show.css'
 import SelectUser from '../User/SelectUser.js'
 import TeamList from './TeamList.js'
+import SectionList from '../Section/List'
 
 const styles = {
     row:{
@@ -17,7 +18,13 @@ class Show extends Component {
         lesson:PropTypes.object,
         olist:PropTypes.array,
         teamList:PropTypes.array,
-        push:PropTypes.func.isRequired
+        push:PropTypes.func.isRequired,
+        changeHandler:PropTypes.func.isRequired,
+        sList:PropTypes.object,
+        deleteSection:PropTypes.func.isRequired,
+        isAdmin:PropTypes.number.isRequired,
+        uid:PropTypes.number.isRequired,
+        handleRemove:PropTypes.func.isRequired
     }
     state = {
         oVisible:false,
@@ -41,7 +48,9 @@ class Show extends Component {
     }
     render(){
         const {
-            lesson,olist,teamList,push
+            lesson,
+            olist,teamList,push,changeHandler,
+            sList,deleteSection,isAdmin,uid,handleRemove
         } = this.props
         if(!lesson){
             return null
@@ -143,12 +152,27 @@ class Show extends Component {
                                 </Button>
                             </Col>
                             <Col span={4}>
+                            {isAdmin===1?
                                 <Button
                                     type='ghost'
                                     onClick = {this.handlerTVisible}
                                 >
                                     团队管理
-                                </Button>
+                                </Button>:
+                                isAdmin===2?
+                                <Button
+                                    type='ghost'
+                                    onClick = {()=>{
+                                        teamList.forEach(item=>{
+                                            if(item.type===1&&item.uid===uid){
+                                                handleRemove(item.id)
+                                            }
+                                        })
+                                    }}
+                                >
+                                    退出团队
+                                </Button>:null
+                            }
                             </Col>
                         </Row>
                     </div>
@@ -197,6 +221,19 @@ class Show extends Component {
                                 )
                             })
                         }
+                    </Paper>
+                </div>
+                <div className='paper'>
+                    <Paper>
+                        <h2>文章列表</h2>
+                        <SectionList
+                            lid={lesson.lid}
+                            push={push}
+                            changeHandler={changeHandler}
+                            list={sList.data}
+                            pageParams={sList.pageParams}
+                            deleteSection={deleteSection}
+                        />
                     </Paper>
                 </div>
                 <Modal

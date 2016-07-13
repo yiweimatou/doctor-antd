@@ -6,17 +6,25 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 
+// const __DEV__ = process.env.NODE_ENV !== 'production'
 module.exports = function(webpackConfig) {
-    webpackConfig.babel.plugins.push('transform-runtime');
+    webpackConfig.babel.plugins.push('transform-runtime')
     webpackConfig.babel.plugins.push(['antd', {
         style: 'css', // if true, use less
     }])
 
     // Enable this if you have to support IE8.
-    webpackConfig.module.loaders.unshift({
-      test: /\.jsx?$/,
-      loader: 'es3ify-loader',
-    });
+    // webpackConfig.module.loaders.unshift({
+    //   test: /\.jsx?$/,
+    //   loader: 'es3ify-loader',
+    // })
+    
+    webpackConfig.plugins.push(
+        new webpack.ProvidePlugin({
+            $:'jquery',
+            jQuery:'jquery'
+        })
+    )
 
     // Parse all less files as css module.
     webpackConfig.module.loaders.forEach(function(loader, index) {

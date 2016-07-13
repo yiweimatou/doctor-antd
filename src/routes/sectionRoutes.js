@@ -1,4 +1,5 @@
 import New from '../components/Section/New.js'
+import Edit from '../components/Section/Edit.js'
 
 const newRoute = store => ({
     path:'new/:id',
@@ -39,15 +40,30 @@ const newRoute = store => ({
     }
 })
 
-// const editRoute = store =>({
-//     path:'edit/:id',
-//     component:
-// })
+const editRoute = store =>({
+    path:'edit/:id',
+    component:Edit,
+    onEnter(nextState,replace){
+        const sid=nextState.params.id
+        if(!sid){
+            return replace({
+                pathname:'/'
+            })
+        }
+        store.dispatch({
+            type:'section/get',
+            payload:{
+                sid
+            }
+        })
+    }
+})
 
 const sectionRoute = store => ({
     path:'section',
     childRoutes:[
-        newRoute(store)
+        newRoute(store),
+        editRoute(store)
     ]
 })
 

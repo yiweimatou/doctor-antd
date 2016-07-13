@@ -1,0 +1,15 @@
+.editorContainer {
+  margin: 20px 10px 20px
+}
+.buttons {
+  margin: 10px 0;
+}
+.editor {
+  border: 1px solid #ccc;
+  cursor: 'text';
+  min-height: 380px;
+  padding: 10;
+}
+.url {
+  margin: 20px 0px;
+}

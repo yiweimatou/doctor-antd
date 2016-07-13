@@ -1,6 +1,6 @@
 import { takeLatest } from 'redux-saga'
 import { fork,put,call } from 'redux-saga/effects'
-import { getOrganizeList,getOrganizeInfo,getOrganize } from '../services/organize.js'
+import { getOrganizeList,getOrganizeInfo,getOrganize,editOrganize } from '../services/organize.js'
 import { message } from 'antd'
 
 function* organizeListHandler(action){
@@ -61,10 +61,30 @@ function* watchOrganizeGet() {
     yield* takeLatest('organize/get',organizeGetHandler)
 }
 
+function* editHandler(action){
+    try{
+        yield call(editOrganize,action.payload)
+        yield put({
+            type:'organize/edit/success'
+        })
+        message.success('编辑成功!')
+    }catch(error){
+        message.error(error)
+        yield put({
+            type:'orgnanize/edit/failure'
+        })
+    }
+}
+
+function* watchEdit(){
+    yield* takeLatest('organize/edit',editHandler)
+}
+
 export default function* (){
     yield [ 
         fork( watchOrgnizeList ),
         fork( watchOrganizeInfo ),
-        fork( watchOrganizeGet )
+        fork( watchOrganizeGet ),
+        fork(watchEdit)
     ]
 }

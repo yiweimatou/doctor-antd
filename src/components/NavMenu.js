@@ -9,6 +9,9 @@ class NavMenu extends Component {
         const {
             lessons
         } = this.props
+        if(!lessons){
+            return (null)
+        }
         return(
             <Menu mode="inline" >
                 <Menu.Item>

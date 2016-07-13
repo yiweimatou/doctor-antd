@@ -25,7 +25,7 @@ class Main extends Component{
                                 type = 'ghost'
                                 onClick = { logout }
                             >
-                                {auth.user?
+                                {auth&&auth.user?
                                     auth.user.nickname||auth.user.cname||auth.user.mobile
                                     :''
                                 }
@@ -36,7 +36,7 @@ class Main extends Component{
                 <div className="ant-layout-wrapper">
                     <div className="ant-layout-container">
                         <aside className="ant-layout-sider">
-                            <NavMenu lessons={auth.user.lessons}/>
+                            <NavMenu lessons={auth&&auth.user&&auth.user.lessons}/>
                         </aside>
                         <div className="ant-layout-content">
                             <div style={{clear: 'both'}}>{children}</div>

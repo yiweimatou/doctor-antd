@@ -8,7 +8,7 @@ import {
     message
 } from 'antd'
 import {
-    newLesson,listLesson,infoLesson,getLesson
+    newLesson,listLesson,infoLesson,getLesson,editLesson
 } from '../services/lesson.js'
 import {
     getLessonTeamList,newLessonTeam,deleteLessonTeam
@@ -168,6 +168,26 @@ function* watchTInfo(){
     yield* takeLatest('lesson/tinfo',handleTInfo)
 }
 
+function* handleEdit(action) {
+    try {
+        yield call(editLesson,action.payload)
+        yield put({
+            type:'lesson/edit/success',
+            payload:action.payload
+        })
+        message.success('编辑成功!')
+    } catch (error) {
+        message.error(error)
+        yield put({
+            type:'lesson/edit/failure'
+        })
+    }
+}
+
+function* watchEdit() {
+    yield* takeLatest('lesson/edit',handleEdit)
+}
+
 export default function * () {
     yield * [
         fork(watchNew),
@@ -177,6 +197,7 @@ export default function * () {
         fork(watchGet),
         fork(watchTeamList),
         fork(watchNewLT),
-        fork(watchDelete)
+        fork(watchDelete),
+        fork(watchEdit)
     ]
 }

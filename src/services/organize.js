@@ -2,7 +2,8 @@ import ApiClient from './ApiClient.js'
 import {
     ORGANIZE_GET_API,
     ORGANIZE_LIST_API,
-    ORGANIZE_INFO_API
+    ORGANIZE_INFO_API,
+    ORGANIZE_EDIT_API
 } from '../constants/api'
 
 export function getOrganize(params){
@@ -15,4 +16,8 @@ export function getOrganizeList(params){
 
 export function getOrganizeInfo(params){
     return ApiClient.get(ORGANIZE_INFO_API,params)
+}
+
+export function editOrganize(params){
+    return ApiClient.put(ORGANIZE_EDIT_API,params)
 }

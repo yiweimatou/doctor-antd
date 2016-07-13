@@ -4,7 +4,8 @@ import {
     SECTION_GET_API,
     SECTION_EDIT_API,
     SECTION_LIST_API,
-    SECTION_INFO_API
+    SECTION_INFO_API,
+    SECTION_DELETE_API
 } from '../constants/api'
 
 export function getSection(params) {
@@ -25,4 +26,8 @@ export function newSection(params) {
 
 export function getSectionInfo(params) {
     return ApiClient.get(SECTION_INFO_API,params)
+}
+
+export function deleteSection(params) {
+    return ApiClient.remove(SECTION_DELETE_API,params)
 }

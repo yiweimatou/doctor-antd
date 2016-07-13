@@ -33,6 +33,11 @@ class AreaCascader extends Component{
             })
         }
     }
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            options:nextProps.initialOptions
+        })
+    }
     static propTypes = {
         level:PropTypes.number.isRequired,
         initialOptions:PropTypes.array
@@ -42,7 +47,7 @@ class AreaCascader extends Component{
         const isLeaf = this.props.level+2===targetOption.zoom
         targetOption.loading=true
         getAreaList({
-            limit:20,
+            limit:30,
             pid:targetOption.value,
             zoom:targetOption.zoom+1
         }).then(data=>{
@@ -56,21 +61,27 @@ class AreaCascader extends Component{
                         isLeaf
                     }
                 })
+            }else{
+                targetOption.children = []
             }
+            this.setState({
+                options:[...this.state.options]
+            })
         }).catch(error=>{
             message.error(error)
         })   
     }
     render(){
         const {
+            value,//eslint-disable-line
             ...props
-        } = this.props
+        } =  this.props
         return(
             <Cascader
-                {...props}
                 placeholder='请选择分类'
                 options = {this.state.options}
                 loadData = {this.loadData}
+                {...props}
             />
         )
     }

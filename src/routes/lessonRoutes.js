@@ -2,6 +2,7 @@ import newContainer from '../containers/lesson/newContainer.js'
 import showContainer from '../containers/lesson/showContainer.js'
 import listContainer from '../containers/lesson/listContainer.js'
 import tlistContainer from '../containers/lesson/tlistContainer.js'
+import editContainer from '../components/Lesson/Edit.js'
 
 const newRoute = ()=> ({
     path:'new',
@@ -19,7 +20,8 @@ const showRoute = store => ({
         store.dispatch({
             type:'organizeLesson/list',
             payload:{
-                lid
+                lid,
+                cet:4
             }
         })
         store.dispatch({
@@ -31,6 +33,14 @@ const showRoute = store => ({
         store.dispatch({
             type:'lessonTeam/list',
             payload:{
+                lid
+            }
+        })
+        store.dispatch({
+            type:'section/list',
+            payload:{
+                limit:6,
+                offset:1,
                 lid
             }
         })
@@ -75,13 +85,33 @@ const tlistRoute = store => ({
     }
 })
 
+const editRoute = store =>({
+    path:'edit/:id',
+    component:editContainer,
+    onEnter(nextState,replace){
+        const lid=nextState.params.id
+        if(!lid){
+            return replace({
+                pathname:'/'
+            })
+        }
+        store.dispatch({
+            type:'lesson/get',
+            payload:{
+                lid
+            }
+        })
+    }
+})
+
 const lessonRoutes = store => ({
     path:'lesson',
     childRoutes:[
         newRoute(),
         showRoute( store ),
         listRoute(store),
-        tlistRoute(store)
+        tlistRoute(store),
+        editRoute(store)
     ]
 })
 

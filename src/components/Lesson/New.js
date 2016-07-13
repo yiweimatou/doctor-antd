@@ -4,12 +4,13 @@ import {
     Button,
     Input,
     Upload,
-    Icon 
+    Icon,
+    Cascader,message 
 } from 'antd'
 import Paper from '../Paper'
 import './New.css'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
-import AreaCascader from '../AreaCascader'
+import {getAreaList} from '../../services/area.js'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -22,13 +23,64 @@ class New extends Component {
         newLesson:PropTypes.func.isRequired
     }
     state = {
-        fileList:[]
+        fileList:[],
+        options:[]
+    }
+    componentWillMount(){
+        getAreaList({
+                limit:20,
+                pid:1,
+                zoom:4
+            }).then( data=> {
+                const options = data.list.map(item=>{
+                    return {
+                        label:item.title,
+                        value:item.aid,
+                        zoom:item.zoom,
+                        isLeaf: false
+                    }
+                })
+                this.setState({
+                    options
+                })
+            }).catch( error=>{
+                message.error( error )
+            })
     }
     normFile(e) {
         if (Array.isArray(e)) {
             return e
         }
         return e && e.fileList
+    }
+    loadData=(selectedOptions)=>{
+        const targetOption = selectedOptions[selectedOptions.length-1]
+        const isLeaf = 5 ===targetOption.zoom
+        targetOption.loading=true
+        getAreaList({
+            limit:30,
+            pid:targetOption.value,
+            zoom:targetOption.zoom+1
+        }).then(data=>{
+            targetOption.loading=false
+            if( data.list.length > 0){
+                targetOption.children = data.list.map(item=>{
+                    return {
+                        label:item.title,
+                        value:item.aid,
+                        zoom:item.zoom,
+                        isLeaf
+                    }
+                })
+            }else{
+                targetOption.children = []
+            }
+            this.setState({
+                options:[...this.state.options]
+            })
+        }).catch(error=>{
+            message.error(error)
+        })   
     }
     handleChange = (info)=> {
         let fileList = info.fileList
@@ -84,6 +136,8 @@ class New extends Component {
                     required:false,max:200,message:'请输入少于200字的简介'
                 }]
         })
+        const aidProps = getFieldProps('aid')
+        delete aidProps.value
         return(
             <Paper>
                 <Form 
@@ -125,9 +179,11 @@ class New extends Component {
                         required
                         {...formItemLayout}
                     >
-                        <AreaCascader
-                            {...getFieldProps('aid')}
-                            level = { 3 }                         
+                        <Cascader
+                            placeholder='请选择分类'
+                            options = {this.state.options}
+                            loadData = {this.loadData}
+                            {...aidProps}
                         />
                     </FormItem>
                     <FormItem

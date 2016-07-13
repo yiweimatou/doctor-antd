@@ -1,12 +1,13 @@
 import React ,{ Component,PropTypes } from 'react'
 import {connect} from 'react-redux'
-import { Form,Button,Upload,Input,Icon,message,Switch } from 'antd'
+import { Form,Button,Upload,Input,Icon,message,Switch,Cascader } from 'antd'
 import Paper from '../Paper'
 import {
     UPLOAD_YUNBOOK_API,
     UPLOAD_PPT_API
 } from '../../constants/api.js'
-import AreaCascader from '../AreaCascader'
+import {getAreaList} from '../../services/area.js'
+
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -21,7 +22,58 @@ class New extends Component{
     }
     state={
         fileList:[],
-        action:UPLOAD_YUNBOOK_API
+        action:UPLOAD_YUNBOOK_API,
+        options:[]
+    }
+    componentWillMount(){
+        getAreaList({
+                limit:20,
+                pid:1,
+                zoom:4
+            }).then( data=> {
+                const options = data.list.map(item=>{
+                    return {
+                        label:item.title,
+                        value:item.aid,
+                        zoom:item.zoom,
+                        isLeaf: false
+                    }
+                })
+                this.setState({
+                    options
+                })
+            }).catch( error=>{
+                message.error( error )
+            })
+    }
+    loadData=(selectedOptions)=>{
+        const targetOption = selectedOptions[selectedOptions.length-1]
+        const isLeaf = 6 ===targetOption.zoom
+        targetOption.loading=true
+        getAreaList({
+            limit:30,
+            pid:targetOption.value,
+            zoom:targetOption.zoom+1
+        }).then(data=>{
+            targetOption.loading=false
+            if( data.list.length > 0){
+                targetOption.children = data.list.map(item=>{
+                    return {
+                        label:item.title,
+                        value:item.aid,
+                        zoom:item.zoom,
+                        isLeaf
+                    }
+                })
+            }else{
+                targetOption.children = []
+            }
+            this.setState({
+                options:[...this.state.options]
+            })
+        }).catch(error=>{
+            message.error(error)
+        })   
     }
     normFile(e) {
             if (Array.isArray(e)) {
@@ -52,7 +104,6 @@ class New extends Component{
             if(errors){
                 return
             }
-            console.log(values.upload[0].response)
             const params = {
                 title:values.title,
                 descript:values.descript,
@@ -74,6 +125,8 @@ class New extends Component{
         const {
             getFieldProps
         } = form
+        const aidProps = getFieldProps('aid')
+        delete aidProps.value
         return(
             <Paper>
                 <Form
@@ -131,9 +184,11 @@ class New extends Component{
                         required
                         label='云板书分类'
                     >
-                        <AreaCascader 
-                            {...getFieldProps('aid')}
-                            level={4}
+                       <Cascader
+                            placeholder='请选择分类'
+                            options = {this.state.options}
+                            loadData = {this.loadData}
+                            {...aidProps}
                         />
                     </FormItem>
                     <FormItem
