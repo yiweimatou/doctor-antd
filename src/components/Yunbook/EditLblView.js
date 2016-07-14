@@ -35,7 +35,7 @@ class EditLblView extends React.Component{
                 const _geoJsonTemp = this.state.layer.toGeoJSON()
                 _geoJsonTemp.properties._popup = content
                 this._geoJson.features.push(_geoJsonTemp)
-                this.props.changeLbl(escape(JSON.stringify(this._geoJson)))
+                this.props.changeLbl(JSON.stringify(this._geoJson))
                 this._drawnItems.addLayer(this.state.layer)
             }
             this.setState({
@@ -94,7 +94,7 @@ class EditLblView extends React.Component{
             features: []
         }
         if( yunbook.lbl ){
-            this._drawnItems = L.geoJson(JSON.parse(unescape(yunbook.lbl)), {
+            this._drawnItems = L.geoJson(JSON.parse(yunbook.lbl), {
                 onEachFeature: function (featureData, layer) {
                     if (featureData.geometry.type === 'Point') {
                         var popup = L.popup()
@@ -137,7 +137,7 @@ class EditLblView extends React.Component{
                 }
                 return item
             })
-            self.props.changeLbl(escape(JSON.stringify(self._geoJson)))
+            self.props.changeLbl(JSON.stringify(self._geoJson))
         }
         function findGeoJson(id) {
             return self._geoJson.features.find( item=>item.properties._id === id)
@@ -145,7 +145,7 @@ class EditLblView extends React.Component{
 
         function removeGeoJson(id) {
             self._geoJson.features = self._geoJson.features.filter( item=>item.properties._id !== id)
-            self.props.changeLbl(escape(JSON.stringify(self._geoJson)))
+            self.props.changeLbl(JSON.stringify(self._geoJson))
         }
         this._map.on('draw:created',e=>{
             const layer = e.layer
@@ -189,7 +189,7 @@ class EditLblView extends React.Component{
                 const polyLineTmp = polyLine.toGeoJSON()
                 polyLineTmp.properties._id = polyLine._leaflet_id
                 self._geoJson.features.push(polyLineTmp)
-                self.props.changeLbl(escape(JSON.stringify(self._geoJson)))
+                self.props.changeLbl(JSON.stringify(self._geoJson))
                 // polyLine.bindPopup('<div><i class="fa fa-trash" onClick="removeLayer(' + polyLine._leaflet_id + ')"</div></i>')
             })
         })
