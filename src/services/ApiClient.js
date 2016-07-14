@@ -128,12 +128,13 @@ const ApiClient = {
 }
 
 function queryString(params) {
-    const q = new URLSearchParams()
-    Object.keys(params).forEach(key => {
-        q.set(key, params[key])
-    })
-    const s = String(q)
-    return s ? s : ''
+    let s = ''
+    for(let p in params){
+        if(params.hasOwnProperty(p)){
+            s+=`${p}=${params[p]}&`
+        }
+    }
+    return s
 }
 
 export default ApiClient
