@@ -42,7 +42,8 @@
         "semi": 0,
         "no-console": 0,
         "no-case-declarations": 0,
-        "comma-dangle":0
+        "comma-dangle":0,
+        "react/prop-types":0
     },
     "ecmaFeatures": {
     "experimentalObjectRestSpread": true

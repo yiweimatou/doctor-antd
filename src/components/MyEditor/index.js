@@ -1,5 +1,5 @@
 import React from 'react'
-import { Editor,EditorState,RichUtils,Entity,AtomicBlockUtils } from 'draft-js'
+import { Editor,EditorState,Entity,AtomicBlockUtils } from 'draft-js'
 import './index.css'
 import {Button,Modal,Input,message} from 'antd'
 
@@ -24,40 +24,43 @@ class MyEditor extends React.Component{
             this._addVideo()
             this.handleOpen()
         }
+        this.addLink = ()=>{
+            this._addLink()
+            this.handleOpen()
+        }
         this.confirmMedia = this._confirmMedia.bind(this)
         this.handleOpen = ()=>this.setState({open:!this.state.open})
     }
     static propTypes ={
         setEditorState:React.PropTypes.func
     }
-     _handleKeyCommand(command) {
-        const {editorState} = this.state
-        const newState = RichUtils.handleKeyCommand(editorState, command)
-        if (newState) {
-            this.onChange(newState)
-            this.props.setEditorState(newState)
-            return true
-        }
-        return false
-    }
     _confirmMedia() {
         const {editorState, urlType} = this.state
         const urlValue = document.querySelector('#url').value
-        if(!urlValue){
+        if (!urlValue) {
             return message.error('请输入url地址')
         }
-        const entityKey = Entity.create(urlType, 'IMMUTABLE', {src: urlValue})
-        const newState = AtomicBlockUtils.insertAtomicBlock(
-            editorState,
-            entityKey,
-            ' '
-        )
+        let newState
+        if (urlType === 'LINK') {
+            let text = document.querySelector('#text').value
+            newState = AtomicBlockUtils.insertAtomicBlock(
+                editorState,
+                Entity.create(urlType, 'IMMUTABLE', { url: urlValue, text:text?text:urlValue}),
+                ' '
+            )
+        } else {
+            newState = AtomicBlockUtils.insertAtomicBlock(
+                editorState,
+                Entity.create(urlType, 'IMMUTABLE', { src: urlValue }),
+                ' '
+            )
+        }
         this.setState({
             editorState: newState
         })
         this.props.setEditorState(newState)
         this.handleOpen()
-        document.querySelector('#url').value=''
+        document.querySelector('#url').value = ''
     }
     
      _onURLInputKeyDown(e) {
@@ -78,11 +81,19 @@ class MyEditor extends React.Component{
     _addVideo() {
         this._promptForMedia('video')
     }
+    _addLink(){
+        this.setState({
+            urlType:'LINK'
+        })
+    }
     render(){
         const { editorState } = this.state
         return(
             <div className='editorContainer'>
                 <div className='buttons'>
+                    <Button onMouseDown={this.addLink} style={{marginRight: 10}}>
+                        插入链接
+                    </Button>
                     <Button onMouseDown={this.addImage} style={{marginRight: 10}}>
                         插入图片
                     </Button>
@@ -108,9 +119,19 @@ class MyEditor extends React.Component{
                     width={300}
                 >
                     <div className='url'>
+                        {
+                            this.state.urlType==='LINK'?
+                            <Input
+                                id='text'
+                                type='text'
+                                placeholder='链接显示'
+                                style = {{marginBottom:10}}
+                            />:null
+                        }
                         <Input 
                             id='url'
                             type='text'
+                            placeholder='url'
                         />
                     </div>
                 </Modal>
@@ -172,6 +193,14 @@ const Video = (props) => {
     }
 }
 
+const Link = (props) => {
+    const {url,text} = props
+    return (
+        <a href={url} target='_blank'>
+            {text} 
+        </a>
+    )
+}
 const Media = (props) => {
     const entity = Entity.get(props.block.getEntityAt(0))
     const {src} = entity.getData()
@@ -181,8 +210,11 @@ const Media = (props) => {
         media = <Image src={src} />
     } else if (type === 'video') {
         media = <Video src={src} />
+    }else if(type==='LINK'){
+        media = <Link {...entity.getData()}/>
     }
     return media
+
 }
 
 export default MyEditor

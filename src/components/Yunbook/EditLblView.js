@@ -5,7 +5,7 @@ import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import MyEditor from '../MyEditor'
 import { Modal } from 'antd'
-import { stateToHTML } from 'draft-js-export-html'
+import { stateToHTML } from 'nodeman-draft-js-export-html'
 
 const styles = {
     map:{
