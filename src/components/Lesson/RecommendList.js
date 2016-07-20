@@ -46,11 +46,11 @@ class RecommendList extends Component {
                     case 1:
                         return '未认证'
                     case 2:
-                        return '认证中'
+                        return '推荐'
                     case 3:
-                        return '认证失败'
+                        return '推荐失败'
                     case 4:
-                        return '认证成功'
+                        return '推荐成功'
                 }
             }
         }]

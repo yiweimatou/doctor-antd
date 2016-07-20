@@ -53,6 +53,7 @@ class Edit extends Component{
                 return
             }
             const params = {
+                oname:values.oname,
                 descript:values.descript,
                 logo:this.state.fileList[0].url,
                 oid:this.props.organize.oid
@@ -70,6 +71,23 @@ class Edit extends Component{
                 onSubmit = { this.submitHandler }
                 style = {{pading:30,margin:'30 0'}}
             >
+                <FormItem
+                    label='机构简介'
+                    {...formItemLayout}
+                >
+                    <Input
+                        type='textarea'
+                        rows = '3'
+                        {...getFieldProps('oname',{
+                            rules:[{
+                                required:true,
+                                max:20,
+                                message:'最多20字'
+                            }],
+                            initialValue:organize&&organize.oname
+                        })}
+                    />
+                </FormItem>
                 <FormItem
                     label='机构简介'
                     {...formItemLayout}

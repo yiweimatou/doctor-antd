@@ -210,7 +210,7 @@ class Recommend extends Component {
                         />
                     </FormItem>
                     <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
-                        <Button type="primary" htmlType="submit">推荐</Button>
+                        <Button type="primary" htmlType="submit" loading={loading}>推荐</Button>
                     </FormItem>
                 </Form>
                 </Spin>

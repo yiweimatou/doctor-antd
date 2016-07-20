@@ -177,7 +177,7 @@ class New extends Component{
                         />
                     </FormItem>
                      <FormItem
-                        label='课程简介'
+                        label='云板书简介'
                         {...formItemLayout}
                     >
                         <Input
