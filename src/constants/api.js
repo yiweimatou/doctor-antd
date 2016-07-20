@@ -39,6 +39,7 @@ export const LESSON_EDIT_API = `${USER_API_DOMAIN}/lesson/put`
 export const LESSON_LIST_API = `${USER_API_DOMAIN}/lesson/list`
 export const LESSON_REMOVE_API = `${USER_API_DOMAIN}/lesson/del`
 export const LESSON_ADD_API = `${USER_API_DOMAIN}/lesson/add`
+export const LESSON_PUT_CET_API = `${USER_API_DOMAIN}/lesson/put/cet`
 /**
 *team apis
 */

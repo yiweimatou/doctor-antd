@@ -14,6 +14,30 @@ const initialState = {
 }
 
 const lesson = handleActions({
+	['lesson/recommend']:state=>({
+		...state,
+		loading:true
+	}),
+	['lesson/recommend/success']:state=>({
+		...state,
+		loading:false
+	}),
+	['lesson/recommend/failure']:state=>({
+		...state,
+		loading:false
+	}),
+	['lesson/put/cet']:state => ({
+		...state,
+		loading:true
+	}),
+	['lesson/put/cet/success']: state => ({
+		...state,
+		loading:false
+	}),
+	['lesson/put/cet/failure'] : state => ({
+		...state,
+		loading:false
+	}),
 	['lesson/new']:(state)=>({
 		...state,
 		loading:true

@@ -6,6 +6,7 @@ import {
     LESSON_EDIT_API,
     LESSON_LIST_API,
     LESSON_INFO_API,
+    LESSON_PUT_CET_API
 } from '../constants/api.js'
 
 export function newLesson(params){
@@ -30,4 +31,8 @@ export function listLesson(params){
 
 export function infoLesson(params){
     return ApiClient.get(LESSON_INFO_API,params)
+}
+
+export function putcetLesson(params){
+    return ApiClient.put(LESSON_PUT_CET_API,params)
 }

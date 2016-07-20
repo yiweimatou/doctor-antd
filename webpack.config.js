@@ -19,12 +19,12 @@ module.exports = function(webpackConfig) {
     //   loader: 'es3ify-loader',
     // })
     
-    webpackConfig.plugins.push(
-        new webpack.ProvidePlugin({
-            $:'jquery',
-            jQuery:'jquery'
-        })
-    )
+    // webpackConfig.plugins.push(
+    //     new webpack.ProvidePlugin({
+    //         $:'jquery',
+    //         jQuery:'jquery'
+    //     })
+    // )
 
     // Parse all less files as css module.
     webpackConfig.module.loaders.forEach(function(loader, index) {

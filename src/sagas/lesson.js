@@ -8,11 +8,49 @@ import {
     message
 } from 'antd'
 import {
-    newLesson,listLesson,infoLesson,getLesson,editLesson
+    newLesson,listLesson,infoLesson,getLesson,editLesson,putcetLesson
 } from '../services/lesson.js'
 import {
     getLessonTeamList,newLessonTeam,deleteLessonTeam
 } from '../services/lessonTeam.js'
+
+function* putcetLessonHandler(action) {
+    try {
+        yield call(putcetLesson,action.payload)
+        yield put({
+            type:'lesson/put/cet/success'
+        })
+        message.success('操作成功')
+    } catch (error) {
+        message.error(error)
+        yield put({
+            type:'lesson/put/cet/failure'
+        })
+    }
+}
+
+function* watchputcet() {
+    yield takeLatest('lesson/put/cet',putcetLessonHandler)
+}
+
+function* recommendHandler(action){
+    try {
+        yield call(newLesson,action.payload)
+        yield put({
+            type:'lesson/recommend/success'
+        })
+        message.success('推荐成功！')
+    } catch (error) {
+        message.error(error)
+        yield put({
+            type:'lesson/recommend/failure'
+        })
+    }
+}
+
+function* watchRecommend(){
+    yield takeLatest('lesson/recommend',recommendHandler)
+}
 
 function* handleDelete(action) {
     try{
@@ -198,6 +236,8 @@ export default function * () {
         fork(watchTeamList),
         fork(watchNewLT),
         fork(watchDelete),
-        fork(watchEdit)
+        fork(watchEdit),
+        fork(watchRecommend),
+        fork(watchputcet)
     ]
 }

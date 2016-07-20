@@ -22,8 +22,8 @@ class NavMenu extends Component {
                         <Icon type="team" />机构管理
                     </Link>
                 </Menu.Item>
-                <SubMenu 
-                    key="sub2" 
+                <SubMenu
+                    key="sub2"
                     title={
                         <span><Icon type="exception" />课程管理</span>
                     }
@@ -43,10 +43,27 @@ class NavMenu extends Component {
                             我的团队课程
                         </Link>
                     </Menu.Item>
+                    {lessons===2?
+                    <Menu.Item>
+                        <Link to='/lesson/recommend'>
+                            推荐课程
+                        </Link>
+                    </Menu.Item>:null
+                    }
+                    <Menu.Item>
+                        <Link to='/lesson/recommend/list'>
+                            推荐课程记录
+                        </Link>
+                    </Menu.Item>
+                    <Menu.Item>
+                        <Link to='/lesson/recommend/manage'>
+                            课程推荐管理
+                        </Link>
+                    </Menu.Item>
                 </SubMenu>
                 {lessons===2?
-                <SubMenu 
-                    key="sub3" 
+                <SubMenu
+                    key="sub3"
                     title={
                         <span><Icon type="book" />云板书管理</span>
                     }

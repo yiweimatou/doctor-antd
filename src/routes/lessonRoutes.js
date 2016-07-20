@@ -3,6 +3,57 @@ import showContainer from '../containers/lesson/showContainer.js'
 import listContainer from '../containers/lesson/listContainer.js'
 import tlistContainer from '../containers/lesson/tlistContainer.js'
 import editContainer from '../components/Lesson/Edit.js'
+import Recommend from '../components/Lesson/Recommend'
+import RecommendList from '../components/Lesson/RecommendList'
+import RecommendManage from '../components/Lesson/RecommendManage'
+
+const recommendRoute = ()=> ({
+    path:'recommend',
+    component:Recommend
+})
+
+const recommendListRoute = store => ({
+    path:'recommend/list',
+    component:RecommendList,
+    onEnter(){
+        const uid = store.getState().auth.key
+        store.dispatch({
+            type:'lesson/info',
+            payload:{
+                rcmd_uid:uid
+            }
+        })
+        store.dispatch({
+            type:'lesson/list',
+            payload:{
+                rcmd_uid:uid
+            }
+        })
+    }
+})
+
+const recommendManageRoute = store => ({
+    path:'recommend/manage',
+    component:RecommendManage,
+    onEnter(){
+        const uid = store.getState().auth.key
+        store.dispatch({
+            type:'lesson/info',
+            //我是主讲没有认证的课程=推荐给我的课程
+            payload:{
+                uid,
+                cet:2
+            }
+        })
+        store.dispatch({
+            type:'lesson/list',
+            payload:{
+                uid,
+                cet:2
+            }
+        })
+    }
+})
 
 const newRoute = ()=> ({
     path:'new',
@@ -55,7 +106,8 @@ const listRoute = store => ({
         store.dispatch({
             type:'lesson/info',
             payload:{
-                uid
+                uid,
+                cet:4
             }
         })
         store.dispatch({
@@ -63,7 +115,8 @@ const listRoute = store => ({
             payload:{
                 limit:6,
                 offset:1,
-                uid
+                uid,
+                cet:4
             }
         })
     }
@@ -79,7 +132,8 @@ const tlistRoute = store => ({
             payload:{
                 limit:6,
                 offset:1,
-                uid
+                uid,
+                cet:4
             }
         })
     }
@@ -111,7 +165,10 @@ const lessonRoutes = store => ({
         showRoute( store ),
         listRoute(store),
         tlistRoute(store),
-        editRoute(store)
+        editRoute(store),
+        recommendListRoute(store),
+        recommendRoute(),
+        recommendManageRoute(store)
     ]
 })
 

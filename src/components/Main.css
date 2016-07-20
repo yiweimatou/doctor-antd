@@ -45,6 +45,7 @@
   padding: 24px 0;
   overflow: hidden;
   border-radius: 5px;
+  min-height: 600px;
 }
 
 .ant-layout-topaside .ant-layout-sider {
