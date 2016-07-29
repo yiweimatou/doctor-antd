@@ -20,11 +20,11 @@ const actionStatusInitialState = fromJS({
     delete: {}
 })
 
-const modelInitialState = fromJS({
-    collections: [],
-    records: undefined,
-    actionStatus: undefined
-})
+// const modelInitialState = fromJS({
+//     collections: [],
+//     records: undefined,
+//     actionStatus: undefined
+// })
 
 // holds a number of models, each of which are strucured like modelInitialState
 const initialState = fromJS({})
