@@ -5,7 +5,7 @@ import {
     Input,
     Upload,
     Icon,
-    Cascader,message 
+    Cascader,message,Spin 
 } from 'antd'
 import Paper from '../Paper'
 import './New.css'
@@ -109,26 +109,21 @@ class New extends Component {
                 lname:values.lname,
                 descript:values.descript,
                 aid:values.aid[values.aid.length-1],
-                cover:this.state.fileList[0].url
+                cover:values.upload[0].response.cover
             }
             this.props.newLesson(params)
         })
     }
     render(){
         const {
-            form
+            form,loading
         } = this.props
         const { getFieldProps } = form
         const lnameProps = getFieldProps('lname',{
             rules:[{
                 required:true,
-                validator:(rule,value,callback)=>{
-                    if(!value||value&&value.length>20){
-                        callback(new Error('请输入20字以内课程名'))
-                    }else{
-                        callback()
-                    }
-                }
+                max:20,
+                message:'请输入20字以内课程名'
             }]
         })
         const descriptProps = getFieldProps('descript',{
@@ -136,10 +131,25 @@ class New extends Component {
                     required:false,max:200,message:'请输入少于200字的简介'
                 }]
         })
-        const aidProps = getFieldProps('aid')
+        const aidProps = getFieldProps('aid',{
+            rules:[{
+                required:true,
+                type:'array',
+                message:'请选择分类'
+            }, {
+                validator:(rule,value,callback) => {
+                    if( value&&value.length !== 3 ){
+                        callback('请选择三级分类')
+                    }else{
+                        callback()
+                    }
+                }
+            }]
+        })
         delete aidProps.value
         return(
             <Paper>
+                <Spin spinning={loading} size="large">
                 <Form 
                     horizontal 
                     className = 'form'
@@ -168,6 +178,15 @@ class New extends Component {
                             listType="picture"
                             fileList={this.state.fileList}
                             onChange = {this.handleChange}
+                            {...getFieldProps('upload',{
+                                valuePropName:'fileList',
+                                normalize: this.normFile,
+                                rules:[{
+                                    required:true,
+                                    type:'array',
+                                    message:'请上传课程封面'
+                                }]
+                            })}
                         >
                             <Button type="ghost">
                                 <Icon type="upload" /> 点击上传
@@ -200,6 +219,7 @@ class New extends Component {
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
+                </Spin>
             </Paper>
         )
     }

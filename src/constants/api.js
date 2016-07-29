@@ -1,7 +1,7 @@
 export const HOST = 'http://121.41.92.56'
 
-export const USER_API_DOMAIN = `${HOST}:91`
-export const ADMIN_API_DOMAIN = `${HOST}:90`
+export const USER_API_DOMAIN = `${HOST}:1002`
+export const ADMIN_API_DOMAIN = `${HOST}:1001`
 export const UPLOAD_DOMAIN = `${HOST}:99`
 
 /**
@@ -15,14 +15,14 @@ export const INTERNAL_SERVER_ERROR = 500
 /**
  * user apis
  */
-export const USER_LOGIN_API = `${USER_API_DOMAIN}/user/login`
-export const USER_VALID_API = `${USER_API_DOMAIN}/user/valid`
-export const USER_FORGET_PWD_API = `${USER_API_DOMAIN}/user/put/forget`
-export const USER_EDIT_PWD_API = `${USER_API_DOMAIN}/user/put/pwd`
-export const USER_LOGOUT_API = `${USER_API_DOMAIN}/user/logout`
-export const USER_LIST_API = `${USER_API_DOMAIN}/user/list`
-export const USER_INFO_API = `${USER_API_DOMAIN}/user/info`
-export const USER_GET_API = `${USER_API_DOMAIN}/user/get`
+export const USER_LOGIN_API = `${USER_API_DOMAIN}/account/login`
+export const USER_VALID_API = `${USER_API_DOMAIN}/account/valid`
+export const USER_FORGET_PWD_API = `${USER_API_DOMAIN}/account/put/forget`
+export const USER_EDIT_PWD_API = `${USER_API_DOMAIN}/account/put/pwd`
+export const USER_LOGOUT_API = `${USER_API_DOMAIN}/account/logout`
+export const USER_LIST_API = `${USER_API_DOMAIN}/account/list`
+export const USER_INFO_API = `${USER_API_DOMAIN}/account/info`
+export const USER_GET_API = `${USER_API_DOMAIN}/account/get`
 /**
  * organize apis
  */

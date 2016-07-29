@@ -5,7 +5,7 @@ import {
     fork, put, call
 } from 'redux-saga/effects'
 import {
-    message
+    message,notification
 } from 'antd'
 import {
     newLesson,listLesson,infoLesson,getLesson,editLesson,putcetLesson
@@ -135,9 +135,9 @@ function * handleNew(action) {
         yield put({
             type: 'lesson/new/success'
         })
-        message.success('新增成功!')
+        notification.success({description:'新增成功!'})
     } catch (error) {
-        message.error(error)
+        notification.error({description:error})
         yield put({
             type: 'lesson/new/failure'
         })

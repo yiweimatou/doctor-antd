@@ -127,7 +127,10 @@ class Recommend extends Component {
                                     message:'请输入手机号码'
                                 },{
                                     validator:(rule,value,cb) => {
-                                        if(isMobile(value)){
+                                        if(!value){
+                                            cb()
+                                        }
+                                        else if(isMobile(value)){
                                             getUser({
                                                 mobile:value
                                             }).then(data=>{

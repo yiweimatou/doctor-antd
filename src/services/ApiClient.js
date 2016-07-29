@@ -1,133 +1,62 @@
 import fetch from 'isomorphic-fetch'
-const initialFetchConfig = {
-    needAuth:false
-}
-const ApiClient = {
-    get(url, params, fetchConfig = initialFetchConfig) {
-        let body
-        if (fetchConfig.needAuth) {
-            const auth = JSON.parse(localStorage.getItem('auth'))
-            const {
-                key,
-                token
-            } = auth
-            body = `key=${key}&token=${token}&${queryString(params)}`
-        } else {
-            body = queryString(params)
+
+class ApiClient {
+    constructor(){
+        const config = {
+            methods:['post','put','delete']
         }
-        return fetch(`${url}?${body}`, {
-                method: 'GET'
-            }).then(response =>
-                response.ok ?
-                response.json() :
-                Promise.reject(`${response.status}:${response.statusText}`))
-            .then(data => {
-                const {
-                    code,
-                    msg
-                } = data
-                if (code === 200) {
-                    return data
-                } else {
-                    return Promise.reject(msg)
-                }
-            })
-    },
-    post(url,params,fetchConfig=initialFetchConfig){
-        let body
-        if (fetchConfig.needAuth) {
-            const auth = JSON.parse(localStorage.getItem('auth'))
-            const {
-                key,
-                token
-            } = auth
-            body = `key=${key}&token=${token}&${queryString(params)}`
-        } else {
-            body = queryString(params)
+        const {
+            key,token
+        } = _getAuth()
+        this.get = (url, params, fetchConfig) => {
+            let body = _queryString(params)
+            if(fetchConfig.needAuth){
+                body = `key=${key}&token=${token}&${body}`
+            }
+            return fetch(url,{
+                method:'GET',
+                body:body
+            }).then(_checkError).then(_checkResult)
         }
-        return fetch(url, {
-                method: 'POST',
-                headers:{
-                    'Content-Type':'application/x-www-form-urlencoded'
-                },
-                body
-            }).then(response =>
-                response.ok ?
-                response.json() :
-                Promise.reject(`${response.status}:${response.statusText}`))
-            .then(data => {
-                const {
-                    code,
-                    msg
-                } = data
-                if (code === 200) {
-                    return data
-                } else {
-                    return Promise.reject(msg)
-                }
-            })
-    },
-    put(url,params){
-        const auth = JSON.parse(localStorage.getItem('auth'))
-        const {
-            key,
-            token
-        } = auth
-        const body = `key=${key}&token=${token}&${queryString(params)}`
-        return fetch(url, {
-                method: 'PUT',
-                headers:{
-                    'Content-Type':'application/x-www-form-urlencoded'
-                },
-                body:body
-            }).then(response =>
-                response.ok ?
-                response.json() :
-                Promise.reject(`${response.status}:${response.statusText}`))
-            .then(data => {
-                const {
-                    code,
-                    msg
-                } = data
-                if (code === 200) {
-                    return data
-                } else {
-                    return Promise.reject(msg)
-                }
-            })
-    },
-    remove(url,params){
-        const auth = JSON.parse(localStorage.getItem('auth'))
-        const {
-            key,
-            token
-        } = auth
-        const body = `key=${key}&token=${token}&${queryString(params)}`
-        return fetch(url, {
-                method: 'DELETE',
-                headers:{
-                    'Content-Type':'application/x-www-form-urlencoded'
-                },
-                body:body
-            }).then(response =>
-                response.ok ?
-                response.json() :
-                Promise.reject(`${response.status}:${response.statusText}`))
-            .then(data => {
-                const {
-                    code,
-                    msg
-                } = data
-                if (code === 200) {
-                    return data
-                } else {
-                    return Promise.reject(msg)
-                }
-            })
+        config.methods.forEach(method => {
+            this[method] = (url, params) => {
+                return fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type':'application/x-www-form-urlencoded'
+                    },
+                    body: `key=${key}&token=${token}&${_queryString(params)}`
+                }).then(_checkError).then(_checkResult)
+            }
+        })
     }
 }
 
-function queryString(params) {
+function _getAuth() {
+    const auth = JSON.parse(localStorage.getItem('auth'))
+    return auth
+}
+
+function _checkError(response) {
+    if(!response.ok){
+        return Promise.reject('服务器开小差了，待会儿再试吧！')
+    }else{
+        return response.json()
+    }
+}
+
+function _checkResult(data) {
+    const {
+        code,msg
+    } = data
+    if(code === 200){
+        return data
+    }else{
+        return Promise.reject(msg?msg:'出错了！，待会儿再试吧！')
+    }
+}
+
+function _queryString(params) {
     let s = ''
     for(let p in params){
         if(params.hasOwnProperty(p)){

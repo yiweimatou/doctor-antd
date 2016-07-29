@@ -5,6 +5,6 @@ export function login(mobile,password) {
     return ApiClient.post(USER_LOGIN_API,{
         mobile,
         pwd:password,
-        login_Type:2
+        type:2
     })
 }

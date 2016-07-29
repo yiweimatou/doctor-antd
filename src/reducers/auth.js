@@ -10,6 +10,7 @@ const initialState = {
     user: null,
     lastModifyTime: 0
 }
+
 const auth = handleActions({
     ['login/success'](state, action) {
         const {
@@ -18,7 +19,8 @@ const auth = handleActions({
             user,
             lastModifyTime
         } = action.payload
-        return {...state,
+        return {
+            ...state,
             key,
             token,
             isAuthed: true,
