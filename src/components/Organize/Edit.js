@@ -34,7 +34,7 @@ class Edit extends Component{
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
             if (file.response) {
-                file.url = file.response.cover
+                file.url = 'http://121.41.92.56/ywmt/'+file.response.cover
             }
             return file
         })

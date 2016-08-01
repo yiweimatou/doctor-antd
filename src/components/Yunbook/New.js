@@ -132,7 +132,7 @@ class New extends Component{
                 title:values.title,
                 descript:values.descript,
                 aid:values.aid[values.aid.length-1],
-                cover:cover,
+                cover:`http://121.41.92.56/ywmt/${cover}`,
                 path:path,
                 width:width,
                 height:height,
