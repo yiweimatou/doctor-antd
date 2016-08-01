@@ -64,27 +64,27 @@ const showRoute = store => ({
     path:'show/:id',
     component:showContainer,
     onEnter(nextState,replace){
-        const lid = nextState.params.id
-        if( !lid ){
+        const id = nextState.params.id
+        if( !id ){
             return replace({pathname:'/'})
         }
         store.dispatch({
             type:'organizeLesson/list',
             payload:{
-                lid,
+                lesson_id: id,
                 cet:4
             }
         })
         store.dispatch({
             type:'lesson/get',
             payload:{
-                lid
+                id
             }
         })
         store.dispatch({
             type:'lessonTeam/list',
             payload:{
-                lid
+                id
             }
         })
         store.dispatch({
@@ -92,7 +92,7 @@ const showRoute = store => ({
             payload:{
                 limit:6,
                 offset:1,
-                lid
+                lesson_id: id
             }
         })
     }

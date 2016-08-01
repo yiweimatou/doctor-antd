@@ -10,11 +10,11 @@ class List extends Component{
     static propTypes = {
         list:PropTypes.object,
         changeHandler:PropTypes.func.isRequired,
-        uid:PropTypes.number
+        id:PropTypes.number
     }
     render(){
         const {
-            list,changeHandler,uid            
+            list,changeHandler,id            
         } = this.props
         const {
             total,
@@ -25,7 +25,7 @@ class List extends Component{
                 <Row gutter={16}>
                 {
                     list.data.map(lesson=>{
-                        return (<Col key={lesson.lid} span={8}>
+                        return (<Col key={lesson.id} span={8}>
                                   <LessonCard lesson={lesson} />
                                </Col>)
                     })
@@ -38,7 +38,7 @@ class List extends Component{
                                 total={total}
                                 showTotal={total => `共 ${total} 条`}
                                 defaultPageSize = {pageParams.limit}
-                                onChange = {(page)=>changeHandler(page,uid,pageParams)}
+                                onChange = {(page)=>changeHandler(page,id,pageParams)}
                             />
                         </div>:null
                 }

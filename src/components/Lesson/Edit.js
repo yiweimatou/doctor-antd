@@ -53,7 +53,7 @@ class Edit extends Component{
                 targetOption.children = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf
                     }
@@ -73,7 +73,7 @@ class Edit extends Component{
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
             if (file.response) {
-                file.url = file.response.cover
+                file.url = 'http://121.41.92.56/ywmt/'+file.response.cover
             }
             return file
         })
@@ -92,11 +92,11 @@ class Edit extends Component{
                 return
             }
             const params = {
-                lname:values.lname,
+                title:values.lname,
                 descript:values.descript,
-                aid:values.aid[values.aid.length-1],
+                area_id:values.area_ids[2],
                 cover:this.state.fileList[0].url,
-                lid:this.props.lesson.lid
+                id:this.props.lesson.id
             }
             this.props.handleEdit(params)
         })
@@ -113,10 +113,10 @@ class Edit extends Component{
             })
             let a1=[],a2=[],a3=[]
             getArea({
-                aid:nextProps.lesson.aid
+                id:nextProps.lesson.area_id
             }).then(data=>data.get).then(area=>{
                 this.setState({
-                    defaultValue:[area.pid,area.aid]
+                    defaultValue:[area.pid,area.id]
                 })
                 getAreaList({
                     pid:area.pid,
@@ -125,7 +125,7 @@ class Edit extends Component{
                 }).then(data=>{
                     data.list.forEach(item=>{
                         a3.push({
-                            value:item.aid,
+                            value:item.id,
                             label:item.title,
                             zoom:item.zoom,
                             isLeaf:true
@@ -135,7 +135,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 return getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>data.get)
             }).then(area=>{
                 getAreaList({
@@ -144,16 +144,16 @@ class Edit extends Component{
                     limit:30
                 }).then(data=>{
                     data.list.forEach(item=>{
-                        if(item.aid===area.aid){
+                        if(item.id===area.id){
                             a2.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 children:a3
                             })
                         }else{
                             a2.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 isLeaf:false
@@ -167,7 +167,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>{
                     getAreaList({
                         pid:data.get.pid,
@@ -175,16 +175,16 @@ class Edit extends Component{
                         limit:30
                     }).then(data=>{
                         data.list.forEach(item=>{
-                            if(item.aid===area.pid){
+                            if(item.id===area.pid){
                                 a1.push({
-                                    value:item.aid,
+                                    value:item.id,
                                     label:item.title,
                                     zoom:item.zoom,
                                     children:a2
                                 })
                             }else{
                                 a1.push({
-                                    value:item.aid,
+                                    value:item.id,
                                     label:item.title,
                                     zoom:item.zoom,
                                     isLeaf:false
@@ -207,7 +207,7 @@ class Edit extends Component{
         } = this.props
         const {defaultValue,options}=this.state
         const { getFieldProps } = form
-        const aidProps = getFieldProps('aid',{
+        const areaIdsProps = getFieldProps('area_ids',{
             rules:[{
                 required:true,
                 type:'array',
@@ -215,7 +215,7 @@ class Edit extends Component{
             }],
             initialValue:defaultValue
         })
-        delete aidProps.value
+        delete areaIdsProps.value
         return(
             <Paper>
                 <Form 
@@ -237,7 +237,7 @@ class Edit extends Component{
                                     max:20,
                                     message:'请输入20字以内课程名'
                                 }],
-                                initialValue:lesson&&lesson.lname
+                                initialValue:lesson&&lesson.title
                             })}
                         />
                     </FormItem>
@@ -251,7 +251,7 @@ class Edit extends Component{
                             options={options}  
                             loadData = {this.loadData}
                             defaultValue = {defaultValue} 
-                            {...aidProps}
+                            {...areaIdsProps}
                         />:null}
                     </FormItem>
                     <FormItem

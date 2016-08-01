@@ -69,7 +69,7 @@ class Show extends Component {
                                         <span>课程名称:</span>
                                     </Col>
                                     <Col span={20}>
-                                        <span>{lesson.lname}</span>
+                                        <span>{lesson.title}</span>
                                     </Col>
                                 </Row>
                                 <Row gutter={16}>
@@ -101,7 +101,7 @@ class Show extends Component {
                                         <span>浏览量:</span>
                                     </Col>
                                     <Col span={20}>
-                                        <p>{lesson.view_num}</p>
+                                        <p>{lesson.pv}</p>
                                     </Col>
                                 </Row>
                                 <Row gutter={16}>
@@ -109,7 +109,7 @@ class Show extends Component {
                                         <span>粉丝数:</span>
                                     </Col>
                                     <Col span={20}>
-                                        <p>{lesson.focus_num}</p>
+                                        <p>{lesson.uv}</p>
                                     </Col>
                                 </Row>
                             </Col>
@@ -119,7 +119,7 @@ class Show extends Component {
                         <Row gutter={8}>
                             <Col span={4}>
                                 <Button
-                                    onClick = {()=>push(`/lesson/edit/${lesson.lid}`)}
+                                    onClick = {()=>push(`/lesson/edit/${lesson.id}`)}
                                     type='ghost'
                                 >
                                     编辑课程
@@ -129,7 +129,7 @@ class Show extends Component {
                                 <Button
                                     type='ghost'
                                     onClick = {
-                                        ()=>push(`/section/new/${lesson.lid}`)
+                                        ()=>push(`/section/new/${lesson.id}`)
                                     }
                                 >
                                     新建文章

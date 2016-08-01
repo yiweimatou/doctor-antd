@@ -30,7 +30,7 @@ function* loginHandler(action) {
         const {
             get
         } = yield call(getUser, {
-            uid: key
+            id: key
         })
         const payload = {
             key,
