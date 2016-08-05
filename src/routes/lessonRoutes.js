@@ -88,6 +88,12 @@ const showRoute = store => ({
             }
         })
         store.dispatch({
+            type: 'section/info',
+            payload: {
+                lid
+            }
+        })
+        store.dispatch({
             type:'section/list',
             payload:{
                 limit:6,
