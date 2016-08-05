@@ -117,6 +117,14 @@ class Recommend extends Component {
                                     required:true,
                                     type:'array',
                                     message:'请选择分类'
+                                },{
+                                    validator:(rule,value,cb) => {
+                                        if(value.length!==3){
+                                            cb('请选择三级分类')
+                                        }else{
+                                            cb()
+                                        }
+                                    }
                                 }]
                             })
         delete aidProps.value
