@@ -2,7 +2,9 @@ import {
     takeLatest
 } from 'redux-saga'
 import {
-    fork, put, call
+    fork,
+    put,
+    call
 } from 'redux-saga/effects'
 import {
     message
@@ -11,29 +13,29 @@ import {
     getUserList
 } from '../services/user.js'
 
-function* handleUserList(action){
+const handleUserList = function* (action) {
     try {
-        const result= yield call(getUserList,action.payload)
+        const result = yield call(getUserList, action.payload)
         yield put({
-            type:'user/list/success',
-            payload:{
-                list:result.list
+            type: 'user/list/success',
+            payload: {
+                list: result.list
             }
         })
     } catch (error) {
         message.error(error)
         yield put({
-            type:'user/list/failure'
+            type: 'user/list/failure'
         })
     }
 }
 
-function* watchUserList(){
-    yield* takeLatest('user/list',handleUserList)
+function* watchUserList() {
+    yield * takeLatest('user/list', handleUserList)
 }
 
-export default function* (){
-    yield* [
+export default function*() {
+    yield * [
         fork(watchUserList)
     ]
 }

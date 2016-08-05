@@ -62,14 +62,17 @@ function* loginHandler(action) {
 function* watchLogout() {
     yield* takeLatest('logout',()=>{
         localStorage.clear()
+        window.location.reload()
     })
 }
 
-function* watchLogin() {
+const watchLogin = function* () {
     yield* takeLatest('login/start', loginHandler)
 }
 
-export default function*() {
+const authSaga = function*() {
     yield fork(watchLogin)
     yield fork(watchLogout)
 }
+
+export default authSaga

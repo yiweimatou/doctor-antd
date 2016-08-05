@@ -2,6 +2,7 @@ import React,{ Component,PropTypes } from 'react'
 import {Button,Modal} from 'antd'
 import { connect } from 'react-redux'
 import './TeamList.css'
+import { IMG_URL } from '../../constants/api'
 
 class TeamList extends Component{
     static propTypes = {
@@ -25,16 +26,16 @@ class TeamList extends Component{
                     return(<div key={item.id} className='titem'>
                             <div className='tdivimg'>                        
                         {
-                            item.face?
+                            item.user&&item.user.face?
                             <img 
-                                src={item.face} 
+                                src={`${IMG_URL}${item.user.face}`} 
                                 width='100%'
                                 className='timg'
                             />:null
                         }
                         </div>
                         <span className='tspan'>
-                            {item.cname||item.mobile}
+                            {item.user&&(item.user.cname||item.user.mobile)}
                         </span>
                         <Button 
                             className='tbutton'

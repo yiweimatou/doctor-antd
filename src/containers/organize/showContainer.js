@@ -1,17 +1,16 @@
 import { connect } from 'react-redux'
 import Show from '../../components/Organize/Show.js'
+import { push } from 'react-router-redux'
 
 const mapStateToProps = state =>({
     organize:state.organize.entity,
     list:state.organizeLesson.list,
-    pageParams:{
-        limit:state.organizeLesson.limit,
-        offset:state.organizeLesson.offset,
-        total:state.organizeLesson.total
-    }
 })
 
 const mapDispatchToProps = dispatch => ({
+    push:(path)=>{
+            dispatch(push(path))
+    },
     edit:(agree,id)=>{
         dispatch({
             type:'organizeLesson/edit',

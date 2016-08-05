@@ -6,6 +6,7 @@ import './Show.css'
 import SelectUser from '../User/SelectUser.js'
 import TeamList from './TeamList.js'
 import SectionList from '../Section/List'
+import { IMG_URL } from '../../constants/api'
 
 const styles = {
     row:{
@@ -52,74 +53,104 @@ class Show extends Component {
             olist,teamList,push,changeHandler,
             sList,deleteSection,isAdmin,uid,handleRemove
         } = this.props
-        if(!lesson){
-            return null
-        }
         return(
             <div>
                 <Paper>
                     <div style={styles.row}>
-                        <Row gutter={ 24 }>
-                            <Col span={6}>
-                                <img alt='pic' width='100%' src={lesson.cover} />
+                        <Row gutter={16}>
+                            <Col span={12}>
+                                <img alt='pic' width='100%' src={lesson&&`${IMG_URL}${lesson.cover}`} />
                             </Col>
-                            <Col span={18}>
-                                <Row gutter={16}>
-                                    <Col span={4}>
-                                        <span>课程名称:</span>
-                                    </Col>
-                                    <Col span={20}>
-                                        <span>{lesson.title}</span>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={4}>
-                                        <span>课程简介:</span>
-                                    </Col>
-                                    <Col span={20}>
-                                        <p>{lesson.descript}</p>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={4}>
-                                        <span>创建时间:</span>
-                                    </Col>
-                                    <Col span={20}>
-                                        <span>{new Date(lesson.add_ms*1000).toLocaleString()}</span>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={4}>
-                                        <span>更新时间:</span>
-                                    </Col>
-                                    <Col span={20}>
-                                        <span>{new Date(lesson.put_ms*1000).toLocaleString()}</span>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={4}>
-                                        <span>浏览量:</span>
-                                    </Col>
-                                    <Col span={20}>
-                                        <p>{lesson.pv}</p>
-                                    </Col>
-                                </Row>
-                                <Row gutter={16}>
-                                    <Col span={4}>
-                                        <span>粉丝数:</span>
-                                    </Col>
-                                    <Col span={20}>
-                                        <p>{lesson.uv}</p>
-                                    </Col>
-                                </Row>
+                            <Col span={6}>
+                                <span>课程名称:</span>
+                            </Col>
+                            <Col span={6}>
+                                <span>{lesson&&lesson.title}</span>
+                            </Col>
+                            <Col span={6}>
+                                <span>课程简介:</span>
+                            </Col>
+                            <Col span={6}>
+                                <p>{lesson&&lesson.descript}</p>
+                            </Col>
+                            <Col span={6}>
+                                <span>创建时间:</span>
+                            </Col>
+                            <Col span={6}>
+                                <span>{lesson&&new Date(lesson.add_ms*1000).toLocaleString()}</span>
+                            </Col>
+                            <Col span={6}>
+                                <span>更新时间:</span>
+                            </Col>
+                            <Col span={6}>
+                                <span>{lesson&&new Date(lesson.put_ms*1000).toLocaleString()}</span>
+                            </Col>
+                            <Col span={3}>
+                                <span>浏览量:</span>
+                            </Col>
+                            <Col span={3}>
+                                <p>{lesson&&lesson.pv}</p>
+                            </Col>
+                            <Col span={3}>
+                                <span>粉丝数:</span>
+                            </Col>
+                            <Col span={3}>
+                                <p>{lesson&&lesson.uv}</p>
+                            </Col>      
+                            <Col span = {2}>
+                                <span>课程价格:</span>
+                            </Col>
+                            <Col span = {2}>
+                                <span className='money'>{lesson&&lesson.account_money}</span>元                              
                             </Col>
                         </Row>
                     </div>
-                    <div style={styles.row}>
-                        <Row gutter={8}>
+                    {isAdmin===3?null:
+                    <div style = { styles.row } >
+                        <Row>
+                            <Col span={20}>
+                                <Row>
+                                  <Col span={2}>
+                                    课程余额
+                                  </Col>
+                                  <Col span={2}>
+                                    <span className='money'><em>{lesson&&lesson.amount_money}</em></span>元
+                                  </Col>
+                                  <Col offset={2} span={18}>
+                                    <span>每天23:00课程账户进行分成,分成总额将扣除当天信用账户支出费用
+                                    </span>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                    <Col span={2}>
+                                        信用账户
+                                    </Col>
+                                    <Col span={2}>
+                                        <span className='money'><em>{lesson&&lesson.credit_money}</em></span>元
+                                    </Col>
+                                    <Col offset={2} span={18}>
+                                        <span>
+                                            课程可供消费总额为200元
+                                        </span>
+                                    </Col>
+                                </Row>
+                            </Col>
                             <Col span={4}>
                                 <Button
-                                    onClick = {()=>push(`/lesson/edit/${lesson.id}`)}
+                                    onClick = {()=>push()}
+                                    type = 'ghost'
+                                >
+                                    交易明细
+                                </Button>
+                            </Col>
+                        </Row>
+                    </div>}
+                    <div style={styles.row}>
+                        {isAdmin === 3?null:                    
+                        <Row>
+                            <Col span={4}>
+                                <Button
+                                    onClick = {()=>lesson&&push(`/lesson/edit/${lesson.id}`)}
                                     type='ghost'
                                 >
                                     编辑课程
@@ -129,7 +160,7 @@ class Show extends Component {
                                 <Button
                                     type='ghost'
                                     onClick = {
-                                        ()=>push(`/section/new/${lesson.id}`)
+                                        ()=>lesson&&push(`/section/new/${lesson.id}`)
                                     }
                                 >
                                     新建文章
@@ -143,6 +174,7 @@ class Show extends Component {
                                     申请机构认证
                                 </Button>
                             </Col>
+                            {isAdmin ===1 ?
                             <Col span={4}>
                                 <Button
                                     type='ghost'
@@ -150,7 +182,7 @@ class Show extends Component {
                                 >
                                     邀请成员
                                 </Button>
-                            </Col>
+                            </Col>:null}
                             <Col span={4}>
                             {isAdmin===1?
                                 <Button
@@ -159,22 +191,21 @@ class Show extends Component {
                                 >
                                     团队管理
                                 </Button>:
-                                isAdmin===2?
                                 <Button
                                     type='ghost'
                                     onClick = {()=>{
                                         teamList.forEach(item=>{
-                                            if(item.type===1&&item.uid===uid){
+                                            if(item.type===1&&item.account_id===uid){
                                                 handleRemove(item.id)
                                             }
                                         })
                                     }}
                                 >
                                     退出团队
-                                </Button>:null
+                                </Button>
                             }
                             </Col>
-                        </Row>
+                        </Row>}
                     </div>
                 </Paper>
                 <div className='paper'>
@@ -183,13 +214,13 @@ class Show extends Component {
                             {
                                 olist.map(item=>{
                                     return (
-                                        <div key={item.oid} className='item'>
+                                        <div key={item.id} className='item'>
                                             <img 
-                                                src={item.logo}
+                                                src={`${IMG_URL}${item.organize_logo}`}
                                                 className='img'
                                                 width='100%'
                                             />
-                                            <span className='span'>{item.oname}</span>
+                                            <span className='span'>{item&&item.organize_name}</span>
                                         </div>
                                     )
                                 })
@@ -202,11 +233,11 @@ class Show extends Component {
                         {
                             teamList.map(item=>{
                                 return(
-                                        <div nowrap key={item.uid} className='item'>
+                                        <div nowrap key={item.id} className='item'>
                                             {
-                                                item.face?
+                                                item.user&&item.user.face?
                                                 <img 
-                                                    src={item.face}
+                                                    src={IMG_URL+item.user.face}
                                                     className='img'
                                                     width='100%'
                                                 />:
@@ -216,7 +247,7 @@ class Show extends Component {
                                                 item.type===3?
                                                 <em className='bar'>主讲</em>:''
                                             }
-                                            <span className='span'>{item.cname||item.mobile}</span>
+                                            <span className='span'>{item.user&&(item.user.cname || item.user.mobile) }</span>
                                         </div>
                                 )
                             })
@@ -227,7 +258,7 @@ class Show extends Component {
                     <Paper>
                         <h2>文章列表</h2>
                         <SectionList
-                            lid={lesson.lid}
+                            lid={lesson&&lesson.id}
                             push={push}
                             changeHandler={changeHandler}
                             list={sList.data}

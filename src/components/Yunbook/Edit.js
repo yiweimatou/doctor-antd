@@ -1,6 +1,6 @@
 import React,{ Component,PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Tabs,Button,Form,Input,message,Switch,Cascader } from 'antd'
+import { Tabs,Button,Form,Input,message, Spin, Cascader } from 'antd'
 import EditLblView from './EditLblView.js'
 import {
     getArea,
@@ -22,7 +22,8 @@ class Edit extends Component{
     static propTypes = {
         yunbook:PropTypes.object,
         save:PropTypes.func,
-        form:PropTypes.object
+        form:PropTypes.object,
+        loading: PropTypes.bool
     }
     componentWillReceiveProps(nextProps){
         if(!this.props.yunbook){
@@ -31,10 +32,10 @@ class Edit extends Component{
             })
             let a1=[],a2=[],a3=[],a4=[]
             getArea({
-                aid:nextProps.yunbook.aid
+                id:nextProps.yunbook.area_id
             }).then(data=>data.get).then(area=>{
                 this.setState({
-                    defaultValue:[area.pid,area.aid]
+                    defaultValue:[area.pid,area.id]
                 })
                 getAreaList({
                     pid:area.pid,
@@ -43,7 +44,7 @@ class Edit extends Component{
                 }).then(data=>{
                     data.list.forEach(item=>{
                         a4.push({
-                            value:item.aid,
+                            value:item.id,
                             label:item.title,
                             zoom:item.zoom,
                             isLeaf:true
@@ -53,7 +54,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 return getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>data.get)
             }).then(area=>{
                 getAreaList({
@@ -62,16 +63,16 @@ class Edit extends Component{
                     limit:30
                 }).then(data=>{
                     data.list.forEach(item=>{
-                        if(item.aid===area.aid){
+                        if(item.id===area.id){
                             a3.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 children:a4
                             })
                         }else{
                             a3.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 isLeaf:false
@@ -85,7 +86,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 return getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>data.get)
             }).then(area=>{
                 getAreaList({
@@ -94,16 +95,16 @@ class Edit extends Component{
                     limit:30
                 }).then(data=>{
                     data.list.forEach(item=>{
-                        if(item.aid===area.aid){
+                        if(item.id===area.id){
                             a2.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 children:a3
                             })
                         }else{
                             a2.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 isLeaf:false
@@ -117,7 +118,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 return getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>data.get)
             }).then(area=>{
                     getAreaList({
@@ -126,16 +127,16 @@ class Edit extends Component{
                         limit:30
                     }).then(data=>{
                         data.list.forEach(item=>{
-                            if(item.aid===area.aid){
+                            if(item.id===area.id){
                                 a1.push({
-                                    value:item.aid,
+                                    value:item.id,
                                     label:item.title,
                                     zoom:item.zoom,
                                     children:a2
                                 })
                             }else{
                                 a1.push({
-                                    value:item.aid,
+                                    value:item.id,
                                     label:item.title,
                                     zoom:item.zoom,
                                     isLeaf:false
@@ -153,7 +154,7 @@ class Edit extends Component{
     }
     loadData=(selectedOptions)=>{
         const targetOption = selectedOptions[selectedOptions.length-1]
-        const isLeaf = 6 ===targetOption.zoom
+        const isLeaf = 6 === targetOption.zoom
         targetOption.loading=true
         getAreaList({
             limit:30,
@@ -165,7 +166,7 @@ class Edit extends Component{
                 targetOption.children = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf
                     }
@@ -190,34 +191,34 @@ class Edit extends Component{
             }
             const params = {
                 lbl:this.state.lbl,
-                aid:values.aid[3],
+                area_id:values.area_ids[3],
                 title:values.title,
                 descript:values.descript,
-                status:values.status?2:1,
-                bid:this.props.yunbook.bid
+                id:this.props.yunbook.id
             }
             this.props.save(params)
         })
     }
     render(){
         const {
-            form,yunbook
+            form,yunbook, loading
         } = this.props
         const {
             options,defaultValue
         } = this.state
         const {getFieldProps}=form
-        const aidProps = getFieldProps('aid',{
+        const aidProps = getFieldProps('area_ids',{
                 rules:[{
                     required:true,
                     type:'array',
                     message:'请选择分类'
                 }],
-                initialValue:defaultValue
+                initialValue: defaultValue
             })
         delete aidProps.value  
         return(
             <div>
+                <Spin spinning = { loading }>
                 <Tabs defaultActiveKey='2'>
                     <TabPane key='1' tab='基本信息修改'>
                         <Form
@@ -246,14 +247,15 @@ class Edit extends Component{
                             <FormItem
                                 label='分类'
                                 {...formItemLayout}
-                            >
+                            > 
+                            { defaultValue.length === 4?
                                 <Cascader
                                     placeholder='请选择分类'
                                     options = {options}
                                     loadData = {this.loadData}
                                     defaultValue={defaultValue}
                                     {...aidProps}
-                                />
+                                />:null}
                             </FormItem>
                             <FormItem
                                 label='课程简介'
@@ -272,17 +274,6 @@ class Edit extends Component{
                                     })}
                                 />
                             </FormItem>
-                            <FormItem
-                                label='是否公开'
-                                {...formItemLayout}
-                            >   
-                                <Switch                   
-                                    {...getFieldProps('status',{
-                                        valuePropName:'checked',
-                                        initialValue:yunbook&&yunbook.status===2
-                                    })}
-                                />
-                            </FormItem>
                             <button type='submit' id='_submit_'></button>
                         </Form>
                     </TabPane>
@@ -298,7 +289,7 @@ class Edit extends Component{
                         if(!submit){
                             this.props.save({
                                 lbl:this.state.lbl,
-                                bid:this.props.yunbook.bid
+                                id:this.props.yunbook.id
                             })
                         }else{
                             submit.click()
@@ -307,6 +298,7 @@ class Edit extends Component{
                 }>
                         保存
                 </Button>
+                </Spin>
             </div>
         )
     }
@@ -314,7 +306,8 @@ class Edit extends Component{
 
 export default connect(
     state=>({
-        yunbook:state.yunbook.entity
+        yunbook:state.yunbook.entity,
+        loading: state.yunbook.loading
     }),
     dispatch=>({
         save:(params)=>{

@@ -109,7 +109,6 @@ class New extends Component {
                 title:values.lname,
                 descript:values.descript||'',
                 area_id:values.area_ids[2],
-                cover:`http://121.41.92.56/ywmt/${values.upload[0].response.cover}`,
                 account_money: values.account_money,
                 organize_money: values.organize_money
             }
@@ -204,9 +203,15 @@ class New extends Component {
                             addonAfter = '元'
                             {...getFieldProps('account_money',{
                                 rules:[{
-                                    required: true,
-                                    message: '请设置报名费'
-                                }]
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: 0
                             })}
                         />
                     </FormItem>
@@ -219,9 +224,15 @@ class New extends Component {
                             addonAfter = '元'
                             {...getFieldProps('organize_money',{
                                 rules:[{
-                                    required: true,
-                                    message: '请设置机构认证费'
-                                }]
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: 0
                             })}
                         />
                     </FormItem>

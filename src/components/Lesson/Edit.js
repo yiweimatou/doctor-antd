@@ -6,10 +6,11 @@ import {
     Upload,
     Icon,
     message,
-    Cascader 
+    Cascader,
+    Spin 
 } from 'antd'
 import Paper from '../Paper'
-import {UPLOAD_COVER_API} from '../../constants/api.js'
+import {UPLOAD_COVER_API,IMG_URL} from '../../constants/api.js'
 import { connect } from 'react-redux'
 import {
     getArea,
@@ -26,7 +27,8 @@ class Edit extends Component{
     static propTypes = {
         form:PropTypes.object,
         handleEdit:PropTypes.func.isRequired,
-        lesson:PropTypes.object
+        lesson:PropTypes.object,
+        loading: PropTypes.bool
     }
     state = {
         fileList:[],
@@ -73,7 +75,7 @@ class Edit extends Component{
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
             if (file.response) {
-                file.url = 'http://121.41.92.56/ywmt/'+file.response.cover
+                file.url = file.response.cover
             }
             return file
         })
@@ -91,11 +93,14 @@ class Edit extends Component{
             if(errors){
                 return
             }
+            const cover = this.state.fileList[0].url
             const params = {
                 title:values.lname,
                 descript:values.descript,
                 area_id:values.area_ids[2],
-                cover:this.state.fileList[0].url,
+                cover:cover.indexOf('http')===-1?cover:this.props.lesson.cover,
+                organize_money: values.organize_money,
+                account_money: values.account_money,
                 id:this.props.lesson.id
             }
             this.props.handleEdit(params)
@@ -108,7 +113,7 @@ class Edit extends Component{
                     uid:-1,
                     name:'封面.png',
                     status:'done',
-                    url:nextProps.lesson.cover
+                    url:`${IMG_URL}${nextProps.lesson.cover}`
                 }]
             })
             let a1=[],a2=[],a3=[]
@@ -203,7 +208,7 @@ class Edit extends Component{
     }
     render(){
         const {
-            form,lesson
+            form,lesson,loading
         } = this.props
         const {defaultValue,options}=this.state
         const { getFieldProps } = form
@@ -218,6 +223,7 @@ class Edit extends Component{
         delete areaIdsProps.value
         return(
             <Paper>
+                <Spin spinning = { loading } size = 'large'>
                 <Form 
                     horizontal 
                     className = 'form'
@@ -238,6 +244,48 @@ class Edit extends Component{
                                     message:'请输入20字以内课程名'
                                 }],
                                 initialValue:lesson&&lesson.title
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '报名费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('account_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: lesson&&lesson.account_money
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '机构认证费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('organize_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if(value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue:lesson&&lesson.organize_money
                             })}
                         />
                     </FormItem>
@@ -292,6 +340,7 @@ class Edit extends Component{
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
+                </Spin>
             </Paper>
         )
     }
@@ -299,7 +348,8 @@ class Edit extends Component{
 
 export default connect(
     state=>({
-        lesson:state.lesson.entity
+        lesson:state.lesson.entity,
+        loading : state.lesson.loading
     }),
     dispatch=>({
         handleEdit:(params)=>{

@@ -49,3 +49,13 @@
     display: block;
     text-align: center;
 }
+
+.xmoney {
+    border-radius: 0 0 30% 50%;
+    background-color: #00a2e2;
+    display: inline-block;
+    position: absolute;
+}
+.xmoney span {
+    color: white
+}

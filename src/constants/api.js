@@ -7,6 +7,8 @@ export const ORGANIZE_API_DOMAIN = `${HOST}:1005`
 export const LESSON_API_DOMAIN = `${HOST}:1007`
 export const AREA_API_DOMAIN = `${HOST}:1003`
 export const SECTION_API_DOMAIN = `${HOST}:1008`
+export const BOOK_API_DOMAIN = `${HOST}:1006`
+export const IMG_URL = `${HOST}/ywmt/`
 /**
  * api codes
  */
@@ -78,11 +80,11 @@ export const UPLOAD_PPT_API = `${UPLOAD_DOMAIN}/book/ppt`
 /**
 *yunbook apis
 */
-export const YUNBOOK_GET_API = `${USER_API_DOMAIN}/userbook/get`
-export const YUNBOOK_ADD_API = `${USER_API_DOMAIN}/userbook/add`
-export const YUNBOOK_EDIT_API = `${USER_API_DOMAIN}/userbook/put`
-export const YUNBOOK_LIST_API = `${USER_API_DOMAIN}/userbook/list`
-export const YUNBOOK_INFO_API = `${USER_API_DOMAIN}/userbook/info`
+export const YUNBOOK_GET_API = `${BOOK_API_DOMAIN}/book/get`
+export const YUNBOOK_ADD_API = `${BOOK_API_DOMAIN}/book/add`
+export const YUNBOOK_EDIT_API = `${BOOK_API_DOMAIN}/book/put`
+export const YUNBOOK_LIST_API = `${BOOK_API_DOMAIN}/book/list`
+export const YUNBOOK_INFO_API = `${BOOK_API_DOMAIN}/book/info`
 /**
  * organizelesson apis
  */
@@ -91,3 +93,5 @@ export const ORGANIZELESSON_GET_API = `${ORGANIZE_API_DOMAIN}/organizelesson/get
 export const ORGANIZELESSON_LIST_API = `${ORGANIZE_API_DOMAIN}/organizelesson/list`
 export const ORGANIZELESSON_ADD_API = `${ORGANIZE_API_DOMAIN}/organizelesson/add`
 export const ORGANIZELESSON_EDIT_API = `${ORGANIZE_API_DOMAIN}/organizelesson/put`
+export const ORGANIZEMONEY_LIST_API = `${ORGANIZE_API_DOMAIN}/organizemoney/list`
+export const ORGANIZEMONEY_INFO_API = `${ORGANIZE_API_DOMAIN}/organizemoney/info`

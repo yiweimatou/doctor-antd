@@ -2,13 +2,15 @@ import React,{ Component,PropTypes } from 'react'
 import { Card,Icon } from 'antd'
 import { Link } from 'react-router'
 import './OrganizeCard.css'
+import { IMG_URL } from '../../constants/api'
 
 const styles ={
     card:{
-        width:240
+        width: 240,
+        marginBottom: 20
     },
     bodyStyle:{
-        padding:0
+        padding: 0
     }
 }
 class OrganizeCard extends Component{
@@ -22,18 +24,18 @@ class OrganizeCard extends Component{
                 bodyStyle = {styles.bodyStyle}
             >
                 <div className='organize-image'>
-                    <Link to={`/organize/show/${organize.oid}`}>
-                        <img alt='pic' width="100%" src={organize.logo} />
+                    <Link to={`/organize/show/${organize.id}`}>
+                        <img alt='pic' width="100%" src={`${IMG_URL}${organize.logo}`} />
                     </Link>
                 </div>
                 <div className='organize-card'>
                 <Link 
-                            to={`/organize/edit/${organize.oid}`}
+                            to={`/organize/edit/${organize.id}`}
                             style = {{float:'right'}}
                         >
                             <Icon type="edit" />
                         </Link>
-                        <h3>{organize.oname}</h3>
+                        <h3>{organize.title}</h3>
                     
                 </div>
             </Card>

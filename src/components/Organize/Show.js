@@ -1,58 +1,73 @@
 import React,{Component,PropTypes} from 'react'
 import Paper from '../Paper'
-import { Row,Col } from 'antd'
+import { Row,Col,Button } from 'antd'
 import './Show.css'
 import OrganzieLessonList from './OrganzieLessonList.js'
+import { IMG_URL } from '../../constants/api'
 
 class Show extends Component {
     render(){
         const {
-            organize,list,pageParams,changeHandler,edit
+            organize,list,changeHandler,edit,push
         } = this.props
-        if( !organize ){
-            return null
-        }
         return(
             <div>
                 <Paper>
                     <div className='row'>
-                        <Row gutter={ 24 }>
+                        <Row gutter={16}>
                             <Col span={6}>
-                                <img alt='pic' src={organize.logo} />
+                                <img width='100%' alt='pic' src={organize&&`${IMG_URL}${organize.logo}`} />
                             </Col>
-                            <Col span={18}>
-                                <Row gutter={16}>
-                                    <Col span={4}>
+                            <Col span={12}>
+                                <Row>
+                                    <Col span={3}>
                                         <span>机构名称:</span>
                                     </Col>
-                                    <Col span={20}>
-                                        <span>{organize.oname}</span>
+                                    <Col span={4}>
+                                        <span>{organize&&organize.title}</span>
                                     </Col>
                                 </Row>
-                                <Row gutter={16}>
-                                    <Col span={4}>
+                                <Row>
+                                    <Col span={3}>
                                         <span>机构简介:</span>
                                     </Col>
-                                    <Col span={20}>
-                                        <p>{organize.descript}</p>
+                                    <Col span={8}>
+                                        <p>{organize&&organize.descript}</p>
                                     </Col>
                                 </Row>
-                                <Row gutter={16}>
-                                    <Col span={4}>
+                                <Row>
+                                    <Col span={3}>
                                         <span>创建时间:</span>
                                     </Col>
-                                    <Col span={20}>
-                                        <span>{new Date(organize.add_ms*1000).toLocaleString()}</span>
+                                    <Col span={8}>
+                                        <span>{organize&&new Date(organize.add_ms*1000).toLocaleString()}</span>
                                     </Col>
                                 </Row>
-                                <Row gutter={16}>
-                                    <Col span={4}>
+                                <Row>
+                                    <Col span={3}>
                                         <span>更新时间:</span>
                                     </Col>
-                                    <Col span={20}>
-                                        <span>{new Date(organize.put_ms*1000).toLocaleString()}</span>
+                                    <Col span={8}>
+                                        <span>{organize&&new Date(organize.put_ms*1000).toLocaleString()}</span>
                                     </Col>
                                 </Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={16}>
+                                <span>机构余额:
+                                    <em style={{color:'orange',fontSize:'200%'}}>{organize&&organize.amount_money}</em>元
+                                </span>
+                            </Col>
+                            <Col span={4}>
+                                <Button type='primary'>
+                                    充值
+                                </Button>
+                            </Col>
+                            <Col span={4}>
+                                <Button type='ghost' onClick = {() => push(`/organize/money/${organize.id}`)}>
+                                    交易明细
+                                </Button>
                             </Col>
                         </Row>
                     </div>
@@ -62,7 +77,6 @@ class Show extends Component {
                         <div className='row'>
                             <OrganzieLessonList
                                  list={list}
-                                 pageParams={pageParams}
                                  changeHandler={changeHandler}
                                  edit={edit}
                             />
@@ -76,10 +90,10 @@ class Show extends Component {
 
 Show.propTypes = {
     organize:PropTypes.object,
-    list:PropTypes.array,
-    pageParams:PropTypes.object,
+    list:PropTypes.object,
     changeHandler:PropTypes.func,
-    edit:PropTypes.func
+    edit:PropTypes.func,
+    push: PropTypes.func
 }
 
 export default Show

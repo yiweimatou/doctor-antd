@@ -2,6 +2,27 @@ import fetch from 'isomorphic-fetch'
 const initialFetchConfig = {
     needAuth:false
 }
+function checkStatus(data) {
+    const {
+        code,
+        msg
+    } = data
+    if (code === 200) {
+        return data
+    } else if (code === 401){
+        localStorage.clear()
+        window.location.reload()
+    }else {
+        return Promise.reject(`服务器错误:${msg}`)
+    }
+}
+function checkResponse(response) {
+    if(response.ok) {
+        return response.json()
+    }else {
+        return Promise.reject(`${response.status}:${response.statusText}`)
+    }
+}
 const ApiClient = {
     get(url, params, fetchConfig = initialFetchConfig) {
         let body
@@ -17,21 +38,7 @@ const ApiClient = {
         }
         return fetch(`${url}?${body}`, {
                 method: 'GET'
-            }).then(response =>
-                response.ok ?
-                response.json() :
-                Promise.reject(`${response.status}:${response.statusText}`))
-            .then(data => {
-                const {
-                    code,
-                    msg
-                } = data
-                if (code === 200) {
-                    return data
-                } else {
-                    return Promise.reject(msg)
-                }
-            })
+            }).then(checkResponse).then(checkStatus)
     },
     post(url,params,fetchConfig=initialFetchConfig){
         let body
@@ -51,21 +58,7 @@ const ApiClient = {
                     'Content-Type':'application/x-www-form-urlencoded'
                 },
                 body
-            }).then(response =>
-                response.ok ?
-                response.json() :
-                Promise.reject(`${response.status}:${response.statusText}`))
-            .then(data => {
-                const {
-                    code,
-                    msg
-                } = data
-                if (code === 200) {
-                    return data
-                } else {
-                    return Promise.reject(msg)
-                }
-            })
+            }).then(checkResponse).then(checkStatus)
     },
     put(url,params){
         this.post(url,params,{needAuth: true})

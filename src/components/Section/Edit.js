@@ -29,7 +29,7 @@ class Edit extends Component{
     }
     componentWillReceiveProps(nextProps){
         if(!this.props.section&&nextProps.section){
-            this.props.getYunbook(nextProps.section.bid)
+            this.props.getYunbook(nextProps.section.book_id)
             this.setState({
                 lbl:nextProps.section.lbl
             })
@@ -43,10 +43,10 @@ class Edit extends Component{
             })
             let a1=[],a2=[],a3=[],a4=[]
             getArea({
-                aid:nextProps.yunbook.aid
+                id:nextProps.yunbook.area_id
             }).then(data=>data.get).then(area=>{
                 this.setState({
-                    defaultValue:[area.pid,area.aid]
+                    defaultValue:[area.pid,area.id]
                 })
                 getAreaList({
                     pid:area.pid,
@@ -55,7 +55,7 @@ class Edit extends Component{
                 }).then(data=>{
                     data.list.forEach(item=>{
                         a4.push({
-                            value:item.aid,
+                            value:item.id,
                             label:item.title,
                             zoom:item.zoom,
                             isLeaf:true
@@ -65,7 +65,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 return getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>data.get)
             }).then(area=>{
                 getAreaList({
@@ -74,16 +74,16 @@ class Edit extends Component{
                     limit:30
                 }).then(data=>{
                     data.list.forEach(item=>{
-                        if(item.aid===area.aid){
+                        if(item.id===area.id){
                             a3.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 children:a4
                             })
                         }else{
                             a3.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 isLeaf:false
@@ -97,7 +97,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 return getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>data.get)
             }).then(area=>{
                 getAreaList({
@@ -106,16 +106,16 @@ class Edit extends Component{
                     limit:30
                 }).then(data=>{
                     data.list.forEach(item=>{
-                        if(item.aid===area.aid){
+                        if(item.id===area.id){
                             a2.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 children:a3
                             })
                         }else{
                             a2.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 isLeaf:false
@@ -129,7 +129,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 return getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>data.get)
             }).then(area=>{
                     getAreaList({
@@ -140,14 +140,14 @@ class Edit extends Component{
                         data.list.forEach(item=>{
                             if(item.aid===area.aid){
                                 a1.push({
-                                    value:item.aid,
+                                    value:item.id,
                                     label:item.title,
                                     zoom:item.zoom,
                                     children:a2
                                 })
                             }else{
                                 a1.push({
-                                    value:item.aid,
+                                    value:item.id,
                                     label:item.title,
                                     zoom:item.zoom,
                                     isLeaf:false
@@ -177,7 +177,7 @@ class Edit extends Component{
                 targetOption.children = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf
                     }
@@ -202,11 +202,10 @@ class Edit extends Component{
             }
             const params = {
                 lbl:this.state.lbl,
-                aid:values.aid[3],
+                area_id:values.aid[3],
                 title:values.title,
                 descript:values.descript,
-                status:values.status?2:1,
-                sid:this.props.section.sid
+                id:this.props.section.id
             }
             this.props.save(params)
         })
@@ -219,13 +218,13 @@ class Edit extends Component{
         }else{
             this.props.save({
                 lbl:this.state.lbl,
-                sid:this.props.section.sid
+                sid:this.props.section.id
             })
         }
     }
     render(){
         const {
-            form,yunbook
+            form,section
         } = this.props
         const {
             options,defaultValue
@@ -252,7 +251,7 @@ class Edit extends Component{
                         >
                              <FormItem
                                 {...formItemLayout}
-                                label='云板书标题'
+                                label='标题'
                                 hasFeedback
                             >
                                 <Input
@@ -263,7 +262,7 @@ class Edit extends Component{
                                             max:30,
                                             message:'请填写最多30字标题'
                                         }],
-                                        initialValue:yunbook&&yunbook.title
+                                        initialValue:section&&section.title
                                     })}
                                 />
                             </FormItem>
@@ -292,18 +291,7 @@ class Edit extends Component{
                                             max:300,
                                             message:'最多300字'
                                         }],
-                                        initialValue:yunbook&&yunbook.descript
-                                    })}
-                                />
-                            </FormItem>
-                            <FormItem
-                                label='是否公开'
-                                {...formItemLayout}
-                            >   
-                                <Switch                   
-                                    {...getFieldProps('status',{
-                                        valuePropName:'checked',
-                                        initialValue:yunbook&&yunbook.status===2
+                                        initialValue:section&&section.descript
                                     })}
                                 />
                             </FormItem>
@@ -337,11 +325,11 @@ export default connect(
                 payload:params
             })
         },
-        getYunbook:(bid)=>{
+        getYunbook:(id)=>{
             dispatch({
                 type:'yunbook/get',
                 payload:{
-                    bid
+                    id
                 }
             })
         }

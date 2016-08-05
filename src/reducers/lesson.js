@@ -1,7 +1,8 @@
 import { handleActions } from 'redux-actions'
 
 const initialState = {
-	loading:false,
+	loading: false,
+	isSuccess: false, 
 	entity:null,
 	list:{
 		data:[],
@@ -9,11 +10,70 @@ const initialState = {
 			limit:6,
 			offset:1
 		},
+		otherInfos: null,
 		total:0
+	},
+	money: {
+		data: [],
+		params: {
+			limit: 6,
+			offset: 1
+		},
+		total: 0,
+		loading: false
 	}
 }
 
 const lesson = handleActions({
+	['lesson/money/info/success']: (state, action) => ({
+		...state,
+		money: {
+			...state.money,
+			total: action.payload
+		}
+	}),
+	['lesson/money/list']: state => ({
+		...state,
+		money: {
+			...state.money,
+			loading: true
+		}
+	}),
+	['lesson/money/list/success']: (state, action) => ({
+		...state,
+		money: {
+			...state.money,
+			loading: false,
+			data: action.payload.list,
+			params: action.payload.params
+		}
+	}),
+	['lesson/money/list/failure']: state => ({
+		...state,
+		money: {
+			...state.money,
+			loading: false
+		}
+	}),
+	['lesson/edit']: state => ({
+		...state,
+		isSuccess: false,
+		loading: true
+	}),
+	['lesson/edit/success']: (state, action) => ({
+		...state,
+		isSuccess: true,
+		loading: false,
+		entity: {
+			...state.entity,
+			...action.payload
+		}
+	}),
+	['lesson/edit/failure']: state => ({
+		...state,
+		isSuccess: false,
+		loading: false
+	}),
 	['lesson/recommend']:state=>({
 		...state,
 		loading:true
@@ -30,9 +90,21 @@ const lesson = handleActions({
 		...state,
 		loading:true
 	}),
-	['lesson/put/cet/success']: state => ({
+	['lesson/put/cet/success']: (state, action) => ({
 		...state,
-		loading:false
+		loading:false,
+		list:{
+			...state.list,
+			data:state.list.data.map(item => {
+				if(item.id === action.payload.id){
+					return {
+						...item,
+						...action.payload
+					}
+				}
+				return item
+			})
+		}
 	}),
 	['lesson/put/cet/failure'] : state => ({
 		...state,

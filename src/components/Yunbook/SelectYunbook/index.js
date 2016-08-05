@@ -1,6 +1,7 @@
 import React,{ Component,PropTypes } from 'react'
 import { Link } from 'react-router'
 import './index.css'
+import { IMG_URL } from '../../../constants/api'
 
 class SelectYunbook extends Component{
     render(){
@@ -9,9 +10,12 @@ class SelectYunbook extends Component{
         } = this.props
         return(
             <div className='col'>
-               <Link className='courseList' to={`/yunbook/show/${yunbook.bid}`}>
+               <Link className='courseList' to={`/yunbook/show/${yunbook.id}`}>
                     <div className="courseImg">
-                        <img src={yunbook.cover} width="100%" />
+                        <div className='xmoney'>
+                            <span>{yunbook.money===0?' 免费 ':`￥ ${yunbook.money}`}</span>
+                        </div>
+                        <img src={`${IMG_URL}${yunbook.cover}`} width="100%" />
                     </div>
                     <div className="courseTitle">
                         <span>{yunbook.title}</span>

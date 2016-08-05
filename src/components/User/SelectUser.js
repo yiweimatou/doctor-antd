@@ -3,19 +3,20 @@ import SearchInput from '../SearchInput'
 import {Button,Modal} from 'antd'
 import { connect } from 'react-redux'
 import './SelectUser.css'
+import { IMG_URL } from '../../constants/api'
 
 class SelectUser extends Component {
     static propTypes = {
         list:PropTypes.array,
         invite:PropTypes.func.isRequired,
         search:PropTypes.func.isRequired,
-        lid:PropTypes.number,
+        lesson_id:PropTypes.number,
         visible:PropTypes.bool,
         onCancel:PropTypes.func
     }
     render(){
         const {
-            list,invite,lid,search,visible,onCancel
+            list,invite,lesson_id,search,visible,onCancel
         } = this.props
         return(
             <Modal
@@ -32,22 +33,22 @@ class SelectUser extends Component {
                     {
                         list.map(item=>{
                             return (
-                                <div key={item.uid} className='sitem'>
+                                <div key={item.id} className='sitem'>
                                         <div className='sdivImg'>
                                         {
                                             item.face?
                                         <img 
-                                            src={item.face}
+                                            src={IMG_URL+item.face}
                                             className='simg'
                                             width='100%'
                                         />:null
                                         }
                                         </div>
-                                    <span>{item.cname||item.mobile}</span>
+                                    <span style = {{display:'block',width:50,textAlign:'center'}}>{item.cname||item.mobile}</span>
                                     <Button 
                                         className='sbutton'
                                         onClick = {
-                                            ()=>invite(item.mobile,lid)
+                                            ()=>invite(item.mobile,lesson_id,item.id)
                                         }
                                     >
                                         邀请
@@ -66,7 +67,7 @@ class SelectUser extends Component {
 export default connect(
     state=>({
         list:state.user.list,
-        lid:state.lesson.entity.lid
+        lesson_id:state.lesson.entity&&state.lesson.entity.id
     }),
     dispatch=>({
         search:mobile=>dispatch({
@@ -75,10 +76,10 @@ export default connect(
                 mobile
             }
         }),
-        invite:(mobile,lid)=>dispatch({
+        invite:(mobile,lesson_id,account_id)=>dispatch({
             type:'lessonTeam/new',
             payload:{
-                mobile,lid
+                mobile,lesson_id,account_id
             }
         })
     })

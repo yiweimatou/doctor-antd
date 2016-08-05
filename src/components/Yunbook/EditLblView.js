@@ -6,6 +6,7 @@ import 'leaflet-draw/dist/leaflet.draw.css'
 import MyEditor from '../MyEditor'
 import { Modal } from 'antd'
 import { stateToHTML } from 'nodeman-draft-js-export-html'
+import { IMG_URL } from '../../constants/api'
 
 const styles = {
     map:{
@@ -67,7 +68,7 @@ class EditLblView extends React.Component{
     componentWillReceiveProps(nextProps){
         if(this._map || !nextProps.yunbook) return
         const { yunbook } = nextProps
-        const url = `${yunbook.path}/{z}/{x}/{y}.png`
+        const url = `${IMG_URL}${yunbook.path}/{z}/{x}/{y}.png`
         const self = this
         this._map =  L.map('_map',{
             maxZoom:yunbook.zoom,
@@ -89,7 +90,7 @@ class EditLblView extends React.Component{
         }).addTo(this._map)
 
         this._drawnItems = new L.FeatureGroup().addTo(this._map)
-         this._geoJson = {
+        this._geoJson = {
             type: 'FeatureCollection',
             features: []
         }

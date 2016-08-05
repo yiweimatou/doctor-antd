@@ -28,13 +28,13 @@ const newRoute = store => ({
             payload:{
                 offset:1,
                 limit:6,
-                uid
+                account_id: uid
             }
         })
         store.dispatch({
             type:'yunbook/myinfo',
             payload:{
-                uid
+                account_id: uid
             }
         })
     }
@@ -44,8 +44,8 @@ const editRoute = store =>({
     path:'edit/:id',
     component:Edit,
     onEnter(nextState,replace){
-        const sid=nextState.params.id
-        if(!sid){
+        const id=nextState.params.id
+        if(!id){
             return replace({
                 pathname:'/'
             })
@@ -53,7 +53,7 @@ const editRoute = store =>({
         store.dispatch({
             type:'section/get',
             payload:{
-                sid
+                id
             }
         })
     }

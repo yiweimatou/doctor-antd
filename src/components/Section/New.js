@@ -9,11 +9,11 @@ import {
     Pagination,
     Row,
     Col,
-    message 
+    message,
+    Cascader
 } from 'antd'
-import AreaCascader from '../AreaCascader'
 import SelectYunbook from '../Yunbook/SelectYunbook'
-import {getArea} from '../../services/area.js'
+import {getArea,getAreaList} from '../../services/area.js'
 import {
     getLesson
 } from '../../services/lesson'
@@ -44,7 +44,7 @@ class New extends Component {
     }
     handlePick=(yunbook)=>{
         this.setState({
-            bid:yunbook.bid,
+            bid:yunbook.id,
             lbl:yunbook.lbl,
             currentStep:2
         })
@@ -62,12 +62,12 @@ class New extends Component {
                 return
             }
             this.props.handleNew({
-                bid:this.state.bid,
+                book_id:this.state.bid,
                 lbl:this.state.lbl,
-                sname:values.sname,
-                aid:values.aid[3],
-                lid:this.props.lid,
-                descript:values.descript
+                title:values.sname,
+                area_id:values.area_ids[3],
+                lesson_id:this.props.lid,
+                descript:values.descript || ''
             })
         })
     }
@@ -77,38 +77,44 @@ class New extends Component {
     componentWillMount(){
         let a1=[],a2=[],a3=[]
         getLesson({
-            lid:this.props.lid
+            id:this.props.lid
         }).then(data=>{
             return data.get
         }).then(lesson=>{
             return getArea({
-                aid:lesson.aid
+                id:lesson.area_id
             }).then(data=>data.get)
-        }).then(area=>{
+        }).then(area => {
+            return Promise.all([getAreaList({pid : area.id,zoom: area.zoom+1}),area])
+        }).then(([areas,area])=>{
             a3.push({
-                value:area.aid,
+                value:area.id,
                 label:area.title,
                 zoom:area.zoom,
-                isLeaf:false
+                children:areas.list.map(item => ({
+                    value: item.id,
+                    label: item.title,
+                    zoom: item.zoom
+                }))
             })
             return getArea({
-                aid:area.pid,
+                id:area.pid,
                 zoom:area.zoom-1
             }).then(data=>data.get)
         }).then(area=>{
             a2.push({
-                value:area.aid,
+                value:area.id,
                 label:area.title,
                 zoom:area.zoom,
                 children:a3
             })
             return getArea({
-                aid:area.pid,
+                id:area.pid,
                 zoom:area.zoom-1
             }).then(data=>data.get)
         }).then(area=>{
             a1.push({
-                value:area.aid,
+                value:area.id,
                 label:area.title,
                 zoom:area.zoom,
                 children:a2
@@ -141,7 +147,7 @@ class New extends Component {
                                 <Row>
                                 {
                                     list.data.map(yunbook=>{
-                                        return (<Col key={yunbook.bid} span={8}>
+                                        return (<Col key={yunbook.id} span={8}>
                                                     <SelectYunbook 
                                                         yunbook={yunbook}
                                                         handlePick = {this.handlePick}
@@ -165,7 +171,7 @@ class New extends Component {
                                 {
                                     mylist.data.map(yunbook=>{
                                         return (
-                                            <Col key={yunbook.bid} span={8}>
+                                            <Col key={yunbook.id} span={8}>
                                                 <SelectYunbook 
                                                     yunbook={yunbook}
                                                     handlePick = {this.handlePick}
@@ -228,18 +234,26 @@ class New extends Component {
                                 label='分类'
                                 {...formItemLayout}
                             >
-                                 <AreaCascader
-                                    {...getFieldProps('aid',{
+                                 <Cascader
+                                    placeholder = '请选择分类'
+                                    {...getFieldProps('area_ids',{
                                         rules:[{
                                             required:true,
                                             type:'array',
                                             message:'请选择分类'
+                                        },{
+                                            validator: (rule, value, callback) => {
+                                                if(value.length !== 4) {
+                                                    callback('请选择4级分类')
+                                                }else {
+                                                    callback()
+                                                }
+                                            }
                                         }]
                                     })}
-                                    level = { 4 }   
-                                    initialOptions = {
+                                    options = {
                                         this.state.initialOptions
-                                    }                      
+                                    }                 
                                 />
                             </FormItem>
                             <button type='submit' id='_submit'></button>
@@ -263,7 +277,7 @@ class New extends Component {
                             >
                                 上一步
                             </Button>
-                            <Button onClick={this.onClick}>   
+                            <Button type='primary' onClick={this.onClick}>   
                                 发布
                             </Button>
                         </div>
