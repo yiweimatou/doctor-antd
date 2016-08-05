@@ -15,7 +15,9 @@ import {
     infoLesson,
     getLesson,
     editLesson,
-    putcetLesson
+    putcetLesson,
+    fetchLessonMoneyInfo,
+    fetchLessonMoneyList
 } from '../services/lesson.js'
 import {
     getLessonTeamList,
@@ -30,6 +32,40 @@ import array from 'lodash/array'
 import {
     getUserList
 } from '../services/user'
+
+function* watchFetchLessonMoneyList(){
+    yield* takeLatest('lesson/money/list', function* (action) {
+        try {
+            const res = yield call(fetchLessonMoneyList, action.payload)
+            yield put({
+                type: 'lesson/money/list/success',
+                payload: {
+                    list: res.list,
+                    params: action.payload
+                }
+            })
+        } catch (error) {
+            message.error(error)
+            yield put({
+                type: 'lesson/money/list/failure'
+            })   
+        }  
+    })
+}
+
+function* watchFetchlessonMoneyInfo() {
+    yield* takeLatest('lesson/money/info', function* (action){
+        try {
+            const res = yield call(fetchLessonMoneyInfo, action.payload)
+            yield put({
+                type: 'lesson/money/info/success',
+                payload: res.count
+            })
+        } catch (error) {
+            message.error(error)
+        }
+    })
+}
 
 function* putcetLessonHandler(action) {
     try {
@@ -317,6 +353,8 @@ export default function*() {
         fork(watchEdit),
         fork(watchRecommend),
         fork(watchputcet),
-        fork(watchTeamEdit)
+        fork(watchTeamEdit),
+        fork(watchFetchlessonMoneyInfo),
+        fork(watchFetchLessonMoneyList)
     ]
 }

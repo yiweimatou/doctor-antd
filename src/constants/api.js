@@ -28,6 +28,8 @@ export const USER_LOGOUT_API = `${USER_API_DOMAIN}/account/logout`
 export const USER_LIST_API = `${USER_API_DOMAIN}/account/list`
 export const USER_INFO_API = `${USER_API_DOMAIN}/account/info`
 export const USER_GET_API = `${USER_API_DOMAIN}/account/get`
+export const USER_MONEY_INFO_API = `${USER_API_DOMAIN}/accountmoney/info`
+export const USER_MONEY_LIST_API = `${USER_API_DOMAIN}/accountmoney/list`
 /**
  * organize apis
  */
@@ -45,6 +47,8 @@ export const LESSON_LIST_API = `${LESSON_API_DOMAIN}/lesson/list`
 export const LESSON_REMOVE_API = `${LESSON_API_DOMAIN}/lesson/del`
 export const LESSON_ADD_API = `${LESSON_API_DOMAIN}/lesson/add`
 export const LESSON_PUT_CET_API = `${LESSON_API_DOMAIN}/lesson/put/cet`
+export const LESSON_MONEY_LIST_API = `${LESSON_API_DOMAIN}/lessonmoney/list`
+export const LESSON_MONEY_INFO_API = `${LESSON_API_DOMAIN}/lessonmoney/info`
 /**
 *team apis
 */

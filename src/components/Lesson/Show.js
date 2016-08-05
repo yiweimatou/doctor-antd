@@ -137,7 +137,7 @@ class Show extends Component {
                             </Col>
                             <Col span={4}>
                                 <Button
-                                    onClick = {()=>push()}
+                                    onClick = {()=>push(`/lesson/money/${lesson.id}`)}
                                     type = 'ghost'
                                 >
                                     交易明细

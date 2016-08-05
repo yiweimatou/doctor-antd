@@ -22,7 +22,9 @@ const listRoute = store => ({
         store.dispatch({
             type:'yunbook/mylist',
             payload:{
-                account_id: uid
+                account_id: uid,
+                limit: 6,
+                offset: 1
             }
         })
     }
