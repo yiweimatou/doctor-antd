@@ -2,6 +2,7 @@ import React,{ Component,PropTypes } from 'react'
 import { Card,Icon } from 'antd'
 import { Link } from 'react-router'
 import './index.css'
+import {IMG_URL} from '../../../constants/api'
 
 const styles ={
     card:{
@@ -26,7 +27,7 @@ class YunbookCard extends Component{
             >
                 <div className='yunbook-image'>
                     <Link to={`/yunbook/show/${yunbook.bid}`}>
-                        <img alt='pic' width="100%" src={yunbook.cover} />
+                        <img alt='pic' width="100%" src={yunbook.cover.indexOf('http')===-1?`${IMG_URL}${yunbook.cover}`:yunbook.cover} />
                     </Link>
                 </div>
                 <div className='yunbook-card'>

@@ -9,7 +9,7 @@ import {
     Cascader 
 } from 'antd'
 import Paper from '../Paper'
-import {UPLOAD_COVER_API} from '../../constants/api.js'
+import {UPLOAD_COVER_API,IMG_URL} from '../../constants/api.js'
 import { connect } from 'react-redux'
 import {
     getArea,
@@ -73,7 +73,7 @@ class Edit extends Component{
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
             if (file.response) {
-                file.url = 'http://121.41.92.56/ywmt/' + file.response.cover
+                file.url = file.response.cover
             }
             return file
         })
@@ -91,11 +91,12 @@ class Edit extends Component{
             if(errors){
                 return
             }
+            const cover = this.state.fileList[0].url
             const params = {
                 lname:values.lname,
                 descript:values.descript,
                 aid:values.aid[values.aid.length-1],
-                cover:this.state.fileList[0].url,
+                cover:cover.indexOf('http')===-1?cover:this.props.lesson.cover,
                 lid:this.props.lesson.lid
             }
             this.props.handleEdit(params)
@@ -108,7 +109,7 @@ class Edit extends Component{
                     uid:-1,
                     name:'封面.png',
                     status:'done',
-                    url:nextProps.lesson.cover
+                    url:`${IMG_URL}${nextProps.lesson.cover}`
                 }]
             })
             let a1=[],a2=[],a3=[]

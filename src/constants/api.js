@@ -3,7 +3,7 @@ export const HOST = 'http://121.41.92.56'
 export const USER_API_DOMAIN = `${HOST}:91`
 export const ADMIN_API_DOMAIN = `${HOST}:90`
 export const UPLOAD_DOMAIN = `${HOST}:999`
-
+export const IMG_URL = `${HOST}/ywmt/`
 /**
  * api codes
  */
