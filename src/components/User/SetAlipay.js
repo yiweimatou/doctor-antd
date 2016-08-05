@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { connect } from 'react-redux'
 import {
-    Form,Button,Input,Row,Col
+    Form,Button,Input
 } from 'antd'
 
 const FormItem = Form.Item
