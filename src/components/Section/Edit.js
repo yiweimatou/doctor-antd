@@ -1,6 +1,6 @@
 import React,{ Component,PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Tabs,Button,Form,Input,message,Switch,Cascader } from 'antd'
+import { Tabs,Button,Form,Input,message,Cascader } from 'antd'
 import EditLblView from '../Yunbook/EditLblView.js'
 import {
     getArea,
