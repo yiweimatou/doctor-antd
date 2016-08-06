@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import List from '../../components/Lesson/TList.js'
+import List from '../../components/Lesson/Tlist'
 
 const mapStateToProps = state => ({
     list:{
