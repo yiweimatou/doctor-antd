@@ -6,7 +6,6 @@ import './Show.css'
 import SelectUser from '../User/SelectUser.js'
 import TeamList from './TeamList.js'
 import SectionList from '../Section/List'
-import { IMG_URL } from '../../constants/api'
 
 const styles = {
     row:{
@@ -59,7 +58,7 @@ class Show extends Component {
                     <div style={styles.row}>
                         <Row gutter={16}>
                             <Col span={12}>
-                                <img alt='pic' width='100%' src={lesson&&`${IMG_URL}${lesson.cover}`} />
+                                <img alt='pic' width='100%' src={lesson&&lesson.cover} />
                             </Col>
                             <Col span={6}>
                                 <span>课程名称:</span>
@@ -216,7 +215,7 @@ class Show extends Component {
                                     return (
                                         <div key={item.id} className='item'>
                                             <img 
-                                                src={`${IMG_URL}${item.organize_logo}`}
+                                                src={item.organize_logo}
                                                 className='img'
                                                 width='100%'
                                             />
@@ -237,7 +236,7 @@ class Show extends Component {
                                             {
                                                 item.user&&item.user.face?
                                                 <img 
-                                                    src={IMG_URL+item.user.face}
+                                                    src={item.user.face}
                                                     className='img'
                                                     width='100%'
                                                 />:

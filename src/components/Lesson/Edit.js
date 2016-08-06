@@ -10,7 +10,7 @@ import {
     Spin 
 } from 'antd'
 import Paper from '../Paper'
-import {UPLOAD_COVER_API,IMG_URL} from '../../constants/api.js'
+import {UPLOAD_COVER_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
 import {
     getArea,
@@ -98,7 +98,7 @@ class Edit extends Component{
                 title:values.lname,
                 descript:values.descript,
                 area_id:values.area_ids[2],
-                cover:cover.indexOf('http')===-1?cover:this.props.lesson.cover,
+                cover:cover,
                 organize_money: values.organize_money,
                 account_money: values.account_money,
                 id:this.props.lesson.id
@@ -113,7 +113,7 @@ class Edit extends Component{
                     uid:-1,
                     name:'封面.png',
                     status:'done',
-                    url:`${IMG_URL}${nextProps.lesson.cover}`
+                    url:nextProps.lesson.cover
                 }]
             })
             let a1=[],a2=[],a3=[]

@@ -3,7 +3,6 @@ import Paper from '../Paper'
 import { Row,Col,Button } from 'antd'
 import './Show.css'
 import OrganzieLessonList from './OrganzieLessonList.js'
-import { IMG_URL } from '../../constants/api'
 
 class Show extends Component {
     render(){
@@ -16,7 +15,7 @@ class Show extends Component {
                     <div className='row'>
                         <Row gutter={16}>
                             <Col span={6}>
-                                <img width='100%' alt='pic' src={organize&&`${IMG_URL}${organize.logo}`} />
+                                <img width='100%' alt='pic' src={organize&&organize.logo} />
                             </Col>
                             <Col span={12}>
                                 <Row>

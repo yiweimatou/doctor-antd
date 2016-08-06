@@ -4,7 +4,6 @@ import 'leaflet-draw/dist/leaflet.draw.css'
 import L from 'leaflet'
 import 'leaflet-draw'
 import {connect} from 'react-redux'
-import { IMG_URL } from '../../constants/api'
 
 const styles = {
     map:{
@@ -14,7 +13,7 @@ const styles = {
 class Show extends React.Component{
     componentWillReceiveProps(nextProps){
         const { yunbook } = nextProps
-        const url = `${IMG_URL}${yunbook.path}/{z}/{x}/{y}.png`
+        const url = `${yunbook.path}/{z}/{x}/{y}.png`
         this._map =  L.map('_map',{
             maxZoom:yunbook.zoom,
             minZoom:0,

@@ -1,14 +1,14 @@
-export const HOST = 'http://121.41.92.56'
+export const HOST = 'http://api.yiweimatou.com'
 
 export const USER_API_DOMAIN = `${HOST}:1002`
 export const ADMIN_API_DOMAIN = `${HOST}:1001`
-export const UPLOAD_DOMAIN = `${HOST}:999`
+export const UPLOAD_DOMAIN = 'http://121.41.92.56:999'
 export const ORGANIZE_API_DOMAIN = `${HOST}:1005`
 export const LESSON_API_DOMAIN = `${HOST}:1007`
 export const AREA_API_DOMAIN = `${HOST}:1003`
 export const SECTION_API_DOMAIN = `${HOST}:1008`
 export const BOOK_API_DOMAIN = `${HOST}:1006`
-export const IMG_URL = `${HOST}/ywmt/`
+export const IMG_URL = 'http://image.yiweimatou.com/ywmt/'
 /**
  * api codes
  */
@@ -30,6 +30,7 @@ export const USER_INFO_API = `${USER_API_DOMAIN}/account/info`
 export const USER_GET_API = `${USER_API_DOMAIN}/account/get`
 export const USER_MONEY_INFO_API = `${USER_API_DOMAIN}/accountmoney/info`
 export const USER_MONEY_LIST_API = `${USER_API_DOMAIN}/accountmoney/list`
+export const USER_ALIPAY_SET_API = `${USER_API_DOMAIN}/account/put/alipay`
 /**
  * organize apis
  */

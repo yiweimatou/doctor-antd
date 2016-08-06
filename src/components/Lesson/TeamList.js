@@ -2,7 +2,6 @@ import React,{ Component,PropTypes } from 'react'
 import {Button,Modal} from 'antd'
 import { connect } from 'react-redux'
 import './TeamList.css'
-import { IMG_URL } from '../../constants/api'
 
 class TeamList extends Component{
     static propTypes = {
@@ -28,7 +27,7 @@ class TeamList extends Component{
                         {
                             item.user&&item.user.face?
                             <img 
-                                src={`${IMG_URL}${item.user.face}`} 
+                                src={item.user.face} 
                                 width='100%'
                                 className='timg'
                             />:null

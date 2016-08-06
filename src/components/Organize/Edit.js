@@ -1,7 +1,7 @@
 import React,{Component,PropTypes} from 'react'
 import { Form,Input,Upload,Button,Icon, Spin } from 'antd'
 import { connect } from 'react-redux'
-import {UPLOAD_COVER_API, IMG_URL} from '../../constants/api.js'
+import {UPLOAD_COVER_API} from '../../constants/api.js'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -25,7 +25,7 @@ class Edit extends Component{
                     uid:-1,
                     name:'封面.png',
                     status:'done',
-                    url:`${IMG_URL}${nextProps.organize.logo}`
+                    url:nextProps.organize.logo
                 }]
             })
         }
@@ -56,7 +56,7 @@ class Edit extends Component{
             const params = {
                 title:values.title,
                 descript:values.descript,
-                logo:this.state.fileList[0].url.indexOf('http')===-1?this.state.fileList[0].url:this.props.organize.logo,
+                logo:this.state.fileList[0].url,
                 id:this.props.organize.id
             }
             this.props.handleEdit(params)

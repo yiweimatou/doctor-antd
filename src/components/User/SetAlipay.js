@@ -24,7 +24,7 @@ class SetAlipay extends Component {
         })
     }
     render() {
-        const { form } = this.props
+        const { form,user } = this.props
         const { getFieldProps } = form
         return (
             <Form
@@ -42,7 +42,8 @@ class SetAlipay extends Component {
                             rules: [{
                                 required: true,
                                 message:'请填写支付宝账户'
-                            }]
+                            }],
+                            initialValue: user.alipay
                         })
                     }
                     />
@@ -92,7 +93,7 @@ export default connect(
     }),
     dispatch => ({
         submit: params => dispatch({
-            type: 'user/money/setalipay',
+            type: 'user/money/alipay/set',
             payload: params
         })
     })

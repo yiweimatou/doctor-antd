@@ -1,7 +1,6 @@
 import React,{ Component,PropTypes } from 'react'
 import { Link } from 'react-router'
 import './LessonCard.css'
-import { IMG_URL } from '../../constants/api' 
 
 class LessonCard extends Component{
     render(){
@@ -12,7 +11,7 @@ class LessonCard extends Component{
             <div>
                <Link className='courseList' to={`/lesson/show/${lesson.id}`}>
                     <div className="courseImg">
-                        <img src={IMG_URL+lesson.cover} width="100%" />
+                        <img src={lesson.cover} width="100%" />
                     </div>
                     <div className="courseTitle">
                         <span>{lesson.title}</span>

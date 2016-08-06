@@ -4,8 +4,7 @@ import { Form,Button,Upload,Input,Icon,message,Cascader, Spin } from 'antd'
 import Paper from '../Paper'
 import {
     UPLOAD_YUNBOOK_API,
-    UPLOAD_PPT_API,
-    IMG_URL
+    UPLOAD_PPT_API
 } from '../../constants/api.js'
 import {getAreaList} from '../../services/area.js'
 
@@ -111,7 +110,7 @@ class New extends Component{
                 title:values.title,
                 descript:values.descript||'',
                 area_id:values.area_ids[3],
-                cover:cover.indexOf('http') === -1 ? cover : `${IMG_URL}${cover}`,
+                cover:cover,
                 path:values.upload[0].response.path,
                 width:values.upload[0].response.width,
                 height:values.upload[0].response.height,

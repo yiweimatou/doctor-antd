@@ -2,7 +2,6 @@ import React,{Component,PropTypes} from 'react'
 import {Pagination,Button} from 'antd'
 import './SelectOrganize.css'
 import SearchInput from '../SearchInput'
-import { IMG_URL } from '../../constants/api'
 
 const styles = {
     marginTop:{
@@ -48,7 +47,7 @@ class SelectOrganize extends Component{
                 {list.map(item=>{
                     return (
                         <div key={item.id} className='oitem'>
-                            <img src={`${IMG_URL}${item.logo}`} className='oimg' width='100%' />
+                            <img src={item.logo} className='oimg' width='100%' />
                             <span className='ospan'>{item.title}</span>
                             <Button 
                                 onClick={()=>apply(item.id,lid)} 

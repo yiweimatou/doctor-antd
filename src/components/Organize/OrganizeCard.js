@@ -2,7 +2,6 @@ import React,{ Component,PropTypes } from 'react'
 import { Card,Icon } from 'antd'
 import { Link } from 'react-router'
 import './OrganizeCard.css'
-import { IMG_URL } from '../../constants/api'
 
 const styles ={
     card:{
@@ -25,7 +24,7 @@ class OrganizeCard extends Component{
             >
                 <div className='organize-image'>
                     <Link to={`/organize/show/${organize.id}`}>
-                        <img alt='pic' width="100%" src={`${IMG_URL}${organize.logo}`} />
+                        <img alt='pic' width="100%" src={organize.logo} />
                     </Link>
                 </div>
                 <div className='organize-card'>

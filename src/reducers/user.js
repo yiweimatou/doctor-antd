@@ -15,6 +15,18 @@ const initialState = {
 }
 
 const user = handleActions({
+    ['user/money/alipay/set']: state => ({
+        ...state,
+        loading: true
+    }),
+    ['user/money/alipay/set/success']: (state) => ({
+        ...state,
+        loading: false
+    }),
+    ['user/money/alipay/set/failure']: state => ({
+        ...state,
+        loading: false
+    }),
     ['user/money/info/success']: (state, action) => ({
         ...state,
         money: {

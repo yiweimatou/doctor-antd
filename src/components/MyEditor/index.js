@@ -151,7 +151,7 @@ function mediaBlockRenderer(block) {
 }
 
 const Image = (props) => {
-    return <img src={props.src} /> //eslint-disable-line
+    return <img width={300} height={200} src={props.src} /> //eslint-disable-line
 }
 
 const Video = (props) => {

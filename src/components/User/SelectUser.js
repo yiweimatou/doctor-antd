@@ -3,7 +3,6 @@ import SearchInput from '../SearchInput'
 import {Button,Modal} from 'antd'
 import { connect } from 'react-redux'
 import './SelectUser.css'
-import { IMG_URL } from '../../constants/api'
 
 class SelectUser extends Component {
     static propTypes = {
@@ -38,7 +37,7 @@ class SelectUser extends Component {
                                         {
                                             item.face?
                                         <img 
-                                            src={IMG_URL+item.face}
+                                            src={item.face}
                                             className='simg'
                                             width='100%'
                                         />:null

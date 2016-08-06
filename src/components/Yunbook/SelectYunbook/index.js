@@ -1,7 +1,6 @@
 import React,{ Component,PropTypes } from 'react'
 import { Link } from 'react-router'
 import './index.css'
-import { IMG_URL } from '../../../constants/api'
 
 class SelectYunbook extends Component{
     render(){
@@ -15,7 +14,7 @@ class SelectYunbook extends Component{
                         <div className='xmoney'>
                             <span>{yunbook.money===0?' 免费 ':`￥ ${yunbook.money}`}</span>
                         </div>
-                        <img src={`${IMG_URL}${yunbook.cover}`} width="100%" />
+                        <img src={yunbook.cover} width="100%" />
                     </div>
                     <div className="courseTitle">
                         <span>{yunbook.title}</span>
