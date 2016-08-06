@@ -33,12 +33,13 @@ class Recommend extends Component {
                     return
                 }
                 const params = {
-                    lname:values.lname,
+                    title:values.lname,
                     descript:values.descript?values.descript:'',
-                    aid:values.aid[2],
-                    cover:'http://121.41.92.56/ywmt/cover/2016072014/201607201411356132515f847973726db4253beb52fef52dfe3c7.png',
-                    rcmd_uid:this.props.uid,
-                    uid:this.state.uid
+                    area_id:values.area_ids[2],
+                    rcmd_account_id:this.props.uid,
+                    account_id:this.state.uid,
+                    account_money: values.account_money,
+                    organize_money: values.organize_money
                 }
                 this.props.recommend(params)
             })
@@ -57,7 +58,7 @@ class Recommend extends Component {
                     targetOption.children = data.list.map(item=>{
                         return {
                             label:item.title,
-                            value:item.aid,
+                            value:item.id,
                             zoom:item.zoom,
                             isLeaf
                         }
@@ -82,7 +83,7 @@ class Recommend extends Component {
                 const options = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf: false
                     }
@@ -112,7 +113,7 @@ class Recommend extends Component {
                     required:false,max:200,message:'请输入少于200字的简介'
                 }]
         })
-        const aidProps = getFieldProps('aid',{
+        const aidProps = getFieldProps('area_ids',{
                                 rules:[{
                                     required:true,
                                     type:'array',
@@ -134,9 +135,9 @@ class Recommend extends Component {
                                             getUser({
                                                 mobile:value
                                             }).then(data=>{
-                                                if(data.get.uid>0){
+                                                if(data.get.id>0){
                                                     this.setState({
-                                                        uid:data.get.uid
+                                                        uid:data.get.id
                                                     })
                                                     cb()
                                                 }else{
@@ -178,6 +179,48 @@ class Recommend extends Component {
                         <Input
                             type='text'
                             {...lnameProps}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '报名费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('account_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: 0
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '机构认证费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('organize_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: 0
+                            })}
                         />
                     </FormItem>
                     <FormItem

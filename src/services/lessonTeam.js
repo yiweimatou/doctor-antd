@@ -3,7 +3,8 @@ import {
     TEAM_LIST_API,
     TEAM_INFO_API,
     TEAM_ADD_API,
-    TEAM_REMOVE_API
+    TEAM_REMOVE_API,
+    TEAM_EDIT_API
 } from '../constants/api.js'
 
 export function getLessonTeamList(params){
@@ -20,4 +21,8 @@ export function newLessonTeam(params){
 
 export function deleteLessonTeam(params) {
     return ApiClient.remove(TEAM_REMOVE_API,params)
+}
+
+export function editLessonTeam(params) {
+    return ApiClient.put(TEAM_EDIT_API,params)
 }

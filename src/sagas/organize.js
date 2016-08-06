@@ -2,8 +2,9 @@ import { takeLatest } from 'redux-saga'
 import { fork,put,call } from 'redux-saga/effects'
 import { getOrganizeList,getOrganizeInfo,getOrganize,editOrganize } from '../services/organize.js'
 import { message } from 'antd'
+import { push } from 'react-router-redux'
 
-function* organizeListHandler(action){
+const organizeListHandler = function* (action){
     try{
         const result = yield call( getOrganizeList,action.payload)
         yield put({
@@ -21,7 +22,7 @@ function* organizeListHandler(action){
     }
 }
 
-function* watchOrgnizeList(){
+function* watchOrgnizeList() {
     yield* takeLatest('organize/list',organizeListHandler)
 }
 
@@ -68,6 +69,7 @@ function* editHandler(action){
             type:'organize/edit/success'
         })
         message.success('编辑成功!')
+        yield put(push(`/organize/show/${action.payload.id}`))
     }catch(error){
         message.error(error)
         yield put({

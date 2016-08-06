@@ -8,7 +8,7 @@ import {
 
 class RecommendList extends Component {
     static propTypes = {
-        list:PropTypes.array,
+        list:PropTypes.object,
         pageParams:PropTypes.object,
         uid:PropTypes.number
     }
@@ -26,12 +26,20 @@ class RecommendList extends Component {
         }
         const columns = [{
             title:'课程标题',
-            dataIndex:'lname',
-            key:'lname'
+            dataIndex:'title',
+            key:'title'
         }, {
             title:'被推荐人',
-            dataIndex:'cname',
-            key:'cname'
+            key:'cname',
+            render: (text,record) => {
+                if(list.otherInfos.users){
+                    const user = list.otherInfos.users[record.account_id]
+                    if(user){
+                        return user.cname || user.mobile
+                    }
+                }
+                return ''
+            }
         }, {
             title:'推荐时间',
             dataIndex:'add_ms',
@@ -44,9 +52,8 @@ class RecommendList extends Component {
             render:text => {
                 switch(text){
                     case 1:
-                        return '未认证'
                     case 2:
-                        return '推荐'
+                        return '推荐中'
                     case 3:
                         return '推荐失败'
                     case 4:
@@ -57,7 +64,7 @@ class RecommendList extends Component {
         return (
             <div style={{margin:10}}>
                 <Table
-                    dataSource = { list }
+                    dataSource = { list.data }
                     columns = { columns }
                     pagination = { pagination }
                 />
@@ -72,14 +79,14 @@ export default connect(
             total:state.lesson.list.total,
             limit:state.lesson.list.pageParams.limit
         },
-        list:state.lesson.list.data
+        list:state.lesson.list
     }),
     dispatch => ({
-        changeHandler(offset,limit,rcmd_uid){
+        changeHandler(offset,limit,rcmd_account_id){
             dispatch({
                 type:'lesson/list',
                 payload:{
-                    rcmd_uid,
+                    rcmd_account_id,
                     offset,
                     limit
                 }

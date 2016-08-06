@@ -3,6 +3,7 @@ import {Menu,Icon} from 'antd'
 import { Link } from 'react-router'
 
 const SubMenu = Menu.SubMenu
+const Item = Menu.Item
 
 class NavMenu extends Component {
     render(){
@@ -80,7 +81,17 @@ class NavMenu extends Component {
                     </Menu.Item>
                 </SubMenu>:''
                 }
+                <Item>
+                    <Link to='/invite/manage'>
+                        <Icon type="notification" />团队邀请管理
+                    </Link>
+                </Item>
                 <SubMenu key="sub1" title={<span><Icon type="setting" />设置</span>}>
+                    <Item>
+                        <Link to='/user/money'>
+                            个人账户
+                        </Link>
+                    </Item>
                 </SubMenu>
             </Menu>
         )

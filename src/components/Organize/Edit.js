@@ -1,5 +1,5 @@
 import React,{Component,PropTypes} from 'react'
-import { Form,Input,Upload,Button,Icon } from 'antd'
+import { Form,Input,Upload,Button,Icon, Spin } from 'antd'
 import { connect } from 'react-redux'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
 
@@ -15,7 +15,8 @@ class Edit extends Component{
     static propTypes = {
         form:PropTypes.object,
         organize:PropTypes.object,
-        handleEdit:PropTypes.func.isRequired
+        handleEdit:PropTypes.func.isRequired,
+        loading : PropTypes.bool
     }
     componentWillReceiveProps(nextProps){
         if(!this.props.organize){
@@ -53,18 +54,19 @@ class Edit extends Component{
                 return
             }
             const params = {
-                oname:values.oname,
+                title:values.title,
                 descript:values.descript,
                 logo:this.state.fileList[0].url,
-                oid:this.props.organize.oid
+                id:this.props.organize.id
             }
             this.props.handleEdit(params)
         })
     }
     render(){
-        const { form,organize } = this.props
+        const { form,organize,loading } = this.props
         const { getFieldProps } = form
         return(
+            <Spin spinning = { loading } size = 'large' >
             <Form
                 horizontal 
                 form = { form }
@@ -72,19 +74,19 @@ class Edit extends Component{
                 style = {{pading:30,margin:'30 0'}}
             >
                 <FormItem
-                    label='机构简介'
+                    label='机构名称'
                     {...formItemLayout}
                 >
                     <Input
-                        type='textarea'
+                        type='text'
                         rows = '3'
-                        {...getFieldProps('oname',{
+                        {...getFieldProps('title',{
                             rules:[{
                                 required:true,
                                 max:20,
                                 message:'最多20字'
                             }],
-                            initialValue:organize&&organize.oname
+                            initialValue:organize&&organize.title
                         })}
                     />
                 </FormItem>
@@ -125,13 +127,15 @@ class Edit extends Component{
                     </FormItem>
                 </FormItem>
             </Form>
+            </Spin>
         )
     }
 }
 
 export default connect(
     state=>({
-        organize:state.organize.entity
+        organize:state.organize.entity,
+        loading: state.organize.loading
     }),
     dispatch=>({
         handleEdit:(params)=>{

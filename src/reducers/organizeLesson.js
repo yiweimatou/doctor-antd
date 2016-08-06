@@ -1,31 +1,50 @@
 import { handleActions } from 'redux-actions'
 
 const initialState = {
-    limit:6,
-    offset:1,
-    list:[],
-    total:0,
+    list:{
+        data:[],
+        params:{
+            limit: 6,
+            offset: 1
+        },
+        total:0,
+    },
     loading:false
 }
 
 const organizeLesson = handleActions({
-    ['organizeLesson/list']:(state)=>({
-        ...state,
-        list:[]
+    ['organizeLesson/list']:(state,action)=>({
+        list:{
+            ...state.list,
+            params: action.payload,
+            data: []
+        },
+        loading: true
     }),
     ['organizeLesson/list/success']:(state,action)=>({
+        list: {
+            ...state.list,
+            data: action.payload.list
+        },
+        loading : false
+    }),
+    ['organizeLesson/list/failure']: state => ({
         ...state,
-        limit:action.payload.limit,
-        offset:action.payload.offset,
-        list:action.payload.list
+        loading: false
     }),
     ['organizeLesson/info']:(state)=>({
         ...state,
-        total:0
+        list: {
+            ...state.list,
+            total: 0
+        }
     }),
     ['organizeLesson/info/success']:(state,action)=>({
         ...state,
-        total:action.payload.total
+        list: {
+            ...state.list,
+            total: action.payload.total
+        }
     }),
     ['organizeLesson/edit']:(state)=>({
         ...state,
@@ -34,13 +53,16 @@ const organizeLesson = handleActions({
     ['organizeLesson/edit/success']:(state,action)=>({
         ...state,
         loading:false,
-        list:state.list.map(item=>{
-            if(item.id === action.payload.id){
-                return Object.assign({},item,action.payload)
-            }else{
-                return item
-            }
-        })
+        list:{
+            ...state.list,
+            data: state.list.data.map(item=>{
+                if(item.id === action.payload.id){
+                    return Object.assign({},item,action.payload)
+                }else{
+                    return item
+                }
+            })
+        }
     }),
     ['organizeLesson/edit/failure']:(state)=>({
         ...state,

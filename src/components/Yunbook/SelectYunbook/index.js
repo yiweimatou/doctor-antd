@@ -9,8 +9,11 @@ class SelectYunbook extends Component{
         } = this.props
         return(
             <div className='col'>
-               <Link className='courseList' to={`/yunbook/show/${yunbook.bid}`}>
+               <Link className='courseList' to={`/yunbook/show/${yunbook.id}`}>
                     <div className="courseImg">
+                        <div className='xmoney'>
+                            <span>{yunbook.money===0?' 免费 ':`￥ ${yunbook.money}`}</span>
+                        </div>
                         <img src={yunbook.cover} width="100%" />
                     </div>
                     <div className="courseTitle">

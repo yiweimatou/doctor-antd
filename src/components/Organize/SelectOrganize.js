@@ -46,11 +46,11 @@ class SelectOrganize extends Component{
                 />
                 {list.map(item=>{
                     return (
-                        <div key={item.oid} className='oitem'>
+                        <div key={item.id} className='oitem'>
                             <img src={item.logo} className='oimg' width='100%' />
-                            <span className='ospan'>{item.oname}</span>
+                            <span className='ospan'>{item.title}</span>
                             <Button 
-                                onClick={()=>apply(item.oid,lid)} 
+                                onClick={()=>apply(item.id,lid)} 
                                 className='button'
                             >
                                 申请

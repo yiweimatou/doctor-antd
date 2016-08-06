@@ -89,7 +89,7 @@ class EditLblView extends React.Component{
         }).addTo(this._map)
 
         this._drawnItems = new L.FeatureGroup().addTo(this._map)
-         this._geoJson = {
+        this._geoJson = {
             type: 'FeatureCollection',
             features: []
         }

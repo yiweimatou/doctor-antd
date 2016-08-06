@@ -12,7 +12,7 @@ const initialState = {
 const organize = handleActions({
     ['organzie/edit']:state=>({
         ...state,
-        loading:true
+        isSuccess: false
     }),
     ['organize/edit/success']:state=>({
         ...state,

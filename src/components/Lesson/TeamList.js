@@ -25,16 +25,16 @@ class TeamList extends Component{
                     return(<div key={item.id} className='titem'>
                             <div className='tdivimg'>                        
                         {
-                            item.face?
+                            item.user&&item.user.face?
                             <img 
-                                src={item.face} 
+                                src={item.user.face} 
                                 width='100%'
                                 className='timg'
                             />:null
                         }
                         </div>
                         <span className='tspan'>
-                            {item.cname||item.mobile}
+                            {item.user&&(item.user.cname||item.user.mobile)}
                         </span>
                         <Button 
                             className='tbutton'

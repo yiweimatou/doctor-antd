@@ -21,10 +21,11 @@
 
 .tspan {
     display: block;
-    position: absolute;
+    text-align: center;
+    width: 50px;
 }
 
 .tbutton {
     float: right;
-    margin-top: -30px;
+    margin-top: -50px;
 }

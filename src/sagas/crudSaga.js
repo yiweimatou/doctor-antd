@@ -13,9 +13,10 @@ function* garbageCollector() {
 
 export const apiGeneric = (apiClient: Object) =>
     function* _apiGeneric(action) {
-        const { method, url, params, fetchConfig, success, failure } = action.payload
+        const { method, url, params, model, fetchConfig, success, failure } = action.payload
         const meta = {
             params,
+            model,
             fetchTime: Date.now()
         }
         try {
@@ -50,20 +51,13 @@ const watchDelete = (apiClient) => function* _watchDelete() {
   yield* takeEvery('DELETE', apiGeneric(apiClient))
 }
 
-const watchApiCall = (apiClient) => function* _watchApiCall() {
-  yield* takeEvery('API_CALL', apiGeneric(apiClient))
-}
-
-export default function crudSaga(apiClient: Object) {
-  return function* _crudSaga() {
+export default function* (apiClient: Object) {
     yield [
       fork(watchFetch(apiClient)),
       fork(watchFetchOne(apiClient)),
       fork(watchCreate(apiClient)),
       fork(watchUpdate(apiClient)),
       fork(watchDelete(apiClient)),
-      fork(watchApiCall(apiClient)),
       fork(garbageCollector)
     ]
-  }
 }

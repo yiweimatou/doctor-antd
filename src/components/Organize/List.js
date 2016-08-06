@@ -6,14 +6,14 @@ import styles from './List.css'
 class List extends Component{
     render(){
         const {
-            pageParams,list,changeHandler
+            params,list,changeHandler
         } = this.props
         return(
             <div>
                 <Row gutter={16}>
                 {
                     list.map(organize=>{
-                        return (<Col key={organize.oid} span={8}>
+                        return (<Col key={organize.id} span={7}>
                                   <OrganizeCard organize={organize} />
                                </Col>)
                     })
@@ -22,10 +22,10 @@ class List extends Component{
                 {list.length>0?
                 <div className={styles.pagination}>
                     <Pagination 
-                        total={pageParams.total}
+                        total={params.total}
                         showTotal={total => `共 ${total} 条`}
-                        defaultPageSize = {pageParams.limit}
-                        onChange = {(page)=>changeHandler(page,pageParams.limit,pageParams.uid)}
+                        defaultPageSize = {params.limit}
+                        onChange = {(page)=>changeHandler(page,params.limit,params.account_id)}
                     />
                 </div>:null
                 }
@@ -36,7 +36,7 @@ class List extends Component{
 
 List.propTypes = {
     list:PropTypes.array,
-    pageParams:PropTypes.object,
+    params:PropTypes.object,
     changeHandler:PropTypes.func.isRequired
 }
 

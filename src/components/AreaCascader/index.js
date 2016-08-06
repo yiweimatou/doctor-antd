@@ -16,7 +16,7 @@ class AreaCascader extends Component{
                 const options = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf: false
                     }
@@ -56,7 +56,7 @@ class AreaCascader extends Component{
                 targetOption.children = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf
                     }

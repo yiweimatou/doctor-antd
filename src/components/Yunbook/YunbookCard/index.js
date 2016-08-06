@@ -25,13 +25,13 @@ class YunbookCard extends Component{
                 bodyStyle = {styles.bodyStyle}
             >
                 <div className='yunbook-image'>
-                    <Link to={`/yunbook/show/${yunbook.bid}`}>
+                    <Link to={`/yunbook/show/${yunbook.id}`}>
                         <img alt='pic' width="100%" src={yunbook.cover} />
                     </Link>
                 </div>
                 <div className='yunbook-card'>
                     <Link 
-                        to={`/yunbook/edit/${yunbook.bid}`}
+                        to={`/yunbook/edit/${yunbook.id}`}
                         style = {{float:'right'}}
                     >
                         <Icon type="edit" />

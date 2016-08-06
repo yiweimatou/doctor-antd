@@ -1,6 +1,6 @@
 import React ,{ Component,PropTypes } from 'react'
 import {connect} from 'react-redux'
-import { Form,Button,Upload,Input,Icon,message,Switch,Cascader } from 'antd'
+import { Form,Button,Upload,Input,Icon,message,Cascader, Spin } from 'antd'
 import Paper from '../Paper'
 import {
     UPLOAD_YUNBOOK_API,
@@ -18,7 +18,8 @@ const formItemLayout = {
 class New extends Component{
     static propTypes ={
         form:PropTypes.object,
-        handleNew:PropTypes.func.isRequired
+        handleNew:PropTypes.func.isRequired,
+        loading: PropTypes.bool
     }
     state={
         FileList:[],
@@ -34,7 +35,7 @@ class New extends Component{
                 const options = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf: false
                     }
@@ -48,8 +49,8 @@ class New extends Component{
     }
     loadData=(selectedOptions)=>{
         const targetOption = selectedOptions[selectedOptions.length-1]
-        const isLeaf = 6 ===targetOption.zoom
-        targetOption.loading=true
+        const isLeaf = 6 === targetOption.zoom
+        targetOption.loading = true
         getAreaList({
             limit:30,
             pid:targetOption.value,
@@ -60,7 +61,7 @@ class New extends Component{
                 targetOption.children = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf
                     }
@@ -104,28 +105,29 @@ class New extends Component{
             if(errors){
                 return
             }
+            const cover = values.upload[0].response.cover
             const params = {
                 title:values.title,
-                descript:values.descript,
-                aid:values.aid[values.aid.length-1],
-                cover:values.upload[0].response.cover,
+                descript:values.descript||'',
+                area_id:values.area_ids[3],
+                cover:cover,
                 path:values.upload[0].response.path,
                 width:values.upload[0].response.width,
                 height:values.upload[0].response.height,
                 zoom:values.upload[0].response.zoom,
-                status:values.status?2:1
+                money: values.money
             }
             this.props.handleNew(params)
         })
     }
     render(){
         const {
-            form 
+            form, loading 
         } = this.props
         const {
             getFieldProps
         } = form
-        const aidProps = getFieldProps('aid',{
+        const aidProps = getFieldProps('area_ids',{
             rules:[{
                 required:true,
                 type:'array',
@@ -143,6 +145,7 @@ class New extends Component{
         delete aidProps.value
         return(
             <Paper>
+                <Spin spinning = { loading }>
                 <Form
                     horizontal
                     className = 'form'
@@ -175,21 +178,26 @@ class New extends Component{
                             rows = '3'
                             {...getFieldProps('descript',{
                                 rules:[{
-                                    required:false,
+                                    required:true,
                                     max:300,
-                                    message:'最多300字'
+                                    message:'描述必填且最多300字'
                                 }]
                             })}
                         />
                     </FormItem>
                     <FormItem
-                        label='是否公开'
+                        label = '售价'
                         {...formItemLayout}
-                    >   
-                        <Switch                   
-                            {...getFieldProps('status',{
-                                valuePropName:'checked',
-                                initialValue:true
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('money',{
+                                rules:[{
+                                    required: true,
+                                    message: '请设置售价'
+                                }],
+                                initialValue:0
                             })}
                         />
                     </FormItem>
@@ -252,12 +260,16 @@ class New extends Component{
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
+                </Spin>
             </Paper>
         )
     }
 }
 
-export default connect(null,
+export default connect(
+    state => ({
+        loading: state.yunbook.loading
+    }),
     dispatch=>({
         handleNew(yunbook){
             dispatch({

@@ -35,7 +35,7 @@ class New extends Component {
                 const options = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf: false
                     }
@@ -67,7 +67,7 @@ class New extends Component {
                 targetOption.children = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf
                     }
@@ -106,10 +106,11 @@ class New extends Component {
                 return
             }
             const params = {
-                lname:values.lname,
-                descript:values.descript,
-                aid:values.aid[values.aid.length-1],
-                cover:values.upload[0].response.cover
+                title:values.lname,
+                descript:values.descript||'',
+                area_id:values.area_ids[2],
+                account_money: values.account_money,
+                organize_money: values.organize_money
             }
             this.props.newLesson(params)
         })
@@ -131,7 +132,7 @@ class New extends Component {
                     required:false,max:200,message:'请输入少于200字的简介'
                 }]
         })
-        const aidProps = getFieldProps('aid',{
+        const areaProps = getFieldProps('area_ids',{
             rules:[{
                 required:true,
                 type:'array',
@@ -146,7 +147,7 @@ class New extends Component {
                 }
             }]
         })
-        delete aidProps.value
+        delete areaProps.value
         return(
             <Paper>
                 <Spin spinning={loading} size="large">
@@ -194,6 +195,48 @@ class New extends Component {
                         </Upload>
                     </FormItem>
                     <FormItem
+                        label = '报名费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('account_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: 0
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '机构认证费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('organize_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: 0
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
                         label='分类'
                         required
                         {...formItemLayout}
@@ -202,7 +245,7 @@ class New extends Component {
                             placeholder='请选择分类'
                             options = {this.state.options}
                             loadData = {this.loadData}
-                            {...aidProps}
+                            {...areaProps}
                         />
                     </FormItem>
                     <FormItem

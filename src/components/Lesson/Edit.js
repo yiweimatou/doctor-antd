@@ -6,7 +6,8 @@ import {
     Upload,
     Icon,
     message,
-    Cascader 
+    Cascader,
+    Spin 
 } from 'antd'
 import Paper from '../Paper'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
@@ -26,7 +27,8 @@ class Edit extends Component{
     static propTypes = {
         form:PropTypes.object,
         handleEdit:PropTypes.func.isRequired,
-        lesson:PropTypes.object
+        lesson:PropTypes.object,
+        loading: PropTypes.bool
     }
     state = {
         fileList:[],
@@ -53,7 +55,7 @@ class Edit extends Component{
                 targetOption.children = data.list.map(item=>{
                     return {
                         label:item.title,
-                        value:item.aid,
+                        value:item.id,
                         zoom:item.zoom,
                         isLeaf
                     }
@@ -91,12 +93,15 @@ class Edit extends Component{
             if(errors){
                 return
             }
+            const cover = this.state.fileList[0].url
             const params = {
-                lname:values.lname,
+                title:values.lname,
                 descript:values.descript,
-                aid:values.aid[values.aid.length-1],
-                cover:this.state.fileList[0].url,
-                lid:this.props.lesson.lid
+                area_id:values.area_ids[2],
+                cover:cover,
+                organize_money: values.organize_money,
+                account_money: values.account_money,
+                id:this.props.lesson.id
             }
             this.props.handleEdit(params)
         })
@@ -113,10 +118,10 @@ class Edit extends Component{
             })
             let a1=[],a2=[],a3=[]
             getArea({
-                aid:nextProps.lesson.aid
+                id:nextProps.lesson.area_id
             }).then(data=>data.get).then(area=>{
                 this.setState({
-                    defaultValue:[area.pid,area.aid]
+                    defaultValue:[area.pid,area.id]
                 })
                 getAreaList({
                     pid:area.pid,
@@ -125,7 +130,7 @@ class Edit extends Component{
                 }).then(data=>{
                     data.list.forEach(item=>{
                         a3.push({
-                            value:item.aid,
+                            value:item.id,
                             label:item.title,
                             zoom:item.zoom,
                             isLeaf:true
@@ -135,7 +140,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 return getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>data.get)
             }).then(area=>{
                 getAreaList({
@@ -144,16 +149,16 @@ class Edit extends Component{
                     limit:30
                 }).then(data=>{
                     data.list.forEach(item=>{
-                        if(item.aid===area.aid){
+                        if(item.id===area.id){
                             a2.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 children:a3
                             })
                         }else{
                             a2.push({
-                                value:item.aid,
+                                value:item.id,
                                 label:item.title,
                                 zoom:item.zoom,
                                 isLeaf:false
@@ -167,7 +172,7 @@ class Edit extends Component{
                 return area
             }).then(area=>{
                 getArea({
-                    aid:area.pid
+                    id:area.pid
                 }).then(data=>{
                     getAreaList({
                         pid:data.get.pid,
@@ -175,16 +180,16 @@ class Edit extends Component{
                         limit:30
                     }).then(data=>{
                         data.list.forEach(item=>{
-                            if(item.aid===area.pid){
+                            if(item.id===area.pid){
                                 a1.push({
-                                    value:item.aid,
+                                    value:item.id,
                                     label:item.title,
                                     zoom:item.zoom,
                                     children:a2
                                 })
                             }else{
                                 a1.push({
-                                    value:item.aid,
+                                    value:item.id,
                                     label:item.title,
                                     zoom:item.zoom,
                                     isLeaf:false
@@ -203,11 +208,11 @@ class Edit extends Component{
     }
     render(){
         const {
-            form,lesson
+            form,lesson,loading
         } = this.props
         const {defaultValue,options}=this.state
         const { getFieldProps } = form
-        const aidProps = getFieldProps('aid',{
+        const areaIdsProps = getFieldProps('area_ids',{
             rules:[{
                 required:true,
                 type:'array',
@@ -215,9 +220,10 @@ class Edit extends Component{
             }],
             initialValue:defaultValue
         })
-        delete aidProps.value
+        delete areaIdsProps.value
         return(
             <Paper>
+                <Spin spinning = { loading } size = 'large'>
                 <Form 
                     horizontal 
                     className = 'form'
@@ -237,7 +243,49 @@ class Edit extends Component{
                                     max:20,
                                     message:'请输入20字以内课程名'
                                 }],
-                                initialValue:lesson&&lesson.lname
+                                initialValue:lesson&&lesson.title
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '报名费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('account_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: lesson&&lesson.account_money
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '机构认证费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('organize_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if(value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue:lesson&&lesson.organize_money
                             })}
                         />
                     </FormItem>
@@ -251,7 +299,7 @@ class Edit extends Component{
                             options={options}  
                             loadData = {this.loadData}
                             defaultValue = {defaultValue} 
-                            {...aidProps}
+                            {...areaIdsProps}
                         />:null}
                     </FormItem>
                     <FormItem
@@ -292,6 +340,7 @@ class Edit extends Component{
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
+                </Spin>
             </Paper>
         )
     }
@@ -299,7 +348,8 @@ class Edit extends Component{
 
 export default connect(
     state=>({
-        lesson:state.lesson.entity
+        lesson:state.lesson.entity,
+        loading : state.lesson.loading
     }),
     dispatch=>({
         handleEdit:(params)=>{

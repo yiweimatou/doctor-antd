@@ -9,8 +9,9 @@ import {
     getSectionInfo,
     deleteSection
 } from '../services/section'
+// import { push } from 'react-router-redux'
 
-function* handleDelete(action){
+const handleDelete = function* (action){
     try{
         yield call(deleteSection,action.payload)
         yield put({

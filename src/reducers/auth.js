@@ -12,6 +12,15 @@ const initialState = {
 }
 
 const auth = handleActions({
+    ['user/money/alipay/set/success'](state, action){
+        return {
+            ...state,
+            user: {
+                ...state.user,
+                alipay: action.payload.alipay
+            }
+        }
+    },
     ['login/success'](state, action) {
         const {
             key,

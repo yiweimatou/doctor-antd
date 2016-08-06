@@ -5,6 +5,8 @@ import organizeRoutes from './organizeRoutes.js'
 import lessonRoutes from './lessonRoutes.js'
 import yunbookRoutes from './yunbookRoutes'
 import sectionRoutes from './sectionRoutes.js'
+import inviteRoutes from './inviteRoutes'
+import userRoutes from './userRoutes'
 
 const routes = (store) => ([{
     path: '/',
@@ -19,7 +21,9 @@ const routes = (store) => ([{
         organizeRoutes(store),
         lessonRoutes(store),
         yunbookRoutes(store),
-        sectionRoutes(store)
+        sectionRoutes(store),
+        inviteRoutes(store),
+        userRoutes(store)
     ]
 }, {
     path: '*',
