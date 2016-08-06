@@ -3,7 +3,7 @@ import React, {
     PropTypes
 } from 'react'
 import {
-    Table,Button
+    Table,Button,Modal
 } from 'antd'
 import { Link } from 'react-router'
 
@@ -13,9 +13,36 @@ class OrganizeLessonList extends Component {
         edit:PropTypes.func,
         changeHandler:PropTypes.func
     }
+    state = {
+        lesson_name: '',
+        money: 0,
+        id: 0,
+        visible: false
+    }
+    handleOpreation = (flag, id, name, money) =>{
+        if(flag) {
+            this.setState({
+                lesson_name: name,
+                money: money,
+                id,
+                visible: true
+            })
+        }else{
+            this.props.edit(flag, id)        
+        }
+    }
+    handleOk = () => {
+        this.props.edit(true,this.state.id)
+        this.setState({
+            visible: false
+        })
+    }
+    handleCancel = () => this.setState({
+        visible: false
+    })
     render(){
         const {
-            list,edit,changeHandler
+            list, changeHandler
         } = this.props
         const pagination = {
             total: list.total,
@@ -67,14 +94,14 @@ class OrganizeLessonList extends Component {
                 <div>
                     <Button 
                         type = 'ghost'
-                        onClick={()=>edit(true,record.id)}
+                        onClick={()=>this.handleOpreation(true,record.id,record.lesson_name,record.organize_money)}
                     >
                         同意
                     </Button>
                     <span className="ant-divider"></span>
                     <Button 
                         type = 'ghost'
-                        onClick={()=>edit(false,record.id)}
+                        onClick={()=>this.handleOpreation(false,record.id)}
                     >
                         拒绝
                     </Button>
@@ -82,11 +109,29 @@ class OrganizeLessonList extends Component {
             )
         }]
         return (
-            <Table
-                dataSource={list.data}
-                columns = { columns } 
-                pagination = { pagination }
-            />
+            <div>
+                <Modal
+                    title='认证费用'
+                    visible={this.state.visible}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                >
+                    <p>
+                        课程名称:{this.state.lesson_name}
+                    </p>
+                    <p>
+                        认证费用:
+                        <em style={{color:'orange',fontSize:'200%'}}>
+                            {this.state.money}
+                        </em>元
+                    </p>
+                </Modal>
+                <Table
+                    dataSource={list.data}
+                    columns = { columns } 
+                    pagination = { pagination }
+                />
+            </div>
         )
     }
 }
