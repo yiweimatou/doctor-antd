@@ -10,7 +10,8 @@ import {
     Row,
     Col,
     message,
-    Cascader
+    Cascader,
+    Modal
 } from 'antd'
 import SelectYunbook from '../Yunbook/SelectYunbook'
 import {getArea,getAreaList} from '../../services/area.js'
@@ -38,17 +39,29 @@ class New extends Component {
     }
     state = {
         currentStep:1,
-        bid:0,
-        lbl:'',
-        initialOptions:[]
+        initialOptions:[],
+        yunbook:null,
+        show: false
+    }
+    handleCancel = () => this.setState({
+        show: false
+    })
+    handleOk = () => {
+        this.setState({
+            currentStep:2,
+            show: false
+        })
+        message.success(`引用了:${this.state.yunbook.title}`)
+        this.props.form.setFieldsValue({
+            'sname':this.state.yunbook.title
+        })
     }
     handlePick=(yunbook)=>{
         this.setState({
-            bid:yunbook.id,
-            lbl:yunbook.lbl,
-            currentStep:2
+            yunbook,
+            show: true
         })
-        message.success(`引用了:${yunbook.title}`)
+        
     }
     handleNext = (step)=>{
         this.setState({
@@ -62,8 +75,8 @@ class New extends Component {
                 return
             }
             this.props.handleNew({
-                book_id:this.state.bid,
-                lbl:this.state.lbl,
+                book_id:this.state.yunbook.id,
+                lbl:this.state.yunbook.lbl,
                 title:values.sname,
                 area_id:values.area_ids[3],
                 lesson_id:this.props.lid,
@@ -136,6 +149,12 @@ class New extends Component {
         } = form
         return(
             <div>
+                <Modal title="购买云板书" visible={this.state.show}
+                    onOk={this.handleOk} onCancel={this.handleCancel}
+                >
+                    <p>云板书名称：{this.state.yunbook&&this.state.yunbook.title}</p>
+                    <p>云板书价格：<em style={{color:'orange',fontSize:'200%'}}>{this.state.yunbook&&this.state.yunbook.money}</em>元</p>
+                </Modal>
                 <Steps current={cs}>
                     <Step title='选择云板书' />
                     <Step title='文章基本信息' />

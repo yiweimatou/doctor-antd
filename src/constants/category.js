@@ -74,7 +74,16 @@ const items = {
 }
 
 const category = {
-    1: [],
+    1: [items[79287], items[79288], items[79289], items[79290], items[79291], items[79294], items[4],{
+        label: '其他',
+        isLeaf: false,
+        zoom: 4
+    }],
+    2: [items[79296], items[79287], items[79288], items[79289], items[79290], items[79291], items[4], {
+        label: '其他',
+        isLeaf: false,
+        zoom: 4
+    }],
     4: [items[79297], items[79288], items[79289], {
         label: '医疗器械',
         isLeaf: false,

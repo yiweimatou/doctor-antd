@@ -194,7 +194,8 @@ class Edit extends Component{
                 area_id:values.area_ids[3],
                 title:values.title,
                 descript:values.descript,
-                id:this.props.yunbook.id
+                id:this.props.yunbook.id,
+                money: values.money
             }
             this.props.save(params)
         })
@@ -241,6 +242,22 @@ class Edit extends Component{
                                             message:'请填写最多30字标题'
                                         }],
                                         initialValue:yunbook&&yunbook.title
+                                    })}
+                                />
+                            </FormItem>
+                            <FormItem
+                                label = '售价'
+                                {...formItemLayout}
+                            >
+                                <Input
+                                    type = 'number'
+                                    addonAfter = '元'
+                                    {...getFieldProps('money',{
+                                        rules:[{
+                                            required: true,
+                                            message: '请设置售价'
+                                        }],
+                                        initialValue:yunbook&&yunbook.money
                                     })}
                                 />
                             </FormItem>
