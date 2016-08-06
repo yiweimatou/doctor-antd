@@ -11,7 +11,7 @@ class SelectYunbook extends Component{
             <div className='col'>
                <Link className='courseList' to={`/yunbook/show/${yunbook.bid}`}>
                     <div className="courseImg">
-                        <img src={yunbook.cover} width="100%" />
+                        <img src={`${yunbook.cover}`} width="100%" />
                     </div>
                     <div className="courseTitle">
                         <span>{yunbook.title}</span>

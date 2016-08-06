@@ -61,7 +61,7 @@ class Show extends Component {
                     <div style={styles.row}>
                         <Row gutter={ 24 }>
                             <Col span={6}>
-                                <img alt='pic' width='100%' src={lesson.cover} />
+                                <img alt='pic' width='100%' src={`${lesson.cover}`} />
                             </Col>
                             <Col span={18}>
                                 <Row gutter={16}>
