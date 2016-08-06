@@ -13,7 +13,7 @@ function checkStatus(data) {
         localStorage.clear()
         window.location.reload()
     }else {
-        return Promise.reject(`服务器错误:${msg}`)
+        return Promise.reject(msg)
     }
 }
 function checkResponse(response) {
@@ -61,10 +61,10 @@ const ApiClient = {
             }).then(checkResponse).then(checkStatus)
     },
     put(url,params){
-        this.post(url,params,{needAuth: true})
+        return this.post(url,params,{needAuth: true})
     },
     remove(url,params){
-        this.post(url,params,{needAuth: true})
+        return this.post(url,params,{needAuth: true})
     }
 }
 

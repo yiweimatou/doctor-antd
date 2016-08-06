@@ -74,12 +74,16 @@ function* watchOrganzieLessonInfo(){
 
 function* editOrganizeLessonHandler(action){
     try{
-        yield call( editOrganizeLesson,action.payload )
-        yield put({
-            type:'organizeLesson/edit/success',
-            payload:action.payload
-        })
-        message.success('操作成功!')
+        yield call(editOrganizeLesson,action.payload )
+        // if(res){
+            yield put({
+                type:'organizeLesson/edit/success',
+                payload:action.payload
+            })
+            message.success('操作成功!')
+        // }else{
+        //     message.error('余额不足，请充值！')
+        // }
     }catch(error){
         message.error(error)
         yield put({
