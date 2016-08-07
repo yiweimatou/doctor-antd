@@ -11,6 +11,7 @@ import Paper from '../Paper'
 import './New.css'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
 import {getAreaList} from '../../services/area.js'
+import category from '../../constants/category'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -24,28 +25,7 @@ class New extends Component {
     }
     state = {
         fileList:[],
-        options:[]
-    }
-    componentWillMount(){
-        getAreaList({
-                limit:20,
-                pid:1,
-                zoom:4
-            }).then( data=> {
-                const options = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.id,
-                        zoom:item.zoom,
-                        isLeaf: false
-                    }
-                })
-                this.setState({
-                    options
-                })
-            }).catch( error=>{
-                message.error( error )
-            })
+        options:category
     }
     normFile(e) {
         if (Array.isArray(e)) {
@@ -137,14 +117,6 @@ class New extends Component {
                 required:true,
                 type:'array',
                 message:'请选择分类'
-            }, {
-                validator:(rule,value,callback) => {
-                    if( value&&value.length !== 3 ){
-                        callback('请选择三级分类')
-                    }else{
-                        callback()
-                    }
-                }
             }]
         })
         delete areaProps.value
