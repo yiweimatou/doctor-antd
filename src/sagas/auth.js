@@ -16,6 +16,20 @@ import {
     message
 } from 'antd'
 
+function* watchSetUser() {
+    yield* takeLatest('user/set', function*(action) {
+        try {
+            const user = yield call(getUser, action.payload)
+            yield put({
+                type: 'user/set/success',
+                payload: user.get
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    })
+}
+
 function* loginHandler(action) {
     try {
         const {
@@ -35,8 +49,7 @@ function* loginHandler(action) {
         const payload = {
             key,
             token,
-            user: get,
-            lastModifyTime: Date.now()
+            user: get
         }
         yield put({
             type: 'login/success',
@@ -50,10 +63,7 @@ function* loginHandler(action) {
     } catch (error) {
         message.error(error)
         yield put({
-            type: 'login/failure',
-            payload: {
-                lastModifyTime: Date.now()
-            }
+            type: 'login/failure'
         })
     }
 }
@@ -73,6 +83,7 @@ const watchLogin = function* () {
 const authSaga = function*() {
     yield fork(watchLogin)
     yield fork(watchLogout)
+    yield fork(watchSetUser)
 }
 
 export default authSaga

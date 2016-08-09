@@ -3,6 +3,10 @@ import { handleActions } from 'redux-actions'
 const initialState = {
     list:[],
     loading:false,
+    captcha: {
+        loading: false,
+        isSuccess: false
+    },
     money: {
         loading: false,
         data: [],
@@ -15,15 +19,36 @@ const initialState = {
 }
 
 const user = handleActions({
-    ['user/money/alipay/set']: state => ({
+    ['captcha/send']: state => ({
+        ...state,
+        captcha: {
+            loading: true,
+            isSuccess: false
+        }
+    }),
+    ['captcha/send/success']: state => ({
+        ...state,
+        captcha: {
+            loading: false,
+            isSuccess: true
+        }
+    }),
+    ['captcha/send/failure']: state => ({
+        ...state,
+        captcha: {
+            loading: false,
+            isSuccess: false
+        }
+    }),
+    ['user/alipay/set']: state => ({
         ...state,
         loading: true
     }),
-    ['user/money/alipay/set/success']: (state) => ({
+    ['user/alipay/set/success']: (state) => ({
         ...state,
         loading: false
     }),
-    ['user/money/alipay/set/failure']: state => ({
+    ['user/alipay/set/failure']: state => ({
         ...state,
         loading: false
     }),

@@ -10,8 +10,43 @@ import {
     message
 } from 'antd'
 import {
-    getUserList, fetchUserMoneyInfo, fetchUserMoneyList
+    getUserList, fetchUserMoneyInfo, fetchUserMoneyList, sendCaptcha, setAlipay
 } from '../services/user.js'
+
+function* watchSetAlipay() {
+    yield* takeLatest('user/alipay/set', function*(action) {
+        try {
+            yield call(setAlipay, action.payload)
+            yield put({
+                type: 'user/alipay/set/success',
+                payload: action.payload
+            })
+            message.success('设置成功!')
+        } catch (error) {
+            message.error(error)
+            yield put({
+                type: 'user/alipay/set/failure'
+            })
+        }
+    })
+}
+
+function* watchSendCaptcha() {
+    yield* takeLatest('captcha/send', function* (action) {
+        try {
+            yield call(sendCaptcha, action.payload)
+            yield put({
+                type: 'captcha/send/success'
+            })
+            message.success('验证码发送成功!')
+        } catch (error) {
+            message.error(error)
+            yield put({
+                type: 'captcha/send/failure'
+            })
+        }
+    })
+}
 
 function* handleUserList(action) {
     try {
@@ -72,6 +107,8 @@ export default function*() {
     yield * [
         fork(watchUserList),
         fork(watchFetchUserMoneyInfo),
-        fork(watchFetchUserMoneyList)
+        fork(watchFetchUserMoneyList),
+        fork(watchSetAlipay),
+        fork(watchSendCaptcha)
     ]
 }

@@ -4,7 +4,8 @@ import {
     USER_LIST_API,
     USER_MONEY_INFO_API,
     USER_MONEY_LIST_API,
-    USER_ALIPAY_SET_API
+    USER_ALIPAY_SET_API,
+    CAPTCHA_API
 } from '../constants/api.js'
 
 export function getUser(params){
@@ -25,4 +26,12 @@ export function fetchUserMoneyInfo(params) {
 
 export function updateUserAlipay(params) {
     return ApiClient.post(USER_ALIPAY_SET_API, params)
+}
+
+export function sendCaptcha(params) {
+    return ApiClient.post(CAPTCHA_API, params)
+}
+
+export function setAlipay(params) {
+    return ApiClient.put(USER_ALIPAY_SET_API, params)
 }

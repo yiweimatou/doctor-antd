@@ -94,64 +94,64 @@ const items = {
 const category = [
     {
         label: '医学专业人员',
-        value: 5,
+        value: 1,
         children: [{
             label: '院校教育',
-            value: 6,
+            value: 11,
             children: [items[79287], items[79288], items[79289], items[79290], items[79291], items[79294], items[4],items[3]]
             }, {
                 label: '毕业后教育',
-                value: 7,
+                value: 12,
                 children: [items[79296], items[79287], items[79288], items[79289], items[79290], items[79291], items[4], items[3]]
             }, {
                 label: '继续教育',
-                value: 8,
+                value: 13,
                 children: [
                     items[79296],items[79288], items[79287], items[79289], items[79290], items[79291], items[4], items[3]
                 ]
             }, {
                 label: '科学研究',
-                value: 9,
+                value: 14,
                 children: [
                     items[79297], items[79288], items[79289], items[2], items[4], items[3], items[79295]
                 ]
             }]
     },{
         label: '普通大众',
-        value: 0,
+        value: 2,
         children: [{
             label: '男',
-            value: 10,
+            value: 21,
             children: [
                 {
                     label: '生殖',
-                    value: 11,
+                    value: 211,
                     children: [
                         items[79292], items[79288], items[79289], items[79295],items[2], items[79291], items[79290], items[4],  items[3]]
                 }, {
                     label: '婴幼儿',
-                    value: 12,
+                    value: 212,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '儿童',
-                    value: 13,
+                    value: 213,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '成年',
-                    value: 14,
+                    value: 214,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79294], items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '老年',
-                    value: 15,
+                    value: 215,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79294], items[79291], items[79290], items[2], items[4], items[3]
@@ -160,37 +160,37 @@ const category = [
             ]
         }, {
             label: '女',
-            value: 16,
+            value: 22,
             children: [
                 {
                     label: '生殖',
-                    value: 17,
+                    value: 221,
                     children: [
                         items[79292], items[79288], items[79289], items[79295],items[2], items[79291], items[79290], items[4],  items[3]]
                 }, {
                     label: '婴幼儿',
-                    value: 18,
+                    value: 222,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '儿童',
-                    value: 19,
+                    value: 223,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '成年',
-                    value: 20,
+                    value: 224,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79294], items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '老年',
-                    value: 21,
+                    value: 225,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79294], items[79291], items[79290], items[2], items[4], items[3]
@@ -199,37 +199,37 @@ const category = [
             ]
         }, {
             label: '不限',
-            value: 22,
+            value: 23,
             children: [
                 {
                     label: '生殖',
-                    value: 23,
+                    value: 231,
                     children: [
                         items[79292], items[79288], items[79289], items[79295],items[2], items[79291], items[79290], items[4],  items[3]]
                 }, {
                     label: '婴幼儿',
-                    value: 24,
+                    value: 232,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '儿童',
-                    value: 25,
+                    value: 233,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '成年',
-                    value: 26,
+                    value: 234,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79294], items[79291], items[79290], items[2], items[4], items[3]
                     ]
                 }, {
                     label: '老年',
-                    value: 27,
+                    value: 235,
                     children: [
                         items[79292], items[79288], items[79289], items[79295], items[1],
                         items[79294], items[79291], items[79290], items[2], items[4], items[3]

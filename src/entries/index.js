@@ -30,6 +30,12 @@ const store = createStore(combineReducers({
   ...reducers, routing, models: crudReducer
 }), initialState, enhancer)
 SagaManager.startSagas(sagaMiddleware)
+store.dispatch({
+  type: 'user/set',
+  payload: {
+    id: store.getState().auth.key
+  }
+})
 
 if (module.hot) {
   module.hot.accept('../reducers', () => {
