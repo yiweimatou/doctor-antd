@@ -81,9 +81,11 @@ const watchLogin = function* () {
 }
 
 const authSaga = function*() {
-    yield fork(watchLogin)
-    yield fork(watchLogout)
-    yield fork(watchSetUser)
+    yield [
+      fork(watchLogin),
+      fork(watchLogout),
+      fork(watchSetUser)
+    ]
 }
 
 export default authSaga
