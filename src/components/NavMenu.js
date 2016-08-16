@@ -44,13 +44,11 @@ class NavMenu extends Component {
                             我的团队课程
                         </Link>
                     </Menu.Item>
-                    {lessons===2?
                     <Menu.Item>
                         <Link to='/lesson/recommend'>
                             推荐课程
                         </Link>
-                    </Menu.Item>:null
-                    }
+                    </Menu.Item>
                 </SubMenu>
                 {lessons===2?
                 <SubMenu
