@@ -43,13 +43,11 @@ class NavMenu extends Component {
                             我的团队课程
                         </Link>
                     </Menu.Item>
-                    {lessons===2?
-                    <Menu.Item>
+                    <Menu.Item>        
                         <Link to='/lesson/recommend'>
                             推荐课程
                         </Link>
-                    </Menu.Item>:null
-                    }
+                    </Menu.Item>
                     <Menu.Item>
                         <Link to='/lesson/recommend/list'>
                             推荐课程记录
@@ -78,7 +76,7 @@ class NavMenu extends Component {
                             我的云板书
                         </Link>
                     </Menu.Item>
-                </SubMenu>:''
+                </SubMenu>:null
                 }
                 <SubMenu key="sub1" title={<span><Icon type="setting" />设置</span>}>
                 </SubMenu>
