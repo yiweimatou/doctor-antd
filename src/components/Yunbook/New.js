@@ -7,6 +7,7 @@ import {
     UPLOAD_PPT_API
 } from '../../constants/api.js'
 import {getAreaList} from '../../services/area.js'
+import category from '../../constants/category'
 
 
 const FormItem = Form.Item
@@ -24,37 +25,15 @@ class New extends Component{
     state={
         FileList:[],
         action:UPLOAD_YUNBOOK_API,
-        options:[]
-    }
-    componentWillMount(){
-        getAreaList({
-                limit:20,
-                pid:1,
-                zoom:4
-            }).then( data=> {
-                const options = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.id,
-                        zoom:item.zoom,
-                        isLeaf: false
-                    }
-                })
-                this.setState({
-                    options
-                })
-            }).catch( error=>{
-                message.error( error )
-            })
+        options:category
     }
     loadData=(selectedOptions)=>{
         const targetOption = selectedOptions[selectedOptions.length-1]
         const isLeaf = 6 === targetOption.zoom
         targetOption.loading = true
         getAreaList({
-            limit:30,
-            pid:targetOption.value,
-            zoom:targetOption.zoom+1
+            limit:100,
+            pid:targetOption.value
         }).then(data=>{
             targetOption.loading=false
             if( data.list.length > 0){
@@ -105,17 +84,34 @@ class New extends Component{
             if(errors){
                 return
             }
+            const first = values.area_ids[0]
+            let area_id,category_id
+            if(first === 1) {
+                if( values.length < 6) {
+                    return
+                }
+                area_id = values.area_ids[5]
+                category_id = values.area_ids[1]
+            }else {
+                if( values.length < 7) {
+                    return
+                }
+                area_id = values.area_ids[6]
+                category_id = values.area_ids[2]
+            }
             const cover = values.upload[0].response.cover
             const params = {
                 title:values.title,
                 descript:values.descript||'',
-                area_id:values.area_ids[3],
+                area_id: area_id,
+                category_id: category_id,
                 cover:cover,
                 path:values.upload[0].response.path,
                 width:values.upload[0].response.width,
                 height:values.upload[0].response.height,
                 zoom:values.upload[0].response.zoom,
-                money: values.money
+                money: values.money,
+                file_id: 2 //不传报错，随便传一个
             }
             this.props.handleNew(params)
         })
@@ -132,14 +128,6 @@ class New extends Component{
                 required:true,
                 type:'array',
                 message:'请选择分类'
-            }, {
-                validator:(rule,value,callback) => {
-                    if(value && value.length !== 4){
-                        return callback('请选择4级分类')
-                    }else{
-                        return callback()
-                    }
-                }
             }]
         })
         delete aidProps.value

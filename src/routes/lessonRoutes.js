@@ -17,12 +17,12 @@ const moneyRoute = store => ({
             return replace({ pathname: '/'})
         }
         store.dispatch({
-            type: 'lesson/money/info',
-            payload: { lesson_id: id}
+            type: 'money/info',
+            payload: { foreign_id: id, type: 2 }
         })
         store.dispatch({
-            type: 'lesson/money/list',
-            payload: { lesson_id: id}
+            type: 'money/fetchlist',
+            payload: { foreign_id: id, type: 2 }
         })
     }
 })

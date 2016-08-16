@@ -51,7 +51,7 @@ class Edit extends Component{
                 getAreaList({
                     pid:area.pid,
                     zoom:area.zoom,
-                    limit:30
+                    limit:100
                 }).then(data=>{
                     data.list.forEach(item=>{
                         a4.push({
@@ -71,7 +71,7 @@ class Edit extends Component{
                 getAreaList({
                     pid:area.pid,
                     zoom:area.zoom,
-                    limit:30
+                    limit:100
                 }).then(data=>{
                     data.list.forEach(item=>{
                         if(item.id===area.id){
@@ -103,7 +103,7 @@ class Edit extends Component{
                 getAreaList({
                     pid:area.pid,
                     zoom:area.zoom,
-                    limit:30
+                    limit:100
                 }).then(data=>{
                     data.list.forEach(item=>{
                         if(item.id===area.id){
@@ -135,7 +135,7 @@ class Edit extends Component{
                     getAreaList({
                         pid:area.pid,
                         zoom:area.zoom,
-                        limit:30
+                        limit:100
                     }).then(data=>{
                         data.list.forEach(item=>{
                             if(item.aid===area.aid){
@@ -168,7 +168,7 @@ class Edit extends Component{
         const isLeaf = 6 ===targetOption.zoom
         targetOption.loading=true
         getAreaList({
-            limit:30,
+            limit:100,
             pid:targetOption.value,
             zoom:targetOption.zoom+1
         }).then(data=>{

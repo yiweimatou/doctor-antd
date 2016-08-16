@@ -25,7 +25,7 @@ class Manage extends Component {
         } = this.props.team
         const pagination = {
             total,
-            defaultPageSize: params.limit,
+            pageSize: params.limit,
             showTotal: total => `共 ${total} 条`,
             onChange(current) {
                 this.props.changeHandler(current, params)

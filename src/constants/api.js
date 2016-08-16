@@ -2,13 +2,16 @@ export const HOST = 'http://api.yiweimatou.com'
 
 export const USER_API_DOMAIN = `${HOST}:1002`
 export const ADMIN_API_DOMAIN = `${HOST}:1001`
-export const UPLOAD_DOMAIN = 'http://121.41.92.56:999'
+export const UPLOAD_DOMAIN = 'http://image.yiweimatou.com:999'
 export const ORGANIZE_API_DOMAIN = `${HOST}:1005`
 export const LESSON_API_DOMAIN = `${HOST}:1007`
 export const AREA_API_DOMAIN = `${HOST}:1003`
 export const SECTION_API_DOMAIN = `${HOST}:1008`
 export const BOOK_API_DOMAIN = `${HOST}:1006`
 export const IMG_URL = 'http://image.yiweimatou.com/ywmt/'
+export const MONEY_API_DOMAIN = `${HOST}:1010`
+export const MSG_API_DOMAIN = `${HOST}:1004`
+
 /**
  * api codes
  */
@@ -17,6 +20,24 @@ export const BAD_REQUEST = 400
 export const UNAUTHORIZED = 401
 export const FORBIDDEN = 403
 export const INTERNAL_SERVER_ERROR = 500
+
+/**
+ * captcha
+ */
+export const CAPTCHA_API = `${HOST}:998/captcha/add`
+/**
+*msg apis
+*/
+export const MSG_GET_API = `${MSG_API_DOMAIN}/msg/get`
+export const MSG_INFO_API = `${MSG_API_DOMAIN}/msg/info`
+export const MSG_LIST_API = `${MSG_API_DOMAIN}/msg/list`
+/**
+*money apis
+*/
+export const MONEY_INFO_API = `${MONEY_API_DOMAIN}/money/info`
+export const MONEY_GET_API = `${MONEY_API_DOMAIN}/money/get`
+export const MONEY_LIST_API = `${MONEY_API_DOMAIN}/money/list`
+export const MONEY_ADD_API = `${MONEY_API_DOMAIN}/money/add`
 /**
  * user apis
  */
@@ -31,6 +52,7 @@ export const USER_GET_API = `${USER_API_DOMAIN}/account/get`
 export const USER_MONEY_INFO_API = `${USER_API_DOMAIN}/accountmoney/info`
 export const USER_MONEY_LIST_API = `${USER_API_DOMAIN}/accountmoney/list`
 export const USER_ALIPAY_SET_API = `${USER_API_DOMAIN}/account/put/alipay`
+export const USER_GET_MONEY_API = `${USER_API_DOMAIN}/account/put/withdraw`
 /**
  * organize apis
  */

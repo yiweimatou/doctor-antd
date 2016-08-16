@@ -6,10 +6,10 @@ import { connect } from 'react-redux'
 
 class Money extends Component {
     render() {
-        const {list, changeHandler} = this.props
+        const {list, changeHandler, loading} = this.props
         const pagination = {
             total: list.total,
-            defaultPageSize: list.params.limit,
+            pageSize: list.params.limit,
             showTotal: total => `共 ${total} 条`,
             onChange(current) {
                 changeHandler({...list.params,offset:current})
@@ -30,18 +30,17 @@ class Money extends Component {
             render: text => new Date(text*1000).toLocaleString()
         }, {
             title: '类型',
-            dataIndex: 'type',
-            key: 'type',
+            dataIndex: 'cet',
+            key: 'cet',
             render: text => {
                 switch(text){
-                    case 0:
-                        return '未知'
                     case 1:
-                        return '充值'
                     case 2:
-                        return '购买课程'
+                      return '交易中'
                     case 3:
-                        return '其他'
+                        return '交易失败'
+                    case 4:
+                        return '交易成功'
                 }
             }
         }, {
@@ -51,10 +50,10 @@ class Money extends Component {
         }]
         return (
             <Table
-                dataSource = { list.data }
+                dataSource = { list.records }
                 columns = { columns }
                 pagination = { pagination }
-                loading = { list.loading }
+                loading = { loading }
             />
         )
     }
@@ -62,16 +61,18 @@ class Money extends Component {
 
 Money.propTypes = {
     list: PropTypes.object,
-    changeHandler: PropTypes.func.isRequired
+    changeHandler: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
 };
 
 export default connect(
     state => ({
-        list: state.organizeMoney
+        list: state.money.organize,
+        loading: state.money.actionStatus.fetch.pending
     }),
     dispatch => ({
         changeHandler: params => dispatch({
-            type: 'organize/money/list',
+            type: 'money/fetchlist',
             payload: params
         })
     })

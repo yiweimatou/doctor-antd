@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import { connect } from 'react-redux'
 import {
-    Form,Button,Input
+    Form,Button,Input, Spin
 } from 'antd'
 
 const FormItem = Form.Item
@@ -11,7 +11,43 @@ const formItemLayout = {
 }
 class SetAlipay extends Component {
     state = {
-        vcodeLabel: '获取验证码'
+        vcodeLabel: '获取验证码',
+        disabled: false
+    }
+    tick = () => {
+        if( this.state.vcodeLabel === 0){
+            clearInterval(this.interval)
+            this.setState({
+                disabled: false,
+                vcodeLabel: '获取验证码'
+            })
+        }else {
+            this.setState({
+                vcodeLabel: this.state.vcodeLabel-1
+            })
+        }
+    }
+    click = (e) => {
+        e.preventDefault()        
+        this.setState({
+            disabled: true,
+            vcodeLabel: 60
+        })
+        this.props.sendCode(this.props.user.mobile).then(() => {
+            if( this.props.user.captcha.isSuccess ){
+                 this.interval = setInterval(this.tick,1000)            
+            }else {
+                this.setState({
+                    disabled: false,
+                    vcodeLabel: '获取验证码'
+                })
+            }
+        },() => {
+            this.setState({
+                disabled: false,
+                vcodeLabel: '获取验证码'
+            })
+        })
     }
     submitHandler = e => {
         e.preventDefault()
@@ -27,6 +63,7 @@ class SetAlipay extends Component {
         const { form,user } = this.props
         const { getFieldProps } = form
         return (
+            <Spin spinning = {user.loading}>
             <Form
                 horizontal
                 form = { form }
@@ -75,26 +112,43 @@ class SetAlipay extends Component {
                 </FormItem>
                 <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
                     <Button type="primary" htmlType="submit">保存</Button>
-                    <Button style={{marginLeft:10}}>{this.state.vcodeLabel}</Button>                
+                    <Button 
+                        disabled ={ this.state.disabled } style={{marginLeft:10}}
+                        onClick = { this.click }
+                    >{this.state.vcodeLabel}
+                    </Button>                
                 </FormItem>
             </Form>
+            </Spin>
         )
     }
 }
 
 SetAlipay.propTypes = {
     user: PropTypes.object,
-    submit: PropTypes.func.isRequired
+    submit: PropTypes.func.isRequired,
+    sendCode: PropTypes.func.isRequired
 }
 
 export default connect(
-    state => ({
-        user: state.auth.user
+    state => ({    
+        user: {
+            alipay: state.auth.user.alipay,
+            mobile: state.auth.user.mobile,
+            captcha: state.user.captcha,
+            loading: state.user.loading
+        }
     }),
     dispatch => ({
         submit: params => dispatch({
-            type: 'user/money/alipay/set',
+            type: 'user/alipay/set',
             payload: params
-        })
+        }),
+        sendCode: (mobile) => Promise.resolve(dispatch({
+            type: 'captcha/send',
+            payload: {
+                mobile
+            }
+        }))
     })
 )(Form.create()(SetAlipay))

@@ -51,16 +51,6 @@ class NavMenu extends Component {
                         </Link>
                     </Menu.Item>:null
                     }
-                    <Menu.Item>
-                        <Link to='/lesson/recommend/list'>
-                            推荐课程记录
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Link to='/lesson/recommend/manage'>
-                            课程推荐管理
-                        </Link>
-                    </Menu.Item>
                 </SubMenu>
                 {lessons===2?
                 <SubMenu
@@ -82,8 +72,8 @@ class NavMenu extends Component {
                 </SubMenu>:''
                 }
                 <Item>
-                    <Link to='/invite/manage'>
-                        <Icon type="notification" />团队邀请管理
+                    <Link to='/message/index'>
+                        <Icon type="notification" />消息管理
                     </Link>
                 </Item>
                 <SubMenu key="sub1" title={<span><Icon type="setting" />设置</span>}>

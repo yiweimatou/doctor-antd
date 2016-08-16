@@ -16,6 +16,8 @@ import {
     getArea,
     getAreaList
 } from '../../services/area.js'
+import category from '../../constants/category'
+import array from 'lodash/array'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -31,9 +33,9 @@ class Edit extends Component{
         loading: PropTypes.bool
     }
     state = {
-        fileList:[],
-        options:[],
-        defaultValue:[]
+        fileList: [],
+        options: [],
+        defaultValue: []
     }
     normFile(e) {
         if (Array.isArray(e)) {
@@ -46,9 +48,8 @@ class Edit extends Component{
         const isLeaf = 5 ===targetOption.zoom
         targetOption.loading=true
         getAreaList({
-            limit:30,
-            pid:targetOption.value,
-            zoom:targetOption.zoom+1
+            limit:100,
+            pid:targetOption.value
         }).then(data=>{
             targetOption.loading=false
             if( data.list.length > 0){
@@ -94,10 +95,26 @@ class Edit extends Component{
                 return
             }
             const cover = this.state.fileList[0].url
+            const first = values.area_ids[0]
+            let area_id,category_id
+            if(first === 1) {
+                if( values.length < 5) {
+                    return
+                }
+                area_id = values.area_ids[4]
+                category_id = values.area_ids[1]
+            }else {
+                if( values.length < 6) {
+                    return
+                }
+                area_id = values.area_ids[5]
+                category_id = values.area_ids[2]
+            }
             const params = {
                 title:values.lname,
                 descript:values.descript,
-                area_id:values.area_ids[2],
+                area_id: area_id,
+                category_id: category_id,
                 cover:cover,
                 organize_money: values.organize_money,
                 account_money: values.account_money,
@@ -107,7 +124,8 @@ class Edit extends Component{
         })
     }
     componentWillReceiveProps(nextProps){
-        if(!this.props.lesson){
+        //prelesson is null next is not null
+        if(!this.props.lesson && nextProps.lesson){
             this.setState({
                 fileList:[{
                     uid:-1,
@@ -116,17 +134,21 @@ class Edit extends Component{
                     url:nextProps.lesson.cover
                 }]
             })
-            let a1=[],a2=[],a3=[]
+            let a2=[],a3=[],category_ids,default1
+            const category_id = nextProps.lesson.category_id
+            if(category_id.toString().length===2){
+                category_ids = [parseInt(category_id.toString().split('', 2)[0], 10), category_id]
+            }else {
+                const _temp = category_id.toString().split('', 3)
+                category_ids = [parseInt(_temp[0], 10), parseInt(_temp[0]+_temp[1], 10), category_id]
+            }
             getArea({
                 id:nextProps.lesson.area_id
-            }).then(data=>data.get).then(area=>{
-                this.setState({
-                    defaultValue:[area.pid,area.id]
-                })
+            }).then(data=>data.get).then(area=>{  
+                default1 = [area.pid,area.id]
                 getAreaList({
                     pid:area.pid,
-                    zoom:area.zoom,
-                    limit:30
+                    limit:100
                 }).then(data=>{
                     data.list.forEach(item=>{
                         a3.push({
@@ -145,8 +167,7 @@ class Edit extends Component{
             }).then(area=>{
                 getAreaList({
                     pid:area.pid,
-                    zoom:area.zoom,
-                    limit:30
+                    limit:100
                 }).then(data=>{
                     data.list.forEach(item=>{
                         if(item.id===area.id){
@@ -166,41 +187,31 @@ class Edit extends Component{
                         }
                     })
                 })
-                this.setState({
-                    defaultValue:[area.pid].concat(this.state.defaultValue)
-                })
-                return area
-            }).then(area=>{
-                getArea({
-                    id:area.pid
-                }).then(data=>{
-                    getAreaList({
-                        pid:data.get.pid,
-                        zoom:data.get.zoom,
-                        limit:30
-                    }).then(data=>{
-                        data.list.forEach(item=>{
-                            if(item.id===area.pid){
-                                a1.push({
-                                    value:item.id,
-                                    label:item.title,
-                                    zoom:item.zoom,
-                                    children:a2
-                                })
-                            }else{
-                                a1.push({
-                                    value:item.id,
-                                    label:item.title,
-                                    zoom:item.zoom,
-                                    isLeaf:false
-                                })
-                            }
-                        })
-                        this.setState({
-                            options:a1
-                        })
+                const options = category.slice()  
+                if(category_ids.length === 2){               
+                    const index = array.findIndex(options[0].children, { value: category_id })
+                    const _index = array.findIndex(options[0].children[index].children, { value: area.pid })
+                    options[0].children[index].children[_index].children = a2
+                    this.setState({
+                        options: options
                     })
-                })
+                    this.props.form.setFieldsValue({
+                        'area_ids': category_ids.concat([area.pid].concat(default1))
+                    })
+                }else {          
+                    const index = array.findIndex(options[1].children, { value: category_ids[1] })
+                    const index1 = array.findIndex(options[1].children[index].children, { value: category_id })
+                    const _index = array.findIndex(options[1].children[index].children[index1].children, { value: area.pid })
+                    options[1].children[index].children[index1].children[_index].children = a2 
+                    this.setState({
+                        options,
+                        defaultValue: category_ids.concat([area.pid].concat(default1))
+                    })
+                    setTimeout(() => {
+                        document.getElementById('area_ids').click()
+                        document.getElementById('area_ids').click()
+                    },100)
+                }
             }).catch(error=>{
                 message.error(error)
             })
@@ -210,7 +221,6 @@ class Edit extends Component{
         const {
             form,lesson,loading
         } = this.props
-        const {defaultValue,options}=this.state
         const { getFieldProps } = form
         const areaIdsProps = getFieldProps('area_ids',{
             rules:[{
@@ -218,9 +228,8 @@ class Edit extends Component{
                 type:'array',
                 message:'请选择分类'
             }],
-            initialValue:defaultValue
+            initialValue: this.state.defaultValue
         })
-        delete areaIdsProps.value
         return(
             <Paper>
                 <Spin spinning = { loading } size = 'large'>
@@ -293,14 +302,13 @@ class Edit extends Component{
                         label='分类'
                         {...formItemLayout}
                         hasFeedback
-                    >{defaultValue.length===3?
+                    >
                         <Cascader 
                             placeholder='请选择分类'
-                            options={options}  
+                            options={ this.state.options }  
                             loadData = {this.loadData}
-                            defaultValue = {defaultValue} 
                             {...areaIdsProps}
-                        />:null}
+                        />
                     </FormItem>
                     <FormItem
                         {...formItemLayout}

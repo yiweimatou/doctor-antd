@@ -3,59 +3,45 @@ import { handleActions } from 'redux-actions'
 const initialState = {
     list:[],
     loading:false,
-    money: {
+    captcha: {
         loading: false,
-        data: [],
-        params: {
-            limit: 6,
-            offset: 1
-        },
-        total: 0
+        isSuccess: false
     }
 }
 
 const user = handleActions({
-    ['user/money/alipay/set']: state => ({
+    ['captcha/send']: state => ({
+        ...state,
+        captcha: {
+            loading: true,
+            isSuccess: false
+        }
+    }),
+    ['captcha/send/success']: state => ({
+        ...state,
+        captcha: {
+            loading: false,
+            isSuccess: true
+        }
+    }),
+    ['captcha/send/failure']: state => ({
+        ...state,
+        captcha: {
+            loading: false,
+            isSuccess: false
+        }
+    }),
+    ['user/alipay/set']: state => ({
         ...state,
         loading: true
     }),
-    ['user/money/alipay/set/success']: (state) => ({
+    ['user/alipay/set/success']: (state) => ({
         ...state,
         loading: false
     }),
-    ['user/money/alipay/set/failure']: state => ({
+    ['user/alipay/set/failure']: state => ({
         ...state,
         loading: false
-    }),
-    ['user/money/info/success']: (state, action) => ({
-        ...state,
-        money: {
-            ...state.money,
-            total: action.payload
-        }
-    }),
-    ['user/money/list/success']: (state, action) => ({
-        ...state,
-        money: {
-            ...state.money,
-            data: action.payload.list,
-            params: action.payload.params,
-            loading: false
-        }
-    }),
-    ['user/money/list']: state => ({
-        ...state,
-        money: {
-            ...state.money,
-            loading: true
-        }
-    }),
-    ['user/money/list/failure']: state => ({
-        ...state,
-        money: {
-            ...state.money,
-            loading: false
-        }
     }),
     ['user/list']:state=>({
         ...state,

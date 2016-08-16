@@ -63,7 +63,7 @@ class SelectOrganize extends Component{
                         style={{marginTop:20}}
                         total={pageParams.total}
                         showTotal={total => `共 ${total} 条`}
-                        defaultPageSize = {pageParams.limit}
+                        pageSize = {pageParams.limit}
                         onChange = {this.onChange}
                     />
                 </div>

@@ -16,7 +16,7 @@ class RecommendManage extends Component {
         } = this.props
         const pagination = {
             total:list.total,
-            defaultPageSize:list.pageParams.limit,
+            pageSize:list.pageParams.limit,
             showTotal:total => `共 ${total} 条`,
             onChange(current){
                 changeHandler(current,list.pageParams.limit,uid)
