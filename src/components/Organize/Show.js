@@ -59,7 +59,7 @@ class Show extends Component {
                                 </span>
                             </Col>
                             <Col span={4}>
-                                <Button type='primary'>
+                                <Button type='primary' onClick={()=>push(`/organize/recharge/${organize.id}`)}>
                                     充值
                                 </Button>
                             </Col>

@@ -6,15 +6,15 @@ import { connect } from 'react-redux'
 
 class Money extends Component {
     render() {
-        const { list, changeHandler } = this.props
+        const { list, changeHandler, loading } = this.props
         const pagination = {
             total: list.total,
-            defaultPageSize: list.params.limit,
+            pageSize: list.params.limit,
             showTotal: total => `共 ${total} 条`,
             onChange(current) {
                 changeHandler({...list.params,offset:current})
             }
-        } 
+        }
         const columns = [{
             title: '交易号',
             dataIndex: 'id',
@@ -29,23 +29,18 @@ class Money extends Component {
             key: 'add_ms',
             render: text => new Date(text*1000).toLocaleString()
         }, {
-            title: '类型',
-            dataIndex: 'type',
-            key: 'type',
+            title: '交易状态',
+            dataIndex: 'cet',
+            key: 'cet',
             render: text => {
                 switch(text){
-                    case 0:
-                        return '未知'
                     case 1:
-                        return '账户报名收入'
                     case 2:
-                        return '机构认证收入'
+                        return '交易中'
                     case 3:
-                        return '还信用额度'
+                        return '交易失败'
                     case 4:
-                        return '主讲提现'
-                    case 5:
-                        return '其他'
+                        return '交易成功'
                 }
             }
         }, {
@@ -55,26 +50,28 @@ class Money extends Component {
         }]
         return (
             <Table
-                dataSource = {list.data}
+                dataSource = {list.records}
                 columns = { columns }
                 pagination = { pagination }
-                loading = { list.loading }
+                loading = { loading }
             />
         )
     }
 }
 
 Money.propTypes = {
-    list: PropTypes.object
+    list: PropTypes.object,
+    loading: PropTypes.bool.isRequired
 };
 
 export default connect(
     state => ({
-        list: state.lesson.money
+        list: state.money.lesson,
+        loading: state.money.actionStatus.fetch.pending
     }),
     dispatch => ({
         changeHandler: params => dispatch({
-            type: 'lesson/money/list',
+            type: 'money/list',
             payload: params
         })
     })

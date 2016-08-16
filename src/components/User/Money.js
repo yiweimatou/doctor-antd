@@ -7,15 +7,15 @@ import { push } from 'react-router-redux'
 
 class Money extends Component {
     render() {
-        const { list, changeHandler, user, push } = this.props
+        const { list, changeHandler, user, push, loading } = this.props
         const pagination = {
             total: list.total,
-            defaultPageSize: list.params.limit,
+            pageSize: list.params.limit,
             showTotal: total => `共 ${total} 条`,
             onChange(current) {
                 changeHandler({...list.params,offset:current})
             }
-        } 
+        }
         const columns = [{
             title: '交易号',
             dataIndex: 'id',
@@ -30,28 +30,19 @@ class Money extends Component {
             key: 'add_ms',
             render: text => new Date(text*1000).toLocaleString()
         }, {
-            title: '类型',
-            dataIndex: 'type',
-            key: 'type',
+            title: '交易状态',
+            dataIndex: 'cet',
+            key: 'cet',
             render: text => {
-                switch(text){
-                    case 0:
-                        return '未知'
-                    case 1:
-                        return '报名课程'
-                    case 2:
-                        return '推荐报名课程奖励'
-                    case 3:
-                        return '二级推荐报名课程奖励'
-                    case 4:
-                        return '出售板书'
-                    case 5:
-                        return '课程转入'
-                    case 6:
-                        return '提现'
-                    case 7:
-                        return '其它'
-                }
+              switch (text) {
+                case 1:
+                case 2:
+                  return '交易中'
+                case 3:
+                  return '交易失败'
+                case 4:
+                  return '交易成功'
+              }
             }
         }, {
             title: '详情',
@@ -69,7 +60,7 @@ class Money extends Component {
                     <Col span = {12} >
                         <Row>
                             <Col span={8}>
-                                <Button type='primary'>
+                                <Button type='primary' onClick={()=>push('/user/recharge')}>
                                     充值
                                 </Button>
                             </Col>
@@ -87,10 +78,10 @@ class Money extends Component {
                     </Col>
                 </Row>
                 <Table
-                    dataSource = {list.data}
+                    dataSource = {list.records}
                     columns = { columns }
                     pagination = { pagination }
-                    loading = { list.loading }
+                    loading = { loading }
                     style = {{marginTop:20}}
                 />
             </div>
@@ -101,17 +92,19 @@ class Money extends Component {
 Money.propTypes = {
     list: PropTypes.object,
     user: PropTypes.object,
-    push: PropTypes.func.isRequired
+    push: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
 };
 
 export default connect(
     state => ({
-        list: state.user.money,
-        user: state.auth.user
+        list: state.money.user,
+        user: state.auth.user,
+        loading: state.money.actionStatus.fetch.pending
     }),
     dispatch => ({
         changeHandler: params => dispatch({
-            type: 'user/money/list',
+            type: 'money/fetchlist',
             payload: params
         }),
         push: path => dispatch(push(path))

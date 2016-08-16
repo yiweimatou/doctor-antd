@@ -36,7 +36,7 @@ class List extends Component{
                             <Pagination 
                                 total={total}
                                 showTotal={total => `共 ${total} 条`}
-                                defaultPageSize = {pageParams.limit}
+                                pageSize = {pageParams.limit}
                                 onChange = {(page)=>changeHandler(page,pageParams.account_id,pageParams)}
                             />
                         </div>:null

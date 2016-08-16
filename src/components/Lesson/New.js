@@ -39,8 +39,7 @@ class New extends Component {
         targetOption.loading=true
         getAreaList({
             limit:30,
-            pid:targetOption.value,
-            zoom:targetOption.zoom+1
+            pid:targetOption.value
         }).then(data=>{
             targetOption.loading=false
             if( data.list.length > 0){
@@ -85,10 +84,27 @@ class New extends Component {
             if(errors){
                 return
             }
+            const first = values.area_ids[0]
+            let area_id,category_id
+            if(first === 1) {
+                if( values.length < 5) {
+                    return
+                }
+                area_id = values.area_ids[4]
+                category_id = values.area_ids[1]
+            }else {
+                if( values.length < 6) {
+                    return
+                }
+                area_id = values.area_ids[5]
+                category_id = values.area_ids[2]
+            }
             const params = {
                 title:values.lname,
                 descript:values.descript||'',
-                area_id:values.area_ids[2],
+                area_id: area_id,
+                category_id: category_id,
+                cover: values.upload[0].response.cover,
                 account_money: values.account_money,
                 organize_money: values.organize_money
             }

@@ -2,6 +2,7 @@ import listContainer from '../containers/organize/listContainer.js'
 import showContainer from '../containers/organize/showContainer'
 import Edit from '../components/Organize/Edit'
 import Money from '../components/Organize/Money'
+import rechargeContainer from '../containers/organize/rechargeContainer'
 
 const showRoute = store => ({
     path:'show/:id',
@@ -98,24 +99,47 @@ const moneyRoute = store => ({
             return replace({ pathname: '/'})
         }
         store.dispatch({
-            type: 'organize/money/info',
-            payload: { organize_id: id }
+            type: 'money/info',
+            payload: { foreign_id: id, type: 1 }
         })
         store.dispatch({
-            type: 'organize/money/list',
+            type: 'money/fetchlist',
             payload: {
-                organize_id: id
+                foreign_id: id,
+                type: 1
             }
         })
     }
 })
+
+const rechargeRoute = store => ({
+  path: 'recharge/:id',
+  component: rechargeContainer,
+  onEnter(nextState, replace) {
+    const id = nextState.params.id
+    if( !id ){
+      return replace({ pathname: '/' })
+    }
+    const organize = store.getState().organize.entity
+    if( organize === null || organize.id !== id ) {
+      store.dispatch({
+        type: 'organize/get',
+        payload: {
+          id
+        }
+      })
+    }
+  }
+})
+
 const organizeRoutes = store=>({
     path:'organize',
     childRoutes:[
         listRoute(store),
         showRoute(store),
         editRoutes(store),
-        moneyRoute(store)
+        moneyRoute(store),
+        rechargeRoute(store)
     ]
 })
 

@@ -180,7 +180,7 @@ class New extends Component {
                                     <Pagination 
                                         total={list.total}
                                         showTotal={total => `共 ${total} 条`}
-                                        defaultPageSize = {list.limit}
+                                        pageSize = {list.limit}
                                         onChange = {(page)=>changeHandler(page,list.limit,0)}
                                     />
                                 </div>
@@ -204,7 +204,7 @@ class New extends Component {
                                     <Pagination 
                                         total={mylist.total}
                                         showTotal={total => `共 ${total} 条`}
-                                        defaultPageSize = {mylist.limit}
+                                        pageSize = {mylist.limit}
                                         onChange = {(page)=>changeHandler(page,list.limit,uid)}
                                     />
                                 </div>

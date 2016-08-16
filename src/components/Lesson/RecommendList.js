@@ -18,7 +18,7 @@ class RecommendList extends Component {
         } = this.props
         const pagination = {
             total:pageParams.total,
-            defaultPageSize:pageParams.limit,
+            pageSize:pageParams.limit,
             showTotal:total => `共 ${total} 条`,
             onChange(current){
                 changeHandler(current,pageParams.limit,uid)

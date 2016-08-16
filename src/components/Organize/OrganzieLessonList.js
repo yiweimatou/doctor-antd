@@ -46,7 +46,7 @@ class OrganizeLessonList extends Component {
         } = this.props
         const pagination = {
             total: list.total,
-            defaultPageSize:list.params.limit,
+            pageSize:list.params.limit,
             showTotal:total=>`共 ${total} 条`,
             onChange(current) {
                 changeHandler(current,list.params.limit)
