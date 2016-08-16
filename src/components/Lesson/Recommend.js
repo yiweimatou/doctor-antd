@@ -36,7 +36,7 @@ class Recommend extends Component {
                     lname:values.lname,
                     descript:values.descript?values.descript:'',
                     aid:values.aid[2],
-                    cover:'http://121.41.92.56/ywmt/cover/2016072014/201607201411356132515f847973726db4253beb52fef52dfe3c7.png',
+                    cover:'http://image.yiweimatou.com/ywmt/cover/2016072014/201607201411356132515f847973726db4253beb52fef52dfe3c7.png',
                     rcmd_uid:this.props.uid,
                     uid:this.state.uid
                 }

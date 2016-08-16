@@ -9,7 +9,7 @@ import {
     Cascader 
 } from 'antd'
 import Paper from '../Paper'
-import {UPLOAD_COVER_API,IMG_URL} from '../../constants/api.js'
+import {UPLOAD_COVER_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
 import {
     getArea,
@@ -109,7 +109,7 @@ class Edit extends Component{
                     uid:-1,
                     name:'封面.png',
                     status:'done',
-                    url:`${IMG_URL}${nextProps.lesson.cover}`
+                    url:`${nextProps.lesson.cover}`
                 }]
             })
             let a1=[],a2=[],a3=[]

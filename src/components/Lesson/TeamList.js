@@ -27,7 +27,7 @@ class TeamList extends Component{
                         {
                             item.face?
                             <img 
-                                src={item.face} 
+                                src={`${item.face}`} 
                                 width='100%'
                                 className='timg'
                             />:null

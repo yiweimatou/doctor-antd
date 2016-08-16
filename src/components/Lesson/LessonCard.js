@@ -11,7 +11,7 @@ class LessonCard extends Component{
             <div>
                <Link className='courseList' to={`/lesson/show/${lesson.lid}`}>
                     <div className="courseImg">
-                        <img src={lesson.cover} width="100%" />
+                        <img src={`${lesson.cover}`} width="100%" />
                     </div>
                     <div className="courseTitle">
                         <span>{lesson.lname}</span>

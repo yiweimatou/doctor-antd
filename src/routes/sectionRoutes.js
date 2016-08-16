@@ -19,9 +19,7 @@ const newRoute = store => ({
         })
         store.dispatch({
             type:'yunbook/info',
-            payload:{
-
-            }
+            payload:{}
         })
         store.dispatch({
             type:'yunbook/mylist',
