@@ -2,72 +2,86 @@ const items = {
     15: {
         label: '医疗器械',
         value: 15,
+        zoom: 4,
         isLeaf: false
     },
     14: {
         label: '其他',
         value: 14,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     8: {
         label: '化妆品',
         value: 8,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     12: {
         label: '科学研究',
         value: 12,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     3: {
         label: '疾病',
         value: 3,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     4: {
         label: '药物',
         value: 4,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     13: {
         label: '医学形态',
         isLeaf: false,
-        value: 13
+        value: 13,
+        zoom: 4,
     },
     10: {
         label: '医疗卫生机构',
         isLeaf: false,
-        value: 10
+        value: 10,
+        zoom: 4,
     },
     2: {
         label: '医学教育',
         value: 2,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     5: {
         label: '手术',
         value: 5,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     6: {
         label: '医疗项目',
         value: 6,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     7: {
         label: '保健',
         value: 7,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     9: {
         label: '中医名典',
         value: 9,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     },
     11: {
         label: '继续教育',
         value: 11,
-        isLeaf: false
+        isLeaf: false,
+        zoom: 4,
     }
 }
 

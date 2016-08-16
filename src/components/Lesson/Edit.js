@@ -33,8 +33,9 @@ class Edit extends Component{
         loading: PropTypes.bool
     }
     state = {
-        fileList:[],
-        options:[]
+        fileList: [],
+        options: [],
+        defaultValue: []
     }
     normFile(e) {
         if (Array.isArray(e)) {
@@ -48,8 +49,7 @@ class Edit extends Component{
         targetOption.loading=true
         getAreaList({
             limit:100,
-            pid:targetOption.value,
-            zoom:targetOption.zoom+1
+            pid:targetOption.value
         }).then(data=>{
             targetOption.loading=false
             if( data.list.length > 0){
@@ -148,7 +148,6 @@ class Edit extends Component{
                 default1 = [area.pid,area.id]
                 getAreaList({
                     pid:area.pid,
-                    zoom:area.zoom,
                     limit:100
                 }).then(data=>{
                     data.list.forEach(item=>{
@@ -168,7 +167,6 @@ class Edit extends Component{
             }).then(area=>{
                 getAreaList({
                     pid:area.pid,
-                    zoom:area.zoom,
                     limit:100
                 }).then(data=>{
                     data.list.forEach(item=>{
@@ -204,14 +202,15 @@ class Edit extends Component{
                     const index = array.findIndex(options[1].children, { value: category_ids[1] })
                     const index1 = array.findIndex(options[1].children[index].children, { value: category_id })
                     const _index = array.findIndex(options[1].children[index].children[index1].children, { value: area.pid })
-                    options[1].children[index].children[index1].children[_index].children = a2                      
-                    
+                    options[1].children[index].children[index1].children[_index].children = a2 
                     this.setState({
-                        options: options
+                        options,
+                        defaultValue: category_ids.concat([area.pid].concat(default1))
                     })
-                    this.props.form.setFieldsValue({
-                        'area_ids': category_ids.concat([area.pid].concat(default1))
-                    })
+                    setTimeout(() => {
+                        document.getElementById('area_ids').click()
+                        document.getElementById('area_ids').click()
+                    },100)
                 }
             }).catch(error=>{
                 message.error(error)
@@ -222,7 +221,6 @@ class Edit extends Component{
         const {
             form,lesson,loading
         } = this.props
-        const { options }=this.state
         const { getFieldProps } = form
         const areaIdsProps = getFieldProps('area_ids',{
             rules:[{
@@ -230,7 +228,7 @@ class Edit extends Component{
                 type:'array',
                 message:'请选择分类'
             }],
-            // initialValue: [2, 22, 224, 4, 76003, 76054]
+            initialValue: this.state.defaultValue
         })
         return(
             <Paper>
@@ -307,7 +305,7 @@ class Edit extends Component{
                     >
                         <Cascader 
                             placeholder='请选择分类'
-                            options={options}  
+                            options={ this.state.options }  
                             loadData = {this.loadData}
                             {...areaIdsProps}
                         />

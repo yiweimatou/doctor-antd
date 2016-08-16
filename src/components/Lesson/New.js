@@ -38,7 +38,7 @@ class New extends Component {
         const isLeaf = 5 ===targetOption.zoom
         targetOption.loading=true
         getAreaList({
-            limit:30,
+            limit:100,
             pid:targetOption.value
         }).then(data=>{
             targetOption.loading=false

@@ -41,7 +41,8 @@ class New extends Component {
         currentStep:1,
         initialOptions:[],
         yunbook:null,
-        show: false
+        show: false,
+        category_id: null
     }
     handleCancel = () => this.setState({
         show: false
@@ -80,7 +81,8 @@ class New extends Component {
                 title:values.sname,
                 area_id:values.area_ids[3],
                 lesson_id:this.props.lid,
-                descript:values.descript || ''
+                descript:values.descript || '',
+                category_id: this.state.category_id
             })
         })
     }
@@ -92,18 +94,18 @@ class New extends Component {
         getLesson({
             id:this.props.lid
         }).then(data=>{
+            this.setState({ category_id: data.get.category_id })
             return data.get
         }).then(lesson=>{
             return getArea({
                 id:lesson.area_id
             }).then(data=>data.get)
         }).then(area => {
-            return Promise.all([getAreaList({pid : area.id,zoom: area.zoom+1}),area])
+            return Promise.all([getAreaList({pid : area.id, limit: 100}),area])
         }).then(([areas,area])=>{
             a3.push({
                 value:area.id,
                 label:area.title,
-                zoom:area.zoom,
                 children:areas.list.map(item => ({
                     value: item.id,
                     label: item.title,
@@ -111,8 +113,7 @@ class New extends Component {
                 }))
             })
             return getArea({
-                id:area.pid,
-                zoom:area.zoom-1
+                id:area.pid
             }).then(data=>data.get)
         }).then(area=>{
             a2.push({
@@ -260,14 +261,6 @@ class New extends Component {
                                             required:true,
                                             type:'array',
                                             message:'请选择分类'
-                                        },{
-                                            validator: (rule, value, callback) => {
-                                                if(value.length !== 4) {
-                                                    callback('请选择4级分类')
-                                                }else {
-                                                    callback()
-                                                }
-                                            }
                                         }]
                                     })}
                                     options = {
