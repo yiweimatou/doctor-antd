@@ -3,8 +3,13 @@ import {
     USER_GET_API,
     USER_LIST_API,
     USER_ALIPAY_SET_API,
-    CAPTCHA_API
+    CAPTCHA_API,
+    USER_GET_MONEY_API
 } from '../constants/api.js'
+
+export function getMoney(params) {
+    return ApiClient.put(USER_GET_MONEY_API, params)
+}
 
 export function getUser(params){
     return ApiClient.get(USER_GET_API,params)

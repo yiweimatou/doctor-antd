@@ -1,6 +1,12 @@
 import Money from '../components/User/Money'
 import SetAlipay from '../components/User/SetAlipay'
 import Recharge from '../containers/user/rechargeContainer'
+import Deposit from '../components/User/Deposit'
+
+const depositRoute = () => ({
+    path: 'deposit',
+    component: Deposit
+})
 
 const moneyRoute = store => ({
     path: 'money',
@@ -36,7 +42,8 @@ const userRoutes = store => ({
     childRoutes: [
         moneyRoute(store),
         accountSettingRoute(),
-        rechargeRoute()
+        rechargeRoute(),
+        depositRoute()
     ]
 })
 

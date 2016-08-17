@@ -65,7 +65,7 @@ class Money extends Component {
                                 </Button>
                             </Col>
                             <Col span={8}>
-                                 <Button>
+                                 <Button type='ghost' onClick={()=>push('/user/deposit')}>
                                     提现
                                 </Button>
                             </Col>

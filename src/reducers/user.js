@@ -4,31 +4,39 @@ const initialState = {
     list:[],
     loading:false,
     captcha: {
-        loading: false,
-        isSuccess: false
+        loading: false
     }
 }
 
 const user = handleActions({
+    ['user/deposit']: state => ({
+        ...state,
+        loading: true
+    }),
+    ['user/deposit/success']: state => ({
+        ...state,
+        loading: false
+    }),
+    ['user/deposit/failure']: state => ({
+        ...state,
+        loading: false
+    }),
     ['captcha/send']: state => ({
         ...state,
         captcha: {
-            loading: true,
-            isSuccess: false
+            loading: true
         }
     }),
     ['captcha/send/success']: state => ({
         ...state,
         captcha: {
-            loading: false,
-            isSuccess: true
+            loading: false
         }
     }),
     ['captcha/send/failure']: state => ({
         ...state,
         captcha: {
-            loading: false,
-            isSuccess: false
+            loading: false
         }
     }),
     ['user/alipay/set']: state => ({
