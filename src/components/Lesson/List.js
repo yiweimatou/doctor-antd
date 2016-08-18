@@ -31,10 +31,10 @@ class List extends Component{
                 }
                 </Row>
                 {
-                    pageParams?
+                    list.data.length > 0 && pageParams?
                         <div className='pagination'>
                             <Pagination 
-                                total={total}
+                                total={ total }
                                 showTotal={total => `共 ${total} 条`}
                                 pageSize = {pageParams.limit}
                                 onChange = {(page)=>changeHandler(page,pageParams.account_id,pageParams)}

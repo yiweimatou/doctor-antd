@@ -12,8 +12,7 @@ const mapDispatchToProps = dispatch => ({
             type:'lesson/list',
             payload:{
                 ...pageParam,
-                offset,
-                id
+                offset
             }
         })
     }

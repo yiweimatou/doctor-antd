@@ -67,7 +67,7 @@ class NavMenu extends Component {
                             我的云板书
                         </Link>
                     </Menu.Item>
-                </SubMenu>:''
+                </SubMenu>:<div></div>
                 }
                 <Item>
                     <Link to='/message/index'>
