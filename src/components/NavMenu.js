@@ -50,7 +50,6 @@ class NavMenu extends Component {
                         </Link>
                     </Menu.Item>
                 </SubMenu>
-                {lessons===2?
                 <SubMenu
                     key="sub3"
                     title={
@@ -67,8 +66,7 @@ class NavMenu extends Component {
                             我的云板书
                         </Link>
                     </Menu.Item>
-                </SubMenu>:<div></div>
-                }
+                </SubMenu>
                 <Item>
                     <Link to='/message/index'>
                         <Icon type="notification" />消息管理
