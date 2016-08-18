@@ -1,7 +1,7 @@
 import React, {Component,PropTypes} from 'react'
 import { Form, Button, Input, Modal, Radio, Spin, message } from 'antd'
 import QRCode from 'qrcode.react'
-import alipayImage from '../images/alipay.gif'
+// import alipayImage from '../images/alipay.gif'
 import wxImage from '../images/weixin.gif'
 
 const FormItem = Form.Item
@@ -87,7 +87,6 @@ class Recharge extends Component {
               </FormItem>
               <FormItem wrapperCol = {{ span: 16, offset: 4 }}>
                   <RadioGroup {...getFieldProps('payType',{ initialValue: 1 })}>
-                      <Radio value={1}><img src={alipayImage} width='100%'/></Radio>
                       <Radio value={2}><img src={wxImage} width='100%' /></Radio>
                   </RadioGroup>
               </FormItem>

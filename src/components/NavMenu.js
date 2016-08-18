@@ -7,12 +7,6 @@ const Item = Menu.Item
 
 class NavMenu extends Component {
     render(){
-        const {
-            lessons
-        } = this.props
-        if(!lessons){
-            return (null)
-        }
         return(
             <Menu mode="inline" >
                 <Menu.Item>
@@ -85,8 +79,7 @@ class NavMenu extends Component {
 }
 
 NavMenu.propTypes = {
-    selected:PropTypes.string,
-    lessons:PropTypes.number
+    selected:PropTypes.string
 }
 
 export default NavMenu

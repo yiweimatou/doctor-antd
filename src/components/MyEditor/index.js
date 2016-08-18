@@ -29,10 +29,22 @@ class MyEditor extends React.Component{
             this.handleOpen()
         }
         this.confirmMedia = this._confirmMedia.bind(this)
-        this.handleOpen = ()=>this.setState({open:!this.state.open})
+        this.handleOpen = ()=>{
+            this.setState({
+                open:!this.state.open
+            })
+        }
     }
     static propTypes ={
-        setEditorState:React.PropTypes.func
+        setEditorState: React.PropTypes.func,
+        open: React.PropTypes.bool
+    }
+    componentWillReceiveProps(nextProps) {
+        if(!nextProps.open) {
+            this.setState({
+                editorState:EditorState.createEmpty()
+            })
+        }
     }
     _confirmMedia() {
         const {editorState, urlType} = this.state

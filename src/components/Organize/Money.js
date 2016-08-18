@@ -9,7 +9,7 @@ class Money extends Component {
         const {list, changeHandler, loading} = this.props
         const pagination = {
             total: list.total,
-            pageSize: list.params.limit,
+            pageSize: 6,
             showTotal: total => `共 ${total} 条`,
             onChange(current) {
                 changeHandler({...list.params,offset:current})
