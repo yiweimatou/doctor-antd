@@ -21,7 +21,7 @@
     "leaflet": "^0.7.7",
     "leaflet-draw": "^0.3.0",
     "lodash": "^4.14.1",
-    "nodeman-draft-js-export-html": "^0.3.3",
+    "nodeman-draft-js-export-html": "^0.3.2",
     "qrcode.react": "^0.6.1",
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
@@ -61,8 +61,8 @@
     "lint"
   ],
   "scripts": {
-    "build": "set NODE_ENV=production&&atool-build",
+    "build": "export NODE_ENV=production&&atool-build",
     "lint": "eslint --ext .js,.jsx src/",
-    "start": "set NODE_ENV=development&&dora --plugins \"webpack,webpack-hmr,livereload?enableJs=false&injectHost=127.0.0.1,browser-history?index=/src/entries/index.html\""
+    "start": "export NODE_ENV=development&&dora --plugins \"webpack,webpack-hmr,livereload?enableJs=false&injectHost=127.0.0.1,browser-history?index=/src/entries/index.html\""
   }
 }
