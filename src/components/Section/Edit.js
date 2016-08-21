@@ -1,11 +1,15 @@
 import React,{ Component,PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Tabs,Button,Form,Input,message,Cascader } from 'antd'
+import { Tabs,Button,Form,Input,message,Cascader,Spin } from 'antd'
 import EditLblView from '../Yunbook/EditLblView.js'
 import {
     getArea,
     getAreaList
 } from '../../services/area.js'
+import {
+    getLesson
+} from '../../services/lesson'
+import array from 'lodash/array'
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item
@@ -18,7 +22,8 @@ class Edit extends Component{
         lbl:'',
         options:[],
         defaultValue:[],
-        yunbook:null
+        yunbook:null,
+        loading: true
     }
     static propTypes = {
         yunbook:PropTypes.object,
@@ -33,6 +38,52 @@ class Edit extends Component{
             this.setState({
                 lbl:nextProps.section.lbl
             })
+            let merge_id, _defaultValue
+            Promise.all([getArea({
+                id: nextProps.section.area_id
+            }),getLesson({ id: nextProps.section.lesson_id })])
+            .then(values => {
+                const area = values[0].get
+                merge_id = area.merge_id.split(',').map(i => parseInt(i, 10))
+                const _index = merge_id.indexOf(values[1].get.area_id)
+                _defaultValue = merge_id.slice(_index,merge_id.length - 1)                
+                merge_id = merge_id.slice(_index+1,merge_id.length)
+                return getAreaList({ pid_list: _defaultValue.join(','), limit: 1000 })
+            }).then(areas => {
+                const _array = []
+                _defaultValue.forEach(item => {
+                    _array.push(areas.list.filter(area=> {
+                        if(area.pid === item) {
+                            return true
+                        }
+                    }).map(area => {
+                        return {
+                            label: area.title,
+                            value: area.id,
+                            zoom: area.zoom,
+                            isLeaf: false,
+                            pid: area.pid
+                        }
+                    }))
+                })
+                let areaList = _array.pop()
+                let _list = _array.pop()
+                while(_list !== undefined){
+                    const _idx = array.findIndex(_list, { value: areaList[0].pid })
+                    if(_idx === -1) break;
+                    _list[_idx].children = areaList
+                    areaList = _list
+                    _list = _array.pop()                
+                }
+                this.setState({
+                    defaultValue: merge_id,
+                    options: areaList,
+                    loading: false
+                })
+            })
+            .catch(error=>{
+                message.error(error)
+            })
         }
         if(!this.props.yunbook&&nextProps.yunbook){
             this.setState({
@@ -40,126 +91,6 @@ class Edit extends Component{
                     ...nextProps.yunbook,
                     lbl:this.state.lbl                    
                 }
-            })
-            let a1=[],a2=[],a3=[],a4=[]
-            getArea({
-                id:nextProps.yunbook.area_id
-            }).then(data=>data.get).then(area=>{
-                this.setState({
-                    defaultValue:[area.pid,area.id]
-                })
-                getAreaList({
-                    pid:area.pid,
-                    zoom:area.zoom,
-                    limit:100
-                }).then(data=>{
-                    data.list.forEach(item=>{
-                        a4.push({
-                            value:item.id,
-                            label:item.title,
-                            zoom:item.zoom,
-                            isLeaf:true
-                        })
-                    })
-                })
-                return area
-            }).then(area=>{
-                return getArea({
-                    id:area.pid
-                }).then(data=>data.get)
-            }).then(area=>{
-                getAreaList({
-                    pid:area.pid,
-                    zoom:area.zoom,
-                    limit:100
-                }).then(data=>{
-                    data.list.forEach(item=>{
-                        if(item.id===area.id){
-                            a3.push({
-                                value:item.id,
-                                label:item.title,
-                                zoom:item.zoom,
-                                children:a4
-                            })
-                        }else{
-                            a3.push({
-                                value:item.id,
-                                label:item.title,
-                                zoom:item.zoom,
-                                isLeaf:false
-                            })
-                        }
-                    })
-                })
-                this.setState({
-                    defaultValue:[area.pid].concat(this.state.defaultValue)
-                })
-                return area
-            }).then(area=>{
-                return getArea({
-                    id:area.pid
-                }).then(data=>data.get)
-            }).then(area=>{
-                getAreaList({
-                    pid:area.pid,
-                    zoom:area.zoom,
-                    limit:100
-                }).then(data=>{
-                    data.list.forEach(item=>{
-                        if(item.id===area.id){
-                            a2.push({
-                                value:item.id,
-                                label:item.title,
-                                zoom:item.zoom,
-                                children:a3
-                            })
-                        }else{
-                            a2.push({
-                                value:item.id,
-                                label:item.title,
-                                zoom:item.zoom,
-                                isLeaf:false
-                            })
-                        }
-                    })
-                })
-                this.setState({
-                    defaultValue:[area.pid].concat(this.state.defaultValue)
-                })
-                return area
-            }).then(area=>{
-                return getArea({
-                    id:area.pid
-                }).then(data=>data.get)
-            }).then(area=>{
-                    getAreaList({
-                        pid:area.pid,
-                        zoom:area.zoom,
-                        limit:100
-                    }).then(data=>{
-                        data.list.forEach(item=>{
-                            if(item.aid===area.aid){
-                                a1.push({
-                                    value:item.id,
-                                    label:item.title,
-                                    zoom:item.zoom,
-                                    children:a2
-                                })
-                            }else{
-                                a1.push({
-                                    value:item.id,
-                                    label:item.title,
-                                    zoom:item.zoom,
-                                    isLeaf:false
-                                })
-                            }
-                        })
-                        this.setState({
-                            options:a1
-                        })
-                    })
-            }).catch(error=>{
-                message.error(error)
             })
         }
     }
@@ -169,8 +100,7 @@ class Edit extends Component{
         targetOption.loading=true
         getAreaList({
             limit:100,
-            pid:targetOption.value,
-            zoom:targetOption.zoom+1
+            pid:targetOption.value
         }).then(data=>{
             targetOption.loading=false
             if( data.list.length > 0){
@@ -202,7 +132,7 @@ class Edit extends Component{
             }
             const params = {
                 lbl:this.state.lbl,
-                area_id:values.aid[3],
+                area_id:values.area_ids[values.area_ids.length-1],
                 title:values.title,
                 descript:values.descript,
                 id:this.props.section.id
@@ -218,7 +148,7 @@ class Edit extends Component{
         }else{
             this.props.save({
                 lbl:this.state.lbl,
-                sid:this.props.section.id
+                id:this.props.section.id
             })
         }
     }
@@ -230,22 +160,13 @@ class Edit extends Component{
             options,defaultValue
         } = this.state
         const {getFieldProps}=form
-        const aidProps = getFieldProps('aid',{
-                rules:[{
-                    required:true,
-                    type:'array',
-                    message:'请选择分类'
-                }],
-                initialValue:defaultValue
-            })
-        delete aidProps.value  
         return(
             <div>
+                <Spin spinning = { this.state.loading }>
                 <Tabs defaultActiveKey='2'>
                     <TabPane key='1' tab='基本信息修改'>
                         <Form
                             horizontal 
-                            form = { form }
                             onSubmit = { this.submitHandler }
                             style = {{pading:30,margin:'30 0'}}
                         >
@@ -271,11 +192,18 @@ class Edit extends Component{
                                 {...formItemLayout}
                             >
                                 <Cascader
+                                    changeOnSelect = { true }
                                     placeholder='请选择分类'
                                     options = {options}
                                     loadData = {this.loadData}
-                                    defaultValue={defaultValue}
-                                    {...aidProps}
+                                    {...getFieldProps('area_ids',{
+                                        rules:[{
+                                            required:true,
+                                            type:'array',
+                                            message:'请选择分类'
+                                        }],
+                                        initialValue:defaultValue
+                                    })}
                                 />
                             </FormItem>
                             <FormItem
@@ -308,6 +236,7 @@ class Edit extends Component{
                 <Button style={{marginTop:20}} type='primary' onClick={this.click}>
                         保存
                 </Button>
+                </Spin>
             </div>
         )
     }

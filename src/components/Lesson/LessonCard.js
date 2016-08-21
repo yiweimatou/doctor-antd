@@ -13,7 +13,7 @@ class LessonCard extends Component{
                     <div className="courseImg">
                         <img src={lesson.cover} width="100%" />
                     </div>
-                    <div className="courseTitle">
+                    <div className="lessonTitle">
                         <span>{lesson.title}</span>
                     </div>
                     <ul className="courseOther">

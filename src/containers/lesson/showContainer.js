@@ -10,7 +10,7 @@ function mapStateToProps(state){
         isAdmin = state.lesson.entity.account_id === uid?1:3
     }
     state.lessonTeam.list.forEach(item=>{
-        if(item.type===1&&item.account_id===uid){
+        if((item.type === 1 ||item.type === 2)&&item.account_id===uid){
             isAdmin=2
         }
     })

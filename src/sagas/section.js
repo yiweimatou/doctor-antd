@@ -35,6 +35,7 @@ function* handleNew(action) {
             type:'section/new/success'
         })
         message.success('发布成功!')
+        yield call(action.meta.resolve)
     } catch (error) {
         message.error(error)
         yield put({

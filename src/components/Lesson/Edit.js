@@ -12,12 +12,7 @@ import {
 import Paper from '../Paper'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
-import {
-    getArea,
-    getAreaList
-} from '../../services/area.js'
-import category from '../../constants/category'
-import array from 'lodash/array'
+import AreaCascader from '../AreaCascader'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -43,34 +38,7 @@ class Edit extends Component{
         }
         return e && e.fileList
     }
-    loadData=(selectedOptions)=>{
-        const targetOption = selectedOptions[selectedOptions.length-1]
-        const isLeaf = 5 ===targetOption.zoom
-        targetOption.loading=true
-        getAreaList({
-            limit:100,
-            pid:targetOption.value
-        }).then(data=>{
-            targetOption.loading=false
-            if( data.list.length > 0){
-                targetOption.children = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.id,
-                        zoom:item.zoom,
-                        isLeaf
-                    }
-                })
-            }else{
-                targetOption.children = []
-            }
-            this.setState({
-                options:[...this.state.options]
-            })
-        }).catch(error=>{
-            message.error(error)
-        })   
-    }
+    
     handleChange = (info)=> {
         let fileList = info.fileList
         fileList = fileList.slice(-1)
@@ -98,16 +66,16 @@ class Edit extends Component{
             const first = values.area_ids[0]
             let area_id,category_id
             if(first === 1) {
-                if( values.length < 5) {
-                    return
+                if( values.area_ids.length < 3) {
+                    return message.error('请再选一级分类')
                 }
-                area_id = values.area_ids[4]
+                area_id = values.area_ids[values.area_ids.length - 1]
                 category_id = values.area_ids[1]
             }else {
-                if( values.length < 6) {
-                    return
+                if( values.area_ids.length < 4) {
+                    return message.error('请再选一级分类')
                 }
-                area_id = values.area_ids[5]
+                area_id = values.area_ids[values.area_ids.length -1 ]
                 category_id = values.area_ids[2]
             }
             const params = {
@@ -134,87 +102,15 @@ class Edit extends Component{
                     url:nextProps.lesson.cover
                 }]
             })
-            let a2=[],a3=[],category_ids,default1
-            const category_id = nextProps.lesson.category_id
-            if(category_id.toString().length===2){
-                category_ids = [parseInt(category_id.toString().split('', 2)[0], 10), category_id]
-            }else {
-                const _temp = category_id.toString().split('', 3)
-                category_ids = [parseInt(_temp[0], 10), parseInt(_temp[0]+_temp[1], 10), category_id]
-            }
-            getArea({
-                id:nextProps.lesson.area_id
-            }).then(data=>data.get).then(area=>{  
-                default1 = [area.pid,area.id]
-                getAreaList({
-                    pid:area.pid,
-                    limit:100
-                }).then(data=>{
-                    data.list.forEach(item=>{
-                        a3.push({
-                            value:item.id,
-                            label:item.title,
-                            zoom:item.zoom,
-                            isLeaf:true
-                        })
-                    })
-                })
-                return area
-            }).then(area=>{
-                return getArea({
-                    id:area.pid
-                }).then(data=>data.get)
-            }).then(area=>{
-                getAreaList({
-                    pid:area.pid,
-                    limit:100
-                }).then(data=>{
-                    data.list.forEach(item=>{
-                        if(item.id===area.id){
-                            a2.push({
-                                value:item.id,
-                                label:item.title,
-                                zoom:item.zoom,
-                                children:a3
-                            })
-                        }else{
-                            a2.push({
-                                value:item.id,
-                                label:item.title,
-                                zoom:item.zoom,
-                                isLeaf:false
-                            })
-                        }
-                    })
-                })
-                const options = category.slice()  
-                if(category_ids.length === 2){               
-                    const index = array.findIndex(options[0].children, { value: category_id })
-                    const _index = array.findIndex(options[0].children[index].children, { value: area.pid })
-                    options[0].children[index].children[_index].children = a2
-                    this.setState({
-                        options: options
-                    })
-                    this.props.form.setFieldsValue({
-                        'area_ids': category_ids.concat([area.pid].concat(default1))
-                    })
-                }else {          
-                    const index = array.findIndex(options[1].children, { value: category_ids[1] })
-                    const index1 = array.findIndex(options[1].children[index].children, { value: category_id })
-                    const _index = array.findIndex(options[1].children[index].children[index1].children, { value: area.pid })
-                    options[1].children[index].children[index1].children[_index].children = a2 
-                    this.setState({
-                        options,
-                        defaultValue: category_ids.concat([area.pid].concat(default1))
-                    })
-                    setTimeout(() => {
-                        document.getElementById('area_ids').click()
-                        document.getElementById('area_ids').click()
-                    },100)
-                }
-            }).catch(error=>{
-                message.error(error)
-            })
+           this.props.initialCategory({
+               category_id: nextProps.lesson.category_id,
+               area_id: nextProps.lesson.area_id
+           }, (defaultValue, options) => {
+               this.setState({
+                   defaultValue,
+                   options
+               })
+           }, error => message.error(error))
         }
     }
     render(){
@@ -222,21 +118,12 @@ class Edit extends Component{
             form,lesson,loading
         } = this.props
         const { getFieldProps } = form
-        const areaIdsProps = getFieldProps('area_ids',{
-            rules:[{
-                required:true,
-                type:'array',
-                message:'请选择分类'
-            }],
-            initialValue: this.state.defaultValue
-        })
         return(
             <Paper>
                 <Spin spinning = { loading } size = 'large'>
                 <Form 
                     horizontal 
                     className = 'form'
-                    form = { form }
                     onSubmit = { this.submitHandler }
                 >
                     <FormItem
@@ -303,11 +190,10 @@ class Edit extends Component{
                         {...formItemLayout}
                         hasFeedback
                     >
-                        <Cascader 
-                            placeholder='请选择分类'
-                            options={ this.state.options }  
-                            loadData = {this.loadData}
-                            {...areaIdsProps}
+                        <AreaCascader 
+                            options={ this.state.options }
+                            level = {3}
+                            props = { getFieldProps('area_ids',{ initialValue: this.state.defaultValue })}
                         />
                     </FormItem>
                     <FormItem
@@ -364,6 +250,16 @@ export default connect(
             dispatch({
                 type:'lesson/edit',
                 payload:params
+            })
+        },
+        initialCategory: (params, resolve, reject) => {
+            dispatch({
+                type: 'category/init',
+                payload: params,
+                meta: {
+                    resolve,
+                    reject
+                }
             })
         }
     })

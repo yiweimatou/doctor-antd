@@ -69,7 +69,7 @@ class Show extends Component {
                             <Col span={6}>
                                 <span>课程简介:</span>
                             </Col>
-                            <Col span={6}>
+                            <Col span={6} offset={6}>
                                 <p>{lesson&&lesson.descript}</p>
                             </Col>
                             <Col span={6}>
@@ -90,58 +90,42 @@ class Show extends Component {
                             <Col span={3}>
                                 <p>{lesson&&lesson.pv}</p>
                             </Col>
-                            <Col span={3}>
+                            <Col span={4}>
                                 <span>粉丝数:</span>
                             </Col>
-                            <Col span={3}>
+                            <Col span={2}>
                                 <p>{lesson&&lesson.uv}</p>
                             </Col>      
-                            <Col span = {2}>
+                            <Col span = {4}>
                                 <span>课程价格:</span>
                             </Col>
                             <Col span = {2}>
-                                <span className='money'>{lesson&&lesson.account_money}</span>元                              
+                                <span style={{color: 'orange'}}>{lesson&&lesson.account_money}</span>元                              
                             </Col>
                         </Row>
                     </div>
                     {isAdmin===3?null:
                     <div style = { styles.row } >
                         <Row>
-                            <Col span={20}>
-                                <Row>
-                                  <Col span={2}>
                                     课程余额
-                                  </Col>
-                                  <Col span={2}>
                                     <span className='money'><em>{lesson&&lesson.amount_money}</em></span>元
-                                  </Col>
-                                  <Col offset={2} span={18}>
-                                    <span>每天23:00课程账户进行分成,分成总额将扣除当天信用账户支出费用
+                                    <span style={{marginLeft: 30}}>
+                                        每月一日0点自动分成，课程余额超过1000元部分分成
                                     </span>
-                                  </Col>
-                                </Row>
-                                <Row>
-                                    <Col span={2}>
+                                    <br />
                                         信用账户
-                                    </Col>
-                                    <Col span={2}>
                                         <span className='money'><em>{lesson&&lesson.credit_money}</em></span>元
-                                    </Col>
-                                    <Col offset={2} span={18}>
-                                        <span>
-                                            课程可供消费总额为200元
+
+                                        <span style={{marginLeft: 30}}>
+                                            信用账户总额为1000元，课程收入优先还入信用账户
                                         </span>
-                                    </Col>
-                                </Row>
-                            </Col>
-                            <Col span={4}>
                                 <Button
                                     onClick = {()=>push(`/lesson/money/${lesson.id}`)}
                                     type = 'ghost'
+                                    style = {{ marginLeft: 30}}
                                 >
                                     交易明细
                                 </Button>
-                            </Col>
                         </Row>
                     </div>}
                     <div style={styles.row}>
@@ -165,6 +149,7 @@ class Show extends Component {
                                     新建文章
                                 </Button>
                             </Col>
+                             {isAdmin ===1 ?
                             <Col span={4}>
                                 <Button
                                     onClick={this.handlerOVisible}
@@ -172,7 +157,7 @@ class Show extends Component {
                                 >
                                     申请机构认证
                                 </Button>
-                            </Col>
+                            </Col>:null}
                             {isAdmin ===1 ?
                             <Col span={4}>
                                 <Button

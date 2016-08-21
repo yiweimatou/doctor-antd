@@ -37,10 +37,6 @@ const organize = handleActions({
         ...state,
         loading:false
     }),
-    ['organize/info']:(state)=>({
-        ...state,
-        total:0
-    }),
     ['organize/info/success']:(state,action)=>({
         ...state,
         total:action.payload.total

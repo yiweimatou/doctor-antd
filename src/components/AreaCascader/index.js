@@ -1,55 +1,27 @@
 import {Cascader, message } from 'antd'
-import React,{Component,PropTypes} from 'react'
-import {getAreaList} from '../../services/area.js'
+import React,{ Component, PropTypes } from 'react'
+import { getAreaList } from '../../services/area.js'
+// import Category from '../../constants/category'
 
 class AreaCascader extends Component{
-    state = {
-        options:[]
-    }
-    componentWillMount(){
-        if( !this.props.initialOptions ){
-            getAreaList({
-                limit:20,
-                pid:1,
-                zoom:4
-            }).then( data=> {
-                const options = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.id,
-                        zoom:item.zoom,
-                        isLeaf: false
-                    }
-                })
-                this.setState({
-                    options
-                })
-            }).catch( error=>{
-                message.error( error )
-            })
-        }else{
-            this.setState({
-                options:this.props.initialOptions
-            })
+    constructor(props){
+        super(props)
+        this.state = {
+            options: props.options
         }
     }
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         this.setState({
-            options:nextProps.initialOptions
+            options: nextProps.options
         })
-    }
-    static propTypes = {
-        level:PropTypes.number.isRequired,
-        initialOptions:PropTypes.array
     }
     loadData=(selectedOptions)=>{
         const targetOption = selectedOptions[selectedOptions.length-1]
         const isLeaf = this.props.level+2===targetOption.zoom
         targetOption.loading=true
         getAreaList({
-            limit:30,
-            pid:targetOption.value,
-            zoom:targetOption.zoom+1
+            limit: 100,
+            pid:targetOption.value
         }).then(data=>{
             targetOption.loading=false
             if( data.list.length > 0){
@@ -72,19 +44,23 @@ class AreaCascader extends Component{
         })   
     }
     render(){
-        const {
-            value,//eslint-disable-line
-            ...props
-        } =  this.props
+        const { props } = this.props
         return(
             <Cascader
                 placeholder='请选择分类'
                 options = {this.state.options}
                 loadData = {this.loadData}
-                {...props}
+                changeOnSelect = { true }
+                { ...props }
             />
         )
     }
+}
+
+AreaCascader.propTypes = {
+    level: PropTypes.number.isRequired,
+    props: PropTypes.object.isRequired,
+    options: PropTypes.array
 }
 
 export default AreaCascader

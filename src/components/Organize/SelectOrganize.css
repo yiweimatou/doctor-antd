@@ -5,7 +5,7 @@
     background-color: #f9f9f9;
     margin: 10px 0;
     padding: 10px;
-    height: 80px;
+    height: 100px;
 }
 .oimg {
     border-radius: 50%;
@@ -14,7 +14,7 @@
 }
 .ospan {
     display: block;
-    width: 70px;
+    width: 100px;
 }
 .button {
     float: right;

@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import Main from '../components/Main.js'
-import authSelector from '../selectors/auth'
+// import authSelector from '../selectors/auth'
 
 const mapStateToProps = state=>({
-    auth:authSelector(state)
+    auth:state.auth
 })
 
 const mapDispatchToProps = dispatch =>({

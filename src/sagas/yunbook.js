@@ -63,7 +63,7 @@ function* handleNew(action) {
       type: 'yunbook/new/success'
     })
     message.success('新建成功!')
-    yield put(push('/yunbook/show/' + res.identity))
+    yield put(push('/yunbook/edit/' + res.identity))
   } catch (error) {
     message.error(error)
     yield put({

@@ -96,6 +96,10 @@ const showRoute = store => ({
             }
         })
         store.dispatch({
+                type:'organize/info',
+                payload:{}
+        })
+        store.dispatch({
             type:'lesson/get',
             payload:{
                 id

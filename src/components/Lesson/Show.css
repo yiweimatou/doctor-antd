@@ -8,6 +8,8 @@
 
 .money {
     color: orange;
+    font-size: 200%;
+    margin: 0 10px;
 }
 
 .item {

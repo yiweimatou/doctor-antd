@@ -51,11 +51,13 @@
 }
 
 .xmoney {
-    border-radius: 0 0 30% 50%;
+    border-radius: 0 0 6px 0px;
     background-color: #00a2e2;
     display: inline-block;
     position: absolute;
 }
 .xmoney span {
-    color: white
+    color: white;
+    font-size: 200%;
+    padding: 0 10px;
 }

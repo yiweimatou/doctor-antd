@@ -13,6 +13,7 @@ import {connect} from 'react-redux'
 import Paper from '../Paper'
 import { isMobile } from '../../utils'
 import {getUser} from '../../services/user.js'
+import category from '../../constants/category'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -23,7 +24,7 @@ class Recommend extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            options:[],
+            options:category,
             uid:0
         }
         this.submitHandler = (e) => {
@@ -32,14 +33,28 @@ class Recommend extends Component {
                 if(errors || this.state.uid === 0){
                     return
                 }
+                const first = values.area_ids[0]
+                let area_id,category_id
+                if(first === 1) {
+                    if( values.length < 5) {
+                        return
+                    }
+                    area_id = values.area_ids[4]
+                    category_id = values.area_ids[1]
+                }else {
+                    if( values.length < 6) {
+                        return
+                    }
+                    area_id = values.area_ids[5]
+                    category_id = values.area_ids[2]
+                }
                 const params = {
                     title:values.lname,
                     descript:values.descript?values.descript:'',
-                    area_id:values.area_ids[2],
+                    area_id: area_id,
+                    category_id: category_id,
                     rcmd_account_id:this.props.uid,
-                    account_id:this.state.uid,
-                    account_money: values.account_money,
-                    organize_money: values.organize_money
+                    account_id:this.state.uid
                 }
                 this.props.recommend(params)
             })
@@ -49,9 +64,8 @@ class Recommend extends Component {
             const isLeaf = 5 ===targetOption.zoom
             targetOption.loading=true
             getAreaList({
-                limit:30,
-                pid:targetOption.value,
-                zoom:targetOption.zoom+1
+                limit:100,
+                pid:targetOption.value
             }).then(data=>{
                 targetOption.loading=false
                 if( data.list.length > 0){
@@ -73,27 +87,6 @@ class Recommend extends Component {
                 message.error(error)
             })   
         }
-    }
-    componentWillMount(){
-        getAreaList({
-                limit:20,
-                pid:1,
-                zoom:4
-            }).then( data=> {
-                const options = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.id,
-                        zoom:item.zoom,
-                        isLeaf: false
-                    }
-                })
-                this.setState({
-                    options
-                })
-            }).catch( error=>{
-                message.error( error )
-            })
     }
     render() {
         const {
@@ -179,48 +172,6 @@ class Recommend extends Component {
                         <Input
                             type='text'
                             {...lnameProps}
-                        />
-                    </FormItem>
-                    <FormItem
-                        label = '报名费'
-                        {...formItemLayout}
-                    >
-                        <Input
-                            type = 'number'
-                            addonAfter = '元'
-                            {...getFieldProps('account_money',{
-                                rules:[{
-                                    validator: (rule, value, callback) => {
-                                        if( value >= 0) {
-                                            callback()
-                                        }else {
-                                            callback('金额必须大于等于零')
-                                        }
-                                    }
-                                }],
-                                initialValue: 0
-                            })}
-                        />
-                    </FormItem>
-                    <FormItem
-                        label = '机构认证费'
-                        {...formItemLayout}
-                    >
-                        <Input
-                            type = 'number'
-                            addonAfter = '元'
-                            {...getFieldProps('organize_money',{
-                                rules:[{
-                                    validator: (rule, value, callback) => {
-                                        if( value >= 0) {
-                                            callback()
-                                        }else {
-                                            callback('金额必须大于等于零')
-                                        }
-                                    }
-                                }],
-                                initialValue: 0
-                            })}
                         />
                     </FormItem>
                     <FormItem

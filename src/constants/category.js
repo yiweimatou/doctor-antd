@@ -97,13 +97,15 @@ const category = [
                 label: '毕业后教育',
                 value: 12,
                 children: [items[11], items[2], items[3], items[4], items[5], items[6], items[13], items[14]]
-            }, {
+            },
+             {
                 label: '继续教育',
-                value: 11,
+                value: 13,
                 children: [
                     items[11],items[3], items[2], items[4], items[5], items[6], items[13], items[14]
                 ]
-            }, {
+            }, 
+            {
                 label: '科学研究',
                 value: 14,
                 children: [

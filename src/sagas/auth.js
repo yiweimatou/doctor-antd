@@ -15,6 +15,7 @@ import {
 import {
     message
 } from 'antd'
+import { push } from 'react-router-redux'
 
 function* watchSetUser() {
     yield* takeLatest('user/set', function*(action) {
@@ -70,9 +71,9 @@ function* loginHandler(action) {
 
 
 function* watchLogout() {
-    yield* takeLatest('logout',()=>{
+    yield* takeLatest('logout',function* (){
         localStorage.clear()
-        window.location.reload()
+        yield put(push('/'))
     })
 }
 

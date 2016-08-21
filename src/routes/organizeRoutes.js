@@ -55,16 +55,16 @@ const listRoute = store => ({
     onEnter(){
         const account_id = store.getState().auth.key
         store.dispatch({
-            type:'organize/list',
+            type:'organize/info',
             payload:{
-                limit:6,
-                offset:1,
                 account_id
             }
         })
         store.dispatch({
-            type:'organize/info',
+            type:'organize/list',
             payload:{
+                limit:6,
+                offset:1,
                 account_id
             }
         })

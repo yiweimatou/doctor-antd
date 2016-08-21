@@ -18,6 +18,7 @@ import {getArea,getAreaList} from '../../services/area.js'
 import {
     getLesson
 } from '../../services/lesson'
+import { push } from 'react-router-redux'
 
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
@@ -35,7 +36,8 @@ class New extends Component {
         list:PropTypes.object,
         mylist:PropTypes.object,
         uid:PropTypes.number,
-        lid:PropTypes.string
+        lid:PropTypes.string,
+        push: PropTypes.func.isRequired
     }
     state = {
         currentStep:1,
@@ -79,18 +81,46 @@ class New extends Component {
                 book_id:this.state.yunbook.id,
                 lbl:this.state.yunbook.lbl,
                 title:values.sname,
-                area_id:values.area_ids[3],
+                area_id:values.area_ids[0],
                 lesson_id:this.props.lid,
                 descript:values.descript || '',
                 category_id: this.state.category_id
-            })
+            }, () => this.props.push(`/lesson/show/${this.props.lid}`))
         })
     }
     onClick=()=>{
         document.getElementById('_submit').click()
     }
+    loadData=(selectedOptions)=>{
+        const targetOption = selectedOptions[selectedOptions.length-1]
+        const isLeaf = 6 ===targetOption.zoom
+        targetOption.loading=true
+        getAreaList({
+            limit:100,
+            pid:targetOption.value
+        }).then(data=>{
+            targetOption.loading=false
+            if( data.list.length > 0){
+                targetOption.children = data.list.map(item=>{
+                    return {
+                        label:item.title,
+                        value:item.id,
+                        zoom:item.zoom,
+                        isLeaf
+                    }
+                })
+            }else{
+                targetOption.children = []
+            }
+            this.setState({
+                options:[...this.state.initialOptions]
+            })
+        }).catch(error=>{
+            message.error(error)
+        })   
+    }
     componentWillMount(){
-        let a1=[],a2=[],a3=[]
+        let a3 = []
         getLesson({
             id:this.props.lid
         }).then(data=>{
@@ -101,40 +131,16 @@ class New extends Component {
                 id:lesson.area_id
             }).then(data=>data.get)
         }).then(area => {
-            return Promise.all([getAreaList({pid : area.id, limit: 100}),area])
-        }).then(([areas,area])=>{
-            a3.push({
-                value:area.id,
-                label:area.title,
-                children:areas.list.map(item => ({
+            return getAreaList({pid : area.id, limit: 100})
+        }).then((areas)=>{
+            a3 = areas.list.map(item => ({
                     value: item.id,
                     label: item.title,
-                    zoom: item.zoom
+                    zoom: item.zoom,
+                    isLeaf: false
                 }))
-            })
-            return getArea({
-                id:area.pid
-            }).then(data=>data.get)
-        }).then(area=>{
-            a2.push({
-                value:area.id,
-                label:area.title,
-                zoom:area.zoom,
-                children:a3
-            })
-            return getArea({
-                id:area.pid,
-                zoom:area.zoom-1
-            }).then(data=>data.get)
-        }).then(area=>{
-            a1.push({
-                value:area.id,
-                label:area.title,
-                zoom:area.zoom,
-                children:a2
-            })
             this.setState({
-                initialOptions:a1
+                initialOptions: a3
             })
         }).catch(error=>{
             message.error(error)
@@ -181,7 +187,7 @@ class New extends Component {
                                     <Pagination 
                                         total={list.total}
                                         showTotal={total => `共 ${total} 条`}
-                                        pageSize = {list.limit}
+                                        pageSize = {6}
                                         onChange = {(page)=>changeHandler(page,list.limit,0)}
                                     />
                                 </div>
@@ -215,7 +221,6 @@ class New extends Component {
                         <Form
                             horizontal 
                             className = 'form'
-                            form = { form }
                             onSubmit = { this.submitHandler }
                         >
                             <FormItem
@@ -228,8 +233,8 @@ class New extends Component {
                                     {...getFieldProps('sname',{
                                         rules:[{
                                             required:true,
-                                            max:20,
-                                            message:'请输入少于20字的名称'
+                                            max:30,
+                                            message:'请输入少于30字的名称'
                                         }]
                                     })}
                                 />
@@ -255,6 +260,8 @@ class New extends Component {
                                 {...formItemLayout}
                             >
                                  <Cascader
+                                    changeOnSelect = { true }
+                                    loadData = { this.loadData }
                                     placeholder = '请选择分类'
                                     {...getFieldProps('area_ids',{
                                         rules:[{
@@ -327,13 +334,17 @@ export default connect(
                 })
             }
         },
-        handleNew:(section)=>{
+        handleNew:(section, resolve)=>{
             dispatch({
                 type:'section/new',
                 payload:{
                     ...section
+                },
+                meta: {
+                    resolve
                 }
             })
-        }
+        },
+        push: path => dispatch(push(path))
     })
 )(Form.create()(New))

@@ -5,12 +5,13 @@ import {
     Input,
     Upload,
     Icon,
-    Cascader,message,Spin 
+    Spin,
+    message 
 } from 'antd'
 import Paper from '../Paper'
 import './New.css'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
-import {getAreaList} from '../../services/area.js'
+import AreaCascader from '../AreaCascader'
 import category from '../../constants/category'
 
 const FormItem = Form.Item
@@ -24,42 +25,13 @@ class New extends Component {
         newLesson:PropTypes.func.isRequired
     }
     state = {
-        fileList:[],
-        options:category
+        fileList: []
     }
     normFile(e) {
         if (Array.isArray(e)) {
             return e
         }
         return e && e.fileList
-    }
-    loadData=(selectedOptions)=>{
-        const targetOption = selectedOptions[selectedOptions.length-1]
-        const isLeaf = 5 ===targetOption.zoom
-        targetOption.loading=true
-        getAreaList({
-            limit:100,
-            pid:targetOption.value
-        }).then(data=>{
-            targetOption.loading=false
-            if( data.list.length > 0){
-                targetOption.children = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.id,
-                        zoom:item.zoom,
-                        isLeaf
-                    }
-                })
-            }else{
-                targetOption.children = []
-            }
-            this.setState({
-                options:[...this.state.options]
-            })
-        }).catch(error=>{
-            message.error(error)
-        })   
     }
     handleChange = (info)=> {
         let fileList = info.fileList
@@ -87,16 +59,16 @@ class New extends Component {
             const first = values.area_ids[0]
             let area_id,category_id
             if(first === 1) {
-                if( values.length < 5) {
-                    return
+                if( values.area_ids.length < 3) {
+                    return message.error('请再选一级分类')
                 }
-                area_id = values.area_ids[4]
+                area_id = values.area_ids[values.area_ids.length - 1]
                 category_id = values.area_ids[1]
             }else {
-                if( values.length < 6) {
-                    return
+                if( values.area_ids.length < 4) {
+                    return message.error('请再选一级分类')
                 }
-                area_id = values.area_ids[5]
+                area_id = values.area_ids[values.area_ids.length -1 ]
                 category_id = values.area_ids[2]
             }
             const params = {
@@ -128,21 +100,12 @@ class New extends Component {
                     required:false,max:200,message:'请输入少于200字的简介'
                 }]
         })
-        const areaProps = getFieldProps('area_ids',{
-            rules:[{
-                required:true,
-                type:'array',
-                message:'请选择分类'
-            }]
-        })
-        delete areaProps.value
         return(
             <Paper>
                 <Spin spinning={loading} size="large">
                 <Form 
                     horizontal 
                     className = 'form'
-                    form = { form }
                     onSubmit = { this.submitHandler }
                 >
                     <FormItem
@@ -199,7 +162,7 @@ class New extends Component {
                                         }
                                     }
                                 }],
-                                initialValue: 0
+                                initialValue: 2
                             })}
                         />
                     </FormItem>
@@ -220,7 +183,7 @@ class New extends Component {
                                         }
                                     }
                                 }],
-                                initialValue: 0
+                                initialValue: 10
                             })}
                         />
                     </FormItem>
@@ -229,11 +192,10 @@ class New extends Component {
                         required
                         {...formItemLayout}
                     >
-                        <Cascader
-                            placeholder='请选择分类'
-                            options = {this.state.options}
-                            loadData = {this.loadData}
-                            {...areaProps}
+                        <AreaCascader
+                            options = {category}
+                            level = { 3 }
+                            props = {getFieldProps('area_ids')}
                         />
                     </FormItem>
                     <FormItem

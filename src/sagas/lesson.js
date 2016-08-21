@@ -89,12 +89,12 @@ function* watchputcet() {
 
 function* recommendHandler(action) {
     try {
-        const res = yield call(newLesson, action.payload)
+        yield call(newLesson, action.payload)
         yield put({
             type: 'lesson/recommend/success'
         })
         message.success('推荐成功！')
-        yield put(push(`/lesson/show/${res.identity}`))
+        // yield put(push(`/lesson/show/${res.identity}`))
     } catch (error) {
         message.error(error)
         yield put({

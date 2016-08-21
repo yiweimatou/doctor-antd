@@ -12,16 +12,21 @@ const moneyRoute = store => ({
     path: 'money',
     component: Money,
     onEnter() {
+        const userId = store.getState().auth.key
         store.dispatch({
             type: 'money/info',
-            payload: {}
+            payload: {
+                type: 3,
+                foreign_id: userId
+            }
         }),
         store.dispatch({
             type: 'money/fetchlist',
             payload: {
                 limit: 6,
                 offset: 1,
-                type: 3
+                type: 3,
+                foreign_id: userId
             }
         })
     }

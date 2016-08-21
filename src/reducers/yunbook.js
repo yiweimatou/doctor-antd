@@ -16,6 +16,10 @@ const initialState = {
         total:0
     },
     entity:null,
+    actionStatus: {
+        adding: false,
+        editing: false
+    },
     loading:false
 }
 
@@ -43,15 +47,24 @@ const yunbook = handleActions({
     }),
     ['yunbook/new']:state=>({
         ...state,
-        loading:true
+        actionStatus: {
+            ...state.actionStatus,
+            adding: true
+        }
     }),
     ['yunbook/new/success']:(state)=>({
         ...state,
-        loading:false
+        actionStatus: {
+            ...state.actionStatus,
+            adding: false
+        }
     }),
     ['yunbook/new/failure']:state=>({
         ...state,
-        loading:false
+        actionStatus: {
+            ...state.actionStatus,
+            adding: false
+        }
     }),
     ['yunbook/list']:state=>({
         ...state,

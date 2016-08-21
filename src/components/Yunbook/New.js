@@ -1,14 +1,13 @@
 import React ,{ Component,PropTypes } from 'react'
 import {connect} from 'react-redux'
-import { Form,Button,Upload,Input,Icon,message,Cascader, Spin } from 'antd'
+import { Form,Button,Upload,Input,Icon,message, Spin } from 'antd'
 import Paper from '../Paper'
 import {
     UPLOAD_YUNBOOK_API,
     UPLOAD_PPT_API
 } from '../../constants/api.js'
-import {getAreaList} from '../../services/area.js'
+import AreaCascader from '../AreaCascader'
 import category from '../../constants/category'
-
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -23,37 +22,8 @@ class New extends Component{
         loading: PropTypes.bool
     }
     state={
-        FileList:[],
-        action:UPLOAD_YUNBOOK_API,
-        options:category
-    }
-    loadData=(selectedOptions)=>{
-        const targetOption = selectedOptions[selectedOptions.length-1]
-        const isLeaf = 6 === targetOption.zoom
-        targetOption.loading = true
-        getAreaList({
-            limit:100,
-            pid:targetOption.value
-        }).then(data=>{
-            targetOption.loading=false
-            if( data.list.length > 0){
-                targetOption.children = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.id,
-                        zoom:item.zoom,
-                        isLeaf
-                    }
-                })
-            }else{
-                targetOption.children = []
-            }
-            this.setState({
-                options:[...this.state.options]
-            })
-        }).catch(error=>{
-            message.error(error)
-        })   
+        fileList:[],
+        action:UPLOAD_YUNBOOK_API
     }
     normFile(e) {
             if (Array.isArray(e)) {
@@ -62,7 +32,7 @@ class New extends Component{
             return e && e.fileList
     }
     handleChange = (info)=> {
-        let fileList = info.fileList
+        let fileList = info.fileList 
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
             if (file.response) {
@@ -76,7 +46,7 @@ class New extends Component{
             }
             return true
         })
-        this.setState({ FileList:fileList })
+        this.setState({ fileList })
     }
     submitHandler=(e)=>{
         e.preventDefault()
@@ -87,16 +57,16 @@ class New extends Component{
             const first = values.area_ids[0]
             let area_id,category_id
             if(first === 1) {
-                if( values.length < 6) {
-                    return
+                if( values.area_ids.length < 3) {
+                    return message.error('请再选一级分类')
                 }
-                area_id = values.area_ids[5]
+                area_id = values.area_ids[values.area_ids.length - 1]
                 category_id = values.area_ids[1]
             }else {
-                if( values.length < 7) {
-                    return
+                if( values.area_ids.length < 4) {
+                    return message.error('请再选一级分类')
                 }
-                area_id = values.area_ids[6]
+                area_id = values.area_ids[values.area_ids.length -1 ]
                 category_id = values.area_ids[2]
             }
             const cover = values.upload[0].response.cover
@@ -123,21 +93,12 @@ class New extends Component{
         const {
             getFieldProps
         } = form
-        const aidProps = getFieldProps('area_ids',{
-            rules:[{
-                required:true,
-                type:'array',
-                message:'请选择分类'
-            }]
-        })
-        delete aidProps.value
         return(
             <Paper>
-                <Spin spinning = { loading }>
+                <Spin spinning = { loading } >
                 <Form
                     horizontal
                     className = 'form'
-                    form = { form }
                     style = {{pading:30,margin:'30 0'}}
                     onSubmit = { this.submitHandler }
                 >
@@ -194,12 +155,11 @@ class New extends Component{
                         required
                         label='云板书分类'
                     >
-                       <Cascader
-                            placeholder='请选择分类'
-                            options = {this.state.options}
-                            loadData = {this.loadData}
-                            {...aidProps}
-                        />
+                       <AreaCascader
+                            props = { getFieldProps('area_ids') }
+                            level = { 4 }
+                            options = { category }
+                       />
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -210,8 +170,7 @@ class New extends Component{
                             name='upload_file'
                             action={this.state.action}
                             listType="picture"
-                            fileList={this.state.FileList}
-                            onChange = {(info)=>this.handleChange(info)}
+                            fileList={this.state.fileList}
                             {...getFieldProps('upload',{
                                 valuePropName:'fileList',
                                 normalize: this.normFile,
@@ -219,7 +178,8 @@ class New extends Component{
                                     required:true,
                                     type:'array',
                                     message:'请上传云板书文件'
-                                }]
+                                }],
+                                onChange: (info)=>this.handleChange(info)
                             })}
                             beforeUpload = {
                                 (file)=>{
@@ -256,7 +216,7 @@ class New extends Component{
 
 export default connect(
     state => ({
-        loading: state.yunbook.loading
+        loading: state.yunbook.actionStatus.adding
     }),
     dispatch=>({
         handleNew(yunbook){
