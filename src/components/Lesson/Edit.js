@@ -6,7 +6,6 @@ import {
     Upload,
     Icon,
     message,
-    Cascader,
     Spin 
 } from 'antd'
 import Paper from '../Paper'
