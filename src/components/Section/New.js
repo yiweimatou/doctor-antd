@@ -9,14 +9,16 @@ import {
     Pagination,
     Row,
     Col,
-    message 
+    message,
+    Cascader,
+    Modal
 } from 'antd'
-import AreaCascader from '../AreaCascader'
 import SelectYunbook from '../Yunbook/SelectYunbook'
-import {getArea} from '../../services/area.js'
+import {getArea,getAreaList} from '../../services/area.js'
 import {
     getLesson
 } from '../../services/lesson'
+import { push } from 'react-router-redux'
 
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
@@ -34,21 +36,35 @@ class New extends Component {
         list:PropTypes.object,
         mylist:PropTypes.object,
         uid:PropTypes.number,
-        lid:PropTypes.string
+        lid:PropTypes.string,
+        push: PropTypes.func.isRequired
     }
     state = {
         currentStep:1,
-        bid:0,
-        lbl:'',
-        initialOptions:[]
+        initialOptions:[],
+        yunbook:null,
+        show: false,
+        category_id: null
+    }
+    handleCancel = () => this.setState({
+        show: false
+    })
+    handleOk = () => {
+        this.setState({
+            currentStep:2,
+            show: false
+        })
+        message.success(`引用了:${this.state.yunbook.title}`)
+        this.props.form.setFieldsValue({
+            'sname':this.state.yunbook.title
+        })
     }
     handlePick=(yunbook)=>{
         this.setState({
-            bid:yunbook.bid,
-            lbl:yunbook.lbl,
-            currentStep:2
+            yunbook,
+            show: true
         })
-        message.success(`引用了:${yunbook.title}`)
+        
     }
     handleNext = (step)=>{
         this.setState({
@@ -62,59 +78,69 @@ class New extends Component {
                 return
             }
             this.props.handleNew({
-                bid:this.state.bid,
-                lbl:this.state.lbl,
-                sname:values.sname,
-                aid:values.aid[3],
-                lid:this.props.lid,
-                descript:values.descript
-            })
+                book_id:this.state.yunbook.id,
+                lbl:this.state.yunbook.lbl,
+                title:values.sname,
+                area_id:values.area_ids[0],
+                lesson_id:this.props.lid,
+                descript:values.descript || '',
+                category_id: this.state.category_id
+            }, () => this.props.push(`/lesson/show/${this.props.lid}`))
         })
     }
     onClick=()=>{
         document.getElementById('_submit').click()
     }
-    componentWillMount(){
-        let a1=[],a2=[],a3=[]
-        getLesson({
-            lid:this.props.lid
+    loadData=(selectedOptions)=>{
+        const targetOption = selectedOptions[selectedOptions.length-1]
+        const isLeaf = 6 ===targetOption.zoom
+        targetOption.loading=true
+        getAreaList({
+            limit:100,
+            pid:targetOption.value
         }).then(data=>{
+            targetOption.loading=false
+            if( data.list.length > 0){
+                targetOption.children = data.list.map(item=>{
+                    return {
+                        label:item.title,
+                        value:item.id,
+                        zoom:item.zoom,
+                        isLeaf
+                    }
+                })
+            }else{
+                targetOption.children = []
+            }
+            this.setState({
+                options:[...this.state.initialOptions]
+            })
+        }).catch(error=>{
+            message.error(error)
+        })   
+    }
+    componentWillMount(){
+        let a3 = []
+        getLesson({
+            id:this.props.lid
+        }).then(data=>{
+            this.setState({ category_id: data.get.category_id })
             return data.get
         }).then(lesson=>{
             return getArea({
-                aid:lesson.aid
+                id:lesson.area_id
             }).then(data=>data.get)
-        }).then(area=>{
-            a3.push({
-                value:area.aid,
-                label:area.title,
-                zoom:area.zoom,
-                isLeaf:false
-            })
-            return getArea({
-                aid:area.pid,
-                zoom:area.zoom-1
-            }).then(data=>data.get)
-        }).then(area=>{
-            a2.push({
-                value:area.aid,
-                label:area.title,
-                zoom:area.zoom,
-                children:a3
-            })
-            return getArea({
-                aid:area.pid,
-                zoom:area.zoom-1
-            }).then(data=>data.get)
-        }).then(area=>{
-            a1.push({
-                value:area.aid,
-                label:area.title,
-                zoom:area.zoom,
-                children:a2
-            })
+        }).then(area => {
+            return getAreaList({pid : area.id, limit: 100})
+        }).then((areas)=>{
+            a3 = areas.list.map(item => ({
+                    value: item.id,
+                    label: item.title,
+                    zoom: item.zoom,
+                    isLeaf: false
+                }))
             this.setState({
-                initialOptions:a1
+                initialOptions: a3
             })
         }).catch(error=>{
             message.error(error)
@@ -130,6 +156,12 @@ class New extends Component {
         } = form
         return(
             <div>
+                <Modal title="购买云板书" visible={this.state.show}
+                    onOk={this.handleOk} onCancel={this.handleCancel}
+                >
+                    <p>云板书名称：{this.state.yunbook&&this.state.yunbook.title}</p>
+                    <p>云板书价格：<em style={{color:'orange',fontSize:'200%'}}>{this.state.yunbook&&this.state.yunbook.money}</em>元</p>
+                </Modal>
                 <Steps current={cs}>
                     <Step title='选择云板书' />
                     <Step title='文章基本信息' />
@@ -141,7 +173,7 @@ class New extends Component {
                                 <Row>
                                 {
                                     list.data.map(yunbook=>{
-                                        return (<Col key={yunbook.bid} span={8}>
+                                        return (<Col key={yunbook.id} span={8}>
                                                     <SelectYunbook 
                                                         yunbook={yunbook}
                                                         handlePick = {this.handlePick}
@@ -155,7 +187,7 @@ class New extends Component {
                                     <Pagination 
                                         total={list.total}
                                         showTotal={total => `共 ${total} 条`}
-                                        defaultPageSize = {list.limit}
+                                        pageSize = {6}
                                         onChange = {(page)=>changeHandler(page,list.limit,0)}
                                     />
                                 </div>
@@ -165,7 +197,7 @@ class New extends Component {
                                 {
                                     mylist.data.map(yunbook=>{
                                         return (
-                                            <Col key={yunbook.bid} span={8}>
+                                            <Col key={yunbook.id} span={8}>
                                                 <SelectYunbook 
                                                     yunbook={yunbook}
                                                     handlePick = {this.handlePick}
@@ -179,7 +211,7 @@ class New extends Component {
                                     <Pagination 
                                         total={mylist.total}
                                         showTotal={total => `共 ${total} 条`}
-                                        defaultPageSize = {mylist.limit}
+                                        pageSize = {mylist.limit}
                                         onChange = {(page)=>changeHandler(page,list.limit,uid)}
                                     />
                                 </div>
@@ -189,7 +221,6 @@ class New extends Component {
                         <Form
                             horizontal 
                             className = 'form'
-                            form = { form }
                             onSubmit = { this.submitHandler }
                         >
                             <FormItem
@@ -202,8 +233,8 @@ class New extends Component {
                                     {...getFieldProps('sname',{
                                         rules:[{
                                             required:true,
-                                            max:20,
-                                            message:'请输入少于20字的名称'
+                                            max:30,
+                                            message:'请输入少于30字的名称'
                                         }]
                                     })}
                                 />
@@ -228,18 +259,20 @@ class New extends Component {
                                 label='分类'
                                 {...formItemLayout}
                             >
-                                 <AreaCascader
-                                    {...getFieldProps('aid',{
+                                 <Cascader
+                                    changeOnSelect = { true }
+                                    loadData = { this.loadData }
+                                    placeholder = '请选择分类'
+                                    {...getFieldProps('area_ids',{
                                         rules:[{
                                             required:true,
                                             type:'array',
                                             message:'请选择分类'
                                         }]
                                     })}
-                                    level = { 4 }   
-                                    initialOptions = {
+                                    options = {
                                         this.state.initialOptions
-                                    }                      
+                                    }                 
                                 />
                             </FormItem>
                             <button type='submit' id='_submit'></button>
@@ -263,7 +296,7 @@ class New extends Component {
                             >
                                 上一步
                             </Button>
-                            <Button onClick={this.onClick}>   
+                            <Button type='primary' onClick={this.onClick}>   
                                 发布
                             </Button>
                         </div>
@@ -301,13 +334,17 @@ export default connect(
                 })
             }
         },
-        handleNew:(section)=>{
+        handleNew:(section, resolve)=>{
             dispatch({
                 type:'section/new',
                 payload:{
                     ...section
+                },
+                meta: {
+                    resolve
                 }
             })
-        }
+        },
+        push: path => dispatch(push(path))
     })
 )(Form.create()(New))

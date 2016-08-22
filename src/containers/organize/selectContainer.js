@@ -9,17 +9,17 @@ function mapStateToProps(state) {
             total:state.organize.total,
             limit:state.organize.limit
         },
-        lid:state.lesson.entity.lid
+        lid:state.lesson.entity.id
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return{
-        onChange(page,limit,oname){
+        onChange(page,limit,title){
             dispatch({
                 type:'organize/info',
                 payload:{
-                    oname
+                    title
                 }
             })
             dispatch({
@@ -27,16 +27,16 @@ function mapDispatchToProps(dispatch) {
                 payload:{
                     offset:page,
                     limit:limit,
-                    oname:oname
+                    title:title
                 }   
             })
         },
-        apply(oid,lid){
+        apply(organize_id,lesson_id){
             dispatch({
                 type:'organizeLesson/new',
                 payload:{
-                    oid,
-                    lid
+                    organize_id,
+                    lesson_id
                 }
             })
         }

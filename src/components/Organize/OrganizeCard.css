@@ -2,7 +2,8 @@
     display: block
 }
 .organize-card {
-    padding: 10px 16px
+    padding: 10px 16px;
+    margin: 20px 0 0;
 }
 .organize-card p {
     color: #999

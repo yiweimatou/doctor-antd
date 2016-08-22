@@ -10,6 +10,9 @@ const styles = {
 }
 
 class SelectOrganize extends Component{
+    state = {
+        name: ''
+    }
     static propTypes = {
         list:PropTypes.array,
         pageParams:PropTypes.object,
@@ -21,16 +24,21 @@ class SelectOrganize extends Component{
         this.props.onChange(
             page,
             this.props.pageParams.limit,
-            this.state.oname
+            this.state.name
         )
     }
-    onSearch=(oname)=>{
+    onSearch=(name)=>{
         this.props.onChange(
             1,this.props.pageParams.limit,
-            oname
+            name
         )
     }
-    componentWillMount(){
+    changeHandler = (e) => {
+        this.setState({
+            name: e.targe.value
+        })
+    }
+    componentDidMount(){
         this.props.onChange(1,6,'')
     }
 
@@ -43,14 +51,16 @@ class SelectOrganize extends Component{
                 <SearchInput
                     onSearch = { this.onSearch } 
                     placeholder = '输入机构名称搜索'
+                    value = { this.state.name }
+                    onChange = { this.changeHandler }
                 />
                 {list.map(item=>{
                     return (
-                        <div key={item.oid} className='oitem'>
+                        <div key={item.id} className='oitem'>
                             <img src={item.logo} className='oimg' width='100%' />
-                            <span className='ospan'>{item.oname}</span>
+                            <span className='ospan'>{item.title}</span>
                             <Button 
-                                onClick={()=>apply(item.oid,lid)} 
+                                onClick={()=>apply(item.id,lid)} 
                                 className='button'
                             >
                                 申请
@@ -61,9 +71,9 @@ class SelectOrganize extends Component{
                 <div style={styles.marginTop}>
                     <Pagination 
                         style={{marginTop:20}}
-                        total={pageParams.total}
+                        total={ pageParams.total }
                         showTotal={total => `共 ${total} 条`}
-                        defaultPageSize = {pageParams.limit}
+                        pageSize = {6}
                         onChange = {this.onChange}
                     />
                 </div>

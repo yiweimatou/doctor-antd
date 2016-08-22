@@ -6,15 +6,12 @@ import {
     Upload,
     Icon,
     message,
-    Cascader 
+    Spin 
 } from 'antd'
 import Paper from '../Paper'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
-import {
-    getArea,
-    getAreaList
-} from '../../services/area.js'
+import AreaCascader from '../AreaCascader'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -26,12 +23,13 @@ class Edit extends Component{
     static propTypes = {
         form:PropTypes.object,
         handleEdit:PropTypes.func.isRequired,
-        lesson:PropTypes.object
+        lesson:PropTypes.object,
+        loading: PropTypes.bool
     }
     state = {
-        fileList:[],
-        options:[],
-        defaultValue:[]
+        fileList: [],
+        options: [],
+        defaultValue: []
     }
     normFile(e) {
         if (Array.isArray(e)) {
@@ -39,35 +37,7 @@ class Edit extends Component{
         }
         return e && e.fileList
     }
-    loadData=(selectedOptions)=>{
-        const targetOption = selectedOptions[selectedOptions.length-1]
-        const isLeaf = 5 ===targetOption.zoom
-        targetOption.loading=true
-        getAreaList({
-            limit:30,
-            pid:targetOption.value,
-            zoom:targetOption.zoom+1
-        }).then(data=>{
-            targetOption.loading=false
-            if( data.list.length > 0){
-                targetOption.children = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.aid,
-                        zoom:item.zoom,
-                        isLeaf
-                    }
-                })
-            }else{
-                targetOption.children = []
-            }
-            this.setState({
-                options:[...this.state.options]
-            })
-        }).catch(error=>{
-            message.error(error)
-        })   
-    }
+    
     handleChange = (info)=> {
         let fileList = info.fileList
         fileList = fileList.slice(-1)
@@ -92,18 +62,37 @@ class Edit extends Component{
                 return
             }
             const cover = this.state.fileList[0].url
+            const first = values.area_ids[0]
+            let area_id,category_id
+            if(first === 1) {
+                if( values.area_ids.length < 3) {
+                    return message.error('请再选一级分类')
+                }
+                area_id = values.area_ids[values.area_ids.length - 1]
+                category_id = values.area_ids[1]
+            }else {
+                if( values.area_ids.length < 4) {
+                    return message.error('请再选一级分类')
+                }
+                area_id = values.area_ids[values.area_ids.length -1 ]
+                category_id = values.area_ids[2]
+            }
             const params = {
-                lname:values.lname,
+                title:values.lname,
                 descript:values.descript,
-                aid:values.aid[values.aid.length-1],
-                cover:cover.indexOf('http')===-1?cover:this.props.lesson.cover,
-                lid:this.props.lesson.lid
+                area_id: area_id,
+                category_id: category_id,
+                cover:cover,
+                organize_money: values.organize_money,
+                account_money: values.account_money,
+                id:this.props.lesson.id
             }
             this.props.handleEdit(params)
         })
     }
     componentWillReceiveProps(nextProps){
-        if(!this.props.lesson){
+        //prelesson is null next is not null
+        if(!this.props.lesson && nextProps.lesson){
             this.setState({
                 fileList:[{
                     uid:-1,
@@ -112,117 +101,28 @@ class Edit extends Component{
                     url:`${nextProps.lesson.cover}`
                 }]
             })
-            let a1=[],a2=[],a3=[]
-            getArea({
-                aid:nextProps.lesson.aid
-            }).then(data=>data.get).then(area=>{
-                this.setState({
-                    defaultValue:[area.pid,area.aid]
-                })
-                getAreaList({
-                    pid:area.pid,
-                    zoom:area.zoom,
-                    limit:30
-                }).then(data=>{
-                    data.list.forEach(item=>{
-                        a3.push({
-                            value:item.aid,
-                            label:item.title,
-                            zoom:item.zoom,
-                            isLeaf:true
-                        })
-                    })
-                })
-                return area
-            }).then(area=>{
-                return getArea({
-                    aid:area.pid
-                }).then(data=>data.get)
-            }).then(area=>{
-                getAreaList({
-                    pid:area.pid,
-                    zoom:area.zoom,
-                    limit:30
-                }).then(data=>{
-                    data.list.forEach(item=>{
-                        if(item.aid===area.aid){
-                            a2.push({
-                                value:item.aid,
-                                label:item.title,
-                                zoom:item.zoom,
-                                children:a3
-                            })
-                        }else{
-                            a2.push({
-                                value:item.aid,
-                                label:item.title,
-                                zoom:item.zoom,
-                                isLeaf:false
-                            })
-                        }
-                    })
-                })
-                this.setState({
-                    defaultValue:[area.pid].concat(this.state.defaultValue)
-                })
-                return area
-            }).then(area=>{
-                getArea({
-                    aid:area.pid
-                }).then(data=>{
-                    getAreaList({
-                        pid:data.get.pid,
-                        zoom:data.get.zoom,
-                        limit:30
-                    }).then(data=>{
-                        data.list.forEach(item=>{
-                            if(item.aid===area.pid){
-                                a1.push({
-                                    value:item.aid,
-                                    label:item.title,
-                                    zoom:item.zoom,
-                                    children:a2
-                                })
-                            }else{
-                                a1.push({
-                                    value:item.aid,
-                                    label:item.title,
-                                    zoom:item.zoom,
-                                    isLeaf:false
-                                })
-                            }
-                        })
-                        this.setState({
-                            options:a1
-                        })
-                    })
-                })
-            }).catch(error=>{
-                message.error(error)
-            })
+           this.props.initialCategory({
+               category_id: nextProps.lesson.category_id,
+               area_id: nextProps.lesson.area_id
+           }, (defaultValue, options) => {
+               this.setState({
+                   defaultValue,
+                   options
+               })
+           }, error => message.error(error))
         }
     }
     render(){
         const {
-            form,lesson
+            form,lesson,loading
         } = this.props
-        const {defaultValue,options}=this.state
         const { getFieldProps } = form
-        const aidProps = getFieldProps('aid',{
-            rules:[{
-                required:true,
-                type:'array',
-                message:'请选择分类'
-            }],
-            initialValue:defaultValue
-        })
-        delete aidProps.value
         return(
             <Paper>
+                <Spin spinning = { loading } size = 'large'>
                 <Form 
                     horizontal 
                     className = 'form'
-                    form = { form }
                     onSubmit = { this.submitHandler }
                 >
                     <FormItem
@@ -238,7 +138,49 @@ class Edit extends Component{
                                     max:20,
                                     message:'请输入20字以内课程名'
                                 }],
-                                initialValue:lesson&&lesson.lname
+                                initialValue:lesson&&lesson.title
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '报名费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('account_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: lesson&&lesson.account_money
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '机构认证费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('organize_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if(value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue:lesson&&lesson.organize_money
                             })}
                         />
                     </FormItem>
@@ -246,14 +188,12 @@ class Edit extends Component{
                         label='分类'
                         {...formItemLayout}
                         hasFeedback
-                    >{defaultValue.length===3?
-                        <Cascader 
-                            placeholder='请选择分类'
-                            options={options}  
-                            loadData = {this.loadData}
-                            defaultValue = {defaultValue} 
-                            {...aidProps}
-                        />:null}
+                    >
+                        <AreaCascader 
+                            options={ this.state.options }
+                            level = {3}
+                            props = { getFieldProps('area_ids',{ initialValue: this.state.defaultValue })}
+                        />
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -293,6 +233,7 @@ class Edit extends Component{
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
+                </Spin>
             </Paper>
         )
     }
@@ -300,13 +241,24 @@ class Edit extends Component{
 
 export default connect(
     state=>({
-        lesson:state.lesson.entity
+        lesson:state.lesson.entity,
+        loading : state.lesson.loading
     }),
     dispatch=>({
         handleEdit:(params)=>{
             dispatch({
                 type:'lesson/edit',
                 payload:params
+            })
+        },
+        initialCategory: (params, resolve, reject) => {
+            dispatch({
+                type: 'category/init',
+                payload: params,
+                meta: {
+                    resolve,
+                    reject
+                }
             })
         }
     })

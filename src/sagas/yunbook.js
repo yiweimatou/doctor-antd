@@ -18,8 +18,9 @@ import {
   getYunbookInfo
 }
 from '../services/yunbook.js'
+import { push } from 'react-router-redux'
 
-function* handleInfo(action) {
+const handleInfo = function* (action) {
   try {
     const result = yield call(getYunbookInfo, action.payload)
     yield put({
@@ -62,7 +63,7 @@ function* handleNew(action) {
       type: 'yunbook/new/success'
     })
     message.success('新建成功!')
-    window.location.href = '/yunbook/show/' + res.identity
+    yield put(push('/yunbook/edit/' + res.identity))
   } catch (error) {
     message.error(error)
     yield put({
@@ -82,7 +83,8 @@ function* handleEdit(action) {
       type: 'yunbook/edit/success',
       payload: action.payload
     })
-    message.success('编辑成功!')
+    yield put(push(`/yunbook/show/${action.payload.id}`))
+    message.success('编辑成功!')    
   } catch (error) {
     message.error(error)
     yield put({

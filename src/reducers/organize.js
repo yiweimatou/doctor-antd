@@ -12,7 +12,7 @@ const initialState = {
 const organize = handleActions({
     ['organzie/edit']:state=>({
         ...state,
-        loading:true
+        isSuccess: false
     }),
     ['organize/edit/success']:state=>({
         ...state,
@@ -36,10 +36,6 @@ const organize = handleActions({
     ['organize/list/failure']:(state)=>({
         ...state,
         loading:false
-    }),
-    ['organize/info']:(state)=>({
-        ...state,
-        total:0
     }),
     ['organize/info/success']:(state,action)=>({
         ...state,

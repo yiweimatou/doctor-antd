@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import Main from '../components/Main.js'
+// import authSelector from '../selectors/auth'
 
 const mapStateToProps = state=>({
     auth:state.auth

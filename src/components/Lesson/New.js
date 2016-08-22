@@ -5,12 +5,14 @@ import {
     Input,
     Upload,
     Icon,
-    Cascader,message 
+    Spin,
+    message 
 } from 'antd'
 import Paper from '../Paper'
 import './New.css'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
-import {getAreaList} from '../../services/area.js'
+import AreaCascader from '../AreaCascader'
+import category from '../../constants/category'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -23,64 +25,13 @@ class New extends Component {
         newLesson:PropTypes.func.isRequired
     }
     state = {
-        fileList:[],
-        options:[]
-    }
-    componentWillMount(){
-        getAreaList({
-                limit:20,
-                pid:1,
-                zoom:4
-            }).then( data=> {
-                const options = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.aid,
-                        zoom:item.zoom,
-                        isLeaf: false
-                    }
-                })
-                this.setState({
-                    options
-                })
-            }).catch( error=>{
-                message.error( error )
-            })
+        fileList: []
     }
     normFile(e) {
         if (Array.isArray(e)) {
             return e
         }
         return e && e.fileList
-    }
-    loadData=(selectedOptions)=>{
-        const targetOption = selectedOptions[selectedOptions.length-1]
-        const isLeaf = 5 ===targetOption.zoom
-        targetOption.loading=true
-        getAreaList({
-            limit:30,
-            pid:targetOption.value,
-            zoom:targetOption.zoom+1
-        }).then(data=>{
-            targetOption.loading=false
-            if( data.list.length > 0){
-                targetOption.children = data.list.map(item=>{
-                    return {
-                        label:item.title,
-                        value:item.aid,
-                        zoom:item.zoom,
-                        isLeaf
-                    }
-                })
-            }else{
-                targetOption.children = []
-            }
-            this.setState({
-                options:[...this.state.options]
-            })
-        }).catch(error=>{
-            message.error(error)
-        })   
     }
     handleChange = (info)=> {
         let fileList = info.fileList
@@ -105,30 +56,46 @@ class New extends Component {
             if(errors){
                 return
             }
+            const first = values.area_ids[0]
+            let area_id,category_id
+            if(first === 1) {
+                if( values.area_ids.length < 3) {
+                    return message.error('请再选一级分类')
+                }
+                area_id = values.area_ids[values.area_ids.length - 1]
+                category_id = values.area_ids[1]
+            }else {
+                if( values.area_ids.length < 4) {
+                    return message.error('请再选一级分类')
+                }
+                area_id = values.area_ids[values.area_ids.length -1 ]
+                category_id = values.area_ids[2]
+            }
+            if(values.upload[0].response.cover === undefined){
+                return
+            }
             const params = {
-                lname:values.lname,
-                descript:values.descript,
-                aid:values.aid[values.aid.length-1],
-                cover:this.state.fileList[0].url
+                title:values.lname,
+                descript:values.descript||'',
+                area_id: area_id,
+                category_id: category_id,
+                cover: values.upload[0].response.cover,
+                account_money: values.account_money,
+                organize_money: values.organize_money
             }
             this.props.newLesson(params)
         })
     }
     render(){
         const {
-            form
+            form,loading
         } = this.props
         const { getFieldProps } = form
         const lnameProps = getFieldProps('lname',{
             rules:[{
                 required:true,
-                validator:(rule,value,callback)=>{
-                    if(!value||value&&value.length>20){
-                        callback(new Error('请输入20字以内课程名'))
-                    }else{
-                        callback()
-                    }
-                }
+                max:20,
+                message:'请输入20字以内课程名'
             }]
         })
         const descriptProps = getFieldProps('descript',{
@@ -136,14 +103,12 @@ class New extends Component {
                     required:false,max:200,message:'请输入少于200字的简介'
                 }]
         })
-        const aidProps = getFieldProps('aid')
-        delete aidProps.value
         return(
             <Paper>
+                <Spin spinning={loading} size="large">
                 <Form 
                     horizontal 
                     className = 'form'
-                    form = { form }
                     onSubmit = { this.submitHandler }
                 >
                     <FormItem
@@ -168,6 +133,15 @@ class New extends Component {
                             listType="picture"
                             fileList={this.state.fileList}
                             onChange = {this.handleChange}
+                            {...getFieldProps('upload',{
+                                valuePropName:'fileList',
+                                normalize: this.normFile,
+                                rules:[{
+                                    required:true,
+                                    type:'array',
+                                    message:'请上传课程封面'
+                                }]
+                            })}
                         >
                             <Button type="ghost">
                                 <Icon type="upload" /> 点击上传
@@ -175,15 +149,56 @@ class New extends Component {
                         </Upload>
                     </FormItem>
                     <FormItem
+                        label = '报名费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('account_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: 2
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label = '机构认证费'
+                        {...formItemLayout}
+                    >
+                        <Input
+                            type = 'number'
+                            addonAfter = '元'
+                            {...getFieldProps('organize_money',{
+                                rules:[{
+                                    validator: (rule, value, callback) => {
+                                        if( value >= 0) {
+                                            callback()
+                                        }else {
+                                            callback('金额必须大于等于零')
+                                        }
+                                    }
+                                }],
+                                initialValue: 10
+                            })}
+                        />
+                    </FormItem>
+                    <FormItem
                         label='分类'
                         required
                         {...formItemLayout}
                     >
-                        <Cascader
-                            placeholder='请选择分类'
-                            options = {this.state.options}
-                            loadData = {this.loadData}
-                            {...aidProps}
+                        <AreaCascader
+                            options = {category}
+                            level = { 3 }
+                            props = {getFieldProps('area_ids')}
                         />
                     </FormItem>
                     <FormItem
@@ -200,6 +215,7 @@ class New extends Component {
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
+                </Spin>
             </Paper>
         )
     }

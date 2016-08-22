@@ -9,12 +9,11 @@ import LessonCard from './LessonCard.js'
 class List extends Component{
     static propTypes = {
         list:PropTypes.object,
-        changeHandler:PropTypes.func.isRequired,
-        uid:PropTypes.number
+        changeHandler:PropTypes.func.isRequired
     }
     render(){
         const {
-            list,changeHandler,uid            
+            list,changeHandler            
         } = this.props
         const {
             total,
@@ -25,20 +24,20 @@ class List extends Component{
                 <Row gutter={16}>
                 {
                     list.data.map(lesson=>{
-                        return (<Col key={lesson.lid} span={8}>
+                        return (<Col key={lesson.id} span={8}>
                                   <LessonCard lesson={lesson} />
                                </Col>)
                     })
                 }
                 </Row>
                 {
-                    pageParams?
+                    list.data.length > 0 && pageParams?
                         <div className='pagination'>
                             <Pagination 
-                                total={total}
+                                total={ total }
                                 showTotal={total => `共 ${total} 条`}
-                                defaultPageSize = {pageParams.limit}
-                                onChange = {(page)=>changeHandler(page,uid,pageParams)}
+                                pageSize = {pageParams.limit}
+                                onChange = {(page)=>changeHandler(page,pageParams.account_id,pageParams)}
                             />
                         </div>:null
                 }

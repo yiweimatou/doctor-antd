@@ -16,7 +16,7 @@ class RecommendManage extends Component {
         } = this.props
         const pagination = {
             total:list.total,
-            defaultPageSize:list.pageParams.limit,
+            pageSize:list.pageParams.limit,
             showTotal:total => `共 ${total} 条`,
             onChange(current){
                 changeHandler(current,list.pageParams.limit,uid)
@@ -24,8 +24,21 @@ class RecommendManage extends Component {
         }
         const columns = [{
             title:'课程标题',
-            dataIndex:'lname',
-            key:'lname'
+            dataIndex:'title',
+            key:'title'
+        }, {
+            title: '推荐人',
+            key: 'cname',
+            render: (text, record) => {
+                const users = list.otherInfos.users
+                if(users){
+                    const user = users[record.rcmd_account_id]
+                    if(user){
+                        return user.cname || user.mobile
+                    }
+                }
+                return ''
+            } 
         }, {
             title:'推荐时间',
             dataIndex:'add_ms',
@@ -38,14 +51,14 @@ class RecommendManage extends Component {
                 <div>
                     <Popconfirm 
                         title="确定要同意吗？" 
-                        onConfirm={()=>this.handleConfirm(4,record.lid)}
+                        onConfirm={()=>this.handleConfirm(4,record.id)}
                     >
                         <Button type = 'ghost'>同意</Button>
                     </Popconfirm>
                     <span className="ant-divider"></span>
                     <Popconfirm 
                         title="确定要拒绝吗？" 
-                        onConfirm={()=>this.handleConfirm(3,record.lid)}
+                        onConfirm={()=>this.handleConfirm(3,record.id)}
                     >
                         <Button type = 'ghost'>拒绝</Button>
                     </Popconfirm>
@@ -77,23 +90,23 @@ export default connect(
         uid:state.auth.key
     }),
     dispatch => ({
-        changeHandler(offset,limit,uid){
+        changeHandler(offset,limit,account_id){
             dispatch({
                 type:'lesson/list',
                 payload:{
                     offset,
                     limit,
-                    uid,
+                    account_id,
                     cet:2
                 }
             })
         },
-        edit(cet,lid){
+        edit(cet,id){
             dispatch({
                 type:'lesson/put/cet',
                 payload:{
                     cet,
-                    lid
+                    id
                 }
             })
         }

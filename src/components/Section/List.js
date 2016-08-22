@@ -10,7 +10,7 @@ class List extends Component{
         push:PropTypes.func,
         pageParams:PropTypes.object,
         changeHandler:PropTypes.func,
-        lid:PropTypes.number,
+        lesson_id:PropTypes.number,
         deleteSection:PropTypes.func.isRequired
     }
     handleConfirm=(sid)=>{
@@ -18,34 +18,20 @@ class List extends Component{
     }
     render(){
         const {
-            list,pageParams,changeHandler,lid,push
+            list,pageParams,changeHandler,lesson_id,push
         } = this.props
         const pagination = {
             total: pageParams.total,
-            defaultPageSize:pageParams.limit,
+            pageSize:pageParams.limit,
             showTotal:total=>`共 ${total} 条`,
             onChange(current) {
-                changeHandler(current,pageParams.limit,lid)
+                changeHandler(current,pageParams.limit,lesson_id)
             }
         }
         const columns = [{
             title:'文章标题',
-            dataIndex:'sname',
-            key:'sname'
-        }, {
-            title:'状态',
-            dataIndex:'status',
-            key:'status',
-            render:text=>{
-                switch (text){
-                    case 1:
-                        return '隐藏'
-                    case 2:
-                        return '正常'
-                    case 3:
-                        return '删除'
-                }
-            }
+            dataIndex:'title',
+            key:'title'
         }, {
             title:'更新时间',
             dataIndex:'put_ms',
@@ -59,14 +45,14 @@ class List extends Component{
                 <div>
                     <Button 
                         type = 'ghost'
-                        onClick={()=>push(`/section/edit/${record.sid}`)}
+                        onClick={()=>push(`/section/edit/${record.id}`)}
                     >
                         编辑
                     </Button>
                     <span className="ant-divider"></span>
                     <Popconfirm 
                         title="确定要删除这个文章吗？" 
-                        onConfirm={()=>this.handleConfirm(record.sid)}
+                        onConfirm={()=>this.handleConfirm(record.id)}
                     >
                         <Button type = 'ghost'>删除</Button>
                     </Popconfirm>

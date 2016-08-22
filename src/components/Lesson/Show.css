@@ -6,6 +6,12 @@
     margin: 10px;
 }
 
+.money {
+    color: orange;
+    font-size: 200%;
+    margin: 0 10px;
+}
+
 .item {
     margin-left: 10px;
     height: 120px;
@@ -41,6 +47,6 @@
     color: #fff;
     background-color: #00a2e2;
     font-style: normal;
-    /*position: absolute;*/
+    position: absolute;
     margin-top: -16px;
 }

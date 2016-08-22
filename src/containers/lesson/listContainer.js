@@ -3,17 +3,16 @@ import List from '../../components/Lesson/List.js'
 
 const mapStateToProps = state => ({
     list:state.lesson.list,
-    uid:state.auth.key
+    id:state.auth.key
 })
 
 const mapDispatchToProps = dispatch => ({
-    changeHandler(offset,uid,pageParam){
+    changeHandler(offset,id,pageParam){
         dispatch({
             type:'lesson/list',
             payload:{
                 ...pageParam,
-                offset,
-                uid
+                offset
             }
         })
     }

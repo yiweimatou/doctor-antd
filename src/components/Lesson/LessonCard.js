@@ -9,24 +9,24 @@ class LessonCard extends Component{
         } = this.props
         return(
             <div>
-               <Link className='courseList' to={`/lesson/show/${lesson.lid}`}>
+               <Link className='courseList' to={`/lesson/show/${lesson.id}`}>
                     <div className="courseImg">
-                        <img src={`${lesson.cover}`} width="100%" />
+                        <img src={lesson.cover} width='256' height='96'/>
                     </div>
-                    <div className="courseTitle">
-                        <span>{lesson.lname}</span>
+                    <div className="lessonTitle">
+                        <span>{lesson.title}</span>
                     </div>
                     <ul className="courseOther">
                         <li>
-                            <em>粉丝数</em><span>{lesson.focus_num||0}</span>
+                            <em>粉丝数</em><span>{lesson.uv||0}</span>
                         </li>
                         <li>
-                            <em>浏览量</em><span>{lesson.view_num||0}</span>
+                            <em>浏览量</em><span>{lesson.pv||0}</span>
                         </li>
                     </ul>
                 </Link>
                 <div className="newArticle">
-                    <Link to={`/section/new/${lesson.lid}`}>
+                    <Link to={`/section/new/${lesson.id}`}>
                         新建文章
                     </Link>
                 </div>

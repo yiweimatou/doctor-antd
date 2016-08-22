@@ -89,7 +89,7 @@ class EditLblView extends React.Component{
         }).addTo(this._map)
 
         this._drawnItems = new L.FeatureGroup().addTo(this._map)
-         this._geoJson = {
+        this._geoJson = {
             type: 'FeatureCollection',
             features: []
         }
@@ -207,7 +207,7 @@ class EditLblView extends React.Component{
                     onCancel={this.handleClose}
                     onOk = {this.submit}
                 >
-                    <MyEditor setEditorState={this.setEditorState}/>
+                    <MyEditor setEditorState={this.setEditorState} open = {this.state.open} />
                 </Modal>
                 <div id = '_map' style ={ styles.map }></div>
             </div>

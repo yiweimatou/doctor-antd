@@ -5,6 +5,10 @@ import organizeRoutes from './organizeRoutes.js'
 import lessonRoutes from './lessonRoutes.js'
 import yunbookRoutes from './yunbookRoutes'
 import sectionRoutes from './sectionRoutes.js'
+import inviteRoutes from './inviteRoutes'
+import userRoutes from './userRoutes'
+import messageRoutes from './messageRoutes'
+import Test from '../components/Test'
 
 const routes = (store) => ([{
     path: '/',
@@ -16,10 +20,17 @@ const routes = (store) => ([{
             path: 'dashboard',
             component: Dashboard
         },
+        {
+            path:'test',
+            component:Test
+        },
         organizeRoutes(store),
         lessonRoutes(store),
         yunbookRoutes(store),
-        sectionRoutes(store)
+        sectionRoutes(store),
+        inviteRoutes(store),
+        userRoutes(store),
+        messageRoutes(store)
     ]
 }, {
     path: '*',

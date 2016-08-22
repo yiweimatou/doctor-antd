@@ -3,41 +3,64 @@ import React, {
     PropTypes
 } from 'react'
 import {
-    Table,Button
+    Table,Button,Modal
 } from 'antd'
-
+import { Link } from 'react-router'
 
 class OrganizeLessonList extends Component {
     static propTypes = {
-        list:PropTypes.array,
+        list:PropTypes.object,
         edit:PropTypes.func,
-        pageParams:PropTypes.object,
         changeHandler:PropTypes.func
     }
+    state = {
+        lesson_name: '',
+        money: 0,
+        id: 0,
+        visible: false
+    }
+    handleOpreation = (flag, id, name, money) =>{
+        if(flag) {
+            this.setState({
+                lesson_name: name,
+                money: money,
+                id,
+                visible: true
+            })
+        }else{
+            this.props.edit(flag, id)        
+        }
+    }
+    handleOk = () => {
+        this.props.edit(true,this.state.id)
+        this.setState({
+            visible: false
+        })
+    }
+    handleCancel = () => this.setState({
+        visible: false
+    })
     render(){
         const {
-            list,edit,pageParams,changeHandler
+            list, changeHandler
         } = this.props
         const pagination = {
-            total: pageParams.total,
-            defaultPageSize:pageParams.limit,
+            total: list.total,
+            pageSize:list.params.limit,
             showTotal:total=>`共 ${total} 条`,
             onChange(current) {
-                changeHandler(current,pageParams.limit)
+                changeHandler(current,list.params.limit)
             }
         }
         const columns = [{
             title: '课程名称',
-            dataIndex: 'lname',
-            key: 'lname'
-        }, {
-            title:'主讲人',
-            dataIndex:'admin_cname',
-            key:'admin_cname'
-        }, {
-            title:'主讲手机号码',
-            dataIndex:'admin_mobile',
-            key:'admin_mobile'
+            dataIndex: 'lesson_name',
+            key: 'lesson_name',
+            render : (text, record) => (<Link to={`/lesson/show/${record.lesson_id}`}>{text}</Link>)
+        },{
+            title: '认证金额',
+            dataIndex: 'organize_money',
+            key: 'organize_money'
         }, {
             title:'申请时间',
             dataIndex:'add_ms',
@@ -71,14 +94,14 @@ class OrganizeLessonList extends Component {
                 <div>
                     <Button 
                         type = 'ghost'
-                        onClick={()=>edit(true,record.id)}
+                        onClick={()=>this.handleOpreation(true,record.id,record.lesson_name,record.organize_money)}
                     >
                         同意
                     </Button>
                     <span className="ant-divider"></span>
                     <Button 
                         type = 'ghost'
-                        onClick={()=>edit(false,record.id)}
+                        onClick={()=>this.handleOpreation(false,record.id)}
                     >
                         拒绝
                     </Button>
@@ -86,11 +109,29 @@ class OrganizeLessonList extends Component {
             )
         }]
         return (
-            <Table
-                dataSource={list}
-                columns = { columns } 
-                pagination = { pagination }
-            />
+            <div>
+                <Modal
+                    title='认证费用'
+                    visible={this.state.visible}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                >
+                    <p>
+                        课程名称:{this.state.lesson_name}
+                    </p>
+                    <p>
+                        认证费用:
+                        <em style={{color:'orange',fontSize:'200%'}}>
+                            {this.state.money}
+                        </em>元
+                    </p>
+                </Modal>
+                <Table
+                    dataSource={list.data}
+                    columns = { columns } 
+                    pagination = { pagination }
+                />
+            </div>
         )
     }
 }

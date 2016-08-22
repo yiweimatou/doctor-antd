@@ -6,6 +6,26 @@ import editContainer from '../components/Lesson/Edit.js'
 import Recommend from '../components/Lesson/Recommend'
 import RecommendList from '../components/Lesson/RecommendList'
 import RecommendManage from '../components/Lesson/RecommendManage'
+import Money from '../components/Lesson/Money'
+
+const moneyRoute = store => ({
+    path: 'money/:id',
+    component: Money,
+    onEnter(nextState, replace) {
+        const id = nextState.params.id
+        if( !id ) {
+            return replace({ pathname: '/'})
+        }
+        store.dispatch({
+            type: 'money/info',
+            payload: { foreign_id: id, type: 2 }
+        })
+        store.dispatch({
+            type: 'money/fetchlist',
+            payload: { foreign_id: id, type: 2 }
+        })
+    }
+})
 
 const recommendRoute = ()=> ({
     path:'recommend',
@@ -20,13 +40,13 @@ const recommendListRoute = store => ({
         store.dispatch({
             type:'lesson/info',
             payload:{
-                rcmd_uid:uid
+                rcmd_account_id:uid
             }
         })
         store.dispatch({
             type:'lesson/list',
             payload:{
-                rcmd_uid:uid
+                rcmd_account_id:uid
             }
         })
     }
@@ -41,14 +61,14 @@ const recommendManageRoute = store => ({
             type:'lesson/info',
             //我是主讲没有认证的课程=推荐给我的课程
             payload:{
-                uid,
+                account_id: uid,
                 cet:2
             }
         })
         store.dispatch({
             type:'lesson/list',
             payload:{
-                uid,
+                account_id: uid,
                 cet:2
             }
         })
@@ -64,27 +84,37 @@ const showRoute = store => ({
     path:'show/:id',
     component:showContainer,
     onEnter(nextState,replace){
-        const lid = nextState.params.id
-        if( !lid ){
+        const id = nextState.params.id
+        if( !id ){
             return replace({pathname:'/'})
         }
         store.dispatch({
             type:'organizeLesson/list',
             payload:{
-                lid,
+                lesson_id: id,
                 cet:4
             }
         })
         store.dispatch({
+                type:'organize/info',
+                payload:{}
+        })
+        store.dispatch({
             type:'lesson/get',
             payload:{
-                lid
+                id
             }
         })
         store.dispatch({
             type:'lessonTeam/list',
             payload:{
-                lid
+                lesson_id: id
+            }
+        })
+        store.dispatch({
+            type: 'section/info',
+            payload: {
+                lesson_id: id
             }
         })
         store.dispatch({
@@ -98,7 +128,7 @@ const showRoute = store => ({
             payload:{
                 limit:6,
                 offset:1,
-                lid
+                lesson_id: id
             }
         })
     }
@@ -112,7 +142,7 @@ const listRoute = store => ({
         store.dispatch({
             type:'lesson/info',
             payload:{
-                uid,
+                account_id :uid,
                 cet:4
             }
         })
@@ -121,7 +151,7 @@ const listRoute = store => ({
             payload:{
                 limit:6,
                 offset:1,
-                uid,
+                account_id :uid,
                 cet:4
             }
         })
@@ -132,13 +162,13 @@ const tlistRoute = store => ({
     path:'tlist',
     component:tlistContainer,
     onEnter(){
-        const uid = store.getState().auth.key
+        const id = store.getState().auth.key
         store.dispatch({
             type:'lessonTeam/list',
             payload:{
                 limit:6,
                 offset:1,
-                uid,
+                account_id: id,
                 cet:4
             }
         })
@@ -149,8 +179,8 @@ const editRoute = store =>({
     path:'edit/:id',
     component:editContainer,
     onEnter(nextState,replace){
-        const lid=nextState.params.id
-        if(!lid){
+        const id=nextState.params.id
+        if(!id){
             return replace({
                 pathname:'/'
             })
@@ -158,7 +188,7 @@ const editRoute = store =>({
         store.dispatch({
             type:'lesson/get',
             payload:{
-                lid
+                id
             }
         })
     }
@@ -174,7 +204,8 @@ const lessonRoutes = store => ({
         editRoute(store),
         recommendListRoute(store),
         recommendRoute(),
-        recommendManageRoute(store)
+        recommendManageRoute(store),
+        moneyRoute(store)
     ]
 })
 

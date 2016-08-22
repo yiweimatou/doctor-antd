@@ -7,24 +7,36 @@ const initialState = {
     loading: false,
     key: 0,
     token: '',
-    user: null,
-    lastModifyTime: 0
+    user: null
 }
+
 const auth = handleActions({
+    ['user/alipay/set/success'](state, action){
+        return {
+            ...state,
+            user: {
+                ...state.user,
+                alipay: action.payload.alipay
+            }
+        }
+    },
+    ['user/set/success']: (state,action) => ({
+        ...state,
+        user: action.payload
+    }),
     ['login/success'](state, action) {
         const {
             key,
             token,
-            user,
-            lastModifyTime
+            user
         } = action.payload
-        return {...state,
+        return {
+            ...state,
             key,
             token,
             isAuthed: true,
             loading: false,
-            user,
-            lastModifyTime
+            user
         }
     },
     ['login/start'](state) {
@@ -33,12 +45,11 @@ const auth = handleActions({
             loading: true
         }
     },
-    ['login/failure'](state, action) {
+    ['login/failure'](state) {
         return {
             ...state,
             loading: false,
-            isAuthed:false,
-            lastModifyTime: action.payload.lastModifyTime
+            isAuthed:false
         }
     },
     ['logout'](){

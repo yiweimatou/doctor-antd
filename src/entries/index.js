@@ -6,6 +6,7 @@ import createSagaMiddleware from 'redux-saga';
 import { browserHistory } from 'react-router';
 import { routerMiddleware,syncHistoryWithStore, routerReducer as routing } from 'react-router-redux';
 import reducers from '../reducers/index';
+import crudReducer from '../reducers/crudReducer'
 import SagaManager from '../sagas/SagaManager';
 import './index.less';
 import App from '../components/App'
@@ -26,14 +27,20 @@ const enhancer = compose(
   window.devToolsExtension ? window.devToolsExtension() : f => f
 );
 const store = createStore(combineReducers({
-  ...reducers, routing,
+  ...reducers, routing, models: crudReducer
 }), initialState, enhancer)
 SagaManager.startSagas(sagaMiddleware)
+store.dispatch({
+  type: 'user/set',
+  payload: {
+    id: store.getState().auth.key
+  }
+})
 
 if (module.hot) {
   module.hot.accept('../reducers', () => {
     const reducers = require('../reducers');
-    const combinedReducers = combineReducers({ ...reducers, routing });
+    const combinedReducers = combineReducers({ ...reducers, routing, models: crudReducer });
     store.replaceReducer(combinedReducers);
   });
   module.hot.accept('../sagas/SagaManager', () => {

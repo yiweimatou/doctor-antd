@@ -15,6 +15,21 @@ import {
 import {
     message
 } from 'antd'
+import { push } from 'react-router-redux'
+
+function* watchSetUser() {
+    yield* takeLatest('user/set', function*(action) {
+        try {
+            const user = yield call(getUser, action.payload)
+            yield put({
+                type: 'user/set/success',
+                payload: user.get
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    })
+}
 
 function* loginHandler(action) {
     try {
@@ -30,13 +45,12 @@ function* loginHandler(action) {
         const {
             get
         } = yield call(getUser, {
-            uid: key
+            id: key
         })
         const payload = {
             key,
             token,
-            user: get,
-            lastModifyTime: Date.now()
+            user: get
         }
         yield put({
             type: 'login/success',
@@ -50,26 +64,29 @@ function* loginHandler(action) {
     } catch (error) {
         message.error(error)
         yield put({
-            type: 'login/failure',
-            payload: {
-                lastModifyTime: Date.now()
-            }
+            type: 'login/failure'
         })
     }
 }
 
 
 function* watchLogout() {
-    yield* takeLatest('logout',()=>{
+    yield* takeLatest('logout',function* (){
         localStorage.clear()
+        yield put(push('/'))
     })
 }
 
-function* watchLogin() {
+const watchLogin = function* () {
     yield* takeLatest('login/start', loginHandler)
 }
 
-export default function*() {
-    yield fork(watchLogin)
-    yield fork(watchLogout)
+const authSaga = function*() {
+    yield [
+      fork(watchLogin),
+      fork(watchLogout),
+      fork(watchSetUser)
+    ]
 }
+
+export default authSaga

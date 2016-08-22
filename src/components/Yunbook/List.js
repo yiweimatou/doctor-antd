@@ -21,7 +21,7 @@ class List extends Component {
                 <Row gutter={16}>
                 {
                     data.map(yunbook=>{
-                        return (<Col key={yunbook.bid} span={8}>
+                        return (<Col key={yunbook.id} span={8}>
                                   <YunbookCard yunbook={yunbook} />
                                </Col>)
                     })
@@ -31,7 +31,7 @@ class List extends Component {
                     <Pagination 
                         total={total}
                         showTotal={total => `共 ${total} 条`}
-                        defaultPageSize = {limit}
+                        pageSize = {limit}
                         onChange = {(page)=>changeHandler(page,limit,uid)}
                     />
                 </div>
@@ -46,11 +46,11 @@ export default connect(
         uid:state.auth.key
     }),
     dispatch=>({
-        changeHandler:(offset,limit,uid)=>{
+        changeHandler:(offset,limit,account_id)=>{
             dispatch({
                 type:'yunbook/mylist',
                 payload:{
-                    offset,limit,uid
+                    offset,limit,account_id
                 }
             })
         }

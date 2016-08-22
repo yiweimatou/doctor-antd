@@ -34,6 +34,14 @@ class MyEditor extends React.Component{
     static propTypes ={
         setEditorState:React.PropTypes.func
     }
+    componentWillReceiveProps(nextProps) {
+        //if close the Modal, set empty
+        if(!nextProps.open){
+            this.setState({
+                editorState: EditorState.createEmpty()
+            })
+        }
+    }
     _confirmMedia() {
         const {editorState, urlType} = this.state
         const urlValue = document.querySelector('#url').value
@@ -151,7 +159,7 @@ function mediaBlockRenderer(block) {
 }
 
 const Image = (props) => {
-    return <img src={props.src} /> //eslint-disable-line
+    return <img width={300} height={200} src={props.src} /> //eslint-disable-line
 }
 
 const Video = (props) => {

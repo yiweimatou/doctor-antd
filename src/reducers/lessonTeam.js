@@ -2,17 +2,33 @@ import { handleActions } from 'redux-actions'
 
 const initialState ={
     list:[],
-    limit:6,
-    offset:1,
+    params:{
+        limit:6,
+        offset:1,
+    },
     loading:false,
     total:0
 }
 
 const lessonTeam = handleActions({
-    ['lessonTeam/list']:state=>({
+    ['lessonTeam/edit']: state => ({
+        ...state,
+        loading: true
+    }),
+    ['lessonTeam/edit/success']: (state, action) => ({
+        ...state,
+        loading: false,
+        list: state.list.filter(item => item.id !== action.payload.id)
+    }),
+    ['lessonTeam/edit/failure']: state => ({
+        ...state,
+        loading: false
+    }),
+    ['lessonTeam/list']:(state, action) =>({
         ...state,
         loading:true,
-        list:[]
+        list:[],
+        params: action.payload
     }),
     ['lessonTeam/list/success']:(state,action)=>({
         ...state,

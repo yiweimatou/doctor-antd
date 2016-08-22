@@ -6,7 +6,10 @@ import {
     LESSON_EDIT_API,
     LESSON_LIST_API,
     LESSON_INFO_API,
-    LESSON_PUT_CET_API
+    LESSON_PUT_CET_API,
+    LESSON_MONEY_INFO_API,
+    LESSON_MONEY_LIST_API,
+    LESSON_RCMD_API
 } from '../constants/api.js'
 
 export function newLesson(params){
@@ -35,4 +38,16 @@ export function infoLesson(params){
 
 export function putcetLesson(params){
     return ApiClient.put(LESSON_PUT_CET_API,params)
+}
+
+export function fetchLessonMoneyList(params) {
+    return ApiClient.get(LESSON_MONEY_LIST_API, params)
+}
+
+export function fetchLessonMoneyInfo(params) {
+    return ApiClient.get(LESSON_MONEY_INFO_API, params)
+}
+
+export function rcmdLesson(params) {
+    return ApiClient.put(LESSON_RCMD_API, params)
 }
