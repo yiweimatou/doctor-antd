@@ -7,7 +7,6 @@ import {
     Alert,
     Spin
 } from 'antd'
-import {getAreaList} from '../../services/area.js'
 import {connect} from 'react-redux'
 import Paper from '../Paper'
 import { isMobile } from '../../utils'
