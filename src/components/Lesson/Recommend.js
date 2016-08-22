@@ -4,7 +4,6 @@ import {
     Button,
     Input,
     message,
-    Cascader,
     Alert,
     Spin
 } from 'antd'
@@ -14,6 +13,7 @@ import Paper from '../Paper'
 import { isMobile } from '../../utils'
 import {getUser} from '../../services/user.js'
 import category from '../../constants/category'
+import AreaCascader from '../AreaCascader'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -24,7 +24,6 @@ class Recommend extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            options:category,
             uid:0
         }
         this.submitHandler = (e) => {
@@ -36,16 +35,16 @@ class Recommend extends Component {
                 const first = values.area_ids[0]
                 let area_id,category_id
                 if(first === 1) {
-                    if( values.length < 5) {
-                        return
+                    if( values.area_ids.length < 3) {
+                        return message.error('请再选一级分类')
                     }
-                    area_id = values.area_ids[4]
+                    area_id = values.area_ids[values.area_ids.length - 1]
                     category_id = values.area_ids[1]
                 }else {
-                    if( values.length < 6) {
-                        return
+                    if( values.area_ids.length < 4) {
+                        return message.error('请再选一级分类')
                     }
-                    area_id = values.area_ids[5]
+                    area_id = values.area_ids[values.area_ids.length -1 ]
                     category_id = values.area_ids[2]
                 }
                 const params = {
@@ -53,39 +52,12 @@ class Recommend extends Component {
                     descript:values.descript?values.descript:'',
                     area_id: area_id,
                     category_id: category_id,
-                    rcmd_account_id:this.props.uid,
-                    account_id:this.state.uid
+                    account_id:this.state.uid,
+                    account_money: 2,
+                    organize_money: 10
                 }
                 this.props.recommend(params)
             })
-        }
-        this.loadData=(selectedOptions)=>{
-            const targetOption = selectedOptions[selectedOptions.length-1]
-            const isLeaf = 5 ===targetOption.zoom
-            targetOption.loading=true
-            getAreaList({
-                limit:100,
-                pid:targetOption.value
-            }).then(data=>{
-                targetOption.loading=false
-                if( data.list.length > 0){
-                    targetOption.children = data.list.map(item=>{
-                        return {
-                            label:item.title,
-                            value:item.id,
-                            zoom:item.zoom,
-                            isLeaf
-                        }
-                    })
-                }else{
-                    targetOption.children = []
-                }
-                this.setState({
-                    options:[...this.state.options]
-                })
-            }).catch(error=>{
-                message.error(error)
-            })   
         }
     }
     render() {
@@ -106,14 +78,6 @@ class Recommend extends Component {
                     required:false,max:200,message:'请输入少于200字的简介'
                 }]
         })
-        const aidProps = getFieldProps('area_ids',{
-                                rules:[{
-                                    required:true,
-                                    type:'array',
-                                    message:'请选择分类'
-                                }]
-                            })
-        delete aidProps.value
         const mobileProps = getFieldProps('mobile',{
                                 rules:[{
                                     required:true,
@@ -149,7 +113,6 @@ class Recommend extends Component {
                 <Form
                     style = {{margin:10,padding:10}}
                     horizontal
-                    form = { form }
                     onSubmit = { this.submitHandler }
                 >
                     <Alert
@@ -179,11 +142,9 @@ class Recommend extends Component {
                         required
                         {...formItemLayout}
                     >
-                        <Cascader
-                            placeholder='请选择分类'
-                            options={this.state.options}
-                            loadData={this.loadData}
-                            {...aidProps}
+                        <AreaCascader
+                            options={category}
+                            props = {getFieldProps('area_ids')}
                         />
                     </FormItem>
                      <FormItem

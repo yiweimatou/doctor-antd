@@ -58,7 +58,7 @@ class Show extends Component {
                     <div style={styles.row}>
                         <Row gutter={16}>
                             <Col span={12}>
-                                <img alt='pic' width='100%' src={lesson&&lesson.cover} />
+                                <img alt='pic' width='480' height='180' src={lesson&&lesson.cover} />
                             </Col>
                             <Col span={6}>
                                 <span>课程名称:</span>
@@ -84,22 +84,22 @@ class Show extends Component {
                             <Col span={6}>
                                 <span>{lesson&&new Date(lesson.put_ms*1000).toLocaleString()}</span>
                             </Col>
-                            <Col span={3}>
+                            <Col span={6}>
                                 <span>浏览量:</span>
                             </Col>
-                            <Col span={3}>
+                            <Col span={6}>
                                 <p>{lesson&&lesson.pv}</p>
                             </Col>
-                            <Col span={4}>
+                            <Col span={6}>
                                 <span>粉丝数:</span>
                             </Col>
-                            <Col span={2}>
+                            <Col span={6}>
                                 <p>{lesson&&lesson.uv}</p>
                             </Col>      
-                            <Col span = {4}>
+                            <Col span = {6}>
                                 <span>课程价格:</span>
                             </Col>
-                            <Col span = {2}>
+                            <Col span = {6}>
                                 <span style={{color: 'orange'}}>{lesson&&lesson.account_money}</span>元                              
                             </Col>
                         </Row>

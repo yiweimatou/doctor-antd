@@ -17,7 +17,8 @@ import {
     editLesson,
     putcetLesson,
     fetchLessonMoneyInfo,
-    fetchLessonMoneyList
+    fetchLessonMoneyList,
+    rcmdLesson
 } from '../services/lesson.js'
 import {
     getLessonTeamList,
@@ -89,7 +90,7 @@ function* watchputcet() {
 
 function* recommendHandler(action) {
     try {
-        yield call(newLesson, action.payload)
+        yield call(rcmdLesson, action.payload)
         yield put({
             type: 'lesson/recommend/success'
         })

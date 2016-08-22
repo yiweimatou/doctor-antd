@@ -71,6 +71,9 @@ class New extends Component {
                 area_id = values.area_ids[values.area_ids.length -1 ]
                 category_id = values.area_ids[2]
             }
+            if(values.upload[0].response.cover === undefined){
+                return
+            }
             const params = {
                 title:values.lname,
                 descript:values.descript||'',

@@ -1,7 +1,7 @@
 import {
     fromJS
 } from 'immutable'
-import isEqual from 'lodash.isequal'
+import isEqual from 'lodash/isEqual'
 
 const recordsInitialState = fromJS({})
 

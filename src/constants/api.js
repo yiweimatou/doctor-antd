@@ -72,6 +72,7 @@ export const LESSON_ADD_API = `${LESSON_API_DOMAIN}/lesson/add`
 export const LESSON_PUT_CET_API = `${LESSON_API_DOMAIN}/lesson/put/cet`
 export const LESSON_MONEY_LIST_API = `${LESSON_API_DOMAIN}/lessonmoney/list`
 export const LESSON_MONEY_INFO_API = `${LESSON_API_DOMAIN}/lessonmoney/info`
+export const LESSON_RCMD_API = `${LESSON_API_DOMAIN}/lesson/add/rcmd`
 /**
 *team apis
 */

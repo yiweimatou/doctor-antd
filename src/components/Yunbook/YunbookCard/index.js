@@ -26,7 +26,7 @@ class YunbookCard extends Component{
             >
                 <div className='yunbook-image'>
                     <Link to={`/yunbook/show/${yunbook.id}`}>
-                        <img alt='pic' width="100%" src={yunbook.cover} />
+                        <img alt='pic' width="256" height ='160' src={yunbook.cover} />
                     </Link>
                 </div>
                 <div className='yunbook-card'>
