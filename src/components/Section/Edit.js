@@ -48,8 +48,8 @@ class Edit extends Component{
                 const _index = merge_id.indexOf(values[1].get.area_id)
                 _defaultValue = merge_id.slice(_index,merge_id.length - 1)                
                 merge_id = merge_id.slice(_index+1,merge_id.length)
-                return getAreaList({ pid_list: _defaultValue.join(','), limit: 1000 })
-            }).then(areas => {
+                return Promise.all([getAreaList({ pid_list: _defaultValue.join(','), limit: 1000 }), area])
+            }).then(([areas, area]) => {
                 const _array = []
                 _defaultValue.forEach(item => {
                     _array.push(areas.list.filter(area=> {
@@ -76,8 +76,8 @@ class Edit extends Component{
                     _list = _array.pop()                
                 }
                 this.setState({
-                    defaultValue: merge_id,
-                    options: areaList,
+                    defaultValue: [area.id].concat(merge_id),
+                    options: [{value: area.id, label: area.title, children: areaList }],
                     loading: false
                 })
             })
