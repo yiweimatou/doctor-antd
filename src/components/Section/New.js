@@ -93,7 +93,7 @@ class New extends Component {
     }
     loadData=(selectedOptions)=>{
         const targetOption = selectedOptions[selectedOptions.length-1]
-        const isLeaf = 6 ===targetOption.zoom
+        const isLeaf = 5 ===targetOption.zoom
         targetOption.loading=true
         getAreaList({
             limit:100,

@@ -31,15 +31,16 @@ class List extends Component{
                 }
                 </Row>
                 {
-                    params?
-                        <div className='pagination'>
-                            <Pagination 
-                                total={total}
-                                showTotal={total => `共 ${total} 条`}
-                                pageSize = {params.limit}
-                                onChange = {(page)=>changeHandler(page,params.account_id,params)}
-                            />
-                        </div>:null
+                    list.data.length > 0 ?
+                    <div className='pagination'>
+                        <Pagination 
+                            total={total}
+                            showTotal={total => `共 ${total} 条`}
+                            pageSize = {params.limit}
+                            onChange = {(page)=>changeHandler(page,params.account_id,params)}
+                        />
+                    </div>:
+                   <p style={{textAlign: 'center'}}>没有数据</p>     
                 }
             </div>
         )

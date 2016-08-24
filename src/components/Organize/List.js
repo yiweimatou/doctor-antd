@@ -24,10 +24,10 @@ class List extends Component{
                     <Pagination 
                         total={params.total}
                         showTotal={total => `共 ${total} 条`}
-                        pageSize = {params.limit}
+                        pageSize = {6}
                         onChange = {(page)=>changeHandler(page,params.limit,params.account_id)}
                     />
-                </div>:null
+                </div>:<p style= {{textAlign: 'center'}}>没有数据</p>
                 }
             </div>
         )

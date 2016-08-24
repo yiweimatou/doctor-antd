@@ -6,7 +6,8 @@ import {
     Upload,
     Icon,
     Spin,
-    message 
+    message,
+    Modal 
 } from 'antd'
 import Paper from '../Paper'
 import './New.css'
@@ -22,10 +23,34 @@ const formItemLayout = {
 class New extends Component {
     static propTypes = {
         form:PropTypes.object,
-        newLesson:PropTypes.func.isRequired
+        newLesson:PropTypes.func.isRequired,
+        push: PropTypes.func.isRequired,
+        residue: PropTypes.func.isRequired,
+        userId: PropTypes.number
     }
     state = {
-        fileList: []
+        fileList: [],
+        loading: true
+    }
+    componentWillMount() {
+        this.props.residue(this.props.userId, num => {
+            this.setState({ loading: false })
+            if(num === 0){
+                Modal.confirm({
+                    title: '请确认',
+                    content: '最多可创建5门课程',
+                    onOk: () => this.props.push('/'),
+                    onCancel: () => this.props.push('/') 
+                })       
+            }else {
+                Modal.warning({
+                    title: '请确认',
+                    content: `最多可创建5门课程,剩余可创建课程${num}门`
+                })
+            }
+        }, (error) => {
+            message.error(error)
+        })
     }
     normFile(e) {
         if (Array.isArray(e)) {
@@ -83,12 +108,20 @@ class New extends Component {
                 account_money: values.account_money,
                 organize_money: values.organize_money
             }
-            this.props.newLesson(params)
+            this.setState({ loading: true })
+            this.props.newLesson(params, id => {
+                this.setState({ loading: false })
+                message.success('新增成功!')
+                this.props.push(`/lesson/show/${id}`)
+            }, error => {
+                this.setState({ loading: false })
+                message.error(error)
+            })
         })
     }
     render(){
         const {
-            form,loading
+            form
         } = this.props
         const { getFieldProps } = form
         const lnameProps = getFieldProps('lname',{
@@ -105,7 +138,7 @@ class New extends Component {
         })
         return(
             <Paper>
-                <Spin spinning={loading} size="large">
+                <Spin spinning={this.state.loading} size="large">
                 <Form 
                     horizontal 
                     className = 'form'

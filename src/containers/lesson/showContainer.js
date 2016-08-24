@@ -61,7 +61,7 @@ function mapDispatchToProps(dispatch) {
             dispatch({
                 type:'section/delete',
                 payload:{
-                    sid
+                    id: sid
                 }
             })
         }

@@ -73,11 +73,7 @@ class Show extends Component {
                                 <p>{lesson&&lesson.descript}</p>
                             </Col>
                             <Col span={6}>
-<<<<<<< HEAD
-                                <img alt='pic' width='100%' src={`${lesson.cover}`} />
-=======
                                 <span>创建时间:</span>
->>>>>>> development
                             </Col>
                             <Col span={6}>
                                 <span>{lesson&&new Date(lesson.add_ms*1000).toLocaleString()}</span>

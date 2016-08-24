@@ -31,7 +31,7 @@ import {
 } from 'react-router-redux'
 import array from 'lodash/array'
 import {
-    getUserList
+    getUserList, getUser
 } from '../services/user'
 
 function* watchFetchLessonMoneyList(){
@@ -234,10 +234,13 @@ function* handleNew(action) {
         yield put({
             type: 'lesson/new/success'
         })
-        message.success('新增成功!')
-        yield put(push(`/lesson/show/${res.identity}`))
+        if(action.meta && action.meta.resolve){
+            action.meta.resolve(res.identity)
+        }
     } catch (error) {
-        message.error(error)
+        if(action.meta && action.meta.reject) {
+            action.meta.reject(error)
+        }
         yield put({
             type: 'lesson/new/failure'
         })
@@ -341,6 +344,21 @@ function* watchEdit() {
     yield * takeLatest('lesson/edit', handleEdit)
 }
 
+function* watchLessonResidue() {
+    yield* takeLatest('lesson/residue', function* (action) {
+        try {
+            const data = yield call(getUser, action.payload)
+            if(action.meta && action.meta.resolve) {
+                action.meta.resolve(data.get.lesson_num)
+            }
+        } catch (error) {
+            if(action.meta && action.meta.reject) {
+                action.meta.reject(error)
+            }
+        }
+    })
+}
+
 export default function*() {
     yield * [
         fork(watchNew),
@@ -356,6 +374,7 @@ export default function*() {
         fork(watchputcet),
         fork(watchTeamEdit),
         fork(watchFetchlessonMoneyInfo),
-        fork(watchFetchLessonMoneyList)
+        fork(watchFetchLessonMoneyList),
+        fork(watchLessonResidue)
     ]
 }

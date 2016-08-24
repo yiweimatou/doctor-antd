@@ -233,7 +233,7 @@ class Edit extends Component{
                         />
                     </TabPane>
                 </Tabs>
-                <Button style={{marginTop:20}} type='primary' onClick={this.click}>
+                <Button style={{top:0,padding: '4px 20px 5px 20px',position:'absolute',right:23}} type='primary' onClick={this.click}>
                         保存
                 </Button>
                 </Spin>

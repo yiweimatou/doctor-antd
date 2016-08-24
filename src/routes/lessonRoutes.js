@@ -75,7 +75,7 @@ const recommendManageRoute = store => ({
     }
 })
 
-const newRoute = ()=> ({
+const newRoute = () => ({
     path:'new',
     component:newContainer
 })
@@ -120,7 +120,7 @@ const showRoute = store => ({
         store.dispatch({
             type: 'section/info',
             payload: {
-                lid
+                lesson_id: id
             }
         })
         store.dispatch({

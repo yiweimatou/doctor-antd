@@ -39,7 +39,7 @@ class NavMenu extends Component {
                             我的团队课程
                         </Link>
                     </Item>
-                    <Item key='5' disabled = {user && user.lesson===1}>
+                    <Item key='5' disabled = {user && user.lessons===1}>
                         <Link to='/lesson/recommend'>
                             推荐课程
                         </Link>
