@@ -1,7 +1,7 @@
 export const HOST = 'http://api.yiweimatou.com'
 
 export const USER_API_DOMAIN = `${HOST}:1002`
-export const ADMIN_API_DOMAIN = `${HOST}:1001`
+export const ADMIN_API_DOMAIN = `${HOST}:001`
 export const UPLOAD_DOMAIN = 'http://image.yiweimatou.com:999'
 export const ORGANIZE_API_DOMAIN = `${HOST}:1005`
 export const LESSON_API_DOMAIN = `${HOST}:1007`

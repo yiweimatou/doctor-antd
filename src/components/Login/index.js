@@ -56,7 +56,7 @@ class Login extends Component{
                     </Button>
                 }
             >
-                <Form horizontal form = {form}>
+                <Form horizontal>
                     <FormItem
                         {...formItemLayout}
                         label = '帐号'

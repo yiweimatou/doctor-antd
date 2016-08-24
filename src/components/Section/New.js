@@ -42,6 +42,7 @@ class New extends Component {
     state = {
         currentStep:1,
         initialOptions:[],
+        defaultValue: [],
         yunbook:null,
         show: false,
         category_id: null
@@ -133,21 +134,20 @@ class New extends Component {
         }).then(area => {
             return Promise.all([getAreaList({pid : area.id, limit: 100}), area])
         }).then(([areas, area])=>{
-            a3 = areas.list.map(item => ({
+            a3 = [{
+                value: area.id,
+                label: area.title,
+                children: []
+            }]
+            a3[0].children = areas.list.map(item => ({
                     value: item.id,
                     label: item.title,
                     zoom: item.zoom,
                     isLeaf: false
             }))
-            if(areas.list.length === 0){
-                a3 = [{
-                    value: area.id,
-                    label: area.title,
-                    isLeaf: true
-                }]
-            }
             this.setState({
-                initialOptions: a3
+                initialOptions: a3,
+                defaultValue: [area.id]
             })
         }).catch(error=>{
             message.error(error)
@@ -275,7 +275,8 @@ class New extends Component {
                                             required:true,
                                             type:'array',
                                             message:'请选择分类'
-                                        }]
+                                        }],
+                                        initialValue: this.state.defaultValue
                                     })}
                                     options = {
                                         this.state.initialOptions
