@@ -131,14 +131,21 @@ class New extends Component {
                 id:lesson.area_id
             }).then(data=>data.get)
         }).then(area => {
-            return getAreaList({pid : area.id, limit: 100})
-        }).then((areas)=>{
+            return Promise.all([getAreaList({pid : area.id, limit: 100}), area])
+        }).then(([areas, area])=>{
             a3 = areas.list.map(item => ({
                     value: item.id,
                     label: item.title,
                     zoom: item.zoom,
                     isLeaf: false
-                }))
+            }))
+            if(areas.list.length === 0){
+                a3 = [{
+                    value: area.id,
+                    label: area.title,
+                    isLeaf: true
+                }]
+            }
             this.setState({
                 initialOptions: a3
             })
