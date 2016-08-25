@@ -8,17 +8,12 @@ import LessonCard from './LessonCard.js'
 
 class List extends Component{
     static propTypes = {
-        list:PropTypes.object,
-        changeHandler:PropTypes.func.isRequired
+        list:PropTypes.object
     }
     render(){
         const {
-            list,changeHandler            
+            list            
         } = this.props
-        const {
-            total,
-            params
-        } = list
         return(
             <div>
                 <Row gutter={16}>
@@ -30,18 +25,6 @@ class List extends Component{
                     })
                 }
                 </Row>
-                {
-                    list.data.length > 0 ?
-                    <div className='pagination'>
-                        <Pagination 
-                            total={total}
-                            showTotal={total => `共 ${total} 条`}
-                            pageSize = {params.limit}
-                            onChange = {(page)=>changeHandler(page,params.account_id,params)}
-                        />
-                    </div>:
-                   <p style={{textAlign: 'center'}}>没有数据</p>     
-                }
             </div>
         )
     }
