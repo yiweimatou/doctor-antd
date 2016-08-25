@@ -2,10 +2,10 @@ import New from '../components/Section/New.js'
 import Edit from '../components/Section/Edit.js'
 
 const newRoute = store => ({
-    path:'new/:id',
+    path:'new',
     component:New,
     onEnter(nextState,replace){
-        const lid = nextState.params.id
+        const lid = nextState.location.query.lid
         if( !lid ){
            return replace({pathname:'/'})
         }

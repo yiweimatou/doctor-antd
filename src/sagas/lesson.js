@@ -94,13 +94,17 @@ function* recommendHandler(action) {
         yield put({
             type: 'lesson/recommend/success'
         })
-        message.success('推荐成功！')
+        if (action.meta && action.meta.resolve){
+            yield call(action.meta.resolve)
+        }
         // yield put(push(`/lesson/show/${res.identity}`))
     } catch (error) {
-        message.error(error)
         yield put({
             type: 'lesson/recommend/failure'
         })
+        if (action.meta && action.meta.reject) {
+            yield call(action.meta.reject, error)
+        }
     }
 }
 

@@ -17,18 +17,20 @@ function mapDispatchToProps(dispatch) {
     return{
         onChange(page,limit,title){
             dispatch({
-                type:'organize/info',
-                payload:{
-                    title
-                }
-            })
-            dispatch({
                 type:'organize/list',
                 payload:{
                     offset:page,
                     limit:limit,
                     title:title
                 }   
+            })
+        },
+        fetchInfo(title) {
+            dispatch({
+                type: 'organize/info',
+                payload: {
+                    title
+                }
             })
         },
         apply(organize_id,lesson_id){

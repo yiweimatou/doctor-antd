@@ -34,6 +34,7 @@ class YunbookCard extends Component{
                         to={`/yunbook/edit/${yunbook.id}`}
                         style = {{float:'right'}}
                     >
+                        编辑
                         <Icon type="edit" />
                     </Link>
                     <h3>{yunbook.title}</h3>

@@ -36,8 +36,9 @@ class New extends Component {
         list:PropTypes.object,
         mylist:PropTypes.object,
         uid:PropTypes.number,
-        lid:PropTypes.string,
-        push: PropTypes.func.isRequired
+        params: PropTypes.object,
+        push: PropTypes.func.isRequired,
+        fetchYunbook: PropTypes.func.isRequired
     }
     state = {
         currentStep:1,
@@ -45,7 +46,8 @@ class New extends Component {
         defaultValue: [],
         yunbook:null,
         show: false,
-        category_id: null
+        category_id: null,
+        visible: false
     }
     handleCancel = () => this.setState({
         show: false
@@ -83,10 +85,10 @@ class New extends Component {
                 lbl:this.state.yunbook.lbl,
                 title:values.sname,
                 area_id:values.area_ids[0],
-                lesson_id:this.props.lid,
+                lesson_id:this.props.params.lid,
                 descript:values.descript || '',
                 category_id: this.state.category_id
-            }, () => this.props.push(`/lesson/show/${this.props.lid}`))
+            }, () => this.props.push(`/lesson/show/${this.props.params.lid}`))
         })
     }
     onClick=()=>{
@@ -123,7 +125,7 @@ class New extends Component {
     componentWillMount(){
         let a3 = []
         getLesson({
-            id:this.props.lid
+            id:this.props.params.lid
         }).then(data=>{
             this.setState({ category_id: data.get.category_id })
             return data.get
@@ -144,7 +146,12 @@ class New extends Component {
                     label: item.title,
                     zoom: item.zoom,
                     isLeaf: false
-                }))
+            }))
+            if(this.props.params.yid){
+                this.props.fetchYunbook(this.props.params.yid, yunbook => this.setState({ yunbook, show: true }), error => {
+                    message.error(error)
+                })
+            }
             this.setState({
                 initialOptions: a3,
                 defaultValue: [area.id]
@@ -181,23 +188,29 @@ class New extends Component {
                                 {
                                     list.data.map(yunbook=>{
                                         return (<Col key={yunbook.id} span={8}>
-                                                    <SelectYunbook 
+                                                    <SelectYunbook
+                                                        lid = {this.props.params.lid} 
                                                         yunbook={yunbook}
                                                         handlePick = {this.handlePick}
+                                                        onClick={this.click}
                                                     />
                                                 </Col>
                                             )
                                     })
                                 }
                                 </Row>
+                                { list.data.length > 0 ?
                                 <div className='pagination'>
                                     <Pagination 
+                                        defaultCurrent={1}
                                         total={list.total}
                                         showTotal={total => `共 ${total} 条`}
                                         pageSize = {6}
                                         onChange = {(page)=>changeHandler(page,list.limit,0)}
                                     />
-                                </div>
+                                </div> :
+                                 <p style={{textAlign: 'center'}}>暂无数据</p>
+                                }
                             </TabPane>
                             <TabPane tab='我的云板书' key='2'>
                                 <Row gutter={8}>
@@ -206,22 +219,28 @@ class New extends Component {
                                         return (
                                             <Col key={yunbook.id} span={8}>
                                                 <SelectYunbook 
+                                                    lid = {this.props.params.lid}
                                                     yunbook={yunbook}
                                                     handlePick = {this.handlePick}
+                                                    onClick={this.click}
                                                 />
                                             </Col>
                                         )
                                     })
                                 }
                                 </Row>
+                                {mylist.data.length > 0 ?
                                 <div className='pagination'>
                                     <Pagination 
+                                        defaultCurrent={1}
                                         total={mylist.total}
                                         showTotal={total => `共 ${total} 条`}
                                         pageSize = {mylist.limit}
                                         onChange = {(page)=>changeHandler(page,list.limit,uid)}
                                     />
-                                </div>
+                                </div> :
+                                 <p style={{textAlign: 'center'}}>暂无数据</p>
+                                }
                             </TabPane>
                         </Tabs>
                         :
@@ -321,9 +340,20 @@ export default connect(
         list:state.yunbook.list,
         mylist:state.yunbook.mylist,
         uid:state.auth.key,
-        lid:state.routing.locationBeforeTransitions.pathname.split('/')[3]
+        params:state.routing.locationBeforeTransitions.query
     }),
     dispatch=>({
+        fetchYunbook(id, resolve, reject) {
+            dispatch({
+                type: 'yunbook/fetch',
+                payload: {
+                    id
+                },
+                meta: {
+                    resolve, reject
+                }
+            })
+        },
         changeHandler:(offset,limit,uid)=>{
             if( uid === 0){
                 dispatch({

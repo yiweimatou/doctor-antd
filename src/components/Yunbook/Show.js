@@ -3,20 +3,27 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw/dist/leaflet.draw.css'
 import L from 'leaflet'
 import 'leaflet-draw'
-import {connect} from 'react-redux'
+import { Spin, message, Button } from 'antd'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
 const styles = {
     map:{
-        height:750
+        height:750,
+        marginTop: 20
     }
 }
 class Show extends React.Component{
-    componentWillReceiveProps(nextProps){
-        const { yunbook } = nextProps
+    state = {
+        loading: true,
+        yid: this.props.params.yid
+    }
+    initial = yunbook => {
+        if( !yunbook ) return
         const url = `${yunbook.path}/{z}/{x}/{y}.png`
         this._map =  L.map('_map',{
-            maxZoom:yunbook.zoom,
-            minZoom:0,
+            maxZoom: yunbook.zoom,
+            minZoom: 0,
             attributionControl: false
         })
         const bounds =new L.LatLngBounds(this._map.unproject([
@@ -44,21 +51,44 @@ class Show extends React.Component{
                 }
             }).addTo(this._map)
         }
+        this.setState({ loading: false })        
+    }
+    componentWillMount() {
+        this.props.fetchYunbook(this.props.params.yid, yunbook => {
+            this.initial(yunbook)
+        }, error => {
+            message.error(error)
+        })
     } 
     render(){
+        const { lid } = this.props.params
         return (
-            <div id='_map' style={ styles.map } >
-            </div>
+            <Spin spinning = {this.state.loading}>
+                <div>
+                    {lid?<Button type='primary' onClick={() => this.props.push(`/section/new?lid=${lid}&yid=${this.state.yid}`)}>购买</Button>:null}
+                    <div id='_map' style={ styles.map } ></div>
+                </div>
+            </Spin>
         )
     }
 }
 
-Show.propTypes = {
-    yunbook:React.PropTypes.object
-}
-
-export default connect(
-    state=>({
-        yunbook:state.yunbook.entity
-    })
+export default connect(state => ({
+    params: state.routing.locationBeforeTransitions.query
+}), dispatch => ({
+    fetchYunbook(id, resolve, reject) {
+        dispatch({
+            type: 'yunbook/fetch',
+            payload: {
+                id
+            },
+            meta: {
+                resolve, reject
+            }
+        })
+    },
+    push(path) {
+        dispatch(push(path))
+    }
+}) 
 )(Show)

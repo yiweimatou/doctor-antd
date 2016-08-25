@@ -5,11 +5,11 @@ import './index.css'
 class SelectYunbook extends Component{
     render(){
         const {
-            yunbook,handlePick
+            yunbook,handlePick,lid
         } = this.props
         return(
             <div className='col'>
-               <Link className='courseList' to={`/yunbook/show/${yunbook.id}`}>
+               <Link className='courseList' to={`/yunbook/show?lid=${lid}&yid=${yunbook.id}`}>
                     <div className="courseImg">
                         <div className='xmoney'>
                             <span>{yunbook.money===0?' 免费 ':`￥${yunbook.money}`}</span>
@@ -31,8 +31,9 @@ class SelectYunbook extends Component{
 }
 
 SelectYunbook.propTypes = {
-    yunbook:PropTypes.object,
-    handlePick:PropTypes.func
+    yunbook: PropTypes.object.isRequired,
+    handlePick: PropTypes.func.isRequired,
+    lid: PropTypes.string.isRequired
 }
 
 export default SelectYunbook

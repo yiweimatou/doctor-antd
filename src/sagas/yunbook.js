@@ -20,6 +20,52 @@ import {
 from '../services/yunbook.js'
 import { push } from 'react-router-redux'
 
+function* watchFetchYunbookList() {
+  yield* takeLatest('yunbook/fetchlist', function* (action){
+     try {
+        const data = yield call(getYunbookList, action.payload)
+        if(action.meta && action.meta.resolve) {
+          yield call(action.meta.resolve, data.list)
+        }
+     } catch (error) {
+       if(action.meta && action.meta.reject) {
+         yield call(action.meta.reject, error)
+       }
+     }
+  })
+}
+
+function* watchFetchYunbookInfo() {
+  yield* takeLatest('yunbook/fetchinfo', function* (action){
+     try {
+        const data = yield call(getYunbookInfo, action.payload)
+        if(action.meta && action.meta.resolve) {
+          yield call(action.meta.resolve, data.count)
+        }
+     } catch (error) {
+       if(action.meta && action.meta.reject) {
+         yield call(action.meta.reject, error)
+       }
+     }
+  })
+}
+
+
+function* watchFetchYunbook () {
+   yield * takeLatest('yunbook/fetch', function* (action) {
+     try {
+       const data = yield call(getYunbook, action.payload)
+       if (action.meta && action.meta.resolve) {
+         yield call(action.meta.resolve, data.get)
+       }
+     } catch (error) {
+       if (action.meta && action.meta.reject) {
+         yield call(action.meta.reject, error)
+       }
+     }
+   })
+}
+
 const handleInfo = function* (action) {
   try {
     const result = yield call(getYunbookInfo, action.payload)
@@ -167,6 +213,9 @@ export default function*() {
     fork(watchList),
     fork(watchInfo),
     fork(watchMyList),
-    fork(watchMyInfo)
+    fork(watchMyInfo),
+    fork(watchFetchYunbook),
+    fork(watchFetchYunbookList),
+    fork(watchFetchYunbookInfo)
   ]
 }

@@ -169,7 +169,6 @@ class New extends Component{
                         <Upload
                             name='upload_file'
                             action={this.state.action}
-                            accept='image/*'
                             listType="picture"
                             fileList={this.state.fileList}
                             {...getFieldProps('upload',{

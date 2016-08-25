@@ -43,10 +43,10 @@ class New extends Component {
         return file
         })
         fileList = fileList.filter((file) => {
-        if (file.response) {
-            return file.response.code === 200
-        }
-        return true
+            if (file.response) {
+                return file.response.code === 200
+            }
+            return true
         })
         this.setState({ fileList })
     }
