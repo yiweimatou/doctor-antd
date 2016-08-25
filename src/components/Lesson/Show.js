@@ -143,7 +143,7 @@ class Show extends Component {
                                 <Button
                                     type='ghost'
                                     onClick = {
-                                        ()=>lesson&&push(`/section/new/${lesson.id}`)
+                                        ()=>lesson&&push(`/section/new?lid=${lesson.id}`)
                                     }
                                 >
                                     新建文章

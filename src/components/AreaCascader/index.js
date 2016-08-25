@@ -1,7 +1,6 @@
 import {Cascader, message } from 'antd'
 import React,{ Component, PropTypes } from 'react'
 import { getAreaList } from '../../services/area.js'
-// import Category from '../../constants/category'
 
 class AreaCascader extends Component{
     constructor(props){

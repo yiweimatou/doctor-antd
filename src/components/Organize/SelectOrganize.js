@@ -11,14 +11,16 @@ const styles = {
 
 class SelectOrganize extends Component{
     state = {
-        name: ''
+        name: '',
+        current: 1
     }
     static propTypes = {
         list:PropTypes.array,
         pageParams:PropTypes.object,
         onChange:PropTypes.func.isRequired,
         apply:PropTypes.func.isRequired,
-        lid:PropTypes.number
+        lid:PropTypes.number,
+        fetchInfo: PropTypes.func.isRequired
     }   
     onChange=(page)=>{
         this.props.onChange(
@@ -28,6 +30,7 @@ class SelectOrganize extends Component{
         )
     }
     onSearch=(name)=>{
+        this.props.fetchInfo(name)
         this.props.onChange(
             1,this.props.pageParams.limit,
             name
@@ -39,6 +42,7 @@ class SelectOrganize extends Component{
         })
     }
     componentDidMount(){
+        this.props.fetchInfo('')
         this.props.onChange(1,6,'')
     }
 
@@ -69,14 +73,20 @@ class SelectOrganize extends Component{
                     )
                 })}
                 <div style={styles.marginTop}>
+                { list.length > 0 ?                
                     <Pagination 
-                        style={{marginTop:20}}
+                        current = { this.state.current }
                         total={ pageParams.total }
                         showTotal={total => `共 ${total} 条`}
-                        pageSize = {6}
-                        onChange = {this.onChange}
-                    />
-                </div>
+                        pageSize = {pageParams.limit}
+                        onChange = { page => {
+                            this.props.onChange(page, pageParams.limit, this.state.name)
+                            this.setState({ current: page })
+                        }}
+                    /> :
+                    <p style={{textAlign: 'center'}}>暂无数据</p>
+                }
+                </div> 
             </div>
         )
     }

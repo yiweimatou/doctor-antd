@@ -30,22 +30,16 @@ const listRoute = store => ({
     }
 })
 
-const showRoute = store => ({
-    path:'show/:id',
+const showRoute = () => ({
+    path:'show',
     component:Show,
     onEnter(nextState,replace){
-        const id = nextState.params.id
+        const id = nextState.location.query.yid
         if(!id){
             return replace({
                 pathname:'/yunbook/list'
             })
         }
-        store.dispatch({
-            type:'yunbook/get',
-            payload:{
-                id
-            }
-        })
     }
 })
 
@@ -73,7 +67,7 @@ const yunbookRoutes = store => ({
     childRoutes:[
         newRoutes(),
         listRoute(store),
-        showRoute(store),
+        showRoute(),
         editRoute(store)
     ]
 })

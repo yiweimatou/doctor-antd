@@ -55,7 +55,17 @@ class Recommend extends Component {
                     account_money: 2,
                     organize_money: 10
                 }
-                this.props.recommend(params)
+                this.props.recommend(params, () => {
+                    message.success('推荐成功！')
+                    this.props.form.setFieldsValue({
+                        lname: '',
+                        descript: '',
+                        mobile: '',
+                        area_ids: []
+                    })
+                }, error => {
+                    message.error(error)
+                })
             })
         }
     }
@@ -143,6 +153,7 @@ class Recommend extends Component {
                     >
                         <AreaCascader
                             options={category}
+                            level = { 3 }
                             props = {getFieldProps('area_ids')}
                         />
                     </FormItem>
@@ -188,10 +199,13 @@ export default connect(
         uid:state.auth.key
     }),
     dispatch => ({
-        recommend(params){
+        recommend(params, resolve, reject){
             dispatch({
-                type:'lesson/recommend',
-                payload:params
+                type: 'lesson/recommend',
+                payload: params,
+                meta: {
+                    resolve, reject
+                }
             })
         }
     })
