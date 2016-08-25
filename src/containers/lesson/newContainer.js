@@ -13,10 +13,10 @@ const dispatchToProps = dispatch => ({
         })
     },
     push: path => dispatch(push(path)),
-    residue: (userId, resolve, reject) => dispatch({
+    residue: (id, resolve, reject) => dispatch({
         type: 'lesson/residue',
         payload: {
-            userId
+            id
         },
         meta: {
             resolve, reject
