@@ -1,16 +1,16 @@
 export const HOST = 'http://api.yiweimatou.com'
 
-export const USER_API_DOMAIN = `${HOST}:2002`
-export const ADMIN_API_DOMAIN = `${HOST}:2001`
+export const USER_API_DOMAIN = `${HOST}:1002`
+export const ADMIN_API_DOMAIN = `${HOST}:1001`
 export const UPLOAD_DOMAIN = 'http://image.yiweimatou.com:999'
-export const ORGANIZE_API_DOMAIN = `${HOST}:2005`
-export const LESSON_API_DOMAIN = `${HOST}:2007`
-export const AREA_API_DOMAIN = `${HOST}:2003`
-export const SECTION_API_DOMAIN = `${HOST}:2008`
-export const BOOK_API_DOMAIN = `${HOST}:2006`
+export const ORGANIZE_API_DOMAIN = `${HOST}:1005`
+export const LESSON_API_DOMAIN = `${HOST}:1007`
+export const AREA_API_DOMAIN = `${HOST}:1003`
+export const SECTION_API_DOMAIN = `${HOST}:1008`
+export const BOOK_API_DOMAIN = `${HOST}:1006`
 export const IMG_URL = 'http://image.yiweimatou.com/ywmt/'
-export const MONEY_API_DOMAIN = `${HOST}:2010`
-export const MSG_API_DOMAIN = `${HOST}:2004`
+export const MONEY_API_DOMAIN = `${HOST}:1010`
+export const MSG_API_DOMAIN = `${HOST}:1004`
 /**
  * api codes
  */
