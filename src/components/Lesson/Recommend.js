@@ -4,6 +4,7 @@ import {
     Button,
     Input,
     message,
+    Modal,
     Alert,
     Spin
 } from 'antd'
@@ -56,18 +57,26 @@ class Recommend extends Component {
                     organize_money: 10
                 }
                 this.props.recommend(params, () => {
-                    message.success('推荐成功！')
-                    this.props.form.setFieldsValue({
-                        lname: '',
-                        descript: '',
-                        mobile: '',
-                        area_ids: []
-                    })
+                    Modal.confirm({
+                        title: '通知',
+                        content: '推荐成功',
+                        onOk: this.initial,
+                        onCancel: this.initial 
+                    })      
+                   
                 }, error => {
                     message.error(error)
                 })
             })
         }
+    }
+    initial = () => {
+        this.props.form.setFieldsValue({
+                            lname: '',
+                            descript: '',
+                            mobile: '',
+                            area_ids: []
+                        })
     }
     render() {
         const {
