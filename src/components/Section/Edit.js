@@ -131,11 +131,11 @@ class Edit extends Component{
                 return
             }
             const params = {
-                lbl:this.state.lbl,
-                area_id:values.area_ids[values.area_ids.length-1],
-                title:values.title,
-                descript:values.descript,
-                id:this.props.section.id
+                lbl: encodeURIComponent(this.state.lbl),
+                area_id: values.area_ids[values.area_ids.length-1],
+                title: values.title,
+                descript: values.descript,
+                id: this.props.section.id
             }
             this.props.save(params)
         })
@@ -147,8 +147,8 @@ class Edit extends Component{
             submit.click()
         }else{
             this.props.save({
-                lbl:this.state.lbl,
-                id:this.props.section.id
+                lbl: encodeURIComponent(this.state.lbl),
+                id: this.props.section.id
             })
         }
     }
