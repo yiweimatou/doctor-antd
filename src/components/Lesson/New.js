@@ -1,4 +1,7 @@
-import React,{Component,PropTypes} from 'react'
+import React,{ 
+    Component, 
+    // PropTypes
+} from 'react'
 import { 
     Form,
     // Button,
@@ -21,17 +24,17 @@ import {
 //     wrapperCol: { span: 12 },
 // }
 class New extends Component {
-    static propTypes = {
-        form:PropTypes.object,
-        newLesson:PropTypes.func.isRequired,
-        push: PropTypes.func.isRequired,
-        residue: PropTypes.func.isRequired,
-        userId: PropTypes.number
-    }
-    state = {
-        fileList: [],
-        loading: true
-    }
+    // static propTypes = {
+    //     form:PropTypes.object,
+    //     newLesson:PropTypes.func.isRequired,
+    //     push: PropTypes.func.isRequired,
+    //     residue: PropTypes.func.isRequired,
+    //     userId: PropTypes.number
+    // }
+    // state = {
+    //     fileList: [],
+    //     loading: true
+    // }
     // componentWillMount() {
     //     this.props.residue(this.props.userId, num => {
     //         this.setState({ loading: false })
