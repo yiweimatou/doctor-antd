@@ -129,7 +129,7 @@ function* handleEdit(action) {
       type: 'yunbook/edit/success',
       payload: action.payload
     })
-    yield put(push(`/yunbook/show/${action.payload.id}`))
+    yield put(push(`/yunbook/show?yid=${action.payload.id}`))
     message.success('编辑成功!')    
   } catch (error) {
     message.error(error)
