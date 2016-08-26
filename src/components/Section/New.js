@@ -81,12 +81,12 @@ class New extends Component {
                 return
             }
             this.props.handleNew({
-                book_id:this.state.yunbook.id,
-                lbl:this.state.yunbook.lbl,
-                title:values.sname,
-                area_id:values.area_ids[0],
-                lesson_id:this.props.params.lid,
-                descript:values.descript || '',
+                book_id: this.state.yunbook.id,
+                lbl: encodeURIComponent(this.state.yunbook.lbl),
+                title: values.sname,
+                area_id: values.area_ids[0],
+                lesson_id: this.props.params.lid,
+                descript: values.descript || '',
                 category_id: this.state.category_id
             }, () => this.props.push(`/lesson/show/${this.props.params.lid}`))
         })
