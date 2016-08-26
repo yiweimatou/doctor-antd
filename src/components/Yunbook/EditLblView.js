@@ -206,7 +206,7 @@ class EditLblView extends React.Component{
                     visible={this.state.open}
                     onCancel={this.handleClose}
                     onOk = {this.submit}
-                >
+                    maskClosable = {false} >
                     <MyEditor setEditorState={this.setEditorState} open = {this.state.open} />
                 </Modal>
                 <div id = '_map' style ={ styles.map }></div>
