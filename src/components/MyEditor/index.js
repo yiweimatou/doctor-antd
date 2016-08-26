@@ -170,7 +170,7 @@ const Video = (props) => {
     const youkuRegExp = /\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/
     const youkuMatch = url.match(youkuRegExp)
 
-    const qqRegExp = /\/\/v\.qq\.com\/cover\/[a-zA-Z0-9]\/\w+\.html\?vid=(\w+)/
+    const qqRegExp = /\S*v.qq.com\S*vid=(\S+)/
     const qqMatch = url.match(qqRegExp)
 
     if(ytMatch && ytMatch[1].length === 11){
