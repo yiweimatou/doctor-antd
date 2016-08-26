@@ -197,6 +197,16 @@ const Video = (props) => {
                     src={`http://v.qq.com/iframe/player.html?tiny=0&auto=0&vid=${qqMatch[1]}`}
                 />
     }else{
+        const result = url.match(/\S*v.qq.com\S*\/(\S+).html/)
+        if( result && result[1].length > 0 ) {
+             return <iframe 
+                        allowFullScreen
+                        frameBorder = {0} 
+                        width={300}
+                        height={200}
+                        src={`http://v.qq.com/iframe/player.html?tiny=0&auto=0&vid=${result[1]}`}
+                    />
+        }
         return null
     }
 }
