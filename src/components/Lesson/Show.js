@@ -242,7 +242,7 @@ class Show extends Component {
                     <Paper>
                         <h2>文章列表</h2>
                         <SectionList
-                            lid={lesson&&lesson.id}
+                            lesson_id={lesson&&lesson.id}
                             push={push}
                             changeHandler={changeHandler}
                             list={sList.data}
