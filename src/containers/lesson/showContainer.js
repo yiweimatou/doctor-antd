@@ -49,11 +49,11 @@ function mapDispatchToProps(dispatch) {
                 payload:params
             })
         },
-        changeHandler:(offset,limit,lid)=>{
+        changeHandler:(offset,limit,lesson_id)=>{
             dispatch({
                 type:'section/list',
                 payload:{
-                    offset,limit,lid
+                    offset,limit,lesson_id
                 }
             })
         },
