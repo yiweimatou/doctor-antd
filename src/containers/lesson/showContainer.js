@@ -24,8 +24,7 @@ function mapStateToProps(state){
             data:state.section.list,
             pageParams:{
                 limit: state.section.limit,
-                total: state.section.total,
-                lid: state.lesson.entity.id
+                total: state.section.total
             }
         }
     }
