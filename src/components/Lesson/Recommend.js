@@ -1,12 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {
-    Form,
-    Button,
-    Input,
-    message,
-    Modal,
-    Alert,
-    Spin
+    Form, Button, Input, message, Modal, Alert, Spin
 } from 'antd'
 import {connect} from 'react-redux'
 import Paper from '../Paper'
@@ -24,7 +18,7 @@ class Recommend extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            uid:0
+            uid: 0
         }
         this.submitHandler = (e) => {
             e.preventDefault()
@@ -33,7 +27,7 @@ class Recommend extends Component {
                     return
                 }
                 const first = values.area_ids[0]
-                let area_id,category_id
+                let area_id, category_id
                 if(first === 1) {
                     if( values.area_ids.length < 3) {
                         return message.error('请再选一级分类')
@@ -48,22 +42,20 @@ class Recommend extends Component {
                     category_id = values.area_ids[2]
                 }
                 const params = {
-                    title:values.lname,
-                    descript:values.descript?values.descript:'',
+                    title: values.lname,
+                    descript: values.descript?values.descript:'',
                     area_id: area_id,
                     category_id: category_id,
-                    account_id:this.state.uid,
+                    account_id: this.state.uid,
                     account_money: 2,
                     organize_money: 10
                 }
                 this.props.recommend(params, () => {
-                    Modal.confirm({
+                    Modal.success({
                         title: '通知',
-                        content: '推荐成功',
-                        onOk: this.initial,
-                        onCancel: this.initial 
+                        content: '推荐成功'
                     })      
-                   
+                   this.initial()
                 }, error => {
                     message.error(error)
                 })
@@ -71,12 +63,7 @@ class Recommend extends Component {
         }
     }
     initial = () => {
-        this.props.form.setFieldsValue({
-                            lname: '',
-                            descript: '',
-                            mobile: '',
-                            area_ids: []
-                        })
+        this.props.form.resetFields()
     }
     render() {
         const {
@@ -86,33 +73,35 @@ class Recommend extends Component {
         const { getFieldProps } = form
         const lnameProps = getFieldProps('lname',{
             rules:[{
-                required:true,
-                max:20,
-                message:'请输入20字以内课程名'
+                required: true,
+                max: 20,
+                message: '请输入20字以内课程名'
             }]
         })
         const descriptProps = getFieldProps('descript',{
             rules:[{
-                    required:false,max:200,message:'请输入少于200字的简介'
+                    required: false,
+                    max: 200,
+                    message: '请输入少于200字的简介'
                 }]
         })
         const mobileProps = getFieldProps('mobile',{
                                 rules:[{
-                                    required:true,
-                                    whitespace:true,
-                                    message:'请输入手机号码'
+                                    required: true,
+                                    whitespace: true,
+                                    message: '请输入手机号码'
                                 },{
-                                    validator:(rule,value,cb) => {
+                                    validator: (rule,value,cb) => {
                                         if(!value){
                                             cb()
                                         }
                                         else if(isMobile(value)){
                                             getUser({
-                                                mobile:value
+                                                mobile: value
                                             }).then(data=>{
-                                                if(data.get.id>0){
+                                                if(data.get.id > 0){
                                                     this.setState({
-                                                        uid:data.get.id
+                                                        uid: data.get.id
                                                     })
                                                     cb()
                                                 }else{
@@ -197,15 +186,15 @@ class Recommend extends Component {
 }
 
 Recommend.propTypes = {
-    form:PropTypes.object.isRequired,
-    recommend:PropTypes.func.isRequired,
-    loading:PropTypes.bool.isRequired
+    form: PropTypes.object.isRequired,
+    recommend: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
 }
 
 export default connect(
     state => ({
-        loading:state.lesson.loading,
-        uid:state.auth.key
+        loading: state.lesson.loading,
+        uid: state.auth.key
     }),
     dispatch => ({
         recommend(params, resolve, reject){
