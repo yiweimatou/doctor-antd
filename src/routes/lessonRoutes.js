@@ -166,10 +166,10 @@ const tlistRoute = store => ({
         store.dispatch({
             type:'lessonTeam/list',
             payload:{
-                limit:1000,
-                offset:1,
+                limit: 1000,
+                offset: 1,
                 account_id: id,
-                cet:4
+                cet: 4
             }
         })
     }

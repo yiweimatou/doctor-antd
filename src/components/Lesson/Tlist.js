@@ -1,8 +1,7 @@
 import React,{Component,PropTypes} from 'react'
 import {
     Row,
-    Col,
-    Pagination
+    Col
 } from 'antd'
 import LessonCard from './LessonCard.js'
 
