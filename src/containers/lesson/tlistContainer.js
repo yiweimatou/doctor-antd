@@ -3,7 +3,7 @@ import List from '../../components/Lesson/Tlist'
 
 const mapStateToProps = state => ({
     list:{
-        data:state.lessonTeam.list.filter(item=>item.type<3),
+        data: state.lessonTeam.list.filter(item => item.type < 3),
     }
 })
 
