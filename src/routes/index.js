@@ -5,10 +5,10 @@ import organizeRoutes from './organizeRoutes.js'
 import lessonRoutes from './lessonRoutes.js'
 import yunbookRoutes from './yunbookRoutes'
 import sectionRoutes from './sectionRoutes.js'
-import inviteRoutes from './inviteRoutes'
 import userRoutes from './userRoutes'
 import messageRoutes from './messageRoutes'
 import Test from '../components/Test'
+import eventRoutes from './eventRoutes'
 
 const routes = (store) => ([{
     path: '/',
@@ -28,9 +28,9 @@ const routes = (store) => ([{
         lessonRoutes(store),
         yunbookRoutes(store),
         sectionRoutes(store),
-        inviteRoutes(store),
         userRoutes(store),
-        messageRoutes(store)
+        messageRoutes(store),
+        eventRoutes(store)
     ]
 }, {
     path: '*',

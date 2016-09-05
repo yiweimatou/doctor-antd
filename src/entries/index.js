@@ -6,7 +6,6 @@ import createSagaMiddleware from 'redux-saga';
 import { browserHistory } from 'react-router';
 import { routerMiddleware,syncHistoryWithStore, routerReducer as routing } from 'react-router-redux';
 import reducers from '../reducers/index';
-import crudReducer from '../reducers/crudReducer'
 import SagaManager from '../sagas/SagaManager';
 import './index.less';
 import App from '../components/App'
@@ -27,7 +26,7 @@ const enhancer = compose(
   window.devToolsExtension ? window.devToolsExtension() : f => f
 );
 const store = createStore(combineReducers({
-  ...reducers, routing, models: crudReducer
+  ...reducers, routing
 }), initialState, enhancer)
 SagaManager.startSagas(sagaMiddleware)
 store.dispatch({
