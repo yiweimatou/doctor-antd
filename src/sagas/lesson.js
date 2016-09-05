@@ -178,9 +178,11 @@ function* handleTeamList(action) {
             const lesson_id_list = array.uniq(result.list.map(item => item.lesson_id))
             const account_id_list = array.uniq(result.list.map(item => item.account_id))
             const [lessons, users] = yield [call(listLesson, {
-                id_list: lesson_id_list
+                id_list: lesson_id_list,
+                limit: 1000
             }), call(getUserList, {
-                id_list: account_id_list
+                id_list: account_id_list,
+                limit: 1000
             })]
             result.list = result.list.map(item => {
                     const lesson_idx = array.findIndex(lessons.list, {
