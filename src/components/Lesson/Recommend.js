@@ -11,7 +11,7 @@ import AreaCascader from '../AreaCascader'
 
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 class Recommend extends Component {
@@ -175,7 +175,7 @@ class Recommend extends Component {
                             {...descriptProps}
                         />
                     </FormItem>
-                    <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
+                    <FormItem wrapperCol={{  offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit" loading={loading}>推荐</Button>
                     </FormItem>
                 </Form>
