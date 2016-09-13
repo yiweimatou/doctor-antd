@@ -9,6 +9,7 @@ import userRoutes from './userRoutes'
 import messageRoutes from './messageRoutes'
 import Test from '../components/Test'
 import eventRoutes from './eventRoutes'
+import questionRoutes from './questionRoutes'
 
 const routes = (store) => ([{
     path: '/',
@@ -30,7 +31,8 @@ const routes = (store) => ([{
         sectionRoutes(store),
         userRoutes(store),
         messageRoutes(store),
-        eventRoutes(store)
+        eventRoutes(store),
+        questionRoutes(store)
     ]
 }, {
     path: '*',

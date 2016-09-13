@@ -45,6 +45,11 @@ class NavMenu extends Component {
                         </Link>
                     </Item>
                 </SubMenu>
+                <SubMenu key = 'sub5' title = { <span><Icon type="calculator" />试卷管理</span> } disabled = {user && user.lesson === 1}>
+                    <Item key = '11'>
+                        <Link to = '/question/add'>新增试题</Link>
+                    </Item>
+                </SubMenu>
                 <SubMenu
                     key="sub3"
                     title={
