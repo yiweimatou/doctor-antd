@@ -15,7 +15,7 @@ class Edit extends Component{
         lbl:'',
         options:[],
         defaultValue:[],
-        loading: true
+        loading: false
     }
     static propTypes = {
         yunbook:PropTypes.object,
@@ -28,16 +28,16 @@ class Edit extends Component{
             this.setState({
                 lbl:nextProps.yunbook.lbl
             })
-            this.props.initialCatgory({
-                area_id: nextProps.yunbook.area_id,
-                category_id: nextProps.yunbook.category_id
-            },(defaultValue, options) => {
-                this.setState({
-                    loading: false,
-                    defaultValue,
-                    options
-                })
-            }, error => message.error(error))
+            // this.props.initialCatgory({
+            //     area_id: nextProps.yunbook.area_id,
+            //     category_id: nextProps.yunbook.category_id
+            // },(defaultValue, options) => {
+            //     this.setState({
+            //         loading: false,
+            //         defaultValue,
+            //         options
+            //     })
+            // }, error => message.error(error))
         }
     }
     changeLbl = lbl => this.setState({ lbl })
@@ -48,29 +48,29 @@ class Edit extends Component{
             if(errors){
                 return
             }
-            const first = values.area_ids[0]
-            let area_id,category_id
-            if(first === 1) {
-                if( values.area_ids.length < 3) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length - 1]
-                category_id = values.area_ids[1]
-            }else {
-                if( values.area_ids.length < 4) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length -1 ]
-                category_id = values.area_ids[2]
-            }
+            // const first = values.area_ids[0]
+            // let area_id,category_id
+            // if(first === 1) {
+            //     if( values.area_ids.length < 3) {
+            //         return message.error('请再选一级分类')
+            //     }
+            //     area_id = values.area_ids[values.area_ids.length - 1]
+            //     category_id = values.area_ids[1]
+            // }else {
+            //     if( values.area_ids.length < 4) {
+            //         return message.error('请再选一级分类')
+            //     }
+            //     area_id = values.area_ids[values.area_ids.length -1 ]
+            //     category_id = values.area_ids[2]
+            // }
             const params = {
                 lbl:this.state.lbl,
-                area_id: area_id,
-                category_id: category_id,
+                // area_id: area_id,
+                // category_id: category_id,
                 title:values.title,
                 descript:values.descript,
                 id:this.props.yunbook.id,
-                money: values.money
+                sale_amount: values.money
             }
             this.props.save(params)
         })
@@ -86,7 +86,7 @@ class Edit extends Component{
                 <Tabs defaultActiveKey='2'>
                     <TabPane key='1' tab='基本信息修改'>
                         <Form
-                            horizontal 
+                            horizontal
                             onSubmit = { this.submitHandler }
                             style = {{pading:30,margin:'30 0'}}
                         >
@@ -123,18 +123,8 @@ class Edit extends Component{
                                                 }
                                             }
                                         }],
-                                        initialValue:yunbook&&yunbook.money
+                                        initialValue:yunbook&&yunbook.sale_amount
                                     })}
-                                />
-                            </FormItem>
-                            <FormItem
-                                label='分类'
-                                {...formItemLayout}
-                            > 
-                                 <AreaCascader
-                                    level = {4}
-                                    options = {this.state.options}
-                                    props = {getFieldProps('area_ids', {initialValue: this.state.defaultValue})}
                                 />
                             </FormItem>
                             <FormItem
@@ -158,7 +148,7 @@ class Edit extends Component{
                         </Form>
                     </TabPane>
                     <TabPane key='2' tab='标注修改'>
-                        <EditLblView 
+                        <EditLblView
                             yunbook={this.props.yunbook}
                             changeLbl={this.changeLbl}
                         />

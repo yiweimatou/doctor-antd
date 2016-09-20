@@ -9,8 +9,8 @@ class Main extends Component{
         const { auth,children,login,logout } = this.props
         return (
             <div className="ant-layout-topaside">
-                <Login 
-                    isAuthed = {auth.isAuthed} 
+                <Login
+                    isAuthed = {auth.isAuthed}
                     loading = {auth.loading}
                     login={login}
                 />
@@ -20,12 +20,12 @@ class Main extends Component{
                             <h2>医卫码头管理后台</h2>
                         </div>
                         <div className="ant-layout-login">
-                            <Button 
+                            <Button
                                 icon = 'logout'
                                 type = 'ghost'
                                 onClick = { logout }
                             >
-                                {auth&&auth.user?
+                                {   auth && auth.user ?
                                     auth.user.nickname||auth.user.cname||auth.user.mobile
                                     :''
                                 }

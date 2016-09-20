@@ -1,12 +1,12 @@
-import React,{Component,PropTypes} from 'react'
-import {Router} from 'react-router'
-import {Provider} from 'react-redux'
+import React,{ Component, PropTypes } from 'react'
+import { Router } from 'react-router'
+import { Provider } from 'react-redux'
 
 
 class App extends Component{
     static propTypes = {
-        history:PropTypes.object.isRequired,
-        store:PropTypes.object.isRequired
+        history: PropTypes.object.isRequired,
+        store: PropTypes.object.isRequired
     }
     render(){
         const {

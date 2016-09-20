@@ -39,7 +39,7 @@ store.dispatch({
 if (module.hot) {
   module.hot.accept('../reducers', () => {
     const reducers = require('../reducers');
-    const combinedReducers = combineReducers({ ...reducers, routing, models: crudReducer });
+    const combinedReducers = combineReducers({ ...reducers, routing });
     store.replaceReducer(combinedReducers);
   });
   module.hot.accept('../sagas/SagaManager', () => {

@@ -39,7 +39,7 @@ class NavMenu extends Component {
                             我的团队课程
                         </Link>
                     </Item>
-                    <Item key='5' disabled = {user && user.lessons===1}>
+                    <Item key='5' disabled = {user && user.rcmd_lesson===1}>
                         <Link to='/lesson/recommend'>
                             推荐课程
                         </Link>
@@ -48,6 +48,9 @@ class NavMenu extends Component {
                 <SubMenu key = 'sub5' title = { <span><Icon type="calculator" />试卷管理</span> } disabled = {user && user.lesson === 1}>
                     <Item key = '11'>
                         <Link to = '/question/add'>新增试题</Link>
+                    </Item>
+                    <Item key="12">
+                      <Link to="/textpaper/add">新增试卷</Link>
                     </Item>
                 </SubMenu>
                 <SubMenu

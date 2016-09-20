@@ -1,14 +1,10 @@
 import React ,{ Component,PropTypes } from 'react'
 import {connect} from 'react-redux'
-import { Form,Button,Upload,Input,Icon,message, Spin } from 'antd'
-import Paper from '../Paper'
+import { Form,Button,Upload,Input,Icon, Spin } from 'antd'
 import {
     UPLOAD_YUNBOOK_API,
     UPLOAD_PPT_API
 } from '../../constants/api.js'
-import AreaCascader from '../AreaCascader'
-import category from '../../constants/category'
-
 const FormItem = Form.Item
 const formItemLayout = {
     labelCol: { span: 4 },
@@ -32,7 +28,7 @@ class New extends Component{
             return e && e.fileList
     }
     handleChange = (info)=> {
-        let fileList = info.fileList 
+        let fileList = info.fileList
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
             if (file.response) {
@@ -51,50 +47,31 @@ class New extends Component{
     submitHandler=(e)=>{
         e.preventDefault()
         this.props.form.validateFields((errors,values)=>{
-            if(errors){
-                return
-            }
-            const first = values.area_ids[0]
-            let area_id,category_id
-            if(first === 1) {
-                if( values.area_ids.length < 3) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length - 1]
-                category_id = values.area_ids[1]
-            }else {
-                if( values.area_ids.length < 4) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length -1 ]
-                category_id = values.area_ids[2]
-            }
+            if (errors) return
             const cover = values.upload[0].response.cover
             const params = {
                 title:values.title,
                 descript:values.descript||'',
-                area_id: area_id,
-                category_id: category_id,
                 cover:cover,
                 path:values.upload[0].response.path,
                 width:values.upload[0].response.width,
                 height:values.upload[0].response.height,
                 zoom:values.upload[0].response.zoom,
                 money: values.money,
-                file_id: 2 //不传报错，随便传一个
+                state: 1
             }
             this.props.handleNew(params)
         })
     }
     render(){
         const {
-            form, loading 
+            form, loading
         } = this.props
         const {
             getFieldProps
         } = form
         return(
-            <Paper>
+            <div>
                 <Spin spinning = { loading } >
                 <Form
                     horizontal
@@ -152,17 +129,6 @@ class New extends Component{
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
-                        required
-                        label='云板书分类'
-                    >
-                       <AreaCascader
-                            props = { getFieldProps('area_ids') }
-                            level = { 4 }
-                            options = { category }
-                       />
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
                         label='上传云板书'
                         required
                     >
@@ -209,7 +175,7 @@ class New extends Component{
                     </FormItem>
                 </Form>
                 </Spin>
-            </Paper>
+            </div>
         )
     }
 }
