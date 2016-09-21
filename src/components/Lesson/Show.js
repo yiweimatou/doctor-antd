@@ -1,11 +1,12 @@
 import React,{Component,PropTypes} from 'react'
 import Paper from '../Paper'
-import { Row,Col,Button,Modal } from 'antd'
+import { Row, Col, Button, Modal, message, Spin } from 'antd'
 import SelectContainer from '../../containers/organize/selectContainer.js'
 import './Show.css'
 import SelectUser from '../User/SelectUser.js'
 import TeamList from './TeamList.js'
 import SectionList from '../Section/List'
+import { DEFAULT_COVER } from '../../constants/api'
 
 const styles = {
     row:{
@@ -22,14 +23,17 @@ class Show extends Component {
         changeHandler:PropTypes.func.isRequired,
         sList:PropTypes.object,
         deleteSection:PropTypes.func.isRequired,
-        isAdmin:PropTypes.number.isRequired,
-        uid:PropTypes.number.isRequired,
-        handleRemove:PropTypes.func.isRequired
+        userId:PropTypes.number.isRequired,
+        handleRemove:PropTypes.func.isRequired,
+        id: PropTypes.string.isRequired
     }
     state = {
         oVisible:false,
         uVisible:false,
         tVisible:false,
+        role: 0,//1:主讲,2:辅导员,3:助教
+        loading: true,
+        lesson: {}
     }
     handlerTVisible=()=>{
         this.setState({
@@ -46,75 +50,56 @@ class Show extends Component {
             oVisible:!this.state.oVisible
         })
     }
+    componentWillMount() {
+      this.props.getLessonTeam({
+        account_id: this.props.userId,
+        lesson_id: this.props.id
+      }, role => this.setState({ role }), error => {
+        message.error(error, 7)
+      })
+      this.props.getLesson({
+        id: this.props.id
+      }, lesson => this.setState({ lesson, loading: false }), error => message.error(error))
+    }
     render(){
         const {
-            lesson,
-            olist,teamList,push,changeHandler,
-            sList,deleteSection,isAdmin,uid,handleRemove
+          olist, teamList, push, userId, handleRemove
         } = this.props
+        const { role, loading, lesson } = this.state
         return(
             <div>
                 <Paper>
                     <div style={styles.row}>
+                      <Spin spinning={loading}>
                         <Row gutter={16}>
-                            <Col span={12}>
-                                <img alt='pic' width='480' height='180' src={lesson&&lesson.cover} />
-                            </Col>
-                            <Col span={6}>
-                                <span>课程名称:</span>
-                            </Col>
-                            <Col span={6}>
-                                <span>{lesson&&lesson.title}</span>
-                            </Col>
-                            <Col span={6}>
-                                <span>课程简介:</span>
-                            </Col>
-                            <Col span={6} offset={6}>
-                                <p>{lesson&&lesson.descript}</p>
-                            </Col>
-                            <Col span={6}>
-                                <span>创建时间:</span>
-                            </Col>
-                            <Col span={6}>
-                                <span>{lesson&&new Date(lesson.add_ms*1000).toLocaleString()}</span>
-                            </Col>
-                            <Col span={6}>
-                                <span>更新时间:</span>
-                            </Col>
-                            <Col span={6}>
-                                <span>{lesson&&new Date(lesson.put_ms*1000).toLocaleString()}</span>
-                            </Col>
-                            <Col span={6}>
-                                <span>浏览量:</span>
-                            </Col>
-                            <Col span={6}>
-                                <p>{lesson&&lesson.pv}</p>
-                            </Col>
-                            <Col span={6}>
-                                <span>粉丝数:</span>
-                            </Col>
-                            <Col span={6}>
-                                <p>{lesson&&lesson.uv}</p>
-                            </Col>      
-                            <Col span = {6}>
-                                <span>课程价格:</span>
-                            </Col>
-                            <Col span = {6}>
-                                <span style={{color: 'orange'}}>{lesson&&lesson.account_money}</span>元                              
-                            </Col>
+                            <Col span={12}><img alt='pic' width='480' height='180' src={lesson&&lesson.cover|| DEFAULT_COVER} /></Col>
+                            <Col span={6}><span>课程名称:</span></Col>
+                            <Col span={6}><span>{lesson&&lesson.title}</span></Col>
+                            <Col span={6}><span>课程简介:</span></Col>
+                            <Col span={6}><span>{lesson&&lesson.descript}</span></Col>
+                            <Col span={6}><span>创建时间:</span></Col>
+                            <Col span={6}><span>{lesson&&new Date(lesson.add_ms*1000).toLocaleString()}</span></Col>
+                            <Col span={6}><span>更新时间:</span></Col>
+                            <Col span={6}><span>{lesson&&new Date(lesson.put_ms*1000).toLocaleString()}</span></Col>
+                            <Col span={6}><span>浏览量:</span></Col>
+                            <Col span={6}><p>{lesson&&lesson.pv}</p></Col>
+                            <Col span={6}><span>粉丝数:</span></Col>
+                            <Col span={6}><p>{lesson&&lesson.uv}</p></Col>
+                            <Col span = {6}><span>课程价格:</span></Col>
+                            <Col span = {6}><span style={{color: 'orange'}}>{lesson&&lesson.account_amount}</span>元</Col>
                         </Row>
+                      </Spin>
                     </div>
-                    {isAdmin===3?null:
                     <div style = { styles.row } >
                         <Row>
                                     课程余额
-                                    <span className='money'><em>{lesson&&lesson.amount_money}</em></span>元
+                                    <span className='money'><em>{lesson&&lesson.balance_amount}</em></span>元
                                     <span style={{marginLeft: 30}}>
                                         每月一日0点自动分成，课程余额超过1000元部分分成
                                     </span>
                                     <br />
                                         信用账户
-                                        <span className='money'><em>{lesson&&lesson.credit_money}</em></span>元
+                                        <span className='money'><em>{lesson&&lesson.credit_amount}</em></span>元
 
                                         <span style={{marginLeft: 30}}>
                                             信用账户总额为1000元，课程收入优先还入信用账户
@@ -127,9 +112,9 @@ class Show extends Component {
                                     交易明细
                                 </Button>
                         </Row>
-                    </div>}
+                    </div>
                     <div style={styles.row}>
-                        {isAdmin === 3?null:                    
+                        {role === 0 ? null:
                         <Row>
                             <Col span={4}>
                                 <Button
@@ -143,13 +128,12 @@ class Show extends Component {
                                 <Button
                                     type='ghost'
                                     onClick = {
-                                        ()=>lesson&&push(`/section/new?lid=${lesson.id}`)
+                                        ()=>lesson&&push(`/section/add/choose?lid=${lesson.id}&oid=0`)
                                     }
                                 >
                                     新建文章
                                 </Button>
                             </Col>
-                             {isAdmin ===1 ?
                             <Col span={4}>
                                 <Button
                                     onClick={this.handlerOVisible}
@@ -157,8 +141,8 @@ class Show extends Component {
                                 >
                                     申请机构认证
                                 </Button>
-                            </Col>:null}
-                            {isAdmin ===1 ?
+                            </Col>
+                            {role === 1 ?
                             <Col span={4}>
                                 <Button
                                     type='ghost'
@@ -168,7 +152,7 @@ class Show extends Component {
                                 </Button>
                             </Col>:null}
                             <Col span={4}>
-                            {isAdmin===1?
+                            {role === 1 ?
                                 <Button
                                     type='ghost'
                                     onClick = {this.handlerTVisible}
@@ -179,7 +163,7 @@ class Show extends Component {
                                     type='ghost'
                                     onClick = {()=>{
                                         teamList.forEach(item=>{
-                                            if(item.type===1&&item.account_id===uid){
+                                            if(item.type===1&&item.account_id === userId){
                                                 handleRemove(item.id)
                                             }
                                         })
@@ -199,7 +183,7 @@ class Show extends Component {
                                 olist.map(item=>{
                                     return (
                                         <div key={item.id} className='item'>
-                                            <img 
+                                            <img
                                                 src={item.organize_logo}
                                                 className='img'
                                                 width='100%'
@@ -220,7 +204,7 @@ class Show extends Component {
                                         <div nowrap key={item.id} className='item'>
                                             {
                                                 item.user&&item.user.face?
-                                                <img 
+                                                <img
                                                     src={item.user.face}
                                                     className='img'
                                                     width='100%'
@@ -241,14 +225,6 @@ class Show extends Component {
                 <div className='paper'>
                     <Paper>
                         <h2>文章列表</h2>
-                        <SectionList
-                            lesson_id={lesson&&lesson.id}
-                            push={push}
-                            changeHandler={changeHandler}
-                            list={sList.data}
-                            pageParams={sList.pageParams}
-                            deleteSection={deleteSection}
-                        />
                     </Paper>
                 </div>
                 <Modal
@@ -260,9 +236,9 @@ class Show extends Component {
                 </Modal>
                 <SelectUser
                     visible={ this.state.uVisible}
-                    onCancel={ this.handlerUVisible } 
+                    onCancel={ this.handlerUVisible }
                 />
-                <TeamList 
+                <TeamList
                     visible={this.state.tVisible}
                     onCancel = {this.handlerTVisible}
                 />

@@ -55,7 +55,7 @@ class Add extends Component {
         })
       }, () => {
         message.success('新建成功')
-        this.setState({ loading: false })
+        this.setState({ loading: false, topicList: [] })
         this.props.form.resetFields()
       }, error => {
         message.error(error)

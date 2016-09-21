@@ -28,10 +28,10 @@ class EditLblView extends React.Component{
         }
         this.submit = () => {
             const content = stateToHTML(this.state.editorState.getCurrentContent())
-            if( content ){ 
+            if( content ){
                 const popup  = L.popup()
                 popup.setContent(content)
-                this.state.layer.bindPopup(popup).openPopup()            
+                this.state.layer.bindPopup(popup).openPopup()
                 const _geoJsonTemp = this.state.layer.toGeoJSON()
                 _geoJsonTemp.properties._popup = content
                 this._geoJson.features.push(_geoJsonTemp)
@@ -64,9 +64,9 @@ class EditLblView extends React.Component{
         L.drawLocal.edit.toolbar.buttons.editDisabled = '没有标注需要修改'
         L.drawLocal.edit.toolbar.buttons.removeDisabled = '没有标注需要删除'
     }
-    componentWillReceiveProps(nextProps){
-        if(this._map || !nextProps.yunbook) return
-        const { yunbook } = nextProps
+    componentDidMount(){
+        const { yunbook } = this.props
+        if(this._map || !yunbook) return
         const url = `${yunbook.path}/{z}/{x}/{y}.png`
         const self = this
         this._map =  L.map('_map',{
@@ -78,7 +78,7 @@ class EditLblView extends React.Component{
             0, yunbook.height
         ], yunbook.zoom), this._map.unproject([
             yunbook.width, 0
-        ], yunbook.zoom))    
+        ], yunbook.zoom))
         this._map.setMaxBounds(bounds)
         this._map.fitBounds(bounds)
         L.tileLayer(url,{
@@ -193,7 +193,7 @@ class EditLblView extends React.Component{
                 // polyLine.bindPopup('<div><i class="fa fa-trash" onClick="removeLayer(' + polyLine._leaflet_id + ')"</div></i>')
             })
         })
-    } 
+    }
     setEditorState=(editorState)=>{
         this.setState({
             editorState
@@ -216,8 +216,8 @@ class EditLblView extends React.Component{
 }
 
 EditLblView.propTypes = {
-    yunbook: React.PropTypes.object,
-    changeLbl: React.PropTypes.func
+  yunbook: React.PropTypes.object,
+  changeLbl: React.PropTypes.func
 }
 
 export default EditLblView

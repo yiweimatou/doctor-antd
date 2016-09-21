@@ -30,7 +30,7 @@ class Show extends React.Component{
             0, yunbook.height
         ], yunbook.zoom), this._map.unproject([
             yunbook.width, 0
-        ], yunbook.zoom))    
+        ], yunbook.zoom))
         this._map.setMaxBounds(bounds)
         this._map.fitBounds(bounds)
         L.tileLayer(url,{
@@ -51,7 +51,7 @@ class Show extends React.Component{
                 }
             }).addTo(this._map)
         }
-        this.setState({ loading: false })        
+        this.setState({ loading: false })
     }
     componentWillMount() {
         this.props.fetchYunbook(this.props.params.yid, yunbook => {
@@ -59,13 +59,17 @@ class Show extends React.Component{
         }, error => {
             message.error(error)
         })
-    } 
+    }
     render(){
-        const { lid } = this.props.params
+        const { lid, oid } = this.props.params
+        let query = ''
+        if (lid && oid) {
+          query = `lid=${lid}&&oid=${oid}`
+        }
         return (
             <Spin spinning = {this.state.loading}>
                 <div>
-                    {lid?<Button type='primary' onClick={() => this.props.push(`/section/new?lid=${lid}&yid=${this.state.yid}`)}>购买</Button>:null}
+                    {lid?<Button type='primary' onClick={() => this.props.push(`/section/add/book?${query}&yid=${this.state.yid}`)}>购买</Button>:null}
                     <div id='_map' style={ styles.map } ></div>
                 </div>
             </Spin>
@@ -90,5 +94,5 @@ export default connect(state => ({
     push(path) {
         dispatch(push(path))
     }
-}) 
+})
 )(Show)

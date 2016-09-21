@@ -80,7 +80,7 @@ const newRoute = () => ({
     component:newContainer
 })
 
-const showRoute = store => ({
+const showRoute = () => ({
     path:'show/:id',
     component:showContainer,
     onEnter(nextState,replace){
@@ -88,49 +88,49 @@ const showRoute = store => ({
         if( !id ){
             return replace({pathname:'/'})
         }
-        store.dispatch({
-            type:'organizeLesson/list',
-            payload:{
-                lesson_id: id,
-                cet:4
-            }
-        })
-        store.dispatch({
-                type:'organize/info',
-                payload:{}
-        })
-        store.dispatch({
-            type:'lesson/get',
-            payload:{
-                id
-            }
-        })
-        store.dispatch({
-            type:'lessonTeam/list',
-            payload:{
-                lesson_id: id
-            }
-        })
-        store.dispatch({
-            type: 'section/info',
-            payload: {
-                lesson_id: id
-            }
-        })
-        store.dispatch({
-            type: 'section/info',
-            payload: {
-                lesson_id: id
-            }
-        })
-        store.dispatch({
-            type:'section/list',
-            payload:{
-                limit:6,
-                offset:1,
-                lesson_id: id
-            }
-        })
+        // store.dispatch({
+        //     type:'organizeLesson/list',
+        //     payload:{
+        //         lesson_id: id,
+        //         cet:4
+        //     }
+        // })
+        // store.dispatch({
+        //         type:'organize/info',
+        //         payload:{}
+        // })
+        // store.dispatch({
+        //     type:'lesson/get',
+        //     payload:{
+        //         id
+        //     }
+        // })
+        // store.dispatch({
+        //     type:'lessonTeam/list',
+        //     payload:{
+        //         lesson_id: id
+        //     }
+        // })
+        // store.dispatch({
+        //     type: 'section/info',
+        //     payload: {
+        //         lesson_id: id
+        //     }
+        // })
+        // store.dispatch({
+        //     type: 'section/info',
+        //     payload: {
+        //         lesson_id: id
+        //     }
+        // })
+        // store.dispatch({
+        //     type:'section/list',
+        //     payload:{
+        //         limit:6,
+        //         offset:1,
+        //         lesson_id: id
+        //     }
+        // })
     }
 })
 

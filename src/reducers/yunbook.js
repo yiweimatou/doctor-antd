@@ -1,26 +1,19 @@
-import { 
+import {
     handleActions
 } from 'redux-actions'
 
 const initialState = {
-    list:{
-        data:[],
-        offset:1,
-        limit:6,
-        total:0
-    },
-    mylist:{
-        data:[],
-        offset:1,
-        limit:6,
-        total:0
-    },
-    entity:null,
+    list: [],
+    mylist: [],
+    entity: null,
+    total: 0,
+    myTotal: 0,
     actionStatus: {
         adding: false,
         editing: false
     },
-    loading:false
+    loading: false,
+    myLoading: false
 }
 
 const yunbook = handleActions({
@@ -36,10 +29,13 @@ const yunbook = handleActions({
         ...state,
         loading:true
     }),
-    ['yunbook/edit/success']:(state,action)=>({
+    ['yunbook/edit/success']: (state,action) => ({
         ...state,
-        loading:false,
-        entity:Object.assign({},state.entity,action.payload)
+        loading: false,
+        entity: {
+          ...state.entity,
+          ...action.payload
+        }
     }),
     ['yunbook/edit/failure']:state=>({
         ...state,
@@ -72,62 +68,42 @@ const yunbook = handleActions({
     }),
     ['yunbook/list/success']:(state,action)=>({
         ...state,
-        loading:false,
-        list:{
-            total:state.list.total,
-            data:action.payload.list,
-            ...action.payload.params
-        }
+        loading: false,
+        list: action.payload
     }),
     ['yunbook/list/failure']:state=>({
         ...state,
-        loading:false
+        loading: false
     }),
     ['yunbook/mylist']:state=>({
         ...state,
-        loading:true
+        myLoading: true
     }),
     ['yunbook/mylist/success']:(state,action)=>({
         ...state,
-        loading:false,
-        mylist:{
-            total:state.mylist.total,
-            data:action.payload.list,
-            ...action.payload.params
-        }
+        myLoading: false,
+        mylist: action.payload
     }),
     ['yunbook/mylist/failure']:state=>({
         ...state,
-        loading:false
+        myLoading: false
     }),
     ['yunbook/info']:state=>({
         ...state,
-        list:{
-            ...state.list,
-            total:0
-        }
+        total: 0
     }),
     ['yunbook/info/success']:(state,action)=>({
         ...state,
-        list:{
-            ...state.list,
-            total:action.payload.total
-        }
+        total: action.payload
     }),
     ['yunbook/myinfo']:state=>({
         ...state,
-        mylist:{
-            ...state.mylist,
-            total:0
-        }
+        myTotal: 0
     }),
     ['yunbook/myinfo/success']:(state,action)=>({
         ...state,
-        mylist:{
-            ...state.mylist,
-            total:action.payload.total
-        }
+        myTotal: action.payload
     })
-},initialState)
+}, initialState)
 
 export default yunbook

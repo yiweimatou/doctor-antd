@@ -1,41 +1,25 @@
-import New from '../components/Section/New.js'
+// import New from '../components/Section/New.js'
 import Edit from '../components/Section/Edit.js'
+import Choose from '../components/Section/Choose'
+import AddTextPaper from '../components/Section/AddTextPaper'
+import AddActive from '../components/Section/AddActive'
+import AddBook from '../components/Section/AddBook'
 
-const newRoute = store => ({
-    path:'new',
-    component:New,
-    onEnter(nextState,replace){
-        const lid = nextState.location.query.lid
-        if( !lid ){
-           return replace({pathname:'/'})
-        }
-        const uid = store.getState().auth.key
-        store.dispatch({
-            type:'yunbook/list',
-            payload:{
-                offset:1,
-                limit:6
-            }
-        })
-        store.dispatch({
-            type:'yunbook/info',
-            payload:{}
-        })
-        store.dispatch({
-            type:'yunbook/mylist',
-            payload:{
-                offset:1,
-                limit:6,
-                account_id: uid
-            }
-        })
-        store.dispatch({
-            type:'yunbook/myinfo',
-            payload:{
-                account_id: uid
-            }
-        })
-    }
+const newRoute = () => ({
+  path: 'add',
+  childRoutes: [{
+    path: 'textpaper',
+    component: AddTextPaper
+  }, {
+    path: 'book',
+    component: AddBook
+  }, {
+    path: 'active',
+    component: AddActive
+  }, {
+    path: 'choose',
+    component: Choose
+  }]
 })
 
 const editRoute = store =>({

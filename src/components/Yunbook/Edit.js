@@ -1,8 +1,7 @@
 import React,{ Component,PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Tabs,Button,Form,Input,message, Spin } from 'antd'
+import { Tabs,Button,Form,Input, Spin } from 'antd'
 import EditLblView from './EditLblView.js'
-import AreaCascader from '../AreaCascader'
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item

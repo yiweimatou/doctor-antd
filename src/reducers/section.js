@@ -10,56 +10,49 @@ const initialState = {
 }
 
 const section = handleActions({
-    ['section/delete/success']:(state,action)=>({
+    ['section/add']: state => ({
+      ...state,
+      loading: true
+    }),
+    ['section/add/success']: state => ({
+      ...state,
+      loading: false
+    }),
+    ['section/add/failure']: state => ({
+      ...state,
+      loading: false
+    }),
+    ['section/delete/success']: (state, action) => ({
         ...state,
         list:state.list.filter(item=>item.sid!==action.payload.sid)
     }),
     ['section/get']:state=>({
         ...state,
-        entity:null
+        entity: null
     }),
-    ['section/get/success']:(state,action)=>({
+    ['section/get/success']: (state, action) => ({
         ...state,
-        entity:action.payload.entity
+        entity: action.payload
     }),
-    ['section/new']:state=>({
+    ['section/edit']: state => ({
         ...state,
-        loading:true
+        loading: true
     }),
-    ['secton/new/success']:state=>({
+    ['section/edit/success']: (state, action) => ({
         ...state,
-        loading:false
+        loading: false,
+        entity: {
+          ...state.entity,
+          ...action.payload
+        }
     }),
-    ['section/new/failure']:state=>({
+    ['section/edit/failure']: state => ({
         ...state,
-        loading:false
+        loading: false
     }),
-    ['section/edit']:state=>({
+    ['section/list']: state => ({
         ...state,
-        loading:true
-    }),
-    ['section/edit/success']:(state,action)=>({
-        ...state,
-        loading:false,
-        entity:Object.assign({},state.entity,action.payload.params),
-        list:state.list.map(item=>{
-            if(item.sid === action.payload.sid){
-                return {
-                    ...item,
-                    ...action.payload
-                }
-            }else{
-                return item
-            }
-        })
-    }),
-    ['section/edit/failure']:state=>({
-        ...state,
-        loading:false
-    }),
-    ['section/list']:state=>({
-        ...state,
-        loading:true
+        loading: true
     }),
     ['section/list/success']:(state,action)=>({
         ...state,

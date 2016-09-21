@@ -9,8 +9,27 @@ export const AREA_API_DOMAIN = `${HOST}:4001`
 export const SECTION_API_DOMAIN = `${HOST}:4001`
 export const BOOK_API_DOMAIN = `${HOST}:4001`
 export const IMG_URL = 'http://image.yiweimatou.com/ywmt/'
-export const MONEY_API_DOMAIN = `${HOST}:4001`
+export const BILL_API_DOMAIN = `${HOST}:4001`
 export const MSG_API_DOMAIN = `${HOST}:4001`
+/**
+ * default images
+ */
+export const DEFAULT_FACE = 'http://image.yiweimatou.com/ywmt/face/default.png'
+export const DEFAULT_COVER = 'http://image.yiweimatou.com/ywmt/cover/lesson.png'
+export const DEFAULT_LOGO = 'http://image.yiweimatou.com/ywmt/logo/default.png'
+/*
+*category
+ */
+export const NOTICE = '10'
+export const HTML = '9'
+export const ACTIVE = '8'
+export const TOPICS = '7'
+export const TOPIC = '6'
+export const BOOK = '5'
+export const SECTION = '4'
+export const LESSON = '3'
+export const ORGANIZE = '2'
+export const ACCOUNT = '1'
 /**
  * api codes
  */
@@ -50,12 +69,13 @@ export const  TOPICS_PUT_API = `${USER_API_DOMAIN}/topics/put`
 export const  TOPICS_DEL_API = `${USER_API_DOMAIN}/topics/del`
 export const  TOPICS_BUY_API = `${USER_API_DOMAIN}/topics/buy`
 /**
- *money apis
+ *bill apis
  */
-export const MONEY_INFO_API = `${MONEY_API_DOMAIN}/money/info`
-export const MONEY_GET_API = `${MONEY_API_DOMAIN}/money/get`
-export const MONEY_LIST_API = `${MONEY_API_DOMAIN}/money/list`
-export const MONEY_ADD_API = `${MONEY_API_DOMAIN}/money/add`
+export const BILL_INFO_API = `${BILL_API_DOMAIN}/bill/info`
+export const BILL_GET_API = `${BILL_API_DOMAIN}/bill/get`
+export const BILL_LIST_API = `${BILL_API_DOMAIN}/bill/list`
+export const BILL_ADD_API = `${BILL_API_DOMAIN}/bill/add`
+export const BILL_EDIT_API = `${BILL_API_DOMAIN}/bill/put`
 /**
  * user apis
  */
@@ -94,12 +114,12 @@ export const LESSON_RCMD_API = `${LESSON_API_DOMAIN}/lesson/add/rcmd`
 /**
  *team apis
  */
-export const TEAM_GET_API = `${LESSON_API_DOMAIN}/team/get`
-export const TEAM_INFO_API = `${LESSON_API_DOMAIN}/team/info`
-export const TEAM_EDIT_API = `${LESSON_API_DOMAIN}/team/put`
-export const TEAM_ADD_API = `${LESSON_API_DOMAIN}/team/add`
-export const TEAM_LIST_API = `${LESSON_API_DOMAIN}/team/list`
-export const TEAM_REMOVE_API = `${LESSON_API_DOMAIN}/team/del`
+export const TEAM_GET_API = `${LESSON_API_DOMAIN}/lesson_team/get`
+export const TEAM_INFO_API = `${LESSON_API_DOMAIN}/lesson_team/info`
+export const TEAM_EDIT_API = `${LESSON_API_DOMAIN}/lesson_team/put`
+export const TEAM_ADD_API = `${LESSON_API_DOMAIN}/lesson_team/add`
+export const TEAM_LIST_API = `${LESSON_API_DOMAIN}/lesson_team/list`
+export const TEAM_REMOVE_API = `${LESSON_API_DOMAIN}/lesson_team/del`
 /**
  *section apis
  */
@@ -131,6 +151,7 @@ export const YUNBOOK_ADD_API = `${BOOK_API_DOMAIN}/book/add`
 export const YUNBOOK_EDIT_API = `${BOOK_API_DOMAIN}/book/put`
 export const YUNBOOK_LIST_API = `${BOOK_API_DOMAIN}/book/list`
 export const YUNBOOK_INFO_API = `${BOOK_API_DOMAIN}/book/info`
+export const YUNBOOK_BUY_API = `${BOOK_API_DOMAIN}/book/buy`
 /**
  * organizelesson apis
  */

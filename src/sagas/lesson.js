@@ -49,8 +49,8 @@ function* watchFetchLessonMoneyList(){
             message.error(error)
             yield put({
                 type: 'lesson/money/list/failure'
-            })   
-        }  
+            })
+        }
     })
 }
 
@@ -217,6 +217,9 @@ function* watchTeamList() {
 function* handlerGet(action) {
     try {
         const result = yield call(getLesson, action.payload)
+        if (action.resolve) {
+          action.resolve(result.get)
+        }
         yield put({
             type: 'lesson/get/success',
             payload: {
@@ -225,6 +228,9 @@ function* handlerGet(action) {
         })
     } catch (error) {
         message.error(error)
+        if (action.reject) {
+          action.reject(error)
+        }
     }
 }
 

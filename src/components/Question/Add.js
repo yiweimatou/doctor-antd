@@ -110,7 +110,7 @@ class Add extends Component {
         _json.forEach(item => {
           this.props.add({
             state: 1,
-            question: item[ '试题题目（标题）' ],
+            question: item['试题题目（标题）'],
             option1: item['备选A'] || '',
             option2: item['备选B'] || '',
             option3: item['备选C'] || '',
