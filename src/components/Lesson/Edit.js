@@ -1,21 +1,20 @@
 import React,{ Component,PropTypes } from 'react'
-import { 
+import {
     Form,
     Button,
     Input,
     Upload,
     Icon,
     message,
-    Spin 
+    Spin
 } from 'antd'
 import Paper from '../Paper'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
-import AreaCascader from '../AreaCascader'
 
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 
@@ -37,7 +36,7 @@ class Edit extends Component{
         }
         return e && e.fileList
     }
-    
+
     handleChange = (info)=> {
         let fileList = info.fileList
         fileList = fileList.slice(-1)
@@ -62,29 +61,12 @@ class Edit extends Component{
                 return
             }
             const cover = this.state.fileList[0].url
-            const first = values.area_ids[0]
-            let area_id,category_id
-            if(first === 1) {
-                if( values.area_ids.length < 3) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length - 1]
-                category_id = values.area_ids[1]
-            }else {
-                if( values.area_ids.length < 4) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length -1 ]
-                category_id = values.area_ids[2]
-            }
             const params = {
                 title:values.lname,
                 descript:values.descript,
-                area_id: area_id,
-                category_id: category_id,
                 cover:cover,
-                organize_money: values.organize_money,
-                account_money: values.account_money,
+                organize_amount: values.organize_money,
+                account_amount: values.account_money,
                 id:this.props.lesson.id
             }
             this.props.handleEdit(params)
@@ -101,15 +83,6 @@ class Edit extends Component{
                     url:`${nextProps.lesson.cover}`
                 }]
             })
-           this.props.initialCategory({
-               category_id: nextProps.lesson.category_id,
-               area_id: nextProps.lesson.area_id
-           }, (defaultValue, options) => {
-               this.setState({
-                   defaultValue,
-                   options
-               })
-           }, error => message.error(error))
         }
     }
     render(){
@@ -120,8 +93,8 @@ class Edit extends Component{
         return(
             <Paper>
                 <Spin spinning = { loading } size = 'large'>
-                <Form 
-                    horizontal 
+                <Form
+                    horizontal
                     className = 'form'
                     onSubmit = { this.submitHandler }
                 >
@@ -138,7 +111,7 @@ class Edit extends Component{
                                     max:20,
                                     message:'请输入20字以内课程名'
                                 }],
-                                initialValue:lesson&&lesson.title
+                                initialValue: lesson && lesson.title
                             })}
                         />
                     </FormItem>
@@ -159,7 +132,7 @@ class Edit extends Component{
                                         }
                                     }
                                 }],
-                                initialValue: lesson&&lesson.account_money
+                                initialValue: lesson && lesson.account_amount
                             })}
                         />
                     </FormItem>
@@ -180,19 +153,8 @@ class Edit extends Component{
                                         }
                                     }
                                 }],
-                                initialValue:lesson&&lesson.organize_money
+                                initialValue: lesson && lesson.organize_amount
                             })}
-                        />
-                    </FormItem>
-                    <FormItem
-                        label='分类'
-                        {...formItemLayout}
-                        hasFeedback
-                    >
-                        <AreaCascader 
-                            options={ this.state.options }
-                            level = {3}
-                            props = { getFieldProps('area_ids',{ initialValue: this.state.defaultValue })}
                         />
                     </FormItem>
                     <FormItem
@@ -201,11 +163,11 @@ class Edit extends Component{
                         required
                     >
                         <Upload
-                            name="upload_file" 
+                            name="upload_file"
                             action={UPLOAD_COVER_API}
                             listType="picture"
-                            fileList={this.state.fileList}      
-                            onChange = {this.handleChange}         
+                            fileList={this.state.fileList}
+                            onChange = {this.handleChange}
                         >
                             <Button type="ghost">
                                 <Icon type="upload" /> 点击上传

@@ -4,8 +4,6 @@ import { push } from 'react-router-redux'
 
 function mapStateToProps(state){
     return {
-        olist:state.organizeLesson.list.data,
-        teamList:state.lessonTeam.list,
         userId: state.auth.key,
         id: state.routing.locationBeforeTransitions.pathname.split('/')[3]
     }
@@ -13,9 +11,33 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
     return {
+        getSectionInfo: (params, resolve, reject) => {
+          dispatch({
+            type: 'section/info',
+            payload: {
+              params, resolve, reject
+            }
+          })
+        },
+        getLessonTeamList: (params, resolve, reject) => {
+          dispatch({
+            type: 'lessonteam/list',
+            payload: {
+              params, resolve, reject
+            }
+          })
+        },
+        getOrganizeList: (params, resolve, reject) => {
+          dispatch({
+            type: 'organize_lesson/list',
+            payload: {
+              params, resolve, reject
+            }
+          })
+        },
         getLessonTeam: (params, resolve, reject) => {
           dispatch({
-            type: 'lessonTeam/get',
+            type: 'lessonteam/get',
             payload: {
               params, resolve, reject
             }
@@ -29,24 +51,24 @@ function mapDispatchToProps(dispatch) {
             reject
           })
         },
-        push:(path)=>{
+        push: path => {
             dispatch(push(path))
         },
-        handleRemove:(id)=>{
+        handleRemove: (params, resolve, reject) => {
             dispatch({
-                type:'lessonTeam/delete',
-                payload:{
-                    id
+                type: 'lesson_team/delete',
+                payload: {
+                  params, resolve, reject
                 }
             })
         },
-        handleSectionEdit:(params)=>{
+        handleSectionEdit: (params) => {
             dispatch({
                 type:'section/edit',
                 payload:params
             })
         },
-        changeHandler:(offset,limit,lesson_id)=>{
+        changeHandler: (offset,limit,lesson_id) => {
             dispatch({
                 type:'section/list',
                 payload:{

@@ -1,12 +1,10 @@
 import { handleActions } from 'redux-actions'
 
 const initialState = {
-    list:[],
-    limit:6,
-    offset:1,
-    total:0,
-    entity:null,
-    loading:false
+    list: [],
+    total: 0,
+    entity: null,
+    loading: false
 }
 
 const section = handleActions({
@@ -24,15 +22,22 @@ const section = handleActions({
     }),
     ['section/delete/success']: (state, action) => ({
         ...state,
-        list:state.list.filter(item=>item.sid!==action.payload.sid)
+        list: state.list.filter(item => item.id !== action.payload.id),
+        total: state.total -1 
     }),
     ['section/get']:state=>({
         ...state,
+        loading: true,
         entity: null
     }),
     ['section/get/success']: (state, action) => ({
         ...state,
-        entity: action.payload
+        entity: action.payload,
+        loading: false
+    }),
+    ['section/get/failure']: state => ({
+        ...state,
+        loading: false
     }),
     ['section/edit']: state => ({
         ...state,
@@ -52,26 +57,27 @@ const section = handleActions({
     }),
     ['section/list']: state => ({
         ...state,
-        loading: true
+        loading: true,
+        list: []
     }),
-    ['section/list/success']:(state,action)=>({
+    ['section/list/success']: (state, action) => ({
         ...state,
-        loading:false,
-        list:action.payload.list
+        loading: false,
+        list: action.payload
     }),
-    ['section/list/failure']:state=>({
+    ['section/list/failure']: state => ({
         ...state,
-        loading:false
+        loading: false
     }),
-    ['section/info']:state=>({
+    ['section/info']: state => ({
         ...state,
-        total:0
+        total: 0
     }),
-    ['section/info/success']:(state,action)=>({
+    ['section/info/success']: (state, action) => ({
         ...state,
-        total:action.payload.total
+        total: action.payload
     })
-},initialState)
+}, initialState)
 
 export default section
 

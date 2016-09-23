@@ -1,21 +1,44 @@
 import { takeLatest } from 'redux-saga'
 import { fork,put,call } from 'redux-saga/effects'
 import { getOrganizeList,getOrganizeInfo,getOrganize,editOrganize } from '../services/organize.js'
-import { message } from 'antd'
+import { list as get_organize_team_list } from '../services/organizeTeam'
 import { push } from 'react-router-redux'
 
-const organizeListHandler = function* (action){
+function* watchMyList() {
+  yield takeLatest('organize/mylist', function *(action) {
+    try {
+      const { list } = yield call(get_organize_team_list, action.payload.params)
+      if (list && list.length > 0) {
+        const result = yield call(getOrganizeList, {
+          id_list: list.map(item => item.organize_id).join(','),
+          state: 1
+        })
+        if (action.payload.resolve) {
+          action.payload.resolve(result.list)
+        }
+      } else {
+        if (action.payload.resolve) {
+          action.payload.resolve([])
+        }
+      }
+    } catch (error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
+    }
+  })
+}
+function* organizeListHandler(action){
     try{
-        const result = yield call( getOrganizeList,action.payload)
+        const result = yield call(getOrganizeList, action.payload.params)
         yield put({
                 type:'organize/list/success',
-                payload:{
-                    list:result.list,
-                    ...action.payload
-                }
+                payload: result.list
             })
     }catch(error){
-        message.error(error)
+        if (action.payload.reject) {
+          action.payload.reject(error)
+        }
         yield put({
                     type:'organize/list/failure'
                 })
@@ -28,15 +51,18 @@ function* watchOrgnizeList() {
 
 function* organizeInfoHandler(action){
     try{
-        const result = yield call(getOrganizeInfo,action.payload)
+        const result = yield call(getOrganizeInfo,action.payload.params)
+        if (action.payload.resolve) {
+          action.payload.resolve(result.count)
+        }
         yield put({
-            type:'organize/info/success',
-            payload:{
-                total:result.count
-            }
+            type: 'organize/info/success',
+            payload: result.count
         })
-    }catch(error){
-        message.error(error)
+    } catch(error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
     }
 }
 
@@ -46,7 +72,10 @@ function* watchOrganizeInfo(){
 
 function* organizeGetHandler(action){
     try{
-        const result = yield call( getOrganize,action.payload)
+        const result = yield call( getOrganize,action.payload.params)
+        if (action.payload.resolve) {
+          action.payload.resolve(result.get)
+        }
         yield put({
             type:'organize/get/success',
             payload:{
@@ -54,7 +83,9 @@ function* organizeGetHandler(action){
             }
         })
     }catch(error){
-        message.error(error)
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
     }
 }
 
@@ -68,10 +99,8 @@ function* editHandler(action){
         yield put({
             type:'organize/edit/success'
         })
-        message.success('编辑成功!')
         yield put(push(`/organize/show/${action.payload.id}`))
     }catch(error){
-        message.error(error)
         yield put({
             type:'orgnanize/edit/failure'
         })
@@ -83,10 +112,11 @@ function* watchEdit(){
 }
 
 export default function* (){
-    yield [ 
+    yield [
         fork( watchOrgnizeList ),
         fork( watchOrganizeInfo ),
         fork( watchOrganizeGet ),
-        fork(watchEdit)
+        fork(watchEdit),
+        fork(watchMyList)
     ]
 }

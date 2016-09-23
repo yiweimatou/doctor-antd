@@ -1,28 +1,54 @@
 import React, { Component, PropTypes } from 'react'
 import {
-    Row, Col, Pagination, Tabs
+    Row, Col, Pagination, Tabs, Spin, message
 } from 'antd'
 import LessonCard from './LessonCard.js'
 
 const TabPane = Tabs.TabPane
 class List extends Component{
+    state = {
+      total: 0,
+      loading: true
+    }
     static propTypes = {
-        list: PropTypes.object,
-        changeHandler: PropTypes.func.isRequired
+        list: PropTypes.array.isRequired,
+        changeHandler: PropTypes.func.isRequired,
+        userId: PropTypes.number.isRequired,
+        getLessonInfo: PropTypes.func.isRequired
+    }
+    handleChange = offset => {
+      this.props.changeHandler({
+        role: 1,
+        state: 1,
+        account_id: this.props.userId,
+        limit: 9,
+        offset
+      }, () => this.setState({ loading: false }), error => {
+        this.setState({ loading: false })
+        message.error(error)
+      })
+    }
+    componentWillMount() {
+      const { userId, getLessonInfo } = this.props
+      getLessonInfo({
+        role: 1,//1:主讲,2:辅导员,3:助教
+        state: 1,//1:正常,2:冻结,3:删除,
+        account_id: userId
+      }, total => this.setState({ total }))
+      this.handleChange(1)
     }
     render(){
         const {
-            list, changeHandler            
+            list
         } = this.props
-        const {
-            total, pageParams
-        } = list
+        const { total, loading } = this.state
         return(
             <Tabs defaultActiveKey = '1'>
                 <TabPane tab = '已上架课程' key = '1'>
+                  <Spin spinning={loading}>
                     <Row gutter={16}>
                     {
-                        list.data.map(lesson => {
+                        list.map(lesson => {
                             return (<Col key = {lesson.id} span= {8}>
                                     <LessonCard lesson = {lesson} />
                                 </Col>)
@@ -30,19 +56,19 @@ class List extends Component{
                     }
                     </Row>
                     {
-                        list.data.length > 0?
+                        total > 0?
                             <div className='pagination'>
-                                <Pagination 
+                                <Pagination
                                     total={ total }
                                     showTotal={total => `共 ${total} 条`}
-                                    pageSize = {6}
-                                    onChange = {(page) => changeHandler(page, pageParams.account_id, pageParams)}
+                                    pageSize = {9}
+                                    onChange = {this.handleChange}
                                 />
                             </div>:
                             <p style={{textAlign: 'center'}}>没有数据</p>
                     }
+                  </Spin>
                 </TabPane>
-                <TabPane tab = '未上架课程' key = '2'></TabPane>
             </Tabs>
         )
     }

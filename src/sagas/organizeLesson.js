@@ -1,121 +1,123 @@
 import { takeLatest } from 'redux-saga'
-import { fork,put,call } from 'redux-saga/effects'
-import { 
-    getOrganizeLessonList,
+import { fork, call } from 'redux-saga/effects'
+import {
     getOrganizeLessonInfo,
     editOrganizeLesson,
-    addOrganizeLesson 
+    addOrganizeLesson,
+    getOrganizeLessonList,
+    // getOrganizeLesson
 } from '../services/organizeLesson.js'
-import { message } from 'antd'
 import { getOrganizeList } from '../services/organize'
 import { listLesson } from '../services/lesson'
-import array from 'lodash/array'
 
-function* organizeLessonListHandler(action) {
-    try{
-        const result = yield call(getOrganizeLessonList,action.payload)
-        if(result.list.length > 0) {
-            const [organizes,lessons] = yield [call(getOrganizeList, {
-                id_list: array.join(array.uniq(result.list.map(i => i.organize_id)),',')
-            })
-            ,call(listLesson, {
-                id_list: array.join(array.uniq(result.list.map(i=>i.lesson_id)),',')
-            })]
-            result.list = result.list.map(item => {
-                const organize_idx = array.findIndex(organizes.list,{ id: item.organize_id })
-                const lesson_idx = array.findIndex(lessons.list,{id: item.lesson_id})
-                return {
-                    ...item,
-                    organize_name: organize_idx === -1 ? '' : organizes.list[organize_idx].title,
-                    lesson_name: lesson_idx === -1 ? '' : lessons.list[lesson_idx].title,
-                    organize_money: lesson_idx === -1 ? 0 : lessons.list[lesson_idx].organize_money,
-                    organize_logo: organize_idx === -1 ? '' : organizes.list[organize_idx].logo
-                }
-            })
+function* watchList() {
+  yield takeLatest('organize_lesson/list', function *(action) {
+    try {
+      const { list } = yield call(getOrganizeLessonList, action.payload.params)
+      if (list && list.length > 0) {
+        if (action.payload.params.lesson_id > 0) {
+          const result = yield call(getOrganizeList, {
+            id_list: list.map(i => i.organize_id).join(','),
+            state: 1
+          })
+          if (action.payload.resolve) {
+            action.payload.resolve(result.list)
+          }
+        } else {
+          const result = yield call(listLesson, {
+            id_list: list.map(i => i.lesson_id).join(','),
+            state: 1
+          })
+          if (action.payload.resolve) {
+            action.payload.resolve(result.list)
+          }
         }
-        yield put({ 
-            type:'organizeLesson/list/success',
-            payload:{
-                list:result.list
-            }
-        })
-    }catch(error){
-        message.error(error)
-        yield put({
-            type: 'organizeLesson/list/failure'
-        })
+        
+      } else {
+        if (action.payload.resolve) {
+          action.payload.resolve([])
+        }
+      }
+    } catch (error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
     }
-}
-
-function* watchOrganzieLessonList(){
-    yield* takeLatest('organizeLesson/list',organizeLessonListHandler)
+  })
 }
 
 function* organizeLessonInfoHandler(action){
     try{
-        const result = yield call( getOrganizeLessonInfo,action.payload )
-        yield put({
-            type:'organizeLesson/info/success',
-            payload:{
-                total:result.count
-            }
-        })
+        const result = yield call(getOrganizeLessonInfo,action.payload.params)
+        if (action.payload.resolve) {
+          action.payload.resolve(result.count)
+        }
     }catch(error){
-        message.error(error)
-        yield put({
-            type: 'organizeLesson/info/failure'
-        })
+        if (action.payload.reject) {
+          action.payload.reject(error)
+        }
     }
 }
 
 function* watchOrganzieLessonInfo(){
-    yield* takeLatest('organizeLesson/info',organizeLessonInfoHandler)
+    yield* takeLatest('organize_lesson/info',organizeLessonInfoHandler)
 }
 
 function* editOrganizeLessonHandler(action){
-    try{
-        yield call(editOrganizeLesson,action.payload )
-        yield put({
-            type:'organizeLesson/edit/success',
-            payload:action.payload
-        })
-        message.success('操作成功!')
-    }catch(error){
-        message.error(error)
-        yield put({
-            type:'organizeLesson/edit/failure'
-        })
+    try {
+        yield call(editOrganizeLesson,action.payload.params)
+        if (action.payload.resolve) {
+          action.payload.resolve()
+        }
+    } catch(error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
     }
 }
 
 function* watchOrganzieLessonEdit(){
-    yield* takeLatest('organizeLesson/edit',editOrganizeLessonHandler)
+    yield* takeLatest('organize_lesson/edit',editOrganizeLessonHandler)
 }
 
 function* newHandler(action){
-    try{
-        yield call(addOrganizeLesson,action.payload)
-        yield put({
-            type:'organizeLesson/new/success'
-        })
-        message.success('操作成功!')
-    }catch(error){
-        message.error(error)
-        yield put({
-            type:'organizeLesson/new/failure'
-        })
+    try {
+        yield call(addOrganizeLesson,action.payload.params)
+        if (action.payload.resolve) {
+          action.payload.resolve()
+        }
+    } catch (error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
     }
 }
 
 function* watchNew(){
-    yield* takeLatest('organizeLesson/new',newHandler)
+    yield* takeLatest('organize_lesson/add',newHandler)
 }
+
+// function* watchGet() {
+//   yield takeLatest('organize_lesson/get', function *(action) {
+//     try {
+//       const { get } = yield call(getOrganizeLesson, action.payload.params)
+//       if (action.payload.resolve) {
+//         action.payload.resolve(get)
+//       }
+//     } catch (error) {
+//       if (action.payload.reject) {
+//         action.payload.reject(error)
+//       }
+//     }
+//   })
+// }
 
 export default function* () {
     yield [
-        fork( watchOrganzieLessonList ),
         fork( watchOrganzieLessonInfo ),
         fork( watchOrganzieLessonEdit ),
-        fork(watchNew)
+        fork(watchNew),
+        fork(watchList),
+        // fork(watchGet)
     ]
 }

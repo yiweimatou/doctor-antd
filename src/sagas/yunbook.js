@@ -30,7 +30,7 @@ function* watchBuy() {
       const result = yield call(getBillInfo, {
                                   category_id: category_id,
                                   foreign_id: foreign_id,
-                                  dispose_list: '3,4', //3.购买成功4.白条购买
+                                  dispose: 3,
                                   order_no: `book.${action.payload.params.id}`
                                 })
       //如果没有购买才再购买

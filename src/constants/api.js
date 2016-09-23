@@ -108,8 +108,6 @@ export const LESSON_LIST_API = `${LESSON_API_DOMAIN}/lesson/list`
 export const LESSON_REMOVE_API = `${LESSON_API_DOMAIN}/lesson/del`
 export const LESSON_ADD_API = `${LESSON_API_DOMAIN}/lesson/add`
 export const LESSON_PUT_CET_API = `${LESSON_API_DOMAIN}/lesson/put/cet`
-export const LESSON_MONEY_LIST_API = `${LESSON_API_DOMAIN}/lessonmoney/list`
-export const LESSON_MONEY_INFO_API = `${LESSON_API_DOMAIN}/lessonmoney/info`
 export const LESSON_RCMD_API = `${LESSON_API_DOMAIN}/lesson/add/rcmd`
 /**
  *team apis
@@ -155,10 +153,16 @@ export const YUNBOOK_BUY_API = `${BOOK_API_DOMAIN}/book/buy`
 /**
  * organizelesson apis
  */
-export const ORGANIZELESSON_INFO_API = `${ORGANIZE_API_DOMAIN}/organizelesson/info`
-export const ORGANIZELESSON_GET_API = `${ORGANIZE_API_DOMAIN}/organizelesson/get`
-export const ORGANIZELESSON_LIST_API = `${ORGANIZE_API_DOMAIN}/organizelesson/list`
-export const ORGANIZELESSON_ADD_API = `${ORGANIZE_API_DOMAIN}/organizelesson/add`
-export const ORGANIZELESSON_EDIT_API = `${ORGANIZE_API_DOMAIN}/organizelesson/put`
-export const ORGANIZEMONEY_LIST_API = `${ORGANIZE_API_DOMAIN}/organizemoney/list`
-export const ORGANIZEMONEY_INFO_API = `${ORGANIZE_API_DOMAIN}/organizemoney/info`
+export const ORGANIZELESSON_INFO_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/info`
+export const ORGANIZELESSON_GET_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/get`
+export const ORGANIZELESSON_LIST_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/list`
+export const ORGANIZELESSON_ADD_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/add`
+export const ORGANIZELESSON_EDIT_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/put`
+/**
+ * organizeteam apis
+ */
+export const ORGANIZE_TEAM_INFO_API = `${ORGANIZE_API_DOMAIN}/organize_team/info`
+export const ORGANIZE_TEAM_GET_API = `${ORGANIZE_API_DOMAIN}/organize_team/get`
+export const ORGANIZE_TEAM_LIST_API = `${ORGANIZE_API_DOMAIN}/organize_team/list`
+export const ORGANIZE_TEAM_EDIT_API = `${ORGANIZE_API_DOMAIN}/organize_team/put`
+export const ORGANIZE_TEAM_ADD_API = `${ORGANIZE_API_DOMAIN}/organize_team/add`

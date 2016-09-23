@@ -17,9 +17,8 @@ class Edit extends Component{
         loading: false
     }
     static propTypes = {
-        yunbook:PropTypes.object,
-        save:PropTypes.func,
-        form:PropTypes.object,
+        yunbook: PropTypes.object,
+        save: PropTypes.func,
         loading: PropTypes.bool
     }
     componentWillReceiveProps(nextProps){
@@ -148,7 +147,7 @@ class Edit extends Component{
                     </TabPane>
                     <TabPane key='2' tab='标注修改'>
                         <EditLblView
-                            yunbook={this.props.yunbook}
+                            yunbook={yunbook}
                             changeLbl={this.changeLbl}
                         />
                     </TabPane>
@@ -174,24 +173,14 @@ class Edit extends Component{
 }
 
 export default connect(
-    state=>({
-        yunbook:state.yunbook.entity
+    state => ({
+        yunbook: state.yunbook.entity
     }),
     dispatch=>({
         save:(params)=>{
             dispatch({
-                type:'yunbook/edit',
+                type: 'yunbook/edit',
                 payload:params
-            })
-        },
-        initialCatgory: (params, resolve, reject) => {
-            dispatch({
-                type: 'category/init',
-                payload: params,
-                meta: {
-                    resolve,
-                    reject
-                }
             })
         }
     })

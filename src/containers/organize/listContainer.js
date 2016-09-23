@@ -2,23 +2,17 @@ import {connect} from 'react-redux'
 import List from '../../components/Organize/List.js'
 
 const mapStateToProps = state=>({
-    list:state.organize.list,
-    params:{
-        limit:state.organize.limit,
-        offset:state.organize.offset,
-        total:state.organize.total,
-        account_id:state.auth.key
-    }
+    total: state.organize.total,
+    loading: state.organize.loading,
+    userId: state.auth.key
 })
 
 const mapDispatchToProps = dispatch => ({
-    changeHandler:(page,limit,uid)=>{
+    changeHandler: (params, resolve, reject)=>{
         dispatch({
-            type:'organize/list',
+            type:'organize_team/list',
             payload:{
-                limit,
-                offset: page,
-                account_id: uid
+                params, resolve, reject
             }
         })
     }

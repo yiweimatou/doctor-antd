@@ -1,21 +1,25 @@
 import React,{ Component,PropTypes } from 'react'
 import SearchInput from '../SearchInput'
-import {Button,Modal} from 'antd'
+import { Button, Modal, message} from 'antd'
 import { connect } from 'react-redux'
 import './SelectUser.css'
+import { DEFAULT_FACE } from '../../constants/api'
 
 class SelectUser extends Component {
     static propTypes = {
         list:PropTypes.array,
         invite:PropTypes.func.isRequired,
         search:PropTypes.func.isRequired,
-        lesson_id:PropTypes.number,
         visible:PropTypes.bool,
-        onCancel:PropTypes.func
+        onCancel:PropTypes.func,
+        lid: PropTypes.string.isRequired
+    }
+    inviteHandler = params => {
+      this.props.invite(params, () => message.success('邀请已经发送'), error => message.error(error))
     }
     render(){
         const {
-            list,invite,lesson_id,search,visible,onCancel
+            list, lid, search, visible, onCancel
         } = this.props
         return(
             <Modal
@@ -34,24 +38,22 @@ class SelectUser extends Component {
                             return (
                                 <div key={item.id} className='sitem'>
                                         <div className='sdivImg'>
-                                        {
-                                            item.face?
-                                        <img 
-                                            src={item.face}
-                                            className='simg'
-                                            width='100%'
-                                        />:null
-                                        }
+                                          <img
+                                              src={item.face || DEFAULT_FACE}
+                                              className='simg'
+                                              width='100%'
+                                          />
                                         </div>
                                     <span style = {{display:'block',width:50,textAlign:'center'}}>{item.cname||item.mobile}</span>
-                                    <Button 
+                                    <Button
                                         className='sbutton'
                                         onClick = {
-                                            ()=>invite(item.mobile,lesson_id,item.id)
+                                          () => this.inviteHandler({
+                                            lesson_id: lid,
+                                            account_id: item.id
+                                          })
                                         }
-                                    >
-                                        邀请
-                                    </Button>
+                                    >邀请</Button>
                                 </div>
                             )
                         })
@@ -65,8 +67,7 @@ class SelectUser extends Component {
 
 export default connect(
     state=>({
-        list:state.user.list,
-        lesson_id:state.lesson.entity&&state.lesson.entity.id
+        list:state.user.list
     }),
     dispatch=>({
         search:mobile=>dispatch({
@@ -75,10 +76,11 @@ export default connect(
                 mobile
             }
         }),
-        invite:(mobile,lesson_id,account_id)=>dispatch({
-            type:'lessonTeam/new',
+        invite: (params, resolve, reject) =>
+          dispatch({
+            type:'lesson_team/add',
             payload:{
-                mobile,lesson_id,account_id
+                params, resolve, reject
             }
         })
     })

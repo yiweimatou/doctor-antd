@@ -3,43 +3,43 @@ import {
     Table
 } from 'antd'
 import { connect } from 'react-redux'
+import { ORGANIZE } from '../../constants/api'
 
-class Money extends Component {
+class Bill extends Component {
     render() {
-        const {list, changeHandler, loading} = this.props
+        const { list, changeHandler, loading, total, id } = this.props
         const pagination = {
-            total: list.total,
-            pageSize: 6,
-            showTotal: total => `共 ${total} 条`,
-            onChange(current) {
-                changeHandler({...list.params,offset:current})
-            }
+            showTotal: total => `共${total}条`,
+            pageSize: 9,
+            onChange: offset => changeHandler({
+                offset, limit:9, foreign_id: id, category_id: ORGANIZE
+            })
         }
         const columns = [{
             title: '交易号',
-            dataIndex: 'id',
-            key: 'id'
+            dataIndex: 'order_no',
+            key: 'order_no'
         }, {
             title: '金额',
-            dataIndex: 'money',
-            key: 'money'
+            dataIndex: 'trade_amount',
+            key: 'trade_amount'
         }, {
             title: '交易时间',
             dataIndex: 'add_ms',
             key: 'add_ms',
             render: text => new Date(text*1000).toLocaleString()
         }, {
-            title: '类型',
-            dataIndex: 'cet',
-            key: 'cet',
+            title: '状态',
+            dataIndex: 'dispose',
+            key: 'dispose',
             render: text => {
                 switch(text){
                     case 1:
                     case 2:
                       return '交易中'
-                    case 3:
-                        return '交易失败'
                     case 4:
+                        return '交易失败'
+                    case 3:
                         return '交易成功'
                 }
             }
@@ -50,30 +50,39 @@ class Money extends Component {
         }]
         return (
             <Table
-                dataSource = { list.records }
+                dataSource = { list }
                 columns = { columns }
-                pagination = { pagination }
                 loading = { loading }
+                pagination = {{
+                    ...pagination,
+                    total
+                }}
             />
         )
     }
 }
 
-Money.propTypes = {
-    list: PropTypes.object,
+Bill.propTypes = {
+    list: PropTypes.array.isRequired,
     changeHandler: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    total: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired
 };
 
 export default connect(
     state => ({
-        list: state.money.organize,
-        loading: state.money.actionStatus.fetch.pending
+        list: state.bill.list,
+        loading: state.bill.loading,
+        total: state.bill.total,
+        id: state.routing.locationBeforeTransitions.pathname.split('/')[3]
     }),
     dispatch => ({
-        changeHandler: params => dispatch({
-            type: 'money/fetchlist',
-            payload: params
+        changeHandler: (params, resolve, reject) => dispatch({
+            type: 'bill/list',
+            payload: {
+              params, resolve, reject
+            }
         })
     })
-)(Money)
+)(Bill)

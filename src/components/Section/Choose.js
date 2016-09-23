@@ -58,7 +58,7 @@ class Choose extends Component {
             <a style={styles.a} href={`/section/add/active?${query}`}>创建活动</a>
           </Col>
           <Col span={8}>
-            <a style={styles.a}>创建图文</a>
+            <a style={styles.a} href={`/section/add/html?${query}`}>创建图文</a>
           </Col>
         </Row>
       </div>

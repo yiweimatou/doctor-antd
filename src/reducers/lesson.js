@@ -2,59 +2,20 @@ import { handleActions } from 'redux-actions'
 
 const initialState = {
 	loading: false,
-	isSuccess: false, 
-	entity:null,
-	list:{
-		data:[],
-		pageParams:{
-			limit:6,
-			offset:1
-		},
-		otherInfos: null,
-		total:0
-	},
-	money: {
-		data: [],
-		params: {
-			limit: 6,
-			offset: 1
-		},
-		total: 0,
-		loading: false
-	}
+	entity: null,
+  list: [],
+  unnormallist: []
 }
 
 const lesson = handleActions({
-	['lesson/money/info/success']: (state, action) => ({
-		...state,
-		money: {
-			...state.money,
-			total: action.payload
-		}
-	}),
-	['lesson/money/list']: state => ({
-		...state,
-		money: {
-			...state.money,
-			loading: true
-		}
-	}),
-	['lesson/money/list/success']: (state, action) => ({
-		...state,
-		money: {
-			...state.money,
-			loading: false,
-			data: action.payload.list,
-			params: action.payload.params
-		}
-	}),
-	['lesson/money/list/failure']: state => ({
-		...state,
-		money: {
-			...state.money,
-			loading: false
-		}
-	}),
+  ['lesson/list/unnormal']: state => ({
+    ...state,
+    unnormallist: []
+  }),
+  ['lesson/list/unnormal/success']: (state, action) => ({
+    ...state,
+    unnormallist: action.payload
+  }),
 	['lesson/edit']: state => ({
 		...state,
 		isSuccess: false,
@@ -122,54 +83,19 @@ const lesson = handleActions({
 		...state,
 		loading:false
 	}),
-	['lesson/list']:(state,action)=>({
+	['lesson/list']: state => ({
 		...state,
-		loading:true,
-		list:{
-			...state.list,
-			pageParams:action.payload,
-			data:[]
-		}
+		loading: true,
+		list: []
 	}),
-	['lesson/list/success']:(state,action)=>({
+	['lesson/list/success']: (state, action) => ({
 		...state,
-		loading:false,
-		list:{
-			...state.list,
-			...action.payload
-		}
+		loading: false,
+		list: action.payload
 	}),
-	['lesson/list/failure']:(state)=>({
+	['lesson/list/failure']: state => ({
 		...state,
-		loading:false
-	}),
-	['lesson/info']:state=>({
-		...state,
-		list:{
-			...state.list,
-			total:0
-		}
-	}),
-	['lesson/info/success']:(state,action)=>({
-		...state,
-		list:{
-			...state.list,
-			total:action.payload.total
-		}
-	}),
-	['lesson/tinfo']:state=>({
-		...state,
-		tlist:{
-			...state.tlist,
-			total:0
-		}
-	}),
-	['lesson/tinfo/success']:(state,action)=>({
-		...state,
-		tlist:{
-			...state.tlist,
-			total:action.payload.total
-		}
+		loading: false
 	}),
 	['lesson/get']:(state)=>({
 		...state,

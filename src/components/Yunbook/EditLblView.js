@@ -64,9 +64,7 @@ class EditLblView extends React.Component{
         L.drawLocal.edit.toolbar.buttons.editDisabled = '没有标注需要修改'
         L.drawLocal.edit.toolbar.buttons.removeDisabled = '没有标注需要删除'
     }
-    componentDidMount(){
-        const { yunbook } = this.props
-        if(this._map || !yunbook) return
+    initMap = yunbook => {
         const url = `${yunbook.path}/{z}/{x}/{y}.png`
         const self = this
         this._map =  L.map('_map',{
@@ -194,7 +192,17 @@ class EditLblView extends React.Component{
             })
         })
     }
-    setEditorState=(editorState)=>{
+    componentWillReceiveProps(nextProps) {
+        const { yunbook } = nextProps
+        if(this._map || !yunbook) return
+        this.initMap(yunbook)
+    }
+    componentDidMount(){
+        const { yunbook } = this.props
+        if(this._map || !yunbook) return
+        this.initMap(yunbook)
+    }
+    setEditorState = editorState => {
         this.setState({
             editorState
         })

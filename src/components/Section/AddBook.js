@@ -24,7 +24,8 @@ class AddBook extends Component {
     show: false,
     yunbook: {},
     pending: false,
-    lbl: null
+    lbl: null,
+    confirmLoading: false
   }
   componentWillMount() {
     this.props.getInfo({ account_id: this.props.userId })
@@ -65,13 +66,18 @@ class AddBook extends Component {
     this.setState({ currentStep:step })
   }
   okHandler = () => {
+    this.setState({ confirmLoading: true })
     this.props.buyBook({
       id: this.state.yunbook.id,
       organize_id: this.props.query.oid,
       lesson_id: this.props.query.lid
     }, () => {
-      this.setState({ show: false, currentStep: 1 })
-    }, error => message.error(error))
+      message.success('引用成功')
+      this.setState({ show: false, currentStep: 1, confirmLoading: false })
+    }, error => {
+      this.setState({ confirmLoading: false })
+      message.error(error)
+    })
   }
   cancelHandler = () => {
     this.setState({ show: false, yunbook: {} })
@@ -106,45 +112,53 @@ class AddBook extends Component {
             id: this.state.section.id,
             title: values.title,
             descript: values.descript || '',
+            lbl: this.state.lbl
+          }, () => message.success('保存成功!'), error => message.error(error))
+        }
+      } else if (state === 1) {
+        if (this.props.query.edit === 1) {
+          if (this.section.id === undefined) return message.error('url参数错误')
+          this.props.editSection({
+            id: this.state.section.id,
+            title: values.title,
+            descript: values.descript || '',
+            lbl: this.state.lbl
+          }, () => message.success('编辑成功!'), error => message.error(error))
+        } else {   
+          this.props.addSection({
+            title: values.title,
+            descript: values.descript || '',
+            state: 1,
             category_id: BOOK,
             foreign_id: this.state.yunbook.id,
             lesson_id: this.props.query.lid,
             organize_id: this.props.query.oid,
             lbl: this.state.lbl
-          }, () => message.success('保存成功!'), error => message.error(error))
+          }, id => {
+            message.success('创建成功!')
+            this.props.redirct(`/section/show/${id}`)
+          }, error => message.error(error, 8))
         }
-      } else if (state === 1) {
-        this.props.addSection({
-          title: values.title,
-          descript: values.descript || '',
-          state: 1,
-          category_id: BOOK,
-          foreign_id: this.state.yunbook.id,
-          lesson_id: this.props.query.lid,
-          organize_id: this.props.query.oid,
-          lbl: this.state.lbl
-        }, id => {
-          message.success('创建成功!')
-          this.props.redirct(`/section/show/${id}`)
-        }, error => message.error(error, 8))
       }
     })
   }
   render() {
     const { loading, bookList, myBookList, query, total, myTotal, changeHandler, userId } = this.props
     const { getFieldProps } = this.props.form
-    const { currentStep, show, yunbook, pending } = this.state
+    const { currentStep, show, yunbook, pending, confirmLoading } = this.state
     if (!query.oid || !query.lid) {
      return (<div>参数错误</div>)
     }
     return (
       <div>
         <Spin spinning={pending}>
-        <Modal title="购买云板书" visible={show}
+        <Modal title="购买云板书" visible={show} confirmLoading={confirmLoading} maskClosable={false}
                onOk={this.okHandler} onCancel={this.cancelHandler}
         >
-          <p>云板书名称：{yunbook && yunbook.title}</p>
-          <p>云板书价格：<em style={{color:'orange',fontSize:'200%'}}>{yunbook && yunbook.sale_amount}</em>元</p>
+          <div style={{textAlign: 'center'}}>
+            <p>云板书名称：{yunbook && yunbook.title}</p>
+            <p>云板书价格：<em style={{color:'orange',fontSize:'200%'}}>{yunbook && yunbook.sale_amount}</em>元</p>
+          </div>
         </Modal>
         <Steps current={ currentStep }>
           <Step title='选择云板书'/>
@@ -158,7 +172,7 @@ class AddBook extends Component {
               <Input {...getFieldProps('title', {
                 rules: [{
                   required: true,
-                  whitespace: true,
+                  whitespace: false,
                   message: '请填写标题'
                 }]
               })}/>

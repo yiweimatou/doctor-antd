@@ -6,7 +6,7 @@ import './Show.css'
 import SelectUser from '../User/SelectUser.js'
 import TeamList from './TeamList.js'
 import SectionList from '../Section/List'
-import { DEFAULT_COVER } from '../../constants/api'
+import { DEFAULT_COVER, DEFAULT_FACE, DEFAULT_LOGO } from '../../constants/api'
 
 const styles = {
     row:{
@@ -16,24 +16,28 @@ const styles = {
 }
 class Show extends Component {
     static propTypes = {
-        lesson:PropTypes.object,
-        olist:PropTypes.array,
-        teamList:PropTypes.array,
-        push:PropTypes.func.isRequired,
-        changeHandler:PropTypes.func.isRequired,
-        sList:PropTypes.object,
-        deleteSection:PropTypes.func.isRequired,
-        userId:PropTypes.number.isRequired,
-        handleRemove:PropTypes.func.isRequired,
-        id: PropTypes.string.isRequired
+        push: PropTypes.func.isRequired,
+        changeHandler: PropTypes.func.isRequired,
+        deleteSection: PropTypes.func.isRequired,
+        userId: PropTypes.number.isRequired,
+        handleRemove: PropTypes.func.isRequired,
+        id: PropTypes.string.isRequired,
+        getLessonTeamList: PropTypes.func.isRequired,
+        getOrganizeList: PropTypes.func.isRequired,
+        getLessonTeam: PropTypes.func.isRequired,
+        getLesson: PropTypes.func.isRequired
     }
     state = {
+        organize_list: [],
+        team_list: [],
         oVisible:false,
         uVisible:false,
         tVisible:false,
         role: 0,//1:主讲,2:辅导员,3:助教
+        tid: 0,
         loading: true,
-        lesson: {}
+        lesson: {},
+        pending: true
     }
     handlerTVisible=()=>{
         this.setState({
@@ -54,18 +58,38 @@ class Show extends Component {
       this.props.getLessonTeam({
         account_id: this.props.userId,
         lesson_id: this.props.id
-      }, role => this.setState({ role }), error => {
+      }, get => this.setState({ role: get.role, tid: get.id }), error => {
         message.error(error, 7)
       })
       this.props.getLesson({
         id: this.props.id
       }, lesson => this.setState({ lesson, loading: false }), error => message.error(error))
+      this.props.getOrganizeList({
+        lesson_id: this.props.id,
+        state: 1
+      }, list => this.setState({ organize_list: list }), error => message.error(error))
+      this.props.getLessonTeamList({
+        state: 1,
+        lesson_id: this.props.id
+      }, list => this.setState({ team_list: list.sort((i, j) => i.role - j.role) }), error => message.error(error))
+      this.props.getSectionInfo({
+        state: 1, lesson_id: this.props.id
+      }, total => this.setState({ total }), error => message.error(error))
+      this.sectionListHandler({
+        state: 1,
+        offset: 1,
+        limit: 9,
+        lesson_id: this.props.id
+      })
+    }
+    sectionListHandler = params => {
+      this.props.changeHandler(params, list => this.setState({ section_list: list }), error => message.error(error))
     }
     render(){
         const {
-          olist, teamList, push, userId, handleRemove
+          push, handleRemove, id
         } = this.props
-        const { role, loading, lesson } = this.state
+        const { role, loading, lesson, tid, organize_list, team_list } = this.state
         return(
             <div>
                 <Paper>
@@ -105,7 +129,7 @@ class Show extends Component {
                                             信用账户总额为1000元，课程收入优先还入信用账户
                                         </span>
                                 <Button
-                                    onClick = {()=>push(`/lesson/money/${lesson.id}`)}
+                                    onClick = {()=>push(`/lesson/bill?id=${lesson.id}`)}
                                     type = 'ghost'
                                     style = {{ marginLeft: 30}}
                                 >
@@ -117,61 +141,36 @@ class Show extends Component {
                         {role === 0 ? null:
                         <Row>
                             <Col span={4}>
-                                <Button
-                                    onClick = {()=>lesson&&push(`/lesson/edit/${lesson.id}`)}
-                                    type='ghost'
-                                >
+                                <Button onClick = {() => push(`/lesson/edit/${id}`)} type='ghost'>
                                     编辑课程
                                 </Button>
                             </Col>
                             <Col span={4}>
-                                <Button
-                                    type='ghost'
-                                    onClick = {
-                                        ()=>lesson&&push(`/section/add/choose?lid=${lesson.id}&oid=0`)
-                                    }
-                                >
+                                <Button type='ghost'onClick = {() => push(`/section/add/choose?lid=${id}&oid=0`)}>
                                     新建文章
                                 </Button>
                             </Col>
                             <Col span={4}>
-                                <Button
-                                    onClick={this.handlerOVisible}
-                                    type='ghost'
-                                >
-                                    申请机构认证
-                                </Button>
+                                <Button onClick={this.handlerOVisible} type='ghost'>申请机构认证</Button>
                             </Col>
                             {role === 1 ?
                             <Col span={4}>
-                                <Button
-                                    type='ghost'
-                                    onClick={this.handlerUVisible}
-                                >
-                                    邀请成员
-                                </Button>
+                                <Button type='ghost' onClick={this.handlerUVisible}>邀请成员</Button>
                             </Col>:null}
                             <Col span={4}>
-                            {role === 1 ?
-                                <Button
-                                    type='ghost'
-                                    onClick = {this.handlerTVisible}
-                                >
-                                    团队管理
-                                </Button>:
-                                <Button
-                                    type='ghost'
-                                    onClick = {()=>{
-                                        teamList.forEach(item=>{
-                                            if(item.type===1&&item.account_id === userId){
-                                                handleRemove(item.id)
-                                            }
-                                        })
-                                    }}
-                                >
-                                    退出团队
-                                </Button>
+                            { role === 1 ?
+                                <Button type='ghost' onClick = {this.handlerTVisible}>团队管理</Button>:
+                                role === 3 ?
+                                <Button type='ghost' onClick={
+                                  () => handleRemove({ id: tid }, () => {
+                                    message.success('成功退出团队!', 6)
+                                    push('/')
+                                  }, error => message.error(error, 6))
+                                }>退出团队</Button>:null
                             }
+                            </Col>
+                            <Col span={4}>
+                                <Button onClick={() => push(`/section/draft?lid=${id}&oid=0`)} type='ghost'>素材管理</Button>
                             </Col>
                         </Row>}
                     </div>
@@ -179,52 +178,49 @@ class Show extends Component {
                 <div className='paper'>
                     <Paper>
                         <h2>认证机构</h2>
-                            {
-                                olist.map(item=>{
-                                    return (
-                                        <div key={item.id} className='item'>
-                                            <img
-                                                src={item.organize_logo}
-                                                className='img'
-                                                width='100%'
-                                            />
-                                            <span className='span'>{item&&item.organize_name}</span>
-                                        </div>
-                                    )
-                                })
-                            }
+                      {
+                        organize_list.map(item=>{
+                          return (
+                            <div key={item.id} className='item'>
+                              <img
+                                src={item.logo || DEFAULT_LOGO}
+                                className='img'
+                                width='100%'
+                              />
+                              <span className='span'>{item.title}</span>
+                            </div>
+                          )
+                        })
+                      }
                     </Paper>
                 </div>
                 <div className='paper'>
                     <Paper>
                         <h2>团队成员</h2>
-                        {
-                            teamList.map(item=>{
-                                return(
-                                        <div nowrap key={item.id} className='item'>
-                                            {
-                                                item.user&&item.user.face?
-                                                <img
-                                                    src={item.user.face}
-                                                    className='img'
-                                                    width='100%'
-                                                />:
-                                                <div className='divImg'/>
-                                            }
-                                            {
-                                                item.type===3?
-                                                <em className='bar'>主讲</em>:''
-                                            }
-                                            <span className='span'>{item.user&&(item.user.cname || item.user.mobile) }</span>
-                                        </div>
-                                )
-                            })
-                        }
+                      {
+                        team_list.map(item=>{
+                          return(
+                            <div nowrap key={item.id} className='item'>
+                              <img
+                                src={  item.face ||  DEFAULT_FACE }
+                                className='img'
+                                width='100%'
+                              />
+                              {
+                                item.role === 1 ?
+                                  <em className='bar'>主讲</em>:''
+                              }
+                              <span className='span'>{item.cname || item.mobile}</span>
+                            </div>
+                          )
+                        })
+                      }
                     </Paper>
                 </div>
                 <div className='paper'>
                     <Paper>
                         <h2>文章列表</h2>
+                        <SectionList lesson_id={id} />
                     </Paper>
                 </div>
                 <Modal
@@ -232,15 +228,17 @@ class Show extends Component {
                     visible = { this.state.oVisible }
                     onCancel = {this.handlerOVisible}
                 >
-                    <SelectContainer />
+                    <SelectContainer lid={id}/>
                 </Modal>
                 <SelectUser
-                    visible={ this.state.uVisible}
-                    onCancel={ this.handlerUVisible }
+                  visible={ this.state.uVisible}
+                  onCancel={ this.handlerUVisible }
+                  lid={id}
                 />
                 <TeamList
-                    visible={this.state.tVisible}
-                    onCancel = {this.handlerTVisible}
+                  visible={this.state.tVisible}
+                  onCancel = {this.handlerTVisible}
+                  list={this.state.team_list.filter(i => i.role !== 1)}
                 />
             </div>
         )

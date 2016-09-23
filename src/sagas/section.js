@@ -1,6 +1,5 @@
 import { takeLatest } from 'redux-saga'
 import { fork,put,call } from 'redux-saga/effects'
-import { message } from 'antd'
 import {
     getSection,
     editSection,
@@ -9,18 +8,21 @@ import {
     getSectionInfo,
     deleteSection
 } from '../services/section'
-// import { push } from 'react-router-redux'
 
 const handleDelete = function* (action){
-    try{
-        yield call(deleteSection,action.payload)
+    try {
+        yield call(deleteSection, action.payload.params)
+        if (action.payload.resolve) {
+            action.payload.resolve()
+        }
         yield put({
-            type:'section/delete/success',
-            payload:action.payload
+            type: 'section/delete/success',
+            payload: action.payload.params
         })
-        message.success('删除成功!')
-    }catch(error){
-        message.error(error)
+    } catch(error) {
+        if (action.payload.reject) {
+            action.payload.reject(error)
+        }
     }
 }
 
@@ -77,15 +79,15 @@ function* watchEdit() {
 
 function* handleList(action) {
     try {
-        const data = yield call(getSectionList,action.payload)
+        const data = yield call(getSectionList, action.payload.params)
         yield put({
-            type:'section/list/success',
-            payload:{
-                list:data.list
-            }
+            type: 'section/list/success',
+            payload: data.list
         })
     } catch (error) {
-        message.error(error)
+        if (action.payload.reject) {
+            action.payload.reject(error)
+        }
         yield put({
             type:'section/list/failure'
         })
@@ -107,7 +109,10 @@ function* handleGet(action) {
             payload: data.get
         })
     } catch (error) {
-        message.error(error)
+        if (action.payload.reject) {
+            action.payload.reject(error)
+        }
+        yield put({ type: 'section/get/failure' })
     }
 }
 
@@ -117,15 +122,18 @@ function* watchGet() {
 
 function* handleInfo(action) {
     try {
-        const data = yield call(getSectionInfo,action.payload)
+        const data = yield call(getSectionInfo,action.payload.params)
+        if (action.payload.resolve) {
+          action.payload.resolve(data.count)
+        }
         yield put({
-            type:'section/info/success',
-            payload:{
-                total:data.count
-            }
+            type: 'section/info/success',
+            payload: data.count
         })
     } catch (error) {
-        message.error(error)
+       if (action.payload.reject) {
+            action.payload.reject(error)
+        }
     }
 }
 
