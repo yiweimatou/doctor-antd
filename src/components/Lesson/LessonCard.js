@@ -26,7 +26,7 @@ class LessonCard extends Component{
                     </ul>
                 </Link>
                 <div className="newArticle">
-                    <Link to={`/section/new?lid=${lesson.id}`}>
+                    <Link to={`/section/add/choose?lid=${lesson.id}&oid=0`}>
                         新建文章
                     </Link>
                 </div>

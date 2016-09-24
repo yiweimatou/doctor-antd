@@ -7,11 +7,11 @@ import { DEFAULT_FACE } from '../../constants/api'
 
 class SelectUser extends Component {
     static propTypes = {
-        list:PropTypes.array,
-        invite:PropTypes.func.isRequired,
-        search:PropTypes.func.isRequired,
-        visible:PropTypes.bool,
-        onCancel:PropTypes.func,
+        list: PropTypes.array,
+        invite: PropTypes.func.isRequired,
+        search: PropTypes.func.isRequired,
+        visible: PropTypes.bool,
+        onCancel: PropTypes.func,
         lid: PropTypes.string.isRequired
     }
     inviteHandler = params => {
@@ -70,9 +70,9 @@ export default connect(
         list:state.user.list
     }),
     dispatch=>({
-        search:mobile=>dispatch({
+        search: mobile => dispatch({
             type:'user/list',
-            payload:{
+            payload: {
                 mobile
             }
         }),

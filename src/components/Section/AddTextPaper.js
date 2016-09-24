@@ -122,6 +122,9 @@ class AddTextPaper extends Component {
                         required: true, whitespace: false, message: '请填写文章标题'
                       }]
                     })}/>
+                    
+                  </FormItem>
+                  <FormItem {...formItemLayout} label="文章描述">
                     <Input type="textarea" rows={5} {...getFieldProps('descript')} />
                   </FormItem>
                 </Form>

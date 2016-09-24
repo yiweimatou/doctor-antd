@@ -6,11 +6,12 @@ import {
     Upload,
     Icon,
     message,
-    Spin
+    Spin, Switch
 } from 'antd'
 import Paper from '../Paper'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -20,10 +21,10 @@ const formItemLayout = {
 
 class Edit extends Component{
     static propTypes = {
-        form:PropTypes.object,
-        handleEdit:PropTypes.func.isRequired,
-        lesson:PropTypes.object,
-        loading: PropTypes.bool
+        handleEdit: PropTypes.func.isRequired,
+        lesson: PropTypes.object,
+        loading: PropTypes.bool,
+        push: PropTypes.func.isRequired,
     }
     state = {
         fileList: [],
@@ -54,7 +55,7 @@ class Edit extends Component{
         })
         this.setState({ fileList })
     }
-    submitHandler=(e)=>{
+    submitHandler= e => {
         e.preventDefault()
         this.props.form.validateFields((errors,values)=>{
             if(errors){
@@ -67,9 +68,13 @@ class Edit extends Component{
                 cover:cover,
                 organize_amount: values.organize_money,
                 account_amount: values.account_money,
-                id:this.props.lesson.id
+                id:this.props.lesson.id,
+                state: values.state ? 1: 2
             }
-            this.props.handleEdit(params)
+            this.props.handleEdit(params, () => {
+                message.success('编辑成功')
+                this.props.push(`/lesson/show/${this.props.lesson.id}`)
+            }, error => message.error(error, 6))
         })
     }
     componentWillReceiveProps(nextProps){
@@ -157,6 +162,9 @@ class Edit extends Component{
                             })}
                         />
                     </FormItem>
+                    <FormItem {...formItemLayout} label="上下架">
+                        <Switch {...getFieldProps('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})}/>
+                    </FormItem>
                     <FormItem
                         {...formItemLayout}
                         label = 'logo'
@@ -191,7 +199,7 @@ class Edit extends Component{
                             })}
                         />
                     </FormItem>
-                    <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
+                    <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
@@ -207,21 +215,14 @@ export default connect(
         loading : state.lesson.loading
     }),
     dispatch=>({
-        handleEdit:(params)=>{
+        handleEdit: (params, resolve, reject) => {
             dispatch({
                 type:'lesson/edit',
-                payload:params
-            })
-        },
-        initialCategory: (params, resolve, reject) => {
-            dispatch({
-                type: 'category/init',
-                payload: params,
-                meta: {
-                    resolve,
-                    reject
+                payload:{
+                    params, resolve, reject
                 }
             })
-        }
+        },
+        push: path => dispatch(push(path))
     })
 )(Form.create()(Edit))

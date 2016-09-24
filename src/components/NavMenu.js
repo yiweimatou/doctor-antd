@@ -49,6 +49,9 @@ class NavMenu extends Component {
                     <Item key = '11'>
                         <Link to = '/question/add'>新增试题</Link>
                     </Item>
+                    <Item key = '13'>
+                        <Link to = '/question/list'>我的题库</Link>
+                    </Item>
                     <Item key="12">
                       <Link to="/textpaper/add">新增试卷</Link>
                     </Item>

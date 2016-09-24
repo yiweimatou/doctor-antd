@@ -27,6 +27,14 @@ const mapDispatchToProps = dispatch => ({
             }
         })
     },
+    getOrganizeTeamList: (params, resolve, reject) => {
+        dispatch({
+            type:'organize_team/list',
+            payload:{
+                params, resolve, reject
+            }
+        })
+    },
     getLessonList: (params, resolve, reject) => {
         dispatch({
             type:'organize_lesson/list',

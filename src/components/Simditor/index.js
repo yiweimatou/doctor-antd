@@ -4,7 +4,7 @@ import { DEFAULT_LOGO } from '../../constants/api'
 
 class Simditor extends Component {
     state = {
-        content: ''
+        content: '',
     }
     tick = () => {
         if (window.Simditor) {
@@ -19,7 +19,13 @@ class Simditor extends Component {
     getValue = () => {
         return this.editor.getValue()
     }
+    shouldComponentUpdate() {
+        return false
+    }
     componentWillReceiveProps(nextProps) {
+        if (nextProps.content === '' || nextProps.content === undefined) {
+            return
+        }
         if (this.editor) {
             this.editor.setValue(nextProps.content)
         } else {
@@ -55,6 +61,12 @@ class Simditor extends Component {
                     })
                 })
             })                      
+        } else {
+            this.editor = new window.Simditor({
+                                    textarea: $('#editor'),
+                                    defaultImage: DEFAULT_LOGO
+                                })
+            this.editor.setValue(this.state.content)
         }
     }
     render() {

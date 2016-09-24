@@ -28,22 +28,25 @@ class AddBook extends Component {
     confirmLoading: false
   }
   componentWillMount() {
-    this.props.getInfo({ account_id: this.props.userId })
-    this.props.getInfo({})
-    this.props.changeHandler({ offset: 1, limit: 6 })
-    this.props.changeHandler({ offset: 1, limit: 6, account_id: this.props.userId })
+    const { getInfo, fetchSection, fetchYunbook, changeHandler, userId, query } = this.props
+    getInfo({ account_id: this.props.userId })
+    getInfo({})
+    changeHandler({ offset: 1, limit: 6 })
+    changeHandler({ offset: 1, limit: 6, account_id: userId })
     /*当从预览跳转时有yid
      *当编辑状态时有id
      *yid和id不会共存
      */
-    if (this.props.query.id) {
+    if (query.id) {
       this.setState({ pending: true })
-      this.props.fetchSection({ id: this.props.query.id }, section => {
-        this.setState({ section, pending: false })
+      fetchSection({ id: this.props.query.id }, section => {
+        fetchYunbook({
+          id: section.foreign_id
+        }, yunbook => this.setState({section, pending: false, currentStep: 1, yunbook: yunbook }), error => message.error(error))
       }, error => message.error(error))
-    } else if (this.props.query.yid) {
+    } else if (query.yid) {
       this.setState({ pending: true })
-      this.props.fetchYunbook({ id: this.props.query.yid }, yunbook => {
+      fetchYunbook({ id: query.yid }, yunbook => {
           this.setState({ yunbook, currentStep: 1, pending: false })
       }, error => message.error(error))
     }
@@ -80,7 +83,11 @@ class AddBook extends Component {
     })
   }
   cancelHandler = () => {
-    this.setState({ show: false, yunbook: {} })
+    if (this.state.yunbook) {
+      this.setState({ show: false })
+    } else {
+      this.setState({ show: false, yunbook: {} })    
+    }
   }
   submitHandler = state => {
     //state 0 保存到草稿 1 保存并发布
@@ -134,9 +141,10 @@ class AddBook extends Component {
             lesson_id: this.props.query.lid,
             organize_id: this.props.query.oid,
             lbl: this.state.lbl
-          }, id => {
+          }, () => {
             message.success('创建成功!')
-            this.props.redirct(`/section/show/${id}`)
+            // this.props.redirct(`/section/show/${id}`)
+            this.props.form.resetFields()
           }, error => message.error(error, 8))
         }
       }
@@ -145,7 +153,7 @@ class AddBook extends Component {
   render() {
     const { loading, bookList, myBookList, query, total, myTotal, changeHandler, userId } = this.props
     const { getFieldProps } = this.props.form
-    const { currentStep, show, yunbook, pending, confirmLoading } = this.state
+    const { currentStep, show, yunbook, pending, confirmLoading, section } = this.state
     if (!query.oid || !query.lid) {
      return (<div>参数错误</div>)
     }
@@ -174,15 +182,18 @@ class AddBook extends Component {
                   required: true,
                   whitespace: false,
                   message: '请填写标题'
-                }]
+                }],
+                initialValue: section.title
               })}/>
               </FormItem>
             <FormItem {...formItemLayout} label="文章描述">
-                <Input type="textarea" rows={5} {...getFieldProps('descript')}/>
+                <Input type="textarea" rows={5} {...getFieldProps('descript',{ initialValue: section.descript })}/>
             </FormItem>
             <FormItem wrapperCol={{ offset: 6 }}>
               <Button style={{marginRight: 30}} onClick={()=>this.handleNext(1)}>上一步</Button>
-              <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到素材</Button>
+              { query.edit === '1' ? null:
+                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到素材</Button>
+              }
               <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
             </FormItem>
           </Form>
@@ -196,6 +207,7 @@ class AddBook extends Component {
             </div>
           </div> :null }
         { currentStep === 0 ?
+          <div>
           <Tabs>
             <TabPane tab='全部云板书' key='1'>
               <Row>
@@ -252,9 +264,10 @@ class AddBook extends Component {
                 </div> :
                 <p style={{textAlign: 'center'}}>暂无数据</p>
               }
-              <Button disabled = { yunbook.id === undefined } onClick={()=>this.handleNext(1)}>下一步</Button>
             </TabPane>
-          </Tabs> :null
+          </Tabs>
+            <Button disabled = { yunbook.id === undefined } onClick={()=>this.handleNext(1)}>下一步</Button>                      
+          </div> :null
         }
         </Spin>
       </div>

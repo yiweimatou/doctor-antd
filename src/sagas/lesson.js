@@ -14,9 +14,6 @@ import {
     getLessonTeamList
 } from '../services/lessonTeam.js'
 import {
-    push
-} from 'react-router-redux'
-import {
     getUser
 } from '../services/user'
 
@@ -171,13 +168,18 @@ function* watchUnNormalList() {
 
 function* handleEdit(action) {
     try {
-        yield call(editLesson, action.payload)
+        yield call(editLesson, action.payload.params)
+        if (action.payload.resolve) {
+            action.payload.resolve()
+        }
         yield put({
             type: 'lesson/edit/success',
-            payload: action.payload
+            payload: action.payload.params
         })
-        yield put(push(`/lesson/show/${action.payload.id}`))
     } catch (error) {
+        if (action.payload.reject) {
+            action.payload.reject(error)
+        }
         yield put({
             type: 'lesson/edit/failure'
         })

@@ -139,7 +139,7 @@ class Add extends Component {
         const params = {
           state: 1,//默认发布
           question_imgurl: this.state.fileList[0] || '',
-          question: values['question'],
+          question: values.question,
           answer: answer,
           option1: values.A || '',
           option2: values.B || '',
@@ -174,7 +174,7 @@ class Add extends Component {
                                 }],
                             })} style={{ width: '80%', marginRight: 8 }}
                     />
-                    <Switch {...getFieldProps(`key${k}`, {valuePropName: 'checked'})} />
+                    <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross"/>} {...getFieldProps(`key${k}`, {valuePropName: 'checked'})} />
                 </Form.Item>
             )
         })

@@ -24,6 +24,9 @@ function* watchList() {
   yield* takeEvery('topic/list', function* (action) {
     try {
       const result = yield call(list, action.payload.params)
+      if (action.payload.resolve) {
+        action.payload.resolve(result.list)
+      }
       yield put({
         type: 'topic/list/success',
         payload: result.list

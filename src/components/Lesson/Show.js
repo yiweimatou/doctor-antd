@@ -70,7 +70,9 @@ class Show extends Component {
       }, list => this.setState({ organize_list: list }), error => message.error(error))
       this.props.getLessonTeamList({
         state: 1,
-        lesson_id: this.props.id
+        lesson_id: this.props.id,
+        offset: 1,
+        limit: 100
       }, list => this.setState({ team_list: list.sort((i, j) => i.role - j.role) }), error => message.error(error))
       this.props.getSectionInfo({
         state: 1, lesson_id: this.props.id
@@ -150,25 +152,26 @@ class Show extends Component {
                                     新建文章
                                 </Button>
                             </Col>
+                            {lesson.state === 1 ?
                             <Col span={4}>
                                 <Button onClick={this.handlerOVisible} type='ghost'>申请机构认证</Button>
-                            </Col>
+                            </Col> : null}
                             {role === 1 ?
                             <Col span={4}>
                                 <Button type='ghost' onClick={this.handlerUVisible}>邀请成员</Button>
                             </Col>:null}
+                            { role === 1 ?                            
                             <Col span={4}>
-                            { role === 1 ?
-                                <Button type='ghost' onClick = {this.handlerTVisible}>团队管理</Button>:
-                                role === 3 ?
+                                <Button type='ghost' onClick = {this.handlerTVisible}>团队管理</Button>
+                                {role === 3 ?
                                 <Button type='ghost' onClick={
                                   () => handleRemove({ id: tid }, () => {
                                     message.success('成功退出团队!', 6)
                                     push('/')
                                   }, error => message.error(error, 6))
-                                }>退出团队</Button>:null
-                            }
+                                }>退出团队</Button>:null}
                             </Col>
+                            : null}
                             <Col span={4}>
                                 <Button onClick={() => push(`/section/draft?lid=${id}&oid=0`)} type='ghost'>素材管理</Button>
                             </Col>
@@ -231,9 +234,9 @@ class Show extends Component {
                     <SelectContainer lid={id}/>
                 </Modal>
                 <SelectUser
-                  visible={ this.state.uVisible}
-                  onCancel={ this.handlerUVisible }
-                  lid={id}
+                  visible = { this.state.uVisible}
+                  onCancel = { this.handlerUVisible }
+                  lid = {id}
                 />
                 <TeamList
                   visible={this.state.tVisible}

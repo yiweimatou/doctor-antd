@@ -5,6 +5,7 @@ import AddActive from '../components/Section/AddActive'
 import AddBook from '../components/Section/AddBook'
 import Draft from '../components/Section/Draft'
 import AddHtml from '../components/Section/AddHtml'
+import AddNotice from '../components/Section/AddNotice'
 
 const newRoute = () => ({
   path: 'add',
@@ -23,6 +24,9 @@ const newRoute = () => ({
   }, {
     path: 'html',
     component: AddHtml
+  }, {
+      path: 'notice',
+      component: AddNotice
   }]
 })
 
