@@ -17,9 +17,9 @@ class EditLblView extends React.Component{
         super(props)
         //禁用默认右击弹出菜单
         this.state = {
-            open:false,
-            layer:null,
-            editorState:null
+            open: false,
+            layer: null,
+            editorState: null
         }
         this.handleClose = ()=>{
             this.setState({

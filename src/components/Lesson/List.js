@@ -9,7 +9,8 @@ class List extends Component{
     state = {
       loading: true,
       list1: [],
-      list2: []
+      list2: [],
+      list: []
     }
     static propTypes = {
         changeHandler: PropTypes.func.isRequired,
@@ -25,15 +26,33 @@ class List extends Component{
           const list1 = list.filter(i => i.state === 1)
           const list2 = list.filter(i => i.state === 2)
           this.setState({
-              list1, list2, loading: false
+              list1, list2, loading: false, list
           })
       }, error => message.error(error))
     }
     render(){
-        const { list1, list2, loading } = this.state
+        const { list, list1, list2, loading } = this.state
         return(
             <Spin spinning={loading}>            
-                <Tabs defaultActiveKey = '1'>
+                <Tabs defaultActiveKey = '0'>
+                    <TabPane tab = '全部课程' key = '0'>
+                        <Row gutter={16}>
+                        {
+                            list.map(lesson => <Col key = {lesson.id} span= {8}><LessonCard lesson = {lesson} /></Col>)
+                        }
+                        </Row>
+                        {
+                            list.length > 0?
+                                <div className='pagination'>
+                                    <Pagination
+                                        total={ list.length }
+                                        showTotal={total => `共 ${total} 条`}
+                                        pageSize = {9}
+                                    />
+                                </div>:
+                                <p style={{textAlign: 'center'}}>没有数据</p>
+                        }
+                    </TabPane>
                     <TabPane tab = '已上架课程' key = '1'>
                         <Row gutter={16}>
                         {
@@ -56,7 +75,7 @@ class List extends Component{
                                 <p style={{textAlign: 'center'}}>没有数据</p>
                         }
                     </TabPane>
-                    <TabPane tab = '下架课程' key = '2'>
+                    <TabPane tab = '未上架课程' key = '2'>
                         <Row gutter={16}>
                         {
                             list2.map(lesson => {

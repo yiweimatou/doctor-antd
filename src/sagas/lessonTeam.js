@@ -68,8 +68,7 @@ function* watchList() {
       if (list && list.length > 0) {
         if (action.payload.params.lesson_id > 0) {
           const users = yield call(getUserList, {
-            id_list : list.map(i => i.account_id),
-            state: 1
+            id_list : list.map(i => i.account_id)
           })
           if (action.payload.resolve) {
             action.payload.resolve(users.list.map(item => {
@@ -84,8 +83,7 @@ function* watchList() {
           }
         } else {
           const lessons = yield call(listLesson, {
-            id_list: list.map(i => i.lesson_id),
-            state: 1
+            id_list: list.map(i => i.lesson_id)
           })
           if (action.payload.resolve) {
             action.payload.resolve(lessons.list)

@@ -42,17 +42,26 @@ class Add extends Component {
     this.props.form.validateFields((errors, values) => {
       if (errors) return
       this.setState({ loading: true })
-      this.props.add({
-        title: values.title,
-        sale_amount: values.sale_amount,
-        state: 1,
-        topic_id_list: this.state.topicList.reduce((previousValue, currentValue, index) => {
+      let topic_id_list = ''
+      if (this.state.topicList.length === 1) {
+        topic_id_list = this.state.topicList[0].id
+      } else {
+        topic_id_list = this.state.topicList.reduce((previousValue, currentValue, index) => {
+          if (index === 0) {
+            return previousValue.id
+          }
           if (index === 1) {
             return `${previousValue.id},${currentValue.id}`
           } else {
             return `${previousValue},${currentValue.id}`
-          }
+          } 
         })
+      }
+      this.props.add({
+        title: values.title,
+        sale_amount: values.sale_amount*100,
+        state: 1,
+        topic_id_list
       }, () => {
         message.success('新建成功')
         this.setState({ loading: false, topicList: [] })

@@ -24,11 +24,6 @@ class NavMenu extends Component {
                         <span><Icon type="exception" />课程管理</span>
                     }
                 >
-                    <Item key='8' disabled = {user && user.lesson===1}>
-                        <Link to='/lesson/new'>
-                            新建课程
-                        </Link>
-                    </Item>
                     <Item key='7' disabled = {user && user.lesson===1}>
                         <Link to='/lesson/list'>
                             我的主讲课程
@@ -37,11 +32,6 @@ class NavMenu extends Component {
                     <Item key='6'>
                         <Link to='/lesson/tlist'>
                             我的团队课程
-                        </Link>
-                    </Item>
-                    <Item key='5' disabled = {user && user.rcmd_lesson===1}>
-                        <Link to='/lesson/recommend'>
-                            推荐课程
                         </Link>
                     </Item>
                 </SubMenu>
@@ -54,6 +44,9 @@ class NavMenu extends Component {
                     </Item>
                     <Item key="12">
                       <Link to="/textpaper/add">新增试卷</Link>
+                    </Item>
+                    <Item key="14">
+                      <Link to="/textpaper/list">我的试卷</Link>
                     </Item>
                 </SubMenu>
                 <SubMenu

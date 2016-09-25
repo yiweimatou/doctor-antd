@@ -4,6 +4,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Spin, Form, Steps, Table, message, Input, Tabs, Button, Modal } from 'antd'
+import { TOPICS } from '../../constants/api'
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
 const FormItem = Form.Item
@@ -19,22 +20,37 @@ class AddTextPaper extends Component {
     total: 0,
     myTotal: 0,
     topics: {},
+    tempTopics: {},
     visible: false,
+    section: {},
     confirmLoading: false
   }
   componentWillMount() {
+    const { getInfo, changeHandler, query, fetchSection, fetchTopics  } = this.props
     //获取分页信息
-    this.props.getInfo({}, total => this.setState({ total }), error => message.error(error))
-    this.props.getInfo({ account_id: this.props.userId }, total => this.setState({ myTotal: total }), error => message.error(error))
-    this.props.changeHandler({ offset: 1, limit: 9 })
-    this.props.changeHandler({ offset: 1, limit: 9, account_id: this.props.userId })
+    getInfo({}, total => this.setState({ total }), error => message.error(error))
+    getInfo({ account_id: this.props.userId }, total => this.setState({ myTotal: total }), error => message.error(error))
+    changeHandler({ offset: 1, limit: 9 })
+    changeHandler({ offset: 1, limit: 9, account_id: this.props.userId })
+    if (query.id) {
+      this.setState({ pending: true })
+      fetchSection({ id: query.id }, section => {
+        fetchTopics({
+          id: section.foreign_id
+        }, topics => this.setState({
+          section, pending: false, currentStep: 1, 
+          topics,
+          tempTopics: topics 
+        }), error => message.error(error))
+      }, error => message.error(error))
+    }
   }
   clickHandler = topics => {
-    if (this.state.topics.id === topics.id) {
+    if (this.state.tempTopics.id === topics.id) {
       message.warn('该试题已经引用！')
       this.setState({ currentStep:1 })
     } else {
-     this.setState({ visible: true, topics })
+     this.setState({ visible: true, tempTopics: topics })
     }
   }
   okHandler = () => {
@@ -42,7 +58,7 @@ class AddTextPaper extends Component {
     this.props.buyTopics({
       organize_id: this.props.query.oid,
       lesson_id: this.props.query.lid,
-      id: this.state.topics.id
+      id: this.state.tempTopics.id
     }, () => {
       message.success('引用成功')
       this.setState({ visible: false, currentStep: 1, confirmLoading: false })
@@ -52,13 +68,72 @@ class AddTextPaper extends Component {
     })
   }
   cancelHandler = () => {
-    this.setState({ visible: false, topics: {} })
+    this.setState({ visible: false, tempTopics: this.state.topics })
   }
-  submitHandler = e => {
-    e.preventDefault()
+  submitHandler = state => {
+    this.props.form.validateFields((errors, values) => {
+      if (errors) {
+        return
+      }
+      if (this.state.tempTopics.id === undefined) {
+        message.error('请选择试题', 6)
+        return
+      }
+      const { section, tempTopics } = this.state
+      const { query, addSection, editSection } = this.porps
+      if (state === 0) {
+        if (section.id === undefined) {
+          addSection({
+            title: values.title,
+            descript: values.descript || '',
+            state: 1,//1:正常,2:冻结,3:删除
+            category_id: TOPICS,
+            foreign_id: tempTopics.id,
+            lesson_id: query.lid,
+            organize_id: query.oid
+          }, id => {
+            message.success('保存到素材', 6)
+            this.setState({ section: { id } })
+          }, error => message.error(error, 8))
+        } else {
+          editSection({
+            id: this.state.section.id,
+            title: values.title,
+            descript: values.descript || ''
+          }, () => message.success('保存成功!'), error => message.error(error))
+        }
+      } else if (state === 1) {
+        if (query.edit === 1) {
+          if (section.id === undefined) return message.error('url参数错误')
+          editSection({
+            id: section.id,
+            title: values.title,
+            descript: values.descript || ''
+          }, () => message.success('编辑成功!'), error => message.error(error))
+        } else {   
+          addSection({
+            title: values.title,
+            descript: values.descript || '',
+            state: 1,
+            category_id: TOPICS,
+            foreign_id: tempTopics.id,
+            lesson_id: query.lid,
+            organize_id: query.oid,
+          }, () => {
+            message.success('创建成功!')
+            if (query.lid > 0) {
+              this.props.redirct(`/lesson/show/${query.lid}`)
+            } else {
+              this.props.redirct(`/organize/show/${query.oid}`)
+            }
+          }, error => message.error(error, 8))
+        }
+      }
+    })
+    
   }
   render() {
-    const { currentStep, total, myTotal, visible, topics, confirmLoading } = this.state
+    const { currentStep, total, myTotal, visible, tempTopics, confirmLoading } = this.state
     const { loading, list, myList, changeHandler, userId, query } = this.props
     if (!query.oid || !query.lid) {
       return (<div>参数错误</div>)
@@ -71,7 +146,8 @@ class AddTextPaper extends Component {
     }, {
       dataIndex: 'sale_amount',
       key: 'sale_amount',
-      title: '价格'
+      title: '价格',
+      render: text => `${text/100}元`
     }, {
       key: 'operation',
       title: '选择',
@@ -83,8 +159,8 @@ class AddTextPaper extends Component {
                  onOk={this.okHandler} onCancel={this.cancelHandler}
           >
             <div style={{textAlign: 'center'}}>
-              <p>试卷名称：{topics && topics.title}</p>
-              <p>试卷价格：<em style={{color:'orange',fontSize:'200%'}}>{topics && topics.sale_amount}</em>元</p>
+              <p>试卷名称：{tempTopics.title}</p>
+              <p>试卷价格：<em style={{color:'orange',fontSize:'200%'}}>{tempTopics.sale_amount/100}</em>元</p>
             </div>
           </Modal>
           <Steps current={currentStep}>
@@ -127,7 +203,14 @@ class AddTextPaper extends Component {
                   <FormItem {...formItemLayout} label="文章描述">
                     <Input type="textarea" rows={5} {...getFieldProps('descript')} />
                   </FormItem>
-                </Form>
+                  <FormItem wrapperCol={{ offset: 6 }}>
+                    <Button style={{marginRight: 30}} onClick={()=>this.handleNext(0)}>上一步</Button>
+                    { query.edit === '1' ? null:
+                      <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到素材</Button>
+                    }
+                    <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
+                  </FormItem>
+                </Form>        
               </Spin>:null
           }
         </div>
@@ -144,7 +227,9 @@ AddTextPaper.propTypes = {
   getInfo: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
   buyTopics: PropTypes.func.isRequired,
-  query: PropTypes.object.isRequired
+  query: PropTypes.object.isRequired,
+  fetchTopics: PropTypes.func.isRequired,
+  fetchSection: PropTypes.func.isRequired,
 }
 
 export default connect(
@@ -156,6 +241,22 @@ export default connect(
     query: state.routing.locationBeforeTransitions.query
   }),
   dispatch => ({
+    fetchSection: (params, resolve, reject) => {
+      dispatch({
+        type: 'section/get',
+        payload: {
+          params, resolve, reject
+        }
+      })
+    },
+    fetchTopics: (params, resolve, reject) => {
+      dispatch({
+        type: 'topics/get',
+        payload: {
+          params, resolve, reject
+        }
+      })
+    },
     buyTopics: (params, resolve, reject) => {
       dispatch({
         type: 'topics/buy',
@@ -175,6 +276,14 @@ export default connect(
     addSection: (params, resolve, reject) => {
       dispatch({
         type: 'section/add',
+        payload: {
+          params: resolve, reject
+        }
+      })
+    },
+    editSection: (params, resolve, reject) => {
+      dispatch({
+        type: 'section/edit',
         payload: {
           params: resolve, reject
         }

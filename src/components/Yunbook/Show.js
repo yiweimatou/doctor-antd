@@ -69,7 +69,13 @@ class Show extends React.Component{
         return (
             <Spin spinning = {this.state.loading}>
                 <div>
-                    {lid?<Button type='primary' onClick={() => this.props.push(`/section/add/book?${query}&yid=${this.state.yid}`)}>购买</Button>:null}
+                    {lid?<Button type='primary' onClick={() => {
+                        this.setState({ loading:true })
+                        this.props.buy({ id: this.state.yid, lesson_id: lid, organize_id: oid }, () => {
+                            this.props.push(`/section/add/book?${query}&yid=${this.state.yid}`)
+                        }, error => message.error(error))
+                    }
+                    }>购买</Button>:null}
                     <div id='_map' style={ styles.map } ></div>
                 </div>
             </Spin>
@@ -80,6 +86,12 @@ class Show extends React.Component{
 export default connect(state => ({
     params: state.routing.locationBeforeTransitions.query
 }), dispatch => ({
+    buy(params, resolve, reject) {
+        dispatch({
+            type: 'yunbook/buy',
+            payload: { params, resolve, reject }
+        })
+    },
     fetchYunbook(id, resolve, reject) {
         dispatch({
             type: 'yunbook/fetch',

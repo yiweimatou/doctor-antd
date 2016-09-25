@@ -22,7 +22,8 @@ class Bill extends Component {
         }, {
             title: '金额',
             dataIndex: 'trade_amount',
-            key: 'trade_amount'
+            key: 'trade_amount',
+            render: text => `${text/100}元`
         }, {
             title: '交易时间',
             dataIndex: 'add_ms',

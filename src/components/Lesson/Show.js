@@ -97,35 +97,35 @@ class Show extends Component {
                 <Paper>
                     <div style={styles.row}>
                       <Spin spinning={loading}>
-                        <Row gutter={16}>
+                        <Row>
                             <Col span={12}><img alt='pic' width='480' height='180' src={lesson&&lesson.cover|| DEFAULT_COVER} /></Col>
-                            <Col span={6}><span>课程名称:</span></Col>
-                            <Col span={6}><span>{lesson&&lesson.title}</span></Col>
-                            <Col span={6}><span>课程简介:</span></Col>
-                            <Col span={6}><span>{lesson&&lesson.descript}</span></Col>
-                            <Col span={6}><span>创建时间:</span></Col>
-                            <Col span={6}><span>{lesson&&new Date(lesson.add_ms*1000).toLocaleString()}</span></Col>
-                            <Col span={6}><span>更新时间:</span></Col>
-                            <Col span={6}><span>{lesson&&new Date(lesson.put_ms*1000).toLocaleString()}</span></Col>
-                            <Col span={6}><span>浏览量:</span></Col>
-                            <Col span={6}><p>{lesson&&lesson.pv}</p></Col>
-                            <Col span={6}><span>粉丝数:</span></Col>
-                            <Col span={6}><p>{lesson&&lesson.uv}</p></Col>
-                            <Col span = {6}><span>课程价格:</span></Col>
-                            <Col span = {6}><span style={{color: 'orange'}}>{lesson&&lesson.account_amount}</span>元</Col>
+                            <Col span={3}><span>课程名称:</span></Col>
+                            <Col span={9}><span>{lesson&&lesson.title}</span></Col>
+                            <Col span={3}><span>课程简介:</span></Col>
+                            <Col span={9}><span>{lesson.descript||'无'}</span></Col>
+                            <Col span={3}><span>创建时间:</span></Col>
+                            <Col span={9}><span>{lesson&&new Date(lesson.add_ms*1000).toLocaleString()}</span></Col>
+                            <Col span={3}><span>更新时间:</span></Col>
+                            <Col span={9}><span>{lesson&&new Date(lesson.put_ms*1000).toLocaleString()}</span></Col>
+                            <Col span={3}><span>浏览量:</span></Col>
+                            <Col span={9}><p>{lesson&&lesson.pv}</p></Col>
+                            <Col span={3}><span>粉丝数:</span></Col>
+                            <Col span={9}><p>{lesson&&lesson.uv}</p></Col>
+                            <Col span = {3}><span>课程价格:</span></Col>
+                            <Col span = {9}><span style={{color: 'orange'}}>{lesson&&lesson.account_amount/100}</span>元</Col>
                         </Row>
                       </Spin>
                     </div>
                     <div style = { styles.row } >
                         <Row>
                                     课程余额
-                                    <span className='money'><em>{lesson&&lesson.balance_amount}</em></span>元
+                                    <span className='money'><em>{lesson&&lesson.balance_amount/100}</em></span>元
                                     <span style={{marginLeft: 30}}>
                                         每月一日0点自动分成，课程余额超过1000元部分分成
                                     </span>
                                     <br />
                                         信用账户
-                                        <span className='money'><em>{lesson&&lesson.credit_amount}</em></span>元
+                                        <span className='money'><em>{lesson&&lesson.credit_amount/100}</em></span>元
 
                                         <span style={{marginLeft: 30}}>
                                             信用账户总额为1000元，课程收入优先还入信用账户

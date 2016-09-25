@@ -59,7 +59,7 @@ function* watchList() {
         if (action.payload.params.account_id > 0) {
           const result = yield call(getOrganizeList, {
             id_list: list.map(i => i.organize_id).join(','),
-            state: 1 //当机构冻结时每页的数量会少于limit
+            //state: 1 //当机构冻结时每页的数量会少于limit
           })
           action.payload.resolve(result.list)
         } else {

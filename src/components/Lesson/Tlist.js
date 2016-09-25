@@ -28,7 +28,7 @@ class List extends Component {
     }
     render(){
         const {
-            list, loading, total, getList            
+            list, loading, total            
         } = this.state
         return(
             <Spin spinning={loading}>
@@ -43,8 +43,9 @@ class List extends Component {
                 </Row>
                 {
                     total === 0 ? <div style={{textAlign: 'center'}}>暂无数据</div> :
+                    <div style={{marginTop: 20}}>
                     <Pagination total={total} pageSize={9} showTotal={total => `共${total}条`} onChange={
-                        offset =>  getList({
+                        offset =>  this.props.getList({
                             offset, limit: 9, 
                             role_list: '2,3',
                             state: 1,
@@ -54,6 +55,7 @@ class List extends Component {
                             message.error(error)
                         })
                     }/>
+                    </div>
                 }
             </Spin>
         )

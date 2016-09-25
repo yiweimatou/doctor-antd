@@ -35,24 +35,24 @@ class New extends Component {
         loading: true
     }
     componentWillMount() {
-        this.props.residue(this.props.userId, num => {
-            this.setState({ loading: false })
-            if(num === 0){
-                Modal.confirm({
-                    title: '请确认',
-                    content: '最多可创建5门课程',
-                    onOk: () => this.props.push('/'),
-                    onCancel: () => this.props.push('/')
-                })
-            }else {
-                Modal.warning({
-                    title: '请确认',
-                    content: `最多可创建5门课程,剩余可创建课程${num}门`
-                })
-            }
-        }, (error) => {
-            message.error(error)
-        })
+        // this.props.residue(this.props.userId, num => {
+        //     this.setState({ loading: false })
+        //     if(num === 0){
+        //         Modal.confirm({
+        //             title: '请确认',
+        //             content: '最多可创建5门课程',
+        //             onOk: () => this.props.push('/'),
+        //             onCancel: () => this.props.push('/')
+        //         })
+        //     }else {
+        //         Modal.warning({
+        //             title: '请确认',
+        //             content: `最多可创建5门课程,剩余可创建课程${num}门`
+        //         })
+        //     }
+        // }, (error) => {
+        //     message.error(error)
+        // })
     }
     normFile(e) {
         if (Array.isArray(e)) {
@@ -120,7 +120,7 @@ class New extends Component {
         })
     }
     render(){
-        // return (<p style={{textAlign: 'center'}}>暂未开放，敬请期待！</p>)
+        return (<p style={{textAlign: 'center'}}>暂未开放，敬请期待！</p>)
         const { getFieldProps } = this.props.form
         const lnameProps = getFieldProps('lname',{
             rules:[{

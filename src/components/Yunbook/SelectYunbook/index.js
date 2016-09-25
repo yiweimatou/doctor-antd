@@ -12,7 +12,7 @@ class SelectYunbook extends Component{
                <Link className='courseList' to={`/yunbook/show?oid=${oid}&lid=${lid}&yid=${yunbook.id}`}>
                     <div className="courseImg">
                         <div className='xmoney'>
-                            <span>{yunbook.money === 0 ?' 免费 ' : `￥${yunbook.sale_amount}`}</span>
+                            <span>{yunbook.money === 0 ?' 免费 ' : `￥${yunbook.sale_amount/100}`}</span>
                         </div>
                         <img src={yunbook.cover} width="100%" />
                     </div>

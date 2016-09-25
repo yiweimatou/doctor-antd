@@ -9,7 +9,7 @@ class List extends Component {
             showTotal: total => `共${total}条` ,
             pageSize: 9,
             onChange: offset => changeHandler({
-                offset, limit: 9, account_id: userId, state: 1
+                offset, limit: 9, account_id: userId
             }, null, error => message.error(error))
         }
         const columns = [{

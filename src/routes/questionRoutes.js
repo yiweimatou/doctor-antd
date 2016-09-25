@@ -15,7 +15,7 @@ const listRoute = store => ({
             type: 'topic/list',
             payload: {
                 params: {
-                    offset: 1, limit: 9, account_id, state: 1
+                    offset: 1, limit: 9, account_id
                 }
             }
         })

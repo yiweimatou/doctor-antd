@@ -12,6 +12,17 @@ class LessonCard extends Component{
                <Link className='courseList' to={`/lesson/show/${lesson.id}`}>
                     <div className="courseImg">
                         <img src={lesson.cover} width='256' height='96'/>
+                        {lesson.state === 2 ?
+                        <em style={{
+                            position: 'absolute',left: 10,top: 20, display: 'inline-block',
+                            textAlign: 'center',width: 256, height: 100, lineHeight: '100px', 
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            fontSize: '200%',
+                            color: 'white'
+                        }}
+                        >
+                            未上架
+                        </em>:null}
                     </div>
                     <div className="lessonTitle">
                         <span>{lesson.title}</span>

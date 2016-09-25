@@ -25,7 +25,8 @@ class AddBook extends Component {
     yunbook: {},
     pending: false,
     lbl: null,
-    confirmLoading: false
+    confirmLoading: false,
+    tempYunbook: {}
   }
   componentWillMount() {
     const { getInfo, fetchSection, fetchYunbook, changeHandler, userId, query } = this.props
@@ -33,7 +34,7 @@ class AddBook extends Component {
     getInfo({})
     changeHandler({ offset: 1, limit: 6 })
     changeHandler({ offset: 1, limit: 6, account_id: userId })
-    /*当从预览跳转时有yid
+    /*当从预览购买跳转回来有yid
      *当编辑状态时有id
      *yid和id不会共存
      */
@@ -42,12 +43,16 @@ class AddBook extends Component {
       fetchSection({ id: this.props.query.id }, section => {
         fetchYunbook({
           id: section.foreign_id
-        }, yunbook => this.setState({section, pending: false, currentStep: 1, yunbook: yunbook }), error => message.error(error))
+        }, yunbook => this.setState({
+          section, pending: false, currentStep: 1, 
+          yunbook: {...yunbook, lbl: section.lbl},
+          tempYunbook: {...yunbook, lbl: section.lbl} 
+        }), error => message.error(error))
       }, error => message.error(error))
     } else if (query.yid) {
       this.setState({ pending: true })
       fetchYunbook({ id: query.yid }, yunbook => {
-          this.setState({ yunbook, currentStep: 1, pending: false })
+          this.setState({ yunbook, tempYunbook:yunbook, currentStep: 1, pending: false })
       }, error => message.error(error))
     }
   }
@@ -55,14 +60,14 @@ class AddBook extends Component {
     this.setState({ lbl })
   }
   handlePick= yunbook => {
-    if (this.state.yunbook.id === yunbook.id){
+    if (this.state.tempYunbook.id === yunbook.id){
       this.setState({ currentStep: 2 })
       message.info('云板书已经被引用', 6)
     } else{
       if (this.state.lbl) {
         yunbook.lbl = this.state.lbl
       }
-      this.setState({ yunbook, show: true })
+      this.setState({ tempYunbook: yunbook, show: true })
     }
   }
   handleNext = step => {
@@ -76,18 +81,14 @@ class AddBook extends Component {
       lesson_id: this.props.query.lid
     }, () => {
       message.success('引用成功')
-      this.setState({ show: false, currentStep: 1, confirmLoading: false })
+      this.setState({ show: false, currentStep: 1, confirmLoading: false, yunbook: this.state.tempYunbook })
     }, error => {
       this.setState({ confirmLoading: false })
       message.error(error)
     })
   }
   cancelHandler = () => {
-    if (this.state.yunbook) {
-      this.setState({ show: false })
-    } else {
-      this.setState({ show: false, yunbook: {} })    
-    }
+      this.setState({ show: false, tempYunbook: this.state.yunbook })
   }
   submitHandler = state => {
     //state 0 保存到草稿 1 保存并发布
@@ -95,27 +96,29 @@ class AddBook extends Component {
       if (errors) {
         return
       }
-      if (this.state.yunbook.id === undefined) {
-        message.error('缺少参数')
+      if (this.state.tempYunbook.id === undefined) {
+        message.error('请选择云板书')
         return
       }
+      const { section, tempYunbook } = this.state
+      const { query, addSection, editSection, lbl } = this.porps
       if (state === 0) {
-        if (this.state.section.id === undefined) {
-          this.props.addSection({
+        if (section.id === undefined) {
+          addSection({
             title: values.title,
             descript: values.descript || '',
-            state: 2,//1:正常,2:冻结,3:删除
+            state: 1,//1:正常,2:冻结,3:删除
             category_id: BOOK,
-            foreign_id: this.state.yunbook.id,
-            lesson_id: this.props.query.lid,
-            organize_id: this.props.query.oid,
+            foreign_id: tempYunbook.id,
+            lesson_id: query.lid,
+            organize_id: query.oid,
             lbl: this.state.lbl
           }, id => {
             message.success('保存到素材', 6)
             this.setState({ section: { id } })
           }, error => message.error(error, 8))
         } else {
-          this.props.editSection({
+          editSection({
             id: this.state.section.id,
             title: values.title,
             descript: values.descript || '',
@@ -123,28 +126,31 @@ class AddBook extends Component {
           }, () => message.success('保存成功!'), error => message.error(error))
         }
       } else if (state === 1) {
-        if (this.props.query.edit === 1) {
-          if (this.section.id === undefined) return message.error('url参数错误')
-          this.props.editSection({
-            id: this.state.section.id,
+        if (query.edit === 1) {
+          if (section.id === undefined) return message.error('url参数错误')
+          editSection({
+            id: section.id,
             title: values.title,
             descript: values.descript || '',
-            lbl: this.state.lbl
+            lbl: lbl
           }, () => message.success('编辑成功!'), error => message.error(error))
         } else {   
-          this.props.addSection({
+          addSection({
             title: values.title,
             descript: values.descript || '',
             state: 1,
             category_id: BOOK,
-            foreign_id: this.state.yunbook.id,
-            lesson_id: this.props.query.lid,
-            organize_id: this.props.query.oid,
-            lbl: this.state.lbl
+            foreign_id: tempYunbook.id,
+            lesson_id: query.lid,
+            organize_id: query.oid,
+            lbl: lbl
           }, () => {
             message.success('创建成功!')
-            // this.props.redirct(`/section/show/${id}`)
-            this.props.form.resetFields()
+            if (query.lid>0) {
+              this.props.redirct(`/lesson/show/${query.lid}`)
+            } else {
+              this.props.redirct(`/organize/show/${query.oid}`)
+            }
           }, error => message.error(error, 8))
         }
       }
@@ -153,7 +159,7 @@ class AddBook extends Component {
   render() {
     const { loading, bookList, myBookList, query, total, myTotal, changeHandler, userId } = this.props
     const { getFieldProps } = this.props.form
-    const { currentStep, show, yunbook, pending, confirmLoading, section } = this.state
+    const { currentStep, show, pending, confirmLoading, section, tempYunbook } = this.state
     if (!query.oid || !query.lid) {
      return (<div>参数错误</div>)
     }
@@ -164,8 +170,8 @@ class AddBook extends Component {
                onOk={this.okHandler} onCancel={this.cancelHandler}
         >
           <div style={{textAlign: 'center'}}>
-            <p>云板书名称：{yunbook && yunbook.title}</p>
-            <p>云板书价格：<em style={{color:'orange',fontSize:'200%'}}>{yunbook && yunbook.sale_amount}</em>元</p>
+            <p>云板书名称：{tempYunbook.title}</p>
+            <p>云板书价格：<em style={{color:'orange',fontSize:'200%'}}>{tempYunbook.sale_amount/100}</em>元</p>
           </div>
         </Modal>
         <Steps current={ currentStep }>
@@ -200,7 +206,7 @@ class AddBook extends Component {
         </Spin> : null }
         { currentStep === 1 ?
           <div>
-            <EditLblView yunbook={yunbook} changeLbl={this.changeLblHandler}/>
+            <EditLblView yunbook={tempYunbook} changeLbl={this.changeLblHandler}/>
             <div style={{marginTop: 30}}>
               <Button style={{marginRight: 10}} onClick={()=>this.handleNext(0)}>上一步</Button>
               <Button onClick={()=>this.handleNext(2)}>下一步</Button>
@@ -230,7 +236,7 @@ class AddBook extends Component {
                     total={total}
                     showTotal={total => `共 ${total} 条`}
                     pageSize = {6}
-                    onChange = { page => this.changeHandler({ offset: page, limit:6 })}
+                    onChange = { page => changeHandler({ offset: page, limit:6 })}
                   />
                 </div> :
                 <p style={{textAlign: 'center'}}>暂无数据</p>
@@ -266,7 +272,7 @@ class AddBook extends Component {
               }
             </TabPane>
           </Tabs>
-            <Button disabled = { yunbook.id === undefined } onClick={()=>this.handleNext(1)}>下一步</Button>                      
+            <Button disabled = { tempYunbook.id === undefined } onClick={()=>this.handleNext(1)}>下一步</Button>                      
           </div> :null
         }
         </Spin>
