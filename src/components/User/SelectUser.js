@@ -15,7 +15,7 @@ class SelectUser extends Component {
         lid: PropTypes.string.isRequired
     }
     inviteHandler = params => {
-      this.props.invite(params, () => message.success('邀请已经发送'), error => message.error(error))
+      this.props.invite(params, () => message.success('成功邀请'), error => message.error(error))
     }
     render(){
         const {
@@ -44,7 +44,7 @@ class SelectUser extends Component {
                                               width='100%'
                                           />
                                         </div>
-                                    <span style = {{display:'block',width:50,textAlign:'center'}}>{item.cname||item.mobile}</span>
+                                    <span className='sdiv'>{item.cname||item.mobile}</span>
                                     <Button
                                         className='sbutton'
                                         onClick = {

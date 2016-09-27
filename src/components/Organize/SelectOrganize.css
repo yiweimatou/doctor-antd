@@ -5,18 +5,21 @@
     background-color: #f9f9f9;
     margin: 10px 0;
     padding: 10px;
-    height: 100px;
+    height: 80px;
 }
 .oimg {
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
+    float: left;
 }
-.ospan {
-    display: block;
+.otitle {
+    display: inline-block;
     width: 100px;
+    line-height: 70px;
+    margin-left: 20px;
 }
 .button {
+    margin-top: 20px;
     float: right;
-    margin-top: -50px;
 }

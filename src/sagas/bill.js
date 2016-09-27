@@ -1,9 +1,42 @@
 /**
  * Created by zhangruofan on 2016/9/22.
  */
-import { takeEvery } from 'redux-saga'
+import { takeEvery, takeLatest } from 'redux-saga'
 import { put, call, fork } from 'redux-saga/effects'
-import { info, list } from '../services/bill'
+import { info, list, get, add } from '../services/bill'
+
+function* watchAdd() {
+  yield takeLatest('bill/add', function* (action) {
+    try {
+      const result = yield call(add, action.payload.params)
+      if (action.payload.resolve) {
+        action.payload.resolve({
+          url: result.get.code_url,
+          id: result.identity
+        })
+      }
+    } catch (error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
+    }
+  })
+}
+
+function* watchGet() {
+  yield takeEvery('bill/get', function* (action) {
+    try {
+      const result = yield call(get, action.payload.params)
+      if (action.payload.resolve) {
+        action.payload.resolve(result.get)
+      }
+    } catch (error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
+    }
+  })
+}
 
 function* watchInfo() {
   yield takeEvery('bill/info', function *(action) {
@@ -45,6 +78,8 @@ function* watchList() {
 export default function* () {
   yield [
     fork(watchInfo),
-    fork(watchList)
+    fork(watchList),
+    fork(watchAdd),
+    fork(watchGet)
   ]
 }

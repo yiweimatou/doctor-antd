@@ -26,16 +26,6 @@ class Edit extends Component{
             this.setState({
                 lbl:nextProps.yunbook.lbl
             })
-            // this.props.initialCatgory({
-            //     area_id: nextProps.yunbook.area_id,
-            //     category_id: nextProps.yunbook.category_id
-            // },(defaultValue, options) => {
-            //     this.setState({
-            //         loading: false,
-            //         defaultValue,
-            //         options
-            //     })
-            // }, error => message.error(error))
         }
     }
     changeLbl = lbl => this.setState({ lbl })
@@ -46,29 +36,12 @@ class Edit extends Component{
             if(errors){
                 return
             }
-            // const first = values.area_ids[0]
-            // let area_id,category_id
-            // if(first === 1) {
-            //     if( values.area_ids.length < 3) {
-            //         return message.error('请再选一级分类')
-            //     }
-            //     area_id = values.area_ids[values.area_ids.length - 1]
-            //     category_id = values.area_ids[1]
-            // }else {
-            //     if( values.area_ids.length < 4) {
-            //         return message.error('请再选一级分类')
-            //     }
-            //     area_id = values.area_ids[values.area_ids.length -1 ]
-            //     category_id = values.area_ids[2]
-            // }
             const params = {
                 lbl:this.state.lbl,
-                // area_id: area_id,
-                // category_id: category_id,
                 title:values.title,
                 descript:values.descript,
                 id:this.props.yunbook.id,
-                sale_amount: values.money
+                sale_amount: values.money*100
             }
             this.props.save(params)
         })
@@ -121,7 +94,7 @@ class Edit extends Component{
                                                 }
                                             }
                                         }],
-                                        initialValue:yunbook&&yunbook.sale_amount
+                                        initialValue:yunbook&&yunbook.sale_amount/100
                                     })}
                                 />
                             </FormItem>

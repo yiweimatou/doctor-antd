@@ -12,7 +12,7 @@ class Money extends Component {
             pageSize: 9,
             showTotal: total => `共 ${total} 条`,
             onChange(offset) {
-                
+                changeHandler({ offset, limit: 9 })
             }
         }
         const columns = [{
@@ -70,7 +70,7 @@ class Money extends Component {
                                 </Button>
                             </Col>
                             <Col span={8}>
-                                 <Button onClick={()=>push('/user/money/alipay/set')}>
+                                 <Button onClick={()=>push('/user/bill/alipay/set')}>
                                     设置提现账户
                                 </Button>
                             </Col>

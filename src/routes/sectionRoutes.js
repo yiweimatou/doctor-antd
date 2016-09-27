@@ -48,6 +48,14 @@ const draftRoute = store => ({
             limit: 9,
             organize_id 
         }}})
+        if (lesson_id > 0) {
+            store.dispatch({
+                type: 'lesson/get',
+                payload: {
+                    id: lesson_id
+                }
+            })
+        }
     }
 })
 

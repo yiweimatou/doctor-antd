@@ -4,9 +4,9 @@ import {
 } from '../constants/api'
 
 export function fetchList(params) {
-  return ApiClient.get(MSG_LIST_API, params)
+  return ApiClient.get(MSG_LIST_API, params, { needAuth: true })
 }
 
 export function fetchInfo(params) {
-  return ApiClient.get(MSG_INFO_API, params)
+  return ApiClient.get(MSG_INFO_API, params, { needAuth: true })
 }

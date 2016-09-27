@@ -74,7 +74,7 @@ class NavMenu extends Component {
                 </Item>
                 <SubMenu key="sub1" title={<span><Icon type="setting" />设置</span>}>
                     <Item key='1'>
-                        <Link to='/user/money'>
+                        <Link to='/user/bill'>
                             个人账户
                         </Link>
                     </Item>

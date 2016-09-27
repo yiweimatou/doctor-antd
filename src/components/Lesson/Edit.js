@@ -12,6 +12,7 @@ import Paper from '../Paper'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import LessonBar from './LessonBar'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -67,7 +68,7 @@ class Edit extends Component{
                 descript:values.descript,
                 cover:cover,
                 organize_amount: values.organize_money,
-                account_amount: values.account_money,
+                account_amount: values.account_money*100,
                 id:this.props.lesson.id,
                 state: values.state ? 1: 2
             }
@@ -83,9 +84,9 @@ class Edit extends Component{
             this.setState({
                 fileList:[{
                     uid:-1,
-                    name:'封面.png',
-                    status:'done',
-                    url:`${nextProps.lesson.cover}`
+                    name: '封面.png',
+                    status: 'done',
+                    url: nextProps.lesson.cover
                 }]
             })
         }
@@ -96,6 +97,8 @@ class Edit extends Component{
         } = this.props
         const { getFieldProps } = form
         return(
+            <div>
+             <LessonBar lesson={lesson} current='edit' />
             <Paper>
                 <Spin spinning = { loading } size = 'large'>
                 <Form
@@ -137,7 +140,7 @@ class Edit extends Component{
                                         }
                                     }
                                 }],
-                                initialValue: lesson && lesson.account_amount
+                                initialValue: lesson && lesson.account_amount/100
                             })}
                         />
                     </FormItem>
@@ -205,6 +208,7 @@ class Edit extends Component{
                 </Form>
                 </Spin>
             </Paper>
+            </div>
         )
     }
 }

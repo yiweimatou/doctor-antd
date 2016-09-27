@@ -5,12 +5,14 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Spin, Form, Steps, Table, message, Input, Tabs, Button, Modal } from 'antd'
 import { TOPICS } from '../../constants/api'
+import LessonBar from '../Lesson/LessonBar'
+import Paper from '../Paper'
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
 const FormItem = Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
-  warpperCol: { span: 12 }
+  wrapperCol: { span: 12 }
 }
 
 
@@ -26,12 +28,13 @@ class AddTextPaper extends Component {
     confirmLoading: false
   }
   componentWillMount() {
-    const { getInfo, changeHandler, query, fetchSection, fetchTopics  } = this.props
+    const { getInfo, changeHandler, query, fetchSection, fetchTopics, getLesson  } = this.props
     //获取分页信息
     getInfo({}, total => this.setState({ total }), error => message.error(error))
     getInfo({ account_id: this.props.userId }, total => this.setState({ myTotal: total }), error => message.error(error))
     changeHandler({ offset: 1, limit: 9 })
     changeHandler({ offset: 1, limit: 9, account_id: this.props.userId })
+    getLesson({ id: query.lid })
     if (query.id) {
       this.setState({ pending: true })
       fetchSection({ id: query.id }, section => {
@@ -80,7 +83,7 @@ class AddTextPaper extends Component {
         return
       }
       const { section, tempTopics } = this.state
-      const { query, addSection, editSection } = this.porps
+      const { query, addSection, editSection } = this.props
       if (state === 0) {
         if (section.id === undefined) {
           addSection({
@@ -90,7 +93,8 @@ class AddTextPaper extends Component {
             category_id: TOPICS,
             foreign_id: tempTopics.id,
             lesson_id: query.lid,
-            organize_id: query.oid
+            organize_id: query.oid,
+            topic_num: values.topic_num
           }, id => {
             message.success('保存到素材', 6)
             this.setState({ section: { id } })
@@ -99,20 +103,23 @@ class AddTextPaper extends Component {
           editSection({
             id: this.state.section.id,
             title: values.title,
+            topic_num: values.topic_num,
             descript: values.descript || ''
           }, () => message.success('保存成功!'), error => message.error(error))
         }
       } else if (state === 1) {
-        if (query.edit === 1) {
+        if (query.edit === '1') {
           if (section.id === undefined) return message.error('url参数错误')
           editSection({
             id: section.id,
             title: values.title,
+            topic_num: values.topic_num,
             descript: values.descript || ''
           }, () => message.success('编辑成功!'), error => message.error(error))
         } else {   
           addSection({
             title: values.title,
+            topic_num: values.topic_num,
             descript: values.descript || '',
             state: 1,
             category_id: TOPICS,
@@ -134,7 +141,7 @@ class AddTextPaper extends Component {
   }
   render() {
     const { currentStep, total, myTotal, visible, tempTopics, confirmLoading } = this.state
-    const { loading, list, myList, changeHandler, userId, query } = this.props
+    const { loading, list, myList, changeHandler, userId, query, lesson } = this.props
     if (!query.oid || !query.lid) {
       return (<div>参数错误</div>)
     }
@@ -163,6 +170,11 @@ class AddTextPaper extends Component {
               <p>试卷价格：<em style={{color:'orange',fontSize:'200%'}}>{tempTopics.sale_amount/100}</em>元</p>
             </div>
           </Modal>
+           <Paper>
+              <div style={{margin: '10px 0'}}>
+                  <LessonBar lesson={ lesson } current='' />
+              </div>
+          </Paper>
           <Steps current={currentStep}>
             <Step title="选择试卷"/>
             <Step title="文章基本信息"/>
@@ -191,14 +203,28 @@ class AddTextPaper extends Component {
           {
             currentStep === 1 ?
               <Spin spinning={loading}>
-                <Form>
+                <Form horizontal>
                   <FormItem hasFeedback {...formItemLayout} label="文章标题">
-                    <Input {...getFieldProps('title', {
+                    <Input type='text' {...getFieldProps('title', {
                       rules: [{
                         required: true, whitespace: false, message: '请填写文章标题'
                       }]
+                    })}/>          
+                  </FormItem>
+                  <FormItem {...formItemLayout} label='出试题数'>
+                    <Input type='number' {...getFieldProps('topic_num', {
+                      rules: [{
+                        required: true, message: '请填写出试题数'
+                      }, {
+                        validator: (rule, value, callback) => {
+                          if (value <= 0) {
+                            callback('题数必须大于0')
+                          } else {
+                            callback()
+                          }
+                        }
+                      }]
                     })}/>
-                    
                   </FormItem>
                   <FormItem {...formItemLayout} label="文章描述">
                     <Input type="textarea" rows={5} {...getFieldProps('descript')} />
@@ -230,6 +256,7 @@ AddTextPaper.propTypes = {
   query: PropTypes.object.isRequired,
   fetchTopics: PropTypes.func.isRequired,
   fetchSection: PropTypes.func.isRequired,
+  getLesson: PropTypes.func.isRequired
 }
 
 export default connect(
@@ -238,7 +265,8 @@ export default connect(
     myList: state.topics.myList,
     loading: state.section.loading,
     userId: state.auth.key,
-    query: state.routing.locationBeforeTransitions.query
+    query: state.routing.locationBeforeTransitions.query,
+    lesson: state.lesson.entity
   }),
   dispatch => ({
     fetchSection: (params, resolve, reject) => {
@@ -257,6 +285,10 @@ export default connect(
         }
       })
     },
+    getLesson: (params, resolve, reject) => dispatch({
+        type: 'lesson/get',
+        payload: params, resolve, reject
+    }),
     buyTopics: (params, resolve, reject) => {
       dispatch({
         type: 'topics/buy',
@@ -277,7 +309,7 @@ export default connect(
       dispatch({
         type: 'section/add',
         payload: {
-          params: resolve, reject
+          params, resolve, reject
         }
       })
     },
@@ -294,14 +326,14 @@ export default connect(
         dispatch({
           type: 'topics/mylist',
           payload: {
-            params, reject: error => message.error(error)
+            params: {...params, state: 1 }, reject: error => message.error(error)
           }
         })
       } else {
         dispatch({
           type: 'topics/list',
           payload: {
-            params, reject: error => message.error(error)
+            params: { ...params, state: 1 }, reject: error => message.error(error)
           }
         })
       }

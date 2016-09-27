@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import Simditor from '../Simditor'
-import { Form, Button, Spin, Input, message } from 'antd'
+import { Form, Button, Spin, Input, message, Upload, Icon } from 'antd'
 import { connect } from 'react-redux'
-import { HTML } from '../../constants/api'
+import { HTML, UPLOAD_COVER_API } from '../../constants/api'
+import LessonBar from '../Lesson/LessonBar'
+import Paper from '../Paper'
 const FormItem =Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -12,23 +14,35 @@ const formItemLayout = {
 class AddHtml extends Component {
     state = {
         section: {},
-        initialContent: ''
+        initialContent: '',
+        fileList: []
     }
     submitHandler = state => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
             const content = this.refs.simditor.getValue() 
+            let cover = ''
+            if (this.state.fileList.length > 0) {
+                cover = this.state.fileList[0].url
+            }
+            const {
+                query, addSection, editSection
+            } = this.props
+            const params = {
+                title: values.title,
+                descript: values.descript || '',
+                organize_id: query.oid,
+                lesson_id: query.lid,
+                category_id: HTML,
+                foreign_id: 0,
+                cover,
+                content,
+            }
             if (content) {
                 if (state === 0){
                     if (this.state.section.id === undefined){
-                        this.props.addSection({
-                            title: values.title,
-                            descript: values.descript || '',
-                            organize_id: this.props.query.oid,
-                            lesson_id: this.props.query.lid,
-                            category_id: HTML,
-                            foreign_id: 0,
-                            content,
+                        addSection({
+                            ...params,
                             state: 2
                         }, id => {
                             this.setState({
@@ -39,33 +53,33 @@ class AddHtml extends Component {
                             message.success('素材保存成功', 6)
                         }, error => message.error(error, 6))
                     } else {
-                        this.props.editSection({
+                        editSection({
                             title: values.title,
                             descript: values.descript || '',
                             content,
+                            cover,
                             id: this.state.section.id
                         },() => message.success('素材保存成功', 6), error => message.error(error))
                     }
                 } else {
-                    if (this.props.query.edit === '1') {//edit
-                        this.props.editSection({
+                    if (query.edit === '1') {//edit
+                        editSection({
                             title: values.title,
                             descript: values.descript || '',
                             content,
+                            cover,
                             id: this.state.section.id
                         },() => message.success('编辑成功', 6), error => message.error(error))
                     }else {//add
-                        this.props.addSection({
-                            title: values.title,
-                            descript: values.descript || '',
-                            organize_id: this.props.query.oid,
-                            lesson_id: this.props.query.lid,
-                            category_id: HTML,
-                            foreign_id: 0,
-                            content,
+                        addSection({
+                            ...params,
                             state: 1
                         },() => {
-                            this.props.form.resetFields()
+                            if (query.lid>0) {
+                                this.props.redirct(`/lesson/show/${query.lid}`)
+                            } else {
+                                this.props.redirct(`/organize/show/${query.oid}`)
+                            }
                             message.success('发布成功', 6)
                         }, error => message.error(error))
                     }
@@ -77,15 +91,42 @@ class AddHtml extends Component {
         
     }
     componentWillMount() {
-        const { query, fetchSection } = this.props
+        const { query, fetchSection, getLesson } = this.props
         if (query.id) {
             fetchSection({ id: query.id }, section => {
-                this.setState({ section, initialContent: section.content })
+                this.setState({ section, initialContent: section.content,
+                    fileList: [{
+                        uid: -1, name: '封面.png', status: 'done', url: section.cover
+                    }] })
             }, error => message.error(error))
         }
+        getLesson({ id: query.lid })
+    }
+    handleChange = info => {
+        let fileList = info.fileList
+        fileList = fileList.slice(-1)
+        fileList = fileList.map((file) => {
+            if (file.response) {
+                file.url = file.response.cover
+            }
+            return file
+        })
+        fileList = fileList.filter(file => {
+            if (file.response) {
+                return file.response.code === 200
+            }
+            return true
+        })
+        this.setState({ fileList })
+    }
+    normFile(e) {
+        if (Array.isArray(e)) {
+            return e
+        }
+        return e && e.fileList
     }
     render() {
-        const { query, loading } = this.props
+        const { query, loading, lesson } = this.props
         const { initialContent, section } = this.state
         const { getFieldProps } = this.props.form
         if (!query.oid || !query.lid) {
@@ -93,6 +134,11 @@ class AddHtml extends Component {
         }
         return (
             <div>
+                <Paper>
+                    <div style={{margin: '10px 0'}}>
+                        <LessonBar lesson={ lesson } current='' />
+                    </div>
+                </Paper>
                 <Spin spinning={loading}>
                     <Form>
                         <FormItem {...formItemLayout} hasFeedback label="文章标题">
@@ -110,6 +156,20 @@ class AddHtml extends Component {
                                 initialValue: section.descript
                             })}/>
                         </FormItem>
+                        <FormItem {...formItemLayout} label="文章封面">
+                            <Upload
+                                accept='image/jpg,image/jpeg,image/png'
+                                name='upload_file'
+                                action={UPLOAD_COVER_API}
+                                listType="picture"
+                                fileList={this.state.fileList}
+                                onChange = {this.handleChange}
+                            >
+                                <Button type="ghost">
+                                    <Icon type="upload" /> 点击上传
+                                </Button>
+                            </Upload>
+                        </FormItem> 
                         <FormItem label="图文内容" {...formItemLayout}>
                             <Simditor ref='simditor' content={ initialContent } />                                                  
                         </FormItem>
@@ -132,12 +192,14 @@ AddHtml.propTypes = {
     addSection: PropTypes.func.isRequired,
     editSection: PropTypes.func.isRequired,
     fetchSection: PropTypes.func.isRequired,
+    getLesson: PropTypes.func.isRequired
 }
 
 export default connect(
     state => ({
         query: state.routing.locationBeforeTransitions.query,
         loading: state.section.loading,
+        lesson: state.lesson.entity
     }),
     dispatch => ({
         fetchSection: (params, resolve, reject) => {
@@ -145,6 +207,10 @@ export default connect(
                 params, resolve, reject
             }})
         },
+        getLesson: (params, resolve, reject) => dispatch({
+            type: 'lesson/get',
+            payload: params, resolve, reject
+        }),
         addSection: (params, resolve, reject) => {
             dispatch({ type: 'section/add', payload: {
                 params, resolve, reject

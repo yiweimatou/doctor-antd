@@ -1,25 +1,28 @@
 import React ,{ Component,PropTypes } from 'react'
 import {connect} from 'react-redux'
-import { Form,Button,Upload,Input,Icon, Spin } from 'antd'
+import { Form, Button, Upload, Input, Icon, Spin, message } from 'antd'
 import {
     UPLOAD_YUNBOOK_API,
     UPLOAD_PPT_API
 } from '../../constants/api.js'
+import Category from '../Category'
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 
 class New extends Component{
     static propTypes ={
-        form:PropTypes.object,
-        handleNew:PropTypes.func.isRequired,
-        loading: PropTypes.bool
+        form: PropTypes.object,
+        handleNew: PropTypes.func.isRequired,
+        loading: PropTypes.bool,
+        getList: PropTypes.func.isRequired,
+        grow: PropTypes.func.isRequired
     }
     state={
-        fileList:[],
-        action:UPLOAD_YUNBOOK_API
+        fileList: [],
+        action: UPLOAD_YUNBOOK_API
     }
     normFile(e) {
             if (Array.isArray(e)) {
@@ -36,7 +39,7 @@ class New extends Component{
             }
             return file
         })
-        fileList = fileList.filter((file) => {
+        fileList = fileList.filter(file => {
             if (file.response) {
                 return file.response.code === 200
             }
@@ -44,28 +47,36 @@ class New extends Component{
         })
         this.setState({ fileList })
     }
-    submitHandler=(e)=>{
+    submitHandler= e => {
         e.preventDefault()
-        this.props.form.validateFields((errors,values)=>{
+        // console.log(this.refs.select.getLatLng())
+        this.props.form.validateFields((errors, values) => {
             if (errors) return
+            const category = this.refs.select.refs.category.state.value
+            if (category.length < 3) {
+                return message.error('请再选择一级分类')
+            }
             const cover = values.upload[0].response.cover
             const params = {
-                title:values.title,
-                descript:values.descript||'',
-                cover:cover,
-                path:values.upload[0].response.path,
-                width:values.upload[0].response.width,
-                height:values.upload[0].response.height,
-                zoom:values.upload[0].response.zoom,
-                money: values.money,
+                title: values.title,
+                descript: values.descript||'',
+                cover: cover,
+                path: values.upload[0].response.path,
+                width: values.upload[0].response.width,
+                height: values.upload[0].response.height,
+                zoom: values.upload[0].response.zoom,
+                sale_amount: values.money*100,
                 state: 1
             }
             this.props.handleNew(params)
+            this.props.grow({
+                
+            })
         })
     }
     render(){
         const {
-            form, loading
+            form, loading, getList
         } = this.props
         const {
             getFieldProps
@@ -95,6 +106,9 @@ class New extends Component{
                             })}
                         />
                     </FormItem>
+                    <FormItem {...formItemLayout} label='分类'>
+                        <Category getList={getList} ref='select'/>
+                    </FormItem>
                      <FormItem
                         label='云板书简介'
                         {...formItemLayout}
@@ -123,7 +137,7 @@ class New extends Component{
                                     required: true,
                                     message: '请设置售价'
                                 }],
-                                initialValue:0
+                                initialValue: '2'
                             })}
                         />
                     </FormItem>
@@ -170,7 +184,7 @@ class New extends Component{
                             </Button>
                         </Upload>
                     </FormItem>
-                    <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
+                    <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
@@ -185,11 +199,25 @@ export default connect(
         loading: state.yunbook.actionStatus.adding
     }),
     dispatch=>({
+        getList(params, resolve, reject) {
+            dispatch({
+                type: 'category/list',
+                payload: { params, resolve, reject }
+            })
+        },
         handleNew(yunbook){
             dispatch({
                 type:'yunbook/new',
                 payload:{
                     ...yunbook
+                }
+            })
+        },
+        grow: (params, resolve, reject) => {
+            dispatch({
+                type: 'grow/add',
+                payload: {
+                    params, resolve, reject
                 }
             })
         }

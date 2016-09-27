@@ -91,20 +91,28 @@ class EditLblView extends React.Component{
             type: 'FeatureCollection',
             features: []
         }
-        if( yunbook.lbl ){
-            this._drawnItems = L.geoJson(JSON.parse(yunbook.lbl), {
-                onEachFeature: function (featureData, layer) {
-                    if (featureData.geometry.type === 'Point') {
-                        var popup = L.popup()
-                        popup.setContent(featureData.properties._popup)
-                        layer.bindPopup(popup)
+        if(yunbook.lbl){
+            let  obj = {}
+            try {
+                obj = JSON.parse(yunbook.lbl)
+            } catch (error) {
+                console.log(error)
+            }
+            if (obj.type !== undefined ) { 
+                this._drawnItems = L.geoJson(obj, {
+                    onEachFeature: function (featureData, layer) {
+                        if (featureData.geometry.type === 'Point') {
+                            var popup = L.popup()
+                            popup.setContent(featureData.properties._popup)
+                            layer.bindPopup(popup)
+                        }
                     }
+                }).addTo(this._map)
+                for (var id in this._drawnItems._layers) {
+                    var _json = this._drawnItems._layers[id].toGeoJSON()
+                    _json.properties._id = this._drawnItems._layers[id]._leaflet_id
+                    this._geoJson.features.push(_json)
                 }
-            }).addTo(this._map)
-            for (var id in this._drawnItems._layers) {
-                var _json = this._drawnItems._layers[id].toGeoJSON()
-                _json.properties._id = this._drawnItems._layers[id]._leaflet_id
-                this._geoJson.features.push(_json)
             }
         }
         new L.Control.Draw({

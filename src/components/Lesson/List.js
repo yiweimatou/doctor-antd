@@ -47,7 +47,7 @@ class List extends Component{
                                     <Pagination
                                         total={ list.length }
                                         showTotal={total => `共 ${total} 条`}
-                                        pageSize = {9}
+                                        pageSize = {6}
                                     />
                                 </div>:
                                 <p style={{textAlign: 'center'}}>没有数据</p>
@@ -69,7 +69,7 @@ class List extends Component{
                                     <Pagination
                                         total={ list1.length }
                                         showTotal={total => `共 ${total} 条`}
-                                        pageSize = {9}
+                                        pageSize = {6}
                                     />
                                 </div>:
                                 <p style={{textAlign: 'center'}}>没有数据</p>
@@ -91,7 +91,7 @@ class List extends Component{
                                     <Pagination
                                         total={ list2.length }
                                         showTotal={total => `共 ${total} 条`}
-                                        pageSize = {9}
+                                        pageSize = {6}
                                     />
                                 </div>:
                                 <p style={{textAlign: 'center'}}>没有数据</p>

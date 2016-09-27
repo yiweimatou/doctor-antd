@@ -20,7 +20,7 @@ class List extends Component {
             role_list: '2,3',
             state: 1,
             account_id: userId,
-            limit: 9, offset: 1
+            limit: 6, offset: 1
         }, list => this.setState({ list, loading: false }), error => {
             message.error(error)
             this.setState({ loading: false })
@@ -46,7 +46,7 @@ class List extends Component {
                     <div style={{marginTop: 20}}>
                     <Pagination total={total} pageSize={9} showTotal={total => `共${total}条`} onChange={
                         offset =>  this.props.getList({
-                            offset, limit: 9, 
+                            offset, limit: 6, 
                             role_list: '2,3',
                             state: 1,
                             account_id: this.props.userId

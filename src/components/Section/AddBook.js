@@ -8,6 +8,8 @@ import { Form, Spin,Input, Button, Tabs, Steps, Row, Col, Pagination, Modal, mes
 import SelectYunbook from '../Yunbook/SelectYunbook'
 import EditLblView from '../Yunbook/EditLblView'
 import { BOOK } from '../../constants/api'
+import LessonBar from '../Lesson/LessonBar'
+import Paper from '../Paper'
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
 const FormItem =Form.Item
@@ -29,11 +31,12 @@ class AddBook extends Component {
     tempYunbook: {}
   }
   componentWillMount() {
-    const { getInfo, fetchSection, fetchYunbook, changeHandler, userId, query } = this.props
+    const { getInfo, fetchSection, fetchYunbook, changeHandler, userId, query, getLesson } = this.props
     getInfo({ account_id: this.props.userId })
     getInfo({})
     changeHandler({ offset: 1, limit: 6 })
     changeHandler({ offset: 1, limit: 6, account_id: userId })
+    getLesson({ id: query.lid })
     /*当从预览购买跳转回来有yid
      *当编辑状态时有id
      *yid和id不会共存
@@ -46,13 +49,14 @@ class AddBook extends Component {
         }, yunbook => this.setState({
           section, pending: false, currentStep: 1, 
           yunbook: {...yunbook, lbl: section.lbl},
-          tempYunbook: {...yunbook, lbl: section.lbl} 
+          tempYunbook: {...yunbook, lbl: section.lbl},
+          lbl: section.lbl
         }), error => message.error(error))
       }, error => message.error(error))
     } else if (query.yid) {
       this.setState({ pending: true })
       fetchYunbook({ id: query.yid }, yunbook => {
-          this.setState({ yunbook, tempYunbook:yunbook, currentStep: 1, pending: false })
+          this.setState({ yunbook, tempYunbook:yunbook, currentStep: 1, pending: false, lbl: yunbook.lbl })
       }, error => message.error(error))
     }
   }
@@ -64,9 +68,6 @@ class AddBook extends Component {
       this.setState({ currentStep: 2 })
       message.info('云板书已经被引用', 6)
     } else{
-      if (this.state.lbl) {
-        yunbook.lbl = this.state.lbl
-      }
       this.setState({ tempYunbook: yunbook, show: true })
     }
   }
@@ -76,12 +77,12 @@ class AddBook extends Component {
   okHandler = () => {
     this.setState({ confirmLoading: true })
     this.props.buyBook({
-      id: this.state.yunbook.id,
+      id: this.state.tempYunbook.id,
       organize_id: this.props.query.oid,
       lesson_id: this.props.query.lid
     }, () => {
       message.success('引用成功')
-      this.setState({ show: false, currentStep: 1, confirmLoading: false, yunbook: this.state.tempYunbook })
+      this.setState({ show: false, currentStep: 1, confirmLoading: false, yunbook: this.state.tempYunbook, lbl: this.state.tempYunbook.lbl })
     }, error => {
       this.setState({ confirmLoading: false })
       message.error(error)
@@ -101,15 +102,16 @@ class AddBook extends Component {
         return
       }
       const { section, tempYunbook } = this.state
-      const { query, addSection, editSection, lbl } = this.porps
+      const { query, addSection, editSection } = this.props
       if (state === 0) {
         if (section.id === undefined) {
           addSection({
             title: values.title,
             descript: values.descript || '',
-            state: 1,//1:正常,2:冻结,3:删除
+            state: 2,//1:正常,2:冻结,3:删除
             category_id: BOOK,
             foreign_id: tempYunbook.id,
+            cover: tempYunbook.cover,
             lesson_id: query.lid,
             organize_id: query.oid,
             lbl: this.state.lbl
@@ -126,13 +128,13 @@ class AddBook extends Component {
           }, () => message.success('保存成功!'), error => message.error(error))
         }
       } else if (state === 1) {
-        if (query.edit === 1) {
+        if (query.edit === '1') {
           if (section.id === undefined) return message.error('url参数错误')
           editSection({
             id: section.id,
             title: values.title,
             descript: values.descript || '',
-            lbl: lbl
+            lbl: this.state.lbl
           }, () => message.success('编辑成功!'), error => message.error(error))
         } else {   
           addSection({
@@ -143,11 +145,12 @@ class AddBook extends Component {
             foreign_id: tempYunbook.id,
             lesson_id: query.lid,
             organize_id: query.oid,
-            lbl: lbl
+            lbl: this.state.lbl,
+             cover: tempYunbook.cover,
           }, () => {
             message.success('创建成功!')
             if (query.lid>0) {
-              this.props.redirct(`/lesson/show/${query.lid}`)
+              this.props.redirct(`/lesson/section?id=${query.lid}`)
             } else {
               this.props.redirct(`/organize/show/${query.oid}`)
             }
@@ -157,7 +160,7 @@ class AddBook extends Component {
     })
   }
   render() {
-    const { loading, bookList, myBookList, query, total, myTotal, changeHandler, userId } = this.props
+    const { loading, bookList, myBookList, query, total, myTotal, changeHandler, userId, lesson } = this.props
     const { getFieldProps } = this.props.form
     const { currentStep, show, pending, confirmLoading, section, tempYunbook } = this.state
     if (!query.oid || !query.lid) {
@@ -174,6 +177,11 @@ class AddBook extends Component {
             <p>云板书价格：<em style={{color:'orange',fontSize:'200%'}}>{tempYunbook.sale_amount/100}</em>元</p>
           </div>
         </Modal>
+         <Paper>
+              <div style={{margin: '10px 0'}}>
+                  <LessonBar lesson={ lesson } current='' />
+              </div>
+        </Paper>
         <Steps current={ currentStep }>
           <Step title='选择云板书'/>
           <Step title='添加标注'/>
@@ -206,11 +214,12 @@ class AddBook extends Component {
         </Spin> : null }
         { currentStep === 1 ?
           <div>
-            <EditLblView yunbook={tempYunbook} changeLbl={this.changeLblHandler}/>
-            <div style={{marginTop: 30}}>
+            <div style={{marginTop: 30, marginBottom: 20}}>
               <Button style={{marginRight: 10}} onClick={()=>this.handleNext(0)}>上一步</Button>
               <Button onClick={()=>this.handleNext(2)}>下一步</Button>
             </div>
+            <EditLblView yunbook={tempYunbook} changeLbl={this.changeLblHandler}/>
+            
           </div> :null }
         { currentStep === 0 ?
           <div>
@@ -292,7 +301,9 @@ AddBook.propTypes = {
   getInfo: PropTypes.func.isRequired,
   fetchYunbook: PropTypes.func.isRequired,
   addSection: PropTypes.func.isRequired,
-  buyBook: PropTypes.func.isRequired
+  buyBook: PropTypes.func.isRequired,
+  getLesson: PropTypes.func.isRequired,
+  lesson: PropTypes.object.isRequired
 }
 
 export default connect(
@@ -304,16 +315,21 @@ export default connect(
     query: state.routing.locationBeforeTransitions.query,
     total: state.yunbook.total,
     myTotal: state.yunbook.myTotal,
+    lesson: state.lesson.entity
   }),
   dispatch => ({
     redirct: path => {
       dispatch(push(path))
     },
+    getLesson: (params, resolve, reject) => dispatch({
+        type: 'lesson/get',
+        payload: params, resolve, reject
+    }),
     changeHandler: params => {
       if (params.account_id) {
-        dispatch({ type: 'yunbook/mylist', payload : params })
+        dispatch({ type: 'yunbook/mylist', payload : { ...params, state: 1 } })
       } else {
-        dispatch({ type: 'yunbook/list', payload: params })
+        dispatch({ type: 'yunbook/list', payload: {...params, state: 1} })
       }
     },
     getInfo: params => {

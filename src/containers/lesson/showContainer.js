@@ -54,14 +54,6 @@ function mapDispatchToProps(dispatch) {
         push: path => {
             dispatch(push(path))
         },
-        handleRemove: (params, resolve, reject) => {
-            dispatch({
-                type: 'lesson_team/delete',
-                payload: {
-                  params, resolve, reject
-                }
-            })
-        },
         handleSectionEdit: (params) => {
             dispatch({
                 type:'section/edit',

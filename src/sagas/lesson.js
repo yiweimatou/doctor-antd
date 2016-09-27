@@ -6,9 +6,7 @@ import {
     newLesson,
     listLesson,
     getLesson,
-    editLesson,
-    putcetLesson,
-    rcmdLesson
+    editLesson
 } from '../services/lesson.js'
 import {
     getLessonTeamList
@@ -16,48 +14,6 @@ import {
 import {
     getUser
 } from '../services/user'
-
-function* putcetLessonHandler(action) {
-    try {
-        yield call(putcetLesson, action.payload)
-        yield put({
-            type: 'lesson/put/cet/success',
-            payload: action.payload
-        })
-    } catch (error) {
-        yield put({
-            type: 'lesson/put/cet/failure'
-        })
-    }
-}
-
-function* watchputcet() {
-    yield takeLatest('lesson/put/cet', putcetLessonHandler)
-}
-
-function* recommendHandler(action) {
-    try {
-        yield call(rcmdLesson, action.payload)
-        yield put({
-            type: 'lesson/recommend/success'
-        })
-        if (action.meta && action.meta.resolve){
-            yield call(action.meta.resolve)
-        }
-        // yield put(push(`/lesson/show/${res.identity}`))
-    } catch (error) {
-        yield put({
-            type: 'lesson/recommend/failure'
-        })
-        if (action.meta && action.meta.reject) {
-            yield call(action.meta.reject, error)
-        }
-    }
-}
-
-function* watchRecommend() {
-    yield takeLatest('lesson/recommend', recommendHandler)
-}
 
 
 function* handlerGet(action) {
@@ -211,8 +167,6 @@ export default function*() {
         fork(watchList),
         fork(watchGet),
         fork(watchEdit),
-        fork(watchRecommend),
-        fork(watchputcet),
         fork(watchLessonResidue),
         fork(watchUnNormalList)
     ]

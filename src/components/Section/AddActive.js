@@ -76,7 +76,7 @@ class AddActive extends Component {
                     }, () => message.success('素材保存成功'), error => message.error(error))
                 }
             } else {
-                if (query.edit === 1) {
+                if (query.edit === '1') {
                     if (section.id === undefined) return message.error('url参数错误', 5)
                     editSection({
                         title: values.title,
@@ -93,7 +93,11 @@ class AddActive extends Component {
                 } else {
                     addSection({ ...params, state: 1 }, () => {
                         message.success('发布成功', 5)
-                        this.props.form.resetFields()
+                        if (query.lid>0) {
+                            this.props.redirct(`/lesson/show/${query.lid}`)
+                        } else {
+                            this.props.redirct(`/organize/show/${query.oid}`)
+                        }
                     }, error => message.error(error))
                 }
             }

@@ -41,11 +41,13 @@ class Add extends Component {
     e.preventDefault()
     this.props.form.validateFields((errors, values) => {
       if (errors) return
-      this.setState({ loading: true })
       let topic_id_list = ''
       if (this.state.topicList.length === 1) {
         topic_id_list = this.state.topicList[0].id
+      } else if(this.state.topicList.length === 0) {
+        return message.error('请选择试题', 6)
       } else {
+        this.setState({ loading: true })      
         topic_id_list = this.state.topicList.reduce((previousValue, currentValue, index) => {
           if (index === 0) {
             return previousValue.id

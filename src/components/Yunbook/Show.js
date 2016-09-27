@@ -41,15 +41,23 @@ class Show extends React.Component{
         }).addTo(this._map)
         L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images'
         if( yunbook.lbl ){
-           L.geoJson(JSON.parse(yunbook.lbl), {
-                onEachFeature: function (featureData, layer) {
-                    if (featureData.geometry.type === 'Point') {
-                        var popup = L.popup()
-                        popup.setContent(featureData.properties._popup)
-                        layer.bindPopup(popup)
+            let  obj = {}
+            try {
+                obj = JSON.parse(yunbook.lbl)
+            } catch (error) {
+                console.log(error)
+            }
+            if (obj.type !== undefined) {
+                L.geoJson(obj, {
+                    onEachFeature: function (featureData, layer) {
+                        if (featureData.geometry.type === 'Point') {
+                            var popup = L.popup()
+                            popup.setContent(featureData.properties._popup)
+                            layer.bindPopup(popup)
+                        }
                     }
-                }
-            }).addTo(this._map)
+                }).addTo(this._map)
+            }
         }
         this.setState({ loading: false })
     }

@@ -79,7 +79,7 @@ class SelectOrganize extends Component{
                     return (
                         <div key={item.id} className='oitem'>
                             <img src={ item.logo || DEFAULT_LOGO } className='oimg' width='100%' />
-                            <span className='ospan'>{item.title}</span>
+                            <div className='otitle'>{item.title}</div>
                             <Button
                                 onClick={() => this.onClick({
                                   organize_id: item.id,

@@ -8,7 +8,6 @@ import sectionRoutes from './sectionRoutes.js'
 import userRoutes from './userRoutes'
 import messageRoutes from './messageRoutes'
 import Test from '../components/Test'
-import eventRoutes from './eventRoutes'
 import questionRoutes from './questionRoutes'
 import textPaperRoutes from './textPaperRoutes'
 
@@ -32,7 +31,6 @@ const routes = (store) => ([{
         sectionRoutes(store),
         userRoutes(store),
         messageRoutes(store),
-        eventRoutes(store),
         questionRoutes(store),
         textPaperRoutes(store)
     ]

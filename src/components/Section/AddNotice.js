@@ -3,6 +3,8 @@ import Simditor from '../Simditor'
 import { Form, Button, Spin, Input, message } from 'antd'
 import { connect } from 'react-redux'
 import { NOTICE } from '../../constants/api'
+import LessonBar from '../Lesson/LessonBar'
+import Paper from '../Paper'
 const FormItem =Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -66,7 +68,11 @@ class AddNotice extends Component {
                             content,
                             state: 1
                         },() => {
-                            this.props.form.resetFields()
+                            if (query.lid>0) {
+                                this.props.redirct(`/lesson/show/${query.lid}`)
+                            } else {
+                                this.props.redirct(`/organize/show/${query.oid}`)
+                            }
                             message.success('发布成功', 6)
                         }, error => message.error(error))
                     }
@@ -77,22 +83,28 @@ class AddNotice extends Component {
         })
     }
     componentWillMount() {
-        const { query,fetchSection } = this.props
+        const { query,fetchSection, getLesson } = this.props
         if (query.id) {
             fetchSection({ id: query.id }, section => {
                 this.setState({ section })
             }, error => message.error(error))
         }
+        getLesson({ id: query.lid })
     }
     render() {
         const { section } = this.state
-        const { query, loading } = this.props
+        const { query, loading, lesson } = this.props
         const { getFieldProps } = this.props.form
         if ( !query.lid || !query.oid) {
             return (<div>参数错误</div>)
         }
         return (
             <Spin spinning={loading}>
+                <Paper>
+                    <div style={{margin: '10px 0'}}>
+                        <LessonBar lesson={ lesson } current='' />
+                    </div>
+                </Paper>
                 <Form>
                     <FormItem {...formItemLayout} hasFeedback label="通知标题">
                         <Input {...getFieldProps('title', {
@@ -124,13 +136,15 @@ class AddNotice extends Component {
 
 AddNotice.propTypes = {
     query: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    lesson: PropTypes.object.isRequired
 };
 
 export default connect(
     state => ({
         query: state.routing.locationBeforeTransitions.query,
         loading: state.section.loading,
+        lesson: state.lesson.entity
     }),
     dispatch => ({
         fetchSection: (params, resolve, reject) => {
@@ -138,6 +152,10 @@ export default connect(
                 params, resolve, reject
             }})
         },
+        getLesson: (params, resolve, reject) => dispatch({
+            type: 'lesson/get',
+            payload: params, resolve, reject
+        }),
         addSection: (params, resolve, reject) => {
             dispatch({ type: 'section/add', payload: {
                 params, resolve, reject

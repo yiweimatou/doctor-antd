@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Table,Button } from 'antd'
+import { Table } from 'antd'
 import { connect } from 'react-redux'
 import { keyToName } from '../../utils'
 
@@ -22,32 +22,12 @@ class Message extends React.Component {
       dataIndex: 'add_ms',
       key: 'add_ms',
       render: text => new Date(text*1000).toLocaleString()
-    }, {
-      title: '操作',
-      key: 'opreation',
-      render: (text,record) => (
-                record.cet<3 && record.type > 1 && record.type < 4 ?
-                <div>
-                    <Button 
-                        type = 'ghost'
-                        onClick={()=>{}}
-                    >
-                        同意
-                    </Button>
-                    <span className="ant-divider"></span>
-                    <Button 
-                        type = 'ghost'
-                        onClick={()=>{}}
-                    >
-                        拒绝
-                    </Button>
-                </div>:''
-            )
     }]
     const pagination = {
       pageSize: 9,
       showTotal: total => `共 ${total} 条`,
       onChange(offset) {
+        changeHandler({ offset, limit: 9 })
       }
     }
     return(

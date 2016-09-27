@@ -1,10 +1,14 @@
 import React,{ Component,PropTypes } from 'react'
 import {
-    Table, Button, Popconfirm, message
+    Table, Button, Popconfirm, message, Select
 } from 'antd'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { keyToName } from '../../utils'
+import Paper from '../Paper'
+import LessonBar from '../Lesson/LessonBar'
+import ChooseBar from '../Section/ChooseBar'
+const Option = Select.Option
 
 class List extends Component{
     static propTypes = {
@@ -17,10 +21,29 @@ class List extends Component{
         list: PropTypes.array.isRequired,
         loading: PropTypes.bool.isRequired
     }
+    state = {
+        lesson: {}
+    }
+    selectHandler = value => {
+        const { getList, lesson_id, getInfo } = this.props
+        getInfo({
+            state: 1,
+            lesson_id,
+            category_id: value
+        }, null, error => message.error(error))
+        getList({
+            limit: 9,
+            offset: 1,
+            state: 1,
+            lesson_id,
+            category_id: value
+        }, null, error => message.error(error))
+    }
     componentWillMount() {
-      const { getInfo, getList, lesson_id } = this.props
+      const { getInfo, getList, lesson_id, getLesson } = this.props
       getInfo({ lesson_id, state: 1 }, null, error => message.error(error))
       getList({ offset: 1, limit: 9, lesson_id, state: 1 }, null, error => message.error(error))
+      getLesson({ id: lesson_id }, get => this.setState({ lesson: get }), error => message.error(error))
     }
     handleConfirm= id => {
         this.props.delete({ id }, () => message.success('删除成功'), error => message.error(error))
@@ -47,7 +70,7 @@ class List extends Component{
             dataIndex:'put_ms',
             key:'put_ms',
             render:text=>new Date(text*1000).toLocaleString()
-        },{
+        }, {
             title:'操作',
             key:'operation',
             render: (text,record) => 
@@ -69,6 +92,28 @@ class List extends Component{
         }]
         return(
             <div style={{margin:10}}>
+                <Paper>
+                    <div style={{marginBottom: 10}}>
+                        <LessonBar lesson={this.state.lesson} current='section' />
+                    </div>
+                </Paper>
+                <div style={{margin: '20px 0', height: '30px'}}>
+                    <div style={{float: 'left'}}>
+                        <span>资讯类型</span>
+                        <Select defaultValue='0' style={{margin: '0 10px'}} size="large" onSelect={this.selectHandler}>
+                            <Option value='0'>全部</Option>
+                            <Option value='5'>云板书</Option>
+                            <Option value='6'>试卷</Option>
+                            <Option value='10'>通知</Option>
+                            <Option value='9'>图文</Option>
+                            <Option value='8'>活动</Option>
+                        </Select>
+                    </div>
+                    <div style={{float: 'right'}}>
+                        <ChooseBar lid={ lesson_id }/>
+                    </div>
+                </div>
+                <hr style={{margin: '20px 0'}}/>
                 <Table
                     dataSource = {list}
                     columns = { columns }
@@ -85,7 +130,8 @@ class List extends Component{
 export default connect(state => ({
   list: state.section.list,
   loading: state.section.loading,
-  total: state.section.total
+  total: state.section.total,
+  lesson_id: state.routing.locationBeforeTransitions.query.id
 }), dispatch => ({
   push: path => dispatch(push(path)),
   getInfo: (params, resolve, reject) => dispatch({
@@ -93,6 +139,10 @@ export default connect(state => ({
       payload: {
           params, resolve, reject
       }
+  }),
+  getLesson: (params, resolve, reject) => dispatch({
+      type: 'lesson/get',
+      payload: params, resolve, reject
   }),
   getList: (params, resolve, reject) => dispatch({
       type: 'section/list',

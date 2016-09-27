@@ -1,12 +1,13 @@
 import React, {Component, PropTypes} from 'react'
 import { connect } from 'react-redux'
 import {
-    Form,Button,Input, Spin
+    Form, Button, Input, Spin, message
 } from 'antd'
+import { isMobile } from '../../utils'
 
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 class SetAlipay extends Component {
@@ -28,26 +29,28 @@ class SetAlipay extends Component {
         }
     }
     click = (e) => {
-        e.preventDefault()        
+        e.preventDefault()     
+        const mobile = this.refs.mobile.refs.input.value
+        if (!isMobile(mobile)) {
+            return message.error('请输入正确的手机号码')
+        }      
         this.setState({
             disabled: true,
             vcodeLabel: 60
         })
-        this.props.sendCode(this.props.user.mobile).then(() => {
-            if( this.props.user.captcha.isSuccess ){
-                 this.interval = setInterval(this.tick,1000)            
-            }else {
-                this.setState({
-                    disabled: false,
-                    vcodeLabel: '获取验证码'
-                })
-            }
+        this.props.sendCode(mobile,() => {
+            this.interval = setInterval(this.tick,1000)            
         },() => {
             this.setState({
                 disabled: false,
                 vcodeLabel: '获取验证码'
             })
         })
+    }
+    componentWillUnmount() {
+        if (this.interval) {
+            clearInterval(this.interval)
+        }
     }
     submitHandler = e => {
         e.preventDefault()
@@ -56,7 +59,7 @@ class SetAlipay extends Component {
             this.props.submit({
                 alipay: values.alipay,
                 vcode: values.vcode
-            })
+            },() => message.success('设置成功！', 6), error => message.error(error))
         })
     }
     render() {
@@ -66,7 +69,6 @@ class SetAlipay extends Component {
             <Spin spinning = {user.loading}>
             <Form
                 horizontal
-                form = { form }
                 onSubmit = { this.submitHandler }
             >
                 <FormItem
@@ -84,6 +86,9 @@ class SetAlipay extends Component {
                         })
                     }
                     />
+                </FormItem>
+                <FormItem {...formItemLayout} label="手机号码">
+                    <Input type='text' ref='mobile'/>
                 </FormItem>
                 <FormItem
                     label='验证码'
@@ -110,7 +115,7 @@ class SetAlipay extends Component {
                     }
                     />
                 </FormItem>
-                <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
+                <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                     <Button type="primary" htmlType="submit">保存</Button>
                     <Button 
                         disabled ={ this.state.disabled } style={{marginLeft:10}}
@@ -127,7 +132,9 @@ class SetAlipay extends Component {
 SetAlipay.propTypes = {
     user: PropTypes.object,
     submit: PropTypes.func.isRequired,
-    sendCode: PropTypes.func.isRequired
+    sendCode: PropTypes.func.isRequired,
+    alipay: PropTypes.string,
+    loading: PropTypes.bool
 }
 
 export default connect(
@@ -135,20 +142,22 @@ export default connect(
         user: {
             alipay: state.auth.user.alipay,
             mobile: state.auth.user.mobile,
-            captcha: state.user.captcha,
             loading: state.user.loading
         }
     }),
     dispatch => ({
-        submit: params => dispatch({
+        submit: (params, resolve, reject) => dispatch({
             type: 'user/alipay/set',
-            payload: params
+            payload: { params, resolve, reject }
         }),
-        sendCode: (mobile) => Promise.resolve(dispatch({
+        sendCode: (mobile, resolve, reject) => dispatch({
             type: 'captcha/send',
             payload: {
                 mobile
+            },
+            meta: {
+                resolve, reject
             }
-        }))
+        })
     })
 )(Form.create()(SetAlipay))

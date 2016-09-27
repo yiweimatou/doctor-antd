@@ -23,8 +23,8 @@ export const DEFAULT_LOGO = 'http://image.yiweimatou.com/ywmt/logo/default.png'
 export const NOTICE = '10'
 export const HTML = '9'
 export const ACTIVE = '8'
-export const TOPICS = '7'
-export const TOPIC = '6'
+export const TOPICS = '6'
+export const TOPIC = '7'
 export const BOOK = '5'
 export const SECTION = '4'
 export const LESSON = '3'
@@ -38,11 +38,23 @@ export const BAD_REQUEST = 400
 export const UNAUTHORIZED = 401
 export const FORBIDDEN = 403
 export const INTERNAL_SERVER_ERROR = 500
-
+/**
+ * grow apis
+ */
+export const GROW_GET_API = `${ADMIN_API_DOMAIN}/grow/get`
+export const GROW_INFO_API = `${ADMIN_API_DOMAIN}/grow/info`
+export const GROW_ADD_API = `${ADMIN_API_DOMAIN}/grow/add`
+export const GROW_EDIT_API = `${ADMIN_API_DOMAIN}/grow/put`
+export const GROW_DELETE_API = `${ADMIN_API_DOMAIN}/grow/del`
+export const GROW_LIST_API = `${ADMIN_API_DOMAIN}/grow/list`
 /**
  * captcha
  */
 export const CAPTCHA_API = `${HOST}:4001/captcha/add`
+/**
+ * category api
+ */
+export const CATEGORY_API = 'http://m.yiweimatou.com/api/area'
 /**
  *msg apis
  */

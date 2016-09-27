@@ -1,12 +1,10 @@
 import React,{Component,PropTypes} from 'react'
 import Paper from '../Paper'
-import { Row, Col, Button, Modal, message, Spin } from 'antd'
+import { Button, Modal, message, Spin } from 'antd'
 import SelectContainer from '../../containers/organize/selectContainer.js'
 import './Show.css'
-import SelectUser from '../User/SelectUser.js'
-import TeamList from './TeamList.js'
-import SectionList from '../Section/List'
-import { DEFAULT_COVER, DEFAULT_FACE, DEFAULT_LOGO } from '../../constants/api'
+import { DEFAULT_COVER, DEFAULT_LOGO } from '../../constants/api'
+import LessonBar from './LessonBar'
 
 const styles = {
     row:{
@@ -30,37 +28,14 @@ class Show extends Component {
     state = {
         organize_list: [],
         team_list: [],
-        oVisible:false,
-        uVisible:false,
-        tVisible:false,
-        role: 0,//1:主讲,2:辅导员,3:助教
-        tid: 0,
+        //role: 0,//1:主讲,2:辅导员,3:助教
+        //tid: 0,
         loading: true,
         lesson: {},
+        organize_select_visible: false,
         pending: true
     }
-    handlerTVisible=()=>{
-        this.setState({
-            tVisible:!this.state.tVisible
-        })
-    }
-    handlerUVisible=()=>{
-        this.setState({
-            uVisible:!this.state.uVisible
-        })
-    }
-    handlerOVisible=()=>{
-        this.setState({
-            oVisible:!this.state.oVisible
-        })
-    }
     componentWillMount() {
-      this.props.getLessonTeam({
-        account_id: this.props.userId,
-        lesson_id: this.props.id
-      }, get => this.setState({ role: get.role, tid: get.id }), error => {
-        message.error(error, 7)
-      })
       this.props.getLesson({
         id: this.props.id
       }, lesson => this.setState({ lesson, loading: false }), error => message.error(error))
@@ -87,162 +62,86 @@ class Show extends Component {
     sectionListHandler = params => {
       this.props.changeHandler(params, list => this.setState({ section_list: list }), error => message.error(error))
     }
+    handlerOrganizeVisible = () => this.setState({ organize_select_visible: false })
     render(){
         const {
-          push, handleRemove, id
+          push, id
         } = this.props
-        const { role, loading, lesson, tid, organize_list, team_list } = this.state
+        const { loading, lesson,organize_list, team_list } = this.state
+        const master = team_list.find(i => i.role === 1)
+        const money = lesson.account_amount ? lesson.account_amount/100 : 0
+        const time = lesson.add_ms ? new Date(lesson.add_ms*1000).toLocaleString(): ''
+        const balance_amount = lesson.balance_amount ? lesson.account_amount/100 : 0
+        const credit_amount = lesson.credit_amount ? lesson.credit_amount/100 : 0
         return(
             <div>
+                <LessonBar lesson={lesson} current='detail' />
                 <Paper>
                     <div style={styles.row}>
                       <Spin spinning={loading}>
-                        <Row>
-                            <Col span={12}><img alt='pic' width='480' height='180' src={lesson&&lesson.cover|| DEFAULT_COVER} /></Col>
-                            <Col span={3}><span>课程名称:</span></Col>
-                            <Col span={9}><span>{lesson&&lesson.title}</span></Col>
-                            <Col span={3}><span>课程简介:</span></Col>
-                            <Col span={9}><span>{lesson.descript||'无'}</span></Col>
-                            <Col span={3}><span>创建时间:</span></Col>
-                            <Col span={9}><span>{lesson&&new Date(lesson.add_ms*1000).toLocaleString()}</span></Col>
-                            <Col span={3}><span>更新时间:</span></Col>
-                            <Col span={9}><span>{lesson&&new Date(lesson.put_ms*1000).toLocaleString()}</span></Col>
-                            <Col span={3}><span>浏览量:</span></Col>
-                            <Col span={9}><p>{lesson&&lesson.pv}</p></Col>
-                            <Col span={3}><span>粉丝数:</span></Col>
-                            <Col span={9}><p>{lesson&&lesson.uv}</p></Col>
-                            <Col span = {3}><span>课程价格:</span></Col>
-                            <Col span = {9}><span style={{color: 'orange'}}>{lesson&&lesson.account_amount/100}</span>元</Col>
-                        </Row>
+                        <div className='cover'>
+                            <img alt='pic' width='534' height='200' src={ lesson.cover|| DEFAULT_COVER} />
+                        </div>
+                        <div className='detail'>
+                            <div><h2>{lesson.title}</h2></div>
+                            <div>主讲 <em>{master && (master.cname || master.mobile) }</em> &nbsp;&nbsp;
+                                |&nbsp;&nbsp; 浏览量 <em>{lesson.pv}</em> &nbsp;&nbsp;|&nbsp;&nbsp; 粉丝数 <em>{lesson.uv}</em></div>
+                            <div>创建时间&nbsp;&nbsp;{time}</div>
+                            <div>课程金额
+                                <span className='money'>{money}</span>元
+                            </div>
+                            <div>
+                                <Button onClick = { () => push(`/section/add/choose?oid=0&lid=${lesson.id}`)} type='primary' size='large'>新建资讯</Button>
+                                <Button onClick = {() => push(`/lesson/edit/${lesson.id}`)} className='marginLeft' type='ghost' size='large'>编辑课程</Button>
+                                <Button onClick = {() => push(`/lesson/bill?id=${lesson.id}`)} className='marginLeft' type='ghost' size='large'>交易明细</Button>
+                            </div>
+                        </div>
                       </Spin>
                     </div>
+                    <hr style={{margin: '0 30px'}} color='#ddd'/>
                     <div style = { styles.row } >
-                        <Row>
-                                    课程余额
-                                    <span className='money'><em>{lesson&&lesson.balance_amount/100}</em></span>元
-                                    <span style={{marginLeft: 30}}>
-                                        每月一日0点自动分成，课程余额超过1000元部分分成
-                                    </span>
-                                    <br />
-                                        信用账户
-                                        <span className='money'><em>{lesson&&lesson.credit_amount/100}</em></span>元
-
-                                        <span style={{marginLeft: 30}}>
-                                            信用账户总额为1000元，课程收入优先还入信用账户
-                                        </span>
-                                <Button
-                                    onClick = {()=>push(`/lesson/bill?id=${lesson.id}`)}
-                                    type = 'ghost'
-                                    style = {{ marginLeft: 30}}
-                                >
-                                    交易明细
-                                </Button>
-                        </Row>
-                    </div>
-                    <div style={styles.row}>
-                        {role === 0 ? null:
-                        <Row>
-                            <Col span={4}>
-                                <Button onClick = {() => push(`/lesson/edit/${id}`)} type='ghost'>
-                                    编辑课程
-                                </Button>
-                            </Col>
-                            <Col span={4}>
-                                <Button type='ghost'onClick = {() => push(`/section/add/choose?lid=${id}&oid=0`)}>
-                                    新建文章
-                                </Button>
-                            </Col>
-                            {lesson.state === 1 ?
-                            <Col span={4}>
-                                <Button onClick={this.handlerOVisible} type='ghost'>申请机构认证</Button>
-                            </Col> : null}
-                            {role === 1 ?
-                            <Col span={4}>
-                                <Button type='ghost' onClick={this.handlerUVisible}>邀请成员</Button>
-                            </Col>:null}
-                            { role === 1 ?                            
-                            <Col span={4}>
-                                <Button type='ghost' onClick = {this.handlerTVisible}>团队管理</Button>
-                                {role === 3 ?
-                                <Button type='ghost' onClick={
-                                  () => handleRemove({ id: tid }, () => {
-                                    message.success('成功退出团队!', 6)
-                                    push('/')
-                                  }, error => message.error(error, 6))
-                                }>退出团队</Button>:null}
-                            </Col>
-                            : null}
-                            <Col span={4}>
-                                <Button onClick={() => push(`/section/draft?lid=${id}&oid=0`)} type='ghost'>素材管理</Button>
-                            </Col>
-                        </Row>}
+                        <div className='halfLeft'>
+                            <p>课程余额</p>
+                            <span style={{color: '#40b0de', fontSize: '200%'}}>{balance_amount}</span>&nbsp;&nbsp;元
+                            <p>每月一日0点自动分成，课程余额超过1000元部分分成</p>
+                        </div>
+                        <div className='halfRight'>
+                            <p>信用账户</p>
+                            <span style={{color: '#22cb33', fontSize: '200%'}}>{credit_amount}</span>&nbsp;&nbsp;元
+                            <p>信用账户总额为1000元，课程收入优先还入信用账户</p>
+                        </div>
                     </div>
                 </Paper>
-                <div className='paper'>
-                    <Paper>
-                        <h2>认证机构</h2>
-                      {
-                        organize_list.map(item=>{
-                          return (
-                            <div key={item.id} className='item'>
-                              <img
-                                src={item.logo || DEFAULT_LOGO}
-                                className='img'
-                                width='100%'
-                              />
-                              <span className='span'>{item.title}</span>
-                            </div>
-                          )
-                        })
-                      }
-                    </Paper>
-                </div>
-                <div className='paper'>
-                    <Paper>
-                        <h2>团队成员</h2>
-                      {
-                        team_list.map(item=>{
-                          return(
-                            <div nowrap key={item.id} className='item'>
-                              <img
-                                src={  item.face ||  DEFAULT_FACE }
-                                className='img'
-                                width='100%'
-                              />
-                              {
-                                item.role === 1 ?
-                                  <em className='bar'>主讲</em>:''
-                              }
-                              <span className='span'>{item.cname || item.mobile}</span>
-                            </div>
-                          )
-                        })
-                      }
-                    </Paper>
-                </div>
-                <div className='paper'>
-                    <Paper>
-                        <h2>文章列表</h2>
-                        <SectionList lesson_id={id} />
-                    </Paper>
-                </div>
+                <Paper>
+                    <div style={styles.row}>
+                        <div style={{display: 'inline-block', width: '100%'}}>
+                            <h2 style={{marginLeft: 30, float: 'left'}}>认证机构</h2>
+                            <Button disabled={!lesson || (lesson && lesson.state === 2)} style={{marginRight: 30, float: 'right'}} onClick={() => this.setState({ organize_select_visible: true })} type='ghost'>申请机构认证</Button>
+                        </div>
+                        <hr style={{margin: '0 30px'}} color='#ddd'/>
+                        {
+                            organize_list.map(item=>{
+                            return (
+                                <div key={item.id} className='item'>
+                                    <img
+                                        src={item.logo || DEFAULT_LOGO}
+                                        className='img'
+                                        width='100%'
+                                    />
+                                    <span className='span'>{item.title}</span>
+                                </div>
+                                )
+                            })
+                        }
+                    </div>
+                </Paper>
                 <Modal
                     footer = {null}
-                    visible = { this.state.oVisible }
-                    onCancel = {this.handlerOVisible}
+                    visible = { this.state.organize_select_visible }
+                    onCancel = {this.handlerOrganizeVisible}
                 >
                     <SelectContainer lid={id}/>
                 </Modal>
-                <SelectUser
-                  visible = { this.state.uVisible}
-                  onCancel = { this.handlerUVisible }
-                  lid = {id}
-                />
-                <TeamList
-                  visible={this.state.tVisible}
-                  onCancel = {this.handlerTVisible}
-                  list={this.state.team_list.filter(i => i.role !== 1)}
-                />
             </div>
         )
     }

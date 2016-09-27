@@ -3,9 +3,24 @@
  */
 import { takeEvery, takeLatest } from 'redux-saga'
 import { put, call, fork } from 'redux-saga/effects'
-import { add, list, get, info, buy } from '../services/topics'
+import { add, list, get, info, buy, remove } from '../services/topics'
 import { ORGANIZE, LESSON } from '../constants/api'
 import { info as getBillInfo } from '../services/bill'
+
+function* watchDelete() {
+  yield takeLatest('topics/delete', function* (action) {
+    try {
+      yield call(remove, action.payload.params)
+      if (action.payload.resolve) {
+        action.payload.resolve()
+      }
+    } catch (error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
+    }
+  })
+}
 
 function* watchAdd() {
   yield takeLatest('topics/add', function *(action){
@@ -125,6 +140,7 @@ export default function* () {
     fork(watchGet),
     fork(watchInfo),
     fork(watchMyList),
-    fork(watchBuy)
+    fork(watchBuy),
+    fork(watchDelete)
   ]
 }
