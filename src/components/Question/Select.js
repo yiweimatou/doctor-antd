@@ -14,7 +14,7 @@ class Select extends Component {
       onChange: offset => this.props.getList({
         limit: 9,
         offset,
-        accout_id: this.props.userId
+        account_id: this.props.userId
       }, error => message.error(error))
     }
   }
@@ -25,7 +25,7 @@ class Select extends Component {
     this.props.getList({
       limit: 9,
       offset: 1,
-      accout_id: this.props.userId
+      account_id: this.props.userId
     }, error => message.error(error))
   }
   componentWillReceiveProps(nextProps) {

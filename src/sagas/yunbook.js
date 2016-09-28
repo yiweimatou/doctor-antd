@@ -134,7 +134,11 @@ function* handleNew(action) {
   try {
     const res = yield call(newYunbook, action.payload)
     yield put({
-      type: 'yunbook/new/success'
+      type: 'yunbook/new/success',
+      payload: {
+        ...action.payload,
+        id: res.identity
+      }
     })
     yield put(push('/yunbook/edit/' + res.identity))
   } catch (error) {

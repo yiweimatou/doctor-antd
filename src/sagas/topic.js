@@ -3,15 +3,25 @@
  */
 import { takeEvery } from 'redux-saga'
 import { fork, call, put } from 'redux-saga/effects'
-import { add, list, info } from '../services/topic'
+import { add, list, info, remove } from '../services/topic'
 
 function* watchAdd() {
   yield* takeEvery('topic/add', function* (action) {
     try {
-      yield call(add, action.payload.params)
+      const result = yield call(add, action.payload.params)
       if (action.payload.resolve) {
-        action.payload.resolve()
+        action.payload.resolve({
+          ...action.payload.params,
+          id: result.identity
+        })
       }
+      yield put({
+        type: 'topic/add/success',
+        payload: {
+          ...action.payload.params,
+          id: result.identity
+        }
+      })
     } catch (error) {
       if (action.payload.reject) {
         action.payload.reject(error)
@@ -58,10 +68,33 @@ function* watchInfo(){
   })
 }
 
+function* watchDelete() {
+  yield* takeEvery('topic/delete', function* (action) {
+    try {
+      yield call(remove, action.payload.params)
+      if (action.payload.resolve) {
+        action.payload.resolve()
+      }
+      yield put({
+        type: 'topic/delete/success',
+        payload: action.payload.params.id
+      })
+    } catch (error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
+      yield put({
+        type: 'topic/delete/failure'
+      })
+    }
+  })
+}
+
 export default function* () {
   yield* [
     fork(watchAdd),
     fork(watchList),
-    fork(watchInfo)
+    fork(watchInfo),
+    fork(watchDelete)
   ]
 }

@@ -25,9 +25,12 @@ function* watchDelete() {
 function* watchAdd() {
   yield takeLatest('topics/add', function *(action){
     try {
-      yield call(add, action.payload.params)
+      const result = yield call(add, action.payload.params)
       if (action.payload.resolve) {
-        action.payload.resolve()
+        action.payload.resolve({
+          ...action.payload.params,
+          id: result.identity
+        })
       }
     } catch (error) {
       if (action.payload.reject) {

@@ -1,14 +1,9 @@
-import Add from '../components/Question/Add';
-import List from '../components/Question/List'
+import Manage from '../components/Question/Manage';
 
-const addRoute = () => ({
-    path: 'add',
-    component: Add
-})
 
-const listRoute = store => ({
-    path: 'list',
-    component: List,
+const manageRoute = store => ({
+    path: 'manage',
+    component: Manage,
     onEnter() {
         const account_id = store.getState().auth.key
         store.dispatch({
@@ -30,7 +25,7 @@ const listRoute = store => ({
 
 const questionRoutes = store => ({
     path: 'question',
-    childRoutes: [addRoute(), listRoute(store)]
+    childRoutes: [manageRoute(store)]
 })
 
 export default questionRoutes

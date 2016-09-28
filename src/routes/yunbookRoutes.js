@@ -2,14 +2,37 @@ import New from '../components/Yunbook/New.js'
 import List from '../components/Yunbook/List.js'
 import Show from '../components/Yunbook/Show.js'
 import Edit from '../components/Yunbook/Edit.js'
+import Manage from '../components/Yunbook/Manage'
 
 const newRoutes = () => ({
     path:'new',
     component:New
 })
 
+const manageRoute = store => ({
+    path: 'manage',
+    component: Manage,
+    onEnter(){
+        const uid = store.getState().auth.key
+        store.dispatch({
+            type:'yunbook/myinfo',
+            payload:{
+                account_id: uid
+            }
+        })
+        store.dispatch({
+            type:'yunbook/mylist',
+            payload:{
+                account_id: uid,
+                limit: 6,
+                offset: 1
+            }
+        })
+    }
+})
+
 const listRoute = store => ({
-    path:'list',
+    path: 'list',
     component:List,
     onEnter(){
         const uid = store.getState().auth.key
@@ -65,10 +88,9 @@ const editRoute = store => ({
 const yunbookRoutes = store => ({
     path:'yunbook',
     childRoutes:[
-        newRoutes(),
-        listRoute(store),
         showRoute(),
-        editRoute(store)
+        editRoute(store),
+        manageRoute(store)
     ]
 })
 

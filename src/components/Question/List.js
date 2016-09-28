@@ -1,10 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux'
-import { Table, message } from 'antd'
+import { Table, message, Popconfirm, Button } from 'antd'
 
 class List extends Component {
     render() {
-        const { list, total, changeHandler, userId, loading } = this.props
+        const { list, total, changeHandler, userId, loading, deleteTopic } = this.props
         const pagination = {
             showTotal: total => `共${total}条` ,
             pageSize: 9,
@@ -40,6 +40,15 @@ class List extends Component {
             title: '答案',
             dataIndex: 'answer',
             key: 'answer'
+        }, {
+            title: '操作',
+            render: (text, record) => 
+                <Popconfirm
+                        title="确定要删除这个试卷吗？"
+                        onConfirm={() => deleteTopic(record.id)}
+                >
+                    <Button type = 'ghost'>删除</Button>
+                </Popconfirm>
         }]
         return (
             <Table dataSource={list} columns={columns} loading={loading} pagination={{
@@ -68,6 +77,14 @@ export default connect(
     dispatch => ({
         changeHandler: (params, resolve, reject) => {
             dispatch({ type: 'topic/list', payload: { params, resolve, reject }})
-        }
+        },
+        deleteTopic: id => dispatch({
+            type: 'topic/delete',
+            payload: {
+                params: {
+                    id
+                }, reject: error => message.error(error)
+            }
+        })
     })
 )(List);

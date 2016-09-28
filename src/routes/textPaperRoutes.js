@@ -4,10 +4,16 @@
 import Add from '../components/TextPaper/Add'
 import Show from '../components/TextPaper/Show'
 import List from '../components/TextPaper/List'
+import Manage from '../components/TextPaper/Manage'
 
 const addRoute = () => ({
   path: 'add',
   component: Add
+})
+
+const manageRoute = () => ({
+  path: 'manage',
+  component: Manage
 })
 
 const listRoute = () => ({
@@ -23,7 +29,7 @@ const showRoute = () => ({
 const textPaperRoutes = () => ({
   path: 'textpaper',
   childRoutes: [
-    addRoute(), showRoute(), listRoute()
+    addRoute(), showRoute(), listRoute(), manageRoute()
   ]
 })
 

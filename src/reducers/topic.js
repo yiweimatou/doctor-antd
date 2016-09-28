@@ -14,6 +14,24 @@ const topic = handleActions({
     ...state,
     total: 0
   }),
+  ['topic/delete']: state => ({
+    ...state,
+    loading: true
+  }),
+  ['topic/delete/success']: (state, action) => ({
+    ...state,
+    loading: false,
+    list: state.list.filter(i => i.id !== action.payload)
+  }),
+  ['topic/delete/failure']: state => ({
+    ...state,
+    loading: false
+  }),
+  ['topic/add/success']: (state, action) => ({
+    ...state,
+    list: [action.payload].concat(state.list),
+    total: state.total + 1
+  }),
   ['topic/info/success']: (state, action) => ({
     ...state,
     total: action.payload

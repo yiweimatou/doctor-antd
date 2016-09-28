@@ -48,8 +48,10 @@ const yunbook = handleActions({
             adding: true
         }
     }),
-    ['yunbook/new/success']:(state)=>({
+    ['yunbook/new/success']: (state, action)=>({
         ...state,
+        myTotal: state.myTotal + 1,
+        mylist: [action.payload].concat(state.mylist), 
         actionStatus: {
             ...state.actionStatus,
             adding: false

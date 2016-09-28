@@ -49,7 +49,7 @@ class Deposit extends Component {
         this.props.form.validateFields((errors, values) => {
             if( errors ) return
             this.props.submit({
-                money: values.money,
+                amount: values.money,
                 vcode: values.vcode
             }, () => message.success('提现成功'), error => message.error(error))
         })
@@ -59,7 +59,7 @@ class Deposit extends Component {
         const { getFieldProps } = form
         return (
             <Spin spinning = { user.loading }>
-                <Form horizontal form ={form} onSubmit ={ this.submitHandler }>
+                <Form horizontal onSubmit ={ this.submitHandler }>
                     <FormItem label = '提现金额' {...formItemLayout} hasFeedback required>
                         <Input type='text' {...getFieldProps('money', {
                             rules: [{

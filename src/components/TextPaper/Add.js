@@ -3,7 +3,6 @@
  */
 import React, { Component } from 'react'
 import { Form, Spin, Input, InputNumber, Button, Table, message } from 'antd'
-import { connect } from 'react-redux'
 import Select from '../Question/Select'
 const FormItem = Form.Item
 const formItemLayout = {
@@ -64,10 +63,11 @@ class Add extends Component {
         sale_amount: values.sale_amount*100,
         state: 1,
         topic_id_list
-      }, () => {
+      }, record => {
         message.success('新建成功')
         this.setState({ loading: false, topicList: [] })
         this.props.form.resetFields()
+        this.props.afterAddHandler(record)
       }, error => {
         message.error(error)
         this.setState({ loading: false })
@@ -122,16 +122,4 @@ class Add extends Component {
   }
 }
 
-export default connect(
-  null,
-  dispatch => ({
-    add: (params, resolve, reject) => {
-      dispatch({
-        type: 'topics/add',
-        payload: {
-          params, resolve, reject
-        }
-      })
-    }
-  })
-)(Form.create()(Add))
+export default Form.create()(Add)
