@@ -5,7 +5,8 @@ import './index.css'
 
 const styles ={
     card:{
-        width:240
+        width:240,
+        marginBottom: 20
     },
     bodyStyle:{
         padding:0

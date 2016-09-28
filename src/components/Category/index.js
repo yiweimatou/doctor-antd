@@ -5,10 +5,10 @@ class Category extends Component {
     state = {
         options: [{
             label: '医学专业人员',
-            value: 1,
+            value: '1',
             isLeaf: false
         }, {
-            value: 2,
+            value: '2',
             label: '普通大众',
             isLeaf: false
         }],

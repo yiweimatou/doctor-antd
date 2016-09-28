@@ -6,6 +6,8 @@ import {
     UPLOAD_PPT_API
 } from '../../constants/api.js'
 import Category from '../Category'
+import { BOOK } from '../../constants/api'
+
 const FormItem = Form.Item
 const formItemLayout = {
     labelCol: { span: 6 },
@@ -25,10 +27,10 @@ class New extends Component{
         action: UPLOAD_YUNBOOK_API
     }
     normFile(e) {
-            if (Array.isArray(e)) {
-                return e
-            }
-            return e && e.fileList
+        if (Array.isArray(e)) {
+            return e
+        }
+        return e && e.fileList
     }
     handleChange = (info)=> {
         let fileList = info.fileList
@@ -49,7 +51,6 @@ class New extends Component{
     }
     submitHandler= e => {
         e.preventDefault()
-        // console.log(this.refs.select.getLatLng())
         this.props.form.validateFields((errors, values) => {
             if (errors) return
             const category = this.refs.select.refs.category.state.value
@@ -68,10 +69,22 @@ class New extends Component{
                 sale_amount: values.money*100,
                 state: 1
             }
-            this.props.handleNew(params)
-            this.props.grow({
-                
-            })
+            this.props.handleNew(params, yunbook => {
+                this.props.addAfterHandler()
+                console.log(category)
+                this.props.grow({
+                    lat: this.refs.select.getLatLng().lat,
+                    lng: this.refs.select.getLatLng().lng,
+                    title: values.title,
+                    state: 1,
+                    category_id: BOOK,
+                    foreign_id: yunbook.id,
+                    cover: cover,
+                    map_id: 1,
+                    kind: category[0].id === '1' ? category[1] : category[2]
+                }, null, error => message.error(error))   
+            }, error => message.error(error))
+            
         })
     }
     render(){
@@ -205,12 +218,13 @@ export default connect(
                 payload: { params, resolve, reject }
             })
         },
-        handleNew(yunbook){
+        handleNew(yunbook, resolve, reject){
             dispatch({
                 type:'yunbook/new',
                 payload:{
                     ...yunbook
-                }
+                },
+                resolve, reject
             })
         },
         grow: (params, resolve, reject) => {

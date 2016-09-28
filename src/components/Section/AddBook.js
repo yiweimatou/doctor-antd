@@ -303,7 +303,7 @@ AddBook.propTypes = {
   addSection: PropTypes.func.isRequired,
   buyBook: PropTypes.func.isRequired,
   getLesson: PropTypes.func.isRequired,
-  lesson: PropTypes.object.isRequired
+  lesson: PropTypes.object
 }
 
 export default connect(

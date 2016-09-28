@@ -74,7 +74,7 @@ function queryString(params) {
     let s = ''
     for(let p in params){
         if(params.hasOwnProperty(p)){
-            s+=`${p}=${params[p]}&`
+            s+=`${p}=${encodeURIComponent(params[p])}&`
         }
     }
     return s

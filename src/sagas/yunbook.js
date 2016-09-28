@@ -133,6 +133,12 @@ function* watchMyInfo() {
 function* handleNew(action) {
   try {
     const res = yield call(newYunbook, action.payload)
+    if (action.resolve) {
+      action.resolve({
+        ...action.payload,
+        id: res.identity
+      })
+    }
     yield put({
       type: 'yunbook/new/success',
       payload: {
@@ -140,7 +146,6 @@ function* handleNew(action) {
         id: res.identity
       }
     })
-    yield put(push('/yunbook/edit/' + res.identity))
   } catch (error) {
     if (action.reject) {
       action.reject(error)
