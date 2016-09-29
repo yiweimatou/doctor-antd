@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import {
-    Form,Button,Input, Spin, message
+    Form, Button, Input, Spin, message
 } from 'antd'
 
 const FormItem = Form.Item
@@ -16,7 +16,7 @@ class Deposit extends Component {
         disabled: false
     }
     tick = () => {
-        if( this.state.vcodeLabel === 0){
+        if (this.state.vcodeLabel === 0){
             clearInterval(this.interval)
             this.setState({
                 disabled: false,
@@ -30,7 +30,7 @@ class Deposit extends Component {
     }
     click = e => {
         e.preventDefault()
-        this.props.sendCode(this.props.user.mobile, 
+        this.props.sendCode(this.props.user.mobile,
                 () => {
                     this.setState({
                         disabled: true,
@@ -49,7 +49,7 @@ class Deposit extends Component {
         this.props.form.validateFields((errors, values) => {
             if( errors ) return
             this.props.submit({
-                money: values.money,
+                amount: values.money,
                 vcode: values.vcode
             }, () => message.success('提现成功'), error => message.error(error))
         })
@@ -59,7 +59,7 @@ class Deposit extends Component {
         const { getFieldProps } = form
         return (
             <Spin spinning = { user.loading }>
-                <Form horizontal form ={form} onSubmit ={ this.submitHandler }>
+                <Form horizontal onSubmit ={ this.submitHandler }>
                     <FormItem label = '提现金额' {...formItemLayout} hasFeedback required>
                         <Input type='text' {...getFieldProps('money', {
                             rules: [{
@@ -102,11 +102,11 @@ class Deposit extends Component {
                     </FormItem>
                     <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">确定提现</Button>
-                        <Button 
+                        <Button
                             disabled ={ this.state.disabled } style={{marginLeft:10}}
                             onClick = { this.click }
                         >{this.state.vcodeLabel}
-                        </Button>                
+                        </Button>
                     </FormItem>
                 </Form>
             </Spin>
@@ -121,7 +121,7 @@ Deposit.propTypes = {
 }
 
 export default connect(
-    state => ({    
+    state => ({
         user: {
             mobile: state.auth.user.mobile,
             captcha: state.user.captcha,

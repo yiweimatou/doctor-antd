@@ -22,7 +22,7 @@ class SearchInput extends Component{
         })
     }
     handleSearch=()=> {
-        if (this.props.onSearch) {
+        if (this.props.onSearch && this.state.value) {
             this.props.onSearch(this.state.value)
         }
     }

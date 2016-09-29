@@ -1,30 +1,31 @@
 import React,{ Component,PropTypes } from 'react'
-import { 
+import {
     Form,
     Button,
     Input,
     Upload,
     Icon,
     message,
-    Spin 
+    Spin, Switch
 } from 'antd'
 import Paper from '../Paper'
 import {UPLOAD_COVER_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
-import AreaCascader from '../AreaCascader'
+import { push } from 'react-router-redux'
+import LessonBar from './LessonBar'
 
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 
 class Edit extends Component{
     static propTypes = {
-        form:PropTypes.object,
-        handleEdit:PropTypes.func.isRequired,
-        lesson:PropTypes.object,
-        loading: PropTypes.bool
+        handleEdit: PropTypes.func.isRequired,
+        lesson: PropTypes.object,
+        loading: PropTypes.bool,
+        push: PropTypes.func.isRequired,
     }
     state = {
         fileList: [],
@@ -37,7 +38,7 @@ class Edit extends Component{
         }
         return e && e.fileList
     }
-    
+
     handleChange = (info)=> {
         let fileList = info.fileList
         fileList = fileList.slice(-1)
@@ -55,39 +56,26 @@ class Edit extends Component{
         })
         this.setState({ fileList })
     }
-    submitHandler=(e)=>{
+    submitHandler= e => {
         e.preventDefault()
         this.props.form.validateFields((errors,values)=>{
             if(errors){
                 return
             }
             const cover = this.state.fileList[0].url
-            const first = values.area_ids[0]
-            let area_id,category_id
-            if(first === 1) {
-                if( values.area_ids.length < 3) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length - 1]
-                category_id = values.area_ids[1]
-            }else {
-                if( values.area_ids.length < 4) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length -1 ]
-                category_id = values.area_ids[2]
-            }
             const params = {
                 title:values.lname,
                 descript:values.descript,
-                area_id: area_id,
-                category_id: category_id,
                 cover:cover,
-                organize_money: values.organize_money,
-                account_money: values.account_money,
-                id:this.props.lesson.id
+                organize_amount: values.organize_money,
+                account_amount: values.account_money*100,
+                id:this.props.lesson.id,
+                state: values.state ? 1: 2
             }
-            this.props.handleEdit(params)
+            this.props.handleEdit(params, () => {
+                message.success('编辑成功')
+                this.props.push(`/lesson/show/${this.props.lesson.id}`)
+            }, error => message.error(error, 6))
         })
     }
     componentWillReceiveProps(nextProps){
@@ -96,20 +84,11 @@ class Edit extends Component{
             this.setState({
                 fileList:[{
                     uid:-1,
-                    name:'封面.png',
-                    status:'done',
-                    url:`${nextProps.lesson.cover}`
+                    name: '封面.png',
+                    status: 'done',
+                    url: nextProps.lesson.cover
                 }]
             })
-           this.props.initialCategory({
-               category_id: nextProps.lesson.category_id,
-               area_id: nextProps.lesson.area_id
-           }, (defaultValue, options) => {
-               this.setState({
-                   defaultValue,
-                   options
-               })
-           }, error => message.error(error))
         }
     }
     render(){
@@ -118,10 +97,12 @@ class Edit extends Component{
         } = this.props
         const { getFieldProps } = form
         return(
+            <div>
+             <LessonBar lesson={lesson} current='edit' />
             <Paper>
                 <Spin spinning = { loading } size = 'large'>
-                <Form 
-                    horizontal 
+                <Form
+                    horizontal
                     className = 'form'
                     onSubmit = { this.submitHandler }
                 >
@@ -138,7 +119,7 @@ class Edit extends Component{
                                     max:20,
                                     message:'请输入20字以内课程名'
                                 }],
-                                initialValue:lesson&&lesson.title
+                                initialValue: lesson && lesson.title
                             })}
                         />
                     </FormItem>
@@ -159,7 +140,7 @@ class Edit extends Component{
                                         }
                                     }
                                 }],
-                                initialValue: lesson&&lesson.account_money
+                                initialValue: lesson && lesson.account_amount/100
                             })}
                         />
                     </FormItem>
@@ -180,20 +161,12 @@ class Edit extends Component{
                                         }
                                     }
                                 }],
-                                initialValue:lesson&&lesson.organize_money
+                                initialValue: lesson && lesson.organize_amount
                             })}
                         />
                     </FormItem>
-                    <FormItem
-                        label='分类'
-                        {...formItemLayout}
-                        hasFeedback
-                    >
-                        <AreaCascader 
-                            options={ this.state.options }
-                            level = {3}
-                            props = { getFieldProps('area_ids',{ initialValue: this.state.defaultValue })}
-                        />
+                    <FormItem {...formItemLayout} label="上下架">
+                        <Switch {...getFieldProps('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})}/>
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -201,11 +174,11 @@ class Edit extends Component{
                         required
                     >
                         <Upload
-                            name="upload_file" 
+                            name="upload_file"
                             action={UPLOAD_COVER_API}
                             listType="picture"
-                            fileList={this.state.fileList}      
-                            onChange = {this.handleChange}         
+                            fileList={this.state.fileList}
+                            onChange = {this.handleChange}
                         >
                             <Button type="ghost">
                                 <Icon type="upload" /> 点击上传
@@ -229,12 +202,13 @@ class Edit extends Component{
                             })}
                         />
                     </FormItem>
-                    <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
+                    <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
                 </Spin>
             </Paper>
+            </div>
         )
     }
 }
@@ -245,21 +219,14 @@ export default connect(
         loading : state.lesson.loading
     }),
     dispatch=>({
-        handleEdit:(params)=>{
+        handleEdit: (params, resolve, reject) => {
             dispatch({
                 type:'lesson/edit',
-                payload:params
-            })
-        },
-        initialCategory: (params, resolve, reject) => {
-            dispatch({
-                type: 'category/init',
-                payload: params,
-                meta: {
-                    resolve,
-                    reject
+                payload:{
+                    params, resolve, reject
                 }
             })
-        }
+        },
+        push: path => dispatch(push(path))
     })
 )(Form.create()(Edit))

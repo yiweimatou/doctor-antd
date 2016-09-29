@@ -4,55 +4,47 @@ import { Row,Col,Pagination, Spin, message} from 'antd'
 import YunbookCard from './YunbookCard'
 
 class List extends Component {
-    state = {
-        list: [],
-        loading: true
-    }
     static propTypes = {
         fetchYunbookList: PropTypes.func.isRequired,
         uid: PropTypes.number
     }
     changeHandler = (offset, limit, account_id) => {
-        this.setState({ loading: true })
         this.props.fetchYunbookList({ offset, limit, account_id },
-         list => this.setState({ list, loading: false }),
+         null,
          error => message.error(error))
     }
     componentWillMount() {
         this.props.fetchYunbookInfo(
             { account_id: this.props.uid }, 
-            total => this.setState({ total }),
+            null,
             error => message.error(error)
         )
         this.props.fetchYunbookList({
             limit: 6,
             offset: 1,
             account_id: this.props.uid
-        }, list => {
-            this.setState({ list, loading: false })
-        }, error => message.error(error))
+        }, null, error => message.error(error))
     }
     render(){
         const {
-            uid
+            loading, list, total, uid
         } = this.props
         return(
-            <Spin spinning ={this.state.loading}>
+            <Spin spinning ={loading}>
             <div>
                 <Row gutter={16}>
                 {
-                    this.state.list.map(yunbook=>{
+                    list.map(yunbook=>{
                         return (<Col key={yunbook.id} span={8}>
                                   <YunbookCard yunbook={yunbook} />
                                </Col>)
                     })
                 }
                 </Row>
-                {this.state.total ?
+                {total ?
                     <div className='pagination'>
                         <Pagination 
-                            defaultCurrent={1}
-                            total={this.state.total}
+                            total={total}
                             showTotal={total => `共 ${total} 条`}
                             pageSize = {6}
                             onChange = {page=> this.changeHandler(page, 6, uid)}
@@ -68,25 +60,24 @@ class List extends Component {
 
 export default connect(
     state=>({
-        uid:state.auth.key
+        uid:state.auth.key,
+        loading: state.yunbook.myLoading,
+        total: state.yunbook.myTotal,
+        list: state.yunbook.mylist
     }),
     dispatch=>({
         fetchYunbookList:(params, resolve, reject)=>{
             dispatch({
-                type:'yunbook/fetchlist',
+                type:'yunbook/mylist',
                 payload: params,
-                meta: {
-                    resolve, reject
-                }
+                resolve, reject
             })
         },
         fetchYunbookInfo(params, resolve, reject) {
             dispatch({
-                type: 'yunbook/fetchinfo',
+                type: 'yunbook/myinfo',
                 payload: params,
-                meta: {
-                    resolve, reject
-                }
+                resolve, reject
             })
         }
     })

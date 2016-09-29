@@ -2,8 +2,31 @@
     margin: 30px 0;
 }
 
-.paper h2 {
-    margin: 10px;
+.cover {
+    float: left;
+    height: 200px;
+}
+
+.detail {
+    display: inline-block;
+    margin: 30px;
+}
+
+.marginLeft {
+    margin-left: 30px;
+}
+
+.halfLeft {
+    float: left;
+    width: 50%;
+    text-align: center;
+    border: solid #ddd;
+    border-width: 0 1px 0 0
+}
+
+.halfRight {
+    margin-left: 50%;
+    text-align: center;
 }
 
 .money {
@@ -13,40 +36,20 @@
 }
 
 .item {
-    margin-left: 10px;
-    height: 120px;
-    background-color: white;
-    display: inline-block
+    height: 110px;
+    margin: 30px;
+    display: inline-block;
 }
 
 .img {
     width: 80px;
     height: 80px;
     border-radius: 50%;
+    float: left;
 }
 
-.divImg {
-    background-color: #f9f9f9;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-}
 .span {
-    display: block;
-    width: 80px;
-    text-align: center;
-}
-.bar {
-    display: block;
-    height: 16px;
-    line-height: 14px;
-    width: 80px;
-    font-size: 11px;
-    border-radius: 4px;
-    text-align: center;
-    color: #fff;
-    background-color: #00a2e2;
-    font-style: normal;
-    position: absolute;
-    margin-top: -16px;
+    display: inline-block;
+    line-height: 80px;
+    margin-left: 20px;
 }

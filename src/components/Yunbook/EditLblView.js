@@ -17,9 +17,9 @@ class EditLblView extends React.Component{
         super(props)
         //禁用默认右击弹出菜单
         this.state = {
-            open:false,
-            layer:null,
-            editorState:null
+            open: false,
+            layer: null,
+            editorState: null
         }
         this.handleClose = ()=>{
             this.setState({
@@ -28,10 +28,10 @@ class EditLblView extends React.Component{
         }
         this.submit = () => {
             const content = stateToHTML(this.state.editorState.getCurrentContent())
-            if( content ){ 
+            if( content ){
                 const popup  = L.popup()
                 popup.setContent(content)
-                this.state.layer.bindPopup(popup).openPopup()            
+                this.state.layer.bindPopup(popup).openPopup()
                 const _geoJsonTemp = this.state.layer.toGeoJSON()
                 _geoJsonTemp.properties._popup = content
                 this._geoJson.features.push(_geoJsonTemp)
@@ -64,9 +64,7 @@ class EditLblView extends React.Component{
         L.drawLocal.edit.toolbar.buttons.editDisabled = '没有标注需要修改'
         L.drawLocal.edit.toolbar.buttons.removeDisabled = '没有标注需要删除'
     }
-    componentWillReceiveProps(nextProps){
-        if(this._map || !nextProps.yunbook) return
-        const { yunbook } = nextProps
+    initMap = yunbook => {
         const url = `${yunbook.path}/{z}/{x}/{y}.png`
         const self = this
         this._map =  L.map('_map',{
@@ -78,7 +76,7 @@ class EditLblView extends React.Component{
             0, yunbook.height
         ], yunbook.zoom), this._map.unproject([
             yunbook.width, 0
-        ], yunbook.zoom))    
+        ], yunbook.zoom))
         this._map.setMaxBounds(bounds)
         this._map.fitBounds(bounds)
         L.tileLayer(url,{
@@ -93,20 +91,28 @@ class EditLblView extends React.Component{
             type: 'FeatureCollection',
             features: []
         }
-        if( yunbook.lbl ){
-            this._drawnItems = L.geoJson(JSON.parse(yunbook.lbl), {
-                onEachFeature: function (featureData, layer) {
-                    if (featureData.geometry.type === 'Point') {
-                        var popup = L.popup()
-                        popup.setContent(featureData.properties._popup)
-                        layer.bindPopup(popup)
+        if(yunbook.lbl){
+            let  obj = {}
+            try {
+                obj = JSON.parse(yunbook.lbl)
+            } catch (error) {
+                console.log(error)
+            }
+            if (obj.type !== undefined ) { 
+                this._drawnItems = L.geoJson(obj, {
+                    onEachFeature: function (featureData, layer) {
+                        if (featureData.geometry.type === 'Point') {
+                            var popup = L.popup()
+                            popup.setContent(featureData.properties._popup)
+                            layer.bindPopup(popup)
+                        }
                     }
+                }).addTo(this._map)
+                for (var id in this._drawnItems._layers) {
+                    var _json = this._drawnItems._layers[id].toGeoJSON()
+                    _json.properties._id = this._drawnItems._layers[id]._leaflet_id
+                    this._geoJson.features.push(_json)
                 }
-            }).addTo(this._map)
-            for (var id in this._drawnItems._layers) {
-                var _json = this._drawnItems._layers[id].toGeoJSON()
-                _json.properties._id = this._drawnItems._layers[id]._leaflet_id
-                this._geoJson.features.push(_json)
             }
         }
         new L.Control.Draw({
@@ -193,8 +199,18 @@ class EditLblView extends React.Component{
                 // polyLine.bindPopup('<div><i class="fa fa-trash" onClick="removeLayer(' + polyLine._leaflet_id + ')"</div></i>')
             })
         })
-    } 
-    setEditorState=(editorState)=>{
+    }
+    componentWillReceiveProps(nextProps) {
+        const { yunbook } = nextProps
+        if(this._map || !yunbook) return
+        this.initMap(yunbook)
+    }
+    componentDidMount(){
+        const { yunbook } = this.props
+        if(this._map || !yunbook) return
+        this.initMap(yunbook)
+    }
+    setEditorState = editorState => {
         this.setState({
             editorState
         })
@@ -216,8 +232,8 @@ class EditLblView extends React.Component{
 }
 
 EditLblView.propTypes = {
-    yunbook: React.PropTypes.object,
-    changeLbl: React.PropTypes.func
+  yunbook: React.PropTypes.object,
+  changeLbl: React.PropTypes.func
 }
 
 export default EditLblView

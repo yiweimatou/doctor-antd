@@ -1,7 +1,8 @@
-import Money from '../components/User/Money'
+import Bill from '../components/User/Bill'
 import SetAlipay from '../components/User/SetAlipay'
 import Recharge from '../containers/user/rechargeContainer'
 import Deposit from '../components/User/Deposit'
+import { ACCOUNT } from '../constants/api'
 
 const depositRoute = () => ({
     path: 'deposit',
@@ -9,31 +10,35 @@ const depositRoute = () => ({
 })
 
 const moneyRoute = store => ({
-    path: 'money',
-    component: Money,
+    path: 'bill',
+    component: Bill,
     onEnter() {
         const userId = store.getState().auth.key
         store.dispatch({
-            type: 'money/info',
+            type: 'bill/info',
             payload: {
-                type: 3,
-                foreign_id: userId
+                 params: {
+                    category_id: ACCOUNT,
+                    foreign_id: userId
+                }
             }
         }),
         store.dispatch({
-            type: 'money/fetchlist',
+            type: 'bill/list',
             payload: {
-                limit: 6,
-                offset: 1,
-                type: 3,
-                foreign_id: userId
+                params:{
+                    limit: 9,
+                    offset: 1,
+                    category_id: ACCOUNT,
+                    foreign_id: userId
+                }
             }
         })
     }
 })
 
 const accountSettingRoute = () => ({
-    path: 'money/alipay/set',
+    path: 'bill/alipay/set',
     component:SetAlipay
 })
 

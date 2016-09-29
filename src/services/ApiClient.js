@@ -12,7 +12,9 @@ function checkStatus(data) {
     } else if (code === 401){
         localStorage.clear()
         window.location.reload()
-    }else {
+    } else if (code === 500) {
+        return Promise.reject('服务器开小差啦，请待会再试!')
+    } else {
         return Promise.reject(msg)
     }
 }
@@ -72,7 +74,7 @@ function queryString(params) {
     let s = ''
     for(let p in params){
         if(params.hasOwnProperty(p)){
-            s+=`${p}=${params[p]}&`
+            s+=`${p}=${encodeURIComponent(params[p])}&`
         }
     }
     return s

@@ -3,42 +3,34 @@ import SelectOrganize from '../../components/Organize/SelectOrganize.js'
 
 function mapStateToProps(state) {
     return{
-        list:state.organize.list,
-        pageParams:{
-            offset:state.organize.offset,
-            total:state.organize.total,
-            limit:state.organize.limit
-        },
-        lid:state.lesson.entity.id
+        list: state.organize.list,
+        loading: state.organize.loading
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return{
-        onChange(page,limit,title){
+        onChange(params, resolve, reject){
             dispatch({
                 type:'organize/list',
                 payload:{
-                    offset:page,
-                    limit:limit,
-                    title:title
-                }   
-            })
-        },
-        fetchInfo(title) {
-            dispatch({
-                type: 'organize/info',
-                payload: {
-                    title
+                  params, resolve, reject
                 }
             })
         },
-        apply(organize_id,lesson_id){
+        fetchInfo(params, resolve, reject) {
             dispatch({
-                type:'organizeLesson/new',
+                type: 'organize/info',
+                payload: {
+                    params, resolve, reject
+                }
+            })
+        },
+        apply(params, resolve, reject){
+            dispatch({
+                type:'organize_lesson/add',
                 payload:{
-                    organize_id,
-                    lesson_id
+                  params, resolve, reject
                 }
             })
         }

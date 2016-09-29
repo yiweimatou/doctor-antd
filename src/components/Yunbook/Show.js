@@ -30,7 +30,7 @@ class Show extends React.Component{
             0, yunbook.height
         ], yunbook.zoom), this._map.unproject([
             yunbook.width, 0
-        ], yunbook.zoom))    
+        ], yunbook.zoom))
         this._map.setMaxBounds(bounds)
         this._map.fitBounds(bounds)
         L.tileLayer(url,{
@@ -41,17 +41,25 @@ class Show extends React.Component{
         }).addTo(this._map)
         L.Icon.Default.imagePath = '//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images'
         if( yunbook.lbl ){
-           L.geoJson(JSON.parse(yunbook.lbl), {
-                onEachFeature: function (featureData, layer) {
-                    if (featureData.geometry.type === 'Point') {
-                        var popup = L.popup()
-                        popup.setContent(featureData.properties._popup)
-                        layer.bindPopup(popup)
+            let  obj = {}
+            try {
+                obj = JSON.parse(yunbook.lbl)
+            } catch (error) {
+                console.log(error)
+            }
+            if (obj.type !== undefined) {
+                L.geoJson(obj, {
+                    onEachFeature: function (featureData, layer) {
+                        if (featureData.geometry.type === 'Point') {
+                            var popup = L.popup()
+                            popup.setContent(featureData.properties._popup)
+                            layer.bindPopup(popup)
+                        }
                     }
-                }
-            }).addTo(this._map)
+                }).addTo(this._map)
+            }
         }
-        this.setState({ loading: false })        
+        this.setState({ loading: false })
     }
     componentWillMount() {
         this.props.fetchYunbook(this.props.params.yid, yunbook => {
@@ -59,13 +67,23 @@ class Show extends React.Component{
         }, error => {
             message.error(error)
         })
-    } 
+    }
     render(){
-        const { lid } = this.props.params
+        const { lid, oid } = this.props.params
+        let query = ''
+        if (lid && oid) {
+          query = `lid=${lid}&&oid=${oid}`
+        }
         return (
             <Spin spinning = {this.state.loading}>
                 <div>
-                    {lid?<Button type='primary' onClick={() => this.props.push(`/section/new?lid=${lid}&yid=${this.state.yid}`)}>购买</Button>:null}
+                    {lid?<Button type='primary' onClick={() => {
+                        this.setState({ loading:true })
+                        this.props.buy({ id: this.state.yid, lesson_id: lid, organize_id: oid }, () => {
+                            this.props.push(`/section/add/book?${query}&yid=${this.state.yid}`)
+                        }, error => message.error(error))
+                    }
+                    }>购买</Button>:null}
                     <div id='_map' style={ styles.map } ></div>
                 </div>
             </Spin>
@@ -76,6 +94,12 @@ class Show extends React.Component{
 export default connect(state => ({
     params: state.routing.locationBeforeTransitions.query
 }), dispatch => ({
+    buy(params, resolve, reject) {
+        dispatch({
+            type: 'yunbook/buy',
+            payload: { params, resolve, reject }
+        })
+    },
     fetchYunbook(id, resolve, reject) {
         dispatch({
             type: 'yunbook/fetch',
@@ -90,5 +114,5 @@ export default connect(state => ({
     push(path) {
         dispatch(push(path))
     }
-}) 
+})
 )(Show)

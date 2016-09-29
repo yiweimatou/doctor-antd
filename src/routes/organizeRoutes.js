@@ -1,8 +1,9 @@
 import listContainer from '../containers/organize/listContainer.js'
 import showContainer from '../containers/organize/showContainer'
 import Edit from '../components/Organize/Edit'
-import Money from '../components/Organize/Money'
+import Bill from '../components/Organize/Bill'
 import rechargeContainer from '../containers/organize/rechargeContainer'
+import { ORGANIZE } from '../constants/api'
 
 const showRoute = store => ({
     path:'show/:id',
@@ -11,39 +12,10 @@ const showRoute = store => ({
         if( !id ){
             return replace({pathname:'/organize/list'})
         }
-        const organize = store.getState().organize
-        if(organize&&organize.list){
-            const entity = organize.list.find(item=>{
-                return item.id===id
-            })
-            if( entity ){
-                return store.dispatch({
-                    type:'organize/get/success',
-                    payload:{
-                        entity
-                    }
-                })
-            }else {
-                store.dispatch({
-                    type:'organize/get',
-                    payload:{
-                        id
-                    }
-                })
-            }
-        }
         store.dispatch({
-            type:'organizeLesson/info',
-            payload:{
-                organize_id:id
-            }
-        })
-        store.dispatch({
-            type:'organizeLesson/list',
-            payload:{
-                organize_id:id,
-                limit:6,
-                offset:1
+            type: 'organize/get',
+            payload: {
+                params: { id }
             }
         })
     },
@@ -55,17 +27,9 @@ const listRoute = store => ({
     onEnter(){
         const account_id = store.getState().auth.key
         store.dispatch({
-            type:'organize/info',
+            type:'organize_team/info',
             payload:{
-                account_id
-            }
-        })
-        store.dispatch({
-            type:'organize/list',
-            payload:{
-                limit:6,
-                offset:1,
-                account_id
+                params: { role: 1, state: 1, account_id }
             }
         })
     },
@@ -85,28 +49,37 @@ const editRoutes = store => ({
         store.dispatch({
             type:'organize/get',
             payload:{
-                id
+                params: { id }
             }
         })
     }
 })
-const moneyRoute = store => ({
-    path: 'money/:id',
-    component: Money,
+const billRoute = store => ({
+    path: 'bill/:id',
+    component: Bill, 
     onEnter(nextState, replace) {
         const id = nextState.params.id
-        if(!id) {
-            return replace({ pathname: '/'})
+        if( !id ){
+            return replace({ pathname: '/' })
         }
         store.dispatch({
-            type: 'money/info',
-            payload: { foreign_id: id, type: 1 }
+            type: 'bill/info',
+            payload: {
+                params: {
+                    category_id: ORGANIZE,
+                    foreign_id: id
+                }
+            }
         })
         store.dispatch({
-            type: 'money/fetchlist',
+            type: 'bill/list',
             payload: {
-                foreign_id: id,
-                type: 1
+                params: {
+                    category_id: ORGANIZE,
+                    foreign_id: id,
+                    limit: 9,
+                    offset: 1
+                }
             }
         })
     }
@@ -138,7 +111,7 @@ const organizeRoutes = store=>({
         listRoute(store),
         showRoute(store),
         editRoutes(store),
-        moneyRoute(store),
+        billRoute(store),
         rechargeRoute(store)
     ]
 })

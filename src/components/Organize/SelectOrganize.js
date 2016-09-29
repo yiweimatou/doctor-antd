@@ -1,7 +1,8 @@
-import React,{Component,PropTypes} from 'react'
-import {Pagination,Button} from 'antd'
+import React,{ Component, PropTypes } from 'react'
+import { Pagination, Button, message, Spin } from 'antd'
 import './SelectOrganize.css'
 import SearchInput from '../SearchInput'
+import { DEFAULT_LOGO } from '../../constants/api'
 
 const styles = {
     marginTop:{
@@ -12,48 +13,64 @@ const styles = {
 class SelectOrganize extends Component{
     state = {
         name: '',
-        current: 1
+        total: 0,
+        pending: false
     }
     static propTypes = {
-        list:PropTypes.array,
-        pageParams:PropTypes.object,
+        list:PropTypes.array.isRequired,
         onChange:PropTypes.func.isRequired,
         apply:PropTypes.func.isRequired,
-        lid:PropTypes.number,
-        fetchInfo: PropTypes.func.isRequired
-    }   
-    onChange=(page)=>{
-        this.props.onChange(
-            page,
-            this.props.pageParams.limit,
-            this.state.name
-        )
+        lid:PropTypes.string.isRequired,
+        fetchInfo: PropTypes.func.isRequired,
+        loading: PropTypes.bool.isRequired
     }
-    onSearch=(name)=>{
-        this.props.fetchInfo(name)
-        this.props.onChange(
-            1,this.props.pageParams.limit,
-            name
-        )
+    onChange= offset =>{
+        this.props.onChange({
+            offset,
+            limit : 9,
+            title: this.state.name
+        }, null, error => message.error(error))
+    }
+    onSearch= name => {
+        this.props.fetchInfo({
+          title: name
+        }, total => this.setState({ total }), error => message.error(error))
+        this.props.onChange({
+          offset: 1,
+          limit: 9,
+          title: name
+        }, null, error => message.error(error))
+
+    }
+    onClick = params => {
+      this.setState({ pending: true })
+      this.props.apply(params, () => {
+        message.success('申请已经发送', 6)
+        this.setState({ pending: false })
+      }, error => {
+        message.error(error)
+        this.setState({ pending: false })
+      })
     }
     changeHandler = (e) => {
         this.setState({
             name: e.targe.value
         })
     }
-    componentDidMount(){
-        this.props.fetchInfo('')
-        this.props.onChange(1,6,'')
+    componentWillMount(){
+      this.onSearch('')
     }
 
     render(){
+        const { total, pending } = this.state
         const {
-            list,pageParams,apply,lid
+            list, lid, onChange, loading
         } = this.props
         return(
             <div className='container'>
+                <Spin spinning={loading || pending}>
                 <SearchInput
-                    onSearch = { this.onSearch } 
+                    onSearch = { this.onSearch }
                     placeholder = '输入机构名称搜索'
                     value = { this.state.name }
                     onChange = { this.changeHandler }
@@ -61,10 +78,13 @@ class SelectOrganize extends Component{
                 {list.map(item=>{
                     return (
                         <div key={item.id} className='oitem'>
-                            <img src={item.logo} className='oimg' width='100%' />
-                            <span className='ospan'>{item.title}</span>
-                            <Button 
-                                onClick={()=>apply(item.id,lid)} 
+                            <img src={ item.logo || DEFAULT_LOGO } className='oimg' width='100%' />
+                            <div className='otitle'>{item.title}</div>
+                            <Button
+                                onClick={() => this.onClick({
+                                  organize_id: item.id,
+                                  lesson_id: lid
+                                })}
                                 className='button'
                             >
                                 申请
@@ -73,20 +93,23 @@ class SelectOrganize extends Component{
                     )
                 })}
                 <div style={styles.marginTop}>
-                { list.length > 0 ?                
-                    <Pagination 
-                        current = { this.state.current }
-                        total={ pageParams.total }
+                { total > 0 ?
+                    <Pagination
+                        total={ total }
                         showTotal={total => `共 ${total} 条`}
-                        pageSize = {pageParams.limit}
+                        pageSize = {9}
                         onChange = { page => {
-                            this.props.onChange(page, pageParams.limit, this.state.name)
-                            this.setState({ current: page })
+                            onChange({
+                              title: this.state.name,
+                              limit: 9,
+                              offset: page
+                            })
                         }}
                     /> :
                     <p style={{textAlign: 'center'}}>暂无数据</p>
                 }
-                </div> 
+                </div>
+                </Spin>
             </div>
         )
     }

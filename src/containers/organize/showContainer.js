@@ -3,29 +3,43 @@ import Show from '../../components/Organize/Show.js'
 import { push } from 'react-router-redux'
 
 const mapStateToProps = state =>({
-    organize:state.organize.entity,
-    list:state.organizeLesson.list,
+    organize: state.organize.entity,
+    userId: state.auth.key
 })
 
 const mapDispatchToProps = dispatch => ({
-    push:(path)=>{
-            dispatch(push(path))
+    push: path => {
+        dispatch(push(path))
     },
-    edit:(agree,id)=>{
+    getInfo: (params, resolve, reject)=>{
         dispatch({
-            type:'organizeLesson/edit',
+            type:'organize_lesson/info',
             payload:{
-                id,
-                cet:agree?4:3
+                params, resolve, reject
             }
         })
     },
-    changeHandler:(offset,limit)=>{
+    getOrganizeTeam: (params, resolve, reject) => {
         dispatch({
-            type:'organizeLesson/list',
+            type:'organize_team/get',
             payload:{
-                offset,
-                limit
+                params, resolve, reject
+            }
+        })
+    },
+    getOrganizeTeamList: (params, resolve, reject) => {
+        dispatch({
+            type:'organize_team/list',
+            payload:{
+                params, resolve, reject
+            }
+        })
+    },
+    getLessonList: (params, resolve, reject) => {
+        dispatch({
+            type:'organize_lesson/list',
+            payload:{
+                params, resolve, reject
             }
         })
     }

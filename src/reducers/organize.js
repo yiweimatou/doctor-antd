@@ -1,12 +1,10 @@
 import { handleActions } from 'redux-actions'
 
 const initialState = {
-    list:[],
-    limit:6,
-    offset:1,
-    loading:false,
-    total:0,
-    entity:null
+    list: [],
+    loading: false,
+    total: 0,
+    entity: null
 }
 
 const organize = handleActions({
@@ -20,34 +18,37 @@ const organize = handleActions({
     }),
     ['organize/edit/failure']:state=>({
         ...state,
-        loading:false
+        loading: false
     }),
-    ['organize/list']:(state)=>({
+    ['organize/list']: state => ({
         ...state,
-        loading:true
+        loading: true,
+        list: []
     }),
-    ['organize/list/success']:(state,action)=>({
+    ['organize/list/success']: (state,action) => ({
         ...state,
-        loading:false,
-        limit:action.payload.limit,
-        offset:action.payload.offset,
-        list:action.payload.list
+        loading: false,
+        list: action.payload
     }),
-    ['organize/list/failure']:(state)=>({
+    ['organize/list/failure']: state => ({
         ...state,
-        loading:false
+        loading: false
     }),
-    ['organize/info/success']:(state,action)=>({
+    ['organize_team/info']: state => ({
+      ...state,
+      total: 0
+    }),
+    ['organize_team/info/success']: (state, action) => ({
         ...state,
-        total:action.payload.total
+        total: action.payload
     }),
     ['organize/get']:(state)=>({
         ...state,
-        entity:null
+        entity: null
     }),
-    ['organize/get/success']:(state,action)=>({
+    ['organize/get/success']: (state, action) => ({
         ...state,
-        entity:action.payload.entity
+        entity: action.payload.entity
     })
 },initialState)
 

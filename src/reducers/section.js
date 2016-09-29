@@ -1,84 +1,83 @@
 import { handleActions } from 'redux-actions'
 
 const initialState = {
-    list:[],
-    limit:6,
-    offset:1,
-    total:0,
-    entity:null,
-    loading:false
+    list: [],
+    total: 0,
+    entity: null,
+    loading: false
 }
 
 const section = handleActions({
-    ['section/delete/success']:(state,action)=>({
+    ['section/add']: state => ({
+      ...state,
+      loading: true
+    }),
+    ['section/add/success']: state => ({
+      ...state,
+      loading: false
+    }),
+    ['section/add/failure']: state => ({
+      ...state,
+      loading: false
+    }),
+    ['section/delete/success']: (state, action) => ({
         ...state,
-        list:state.list.filter(item=>item.sid!==action.payload.sid)
+        list: state.list.filter(item => item.id !== action.payload.id),
+        total: state.total -1 
     }),
     ['section/get']:state=>({
         ...state,
-        entity:null
+        loading: true,
+        entity: null
     }),
-    ['section/get/success']:(state,action)=>({
+    ['section/get/success']: (state, action) => ({
         ...state,
-        entity:action.payload.entity
+        entity: action.payload,
+        loading: false
     }),
-    ['section/new']:state=>({
+    ['section/get/failure']: state => ({
         ...state,
-        loading:true
+        loading: false
     }),
-    ['secton/new/success']:state=>({
+    ['section/edit']: state => ({
         ...state,
-        loading:false
+        loading: true
     }),
-    ['section/new/failure']:state=>({
+    ['section/edit/success']: (state, action) => ({
         ...state,
-        loading:false
+        loading: false,
+        entity: {
+          ...state.entity,
+          ...action.payload
+        }
     }),
-    ['section/edit']:state=>({
+    ['section/edit/failure']: state => ({
         ...state,
-        loading:true
+        loading: false
     }),
-    ['section/edit/success']:(state,action)=>({
+    ['section/list']: state => ({
         ...state,
-        loading:false,
-        entity:Object.assign({},state.entity,action.payload.params),
-        list:state.list.map(item=>{
-            if(item.sid === action.payload.sid){
-                return {
-                    ...item,
-                    ...action.payload
-                }
-            }else{
-                return item
-            }
-        })
+        loading: true,
+        list: []
     }),
-    ['section/edit/failure']:state=>({
+    ['section/list/success']: (state, action) => ({
         ...state,
-        loading:false
+        loading: false,
+        list: action.payload
     }),
-    ['section/list']:state=>({
+    ['section/list/failure']: state => ({
         ...state,
-        loading:true
+        loading: false
     }),
-    ['section/list/success']:(state,action)=>({
+    ['section/info']: state => ({
         ...state,
-        loading:false,
-        list:action.payload.list
+        total: 0
     }),
-    ['section/list/failure']:state=>({
+    ['section/info/success']: (state, action) => ({
         ...state,
-        loading:false
-    }),
-    ['section/info']:state=>({
-        ...state,
-        total:0
-    }),
-    ['section/info/success']:(state,action)=>({
-        ...state,
-        total:action.payload.total
+        total: action.payload
     })
-},initialState)
+}, initialState)
 
 export default section
 

@@ -33,12 +33,18 @@ function* watchGetMoney() {
 function* watchSetAlipay() {
     yield* takeLatest('user/alipay/set', function*(action) {
         try {
-            yield call(setAlipay, action.payload)
+            yield call(setAlipay, action.payload.params)
+            if (action.payload.resolve) {
+                action.payload.resolve()
+            }
             yield put({
                 type: 'user/alipay/set/success',
-                payload: action.payload
+                payload: action.payload.params
             })
         } catch (error) {
+            if (action.payload.reject) {
+                action.payload.reject(error)
+            }
             yield put({
                 type: 'user/alipay/set/failure'
             })
@@ -53,12 +59,16 @@ function* watchSendCaptcha() {
             yield put({
                 type: 'captcha/send/success'
             })
-            yield call(action.meta.resolve)
+            if (action.meta.resolve) {
+                action.meta.resolve()
+            }
         } catch (error) {
             yield put({
                 type: 'captcha/send/failure'
             })
-            yield call(action.meta.reject, error)
+            if (action.meta.reject) {
+                action.meta.reject()
+            }
         }
     })
 }

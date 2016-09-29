@@ -24,11 +24,6 @@ class NavMenu extends Component {
                         <span><Icon type="exception" />课程管理</span>
                     }
                 >
-                    <Item key='8' disabled = {user && user.lesson===1}>
-                        <Link to='/lesson/new'>
-                            新建课程
-                        </Link>
-                    </Item>
                     <Item key='7' disabled = {user && user.lesson===1}>
                         <Link to='/lesson/list'>
                             我的主讲课程
@@ -39,30 +34,18 @@ class NavMenu extends Component {
                             我的团队课程
                         </Link>
                     </Item>
-                    <Item key='5' disabled = {user && user.lessons===1}>
-                        <Link to='/lesson/recommend'>
-                            推荐课程
-                        </Link>
+                </SubMenu>
+                <SubMenu key = 'sub5' title = { <span><Icon type="calculator" />试卷管理</span> } disabled = {user && user.lesson === 1}>
+                    <Item key = '13'>
+                        <Link to = '/question/manage'>我的题库</Link>
+                    </Item>
+                    <Item key="14">
+                      <Link to="/textpaper/manage">我的试卷</Link>
                     </Item>
                 </SubMenu>
-                <SubMenu
-                    key="sub3"
-                    title={
-                        <span><Icon type="book" />云板书管理</span>
-                    }
-                    disabled = {user && user.lesson===1}
-                >
-                    <Item key='4'>
-                        <Link to='/yunbook/new'>
-                            新建云板书
-                        </Link>
-                    </Item>
-                    <Item key='3'>
-                        <Link to='/yunbook/list'>
-                            我的云板书
-                        </Link>
-                    </Item>
-                </SubMenu>
+                <Item key='3'>
+                    <Link to='/yunbook/manage'><Icon type="book" />云板书管理</Link>
+                </Item>
                 <Item key='2'>
                     <Link to='/message/index'>
                         <Icon type="notification" />消息管理
@@ -70,7 +53,7 @@ class NavMenu extends Component {
                 </Item>
                 <SubMenu key="sub1" title={<span><Icon type="setting" />设置</span>}>
                     <Item key='1'>
-                        <Link to='/user/money'>
+                        <Link to='/user/bill'>
                             个人账户
                         </Link>
                     </Item>

@@ -1,23 +1,26 @@
 import { connect } from 'react-redux'
 import Recharge from '../../components/Recharge'
+import { ACCOUNT } from '../../constants/api'
 
 export default connect(
   state => ({
-    foreignId: state.auth.key,
-    status: state.money.actionStatus.add,
-    record: state.money.user.record
+    foreignId: state.auth.key
   }),
   dispatch => ({
-    recharge: params => dispatch({
-      type: 'money/add',
+    recharge: (params, resolve, reject)  => dispatch({
+      type: 'bill/add',
       payload: {
-        ...params,
-        type: 3
+        params: {
+          ...params,
+          category_id: ACCOUNT
+        }, resolve, reject
       }
     }),
-    fetchOne: params => dispatch({
-      type: 'money/fetchone',
-      payload: params
+    fetch: (params, resolve, reject) => dispatch({
+      type: 'bill/get',
+      payload: {
+        params, resolve, reject
+      }
     })
   })
 )(Recharge)

@@ -1,6 +1,6 @@
-import {Cascader, message } from 'antd'
+import { Cascader, message } from 'antd'
 import React,{ Component, PropTypes } from 'react'
-import { getAreaList } from '../../services/area.js'
+import { list } from '../../services/category.js'
 
 class AreaCascader extends Component{
     constructor(props){
@@ -9,16 +9,11 @@ class AreaCascader extends Component{
             options: props.options
         }
     }
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            options: nextProps.options
-        })
-    }
-    loadData=(selectedOptions)=>{
+    loadData= selectedOptions => {
         const targetOption = selectedOptions[selectedOptions.length-1]
         const isLeaf = this.props.level+2===targetOption.zoom
         targetOption.loading=true
-        getAreaList({
+        list({
             limit: 100,
             pid:targetOption.value
         }).then(data=>{

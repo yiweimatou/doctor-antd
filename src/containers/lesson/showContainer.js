@@ -1,55 +1,66 @@
 import { connect } from 'react-redux'
 import Show from '../../components/Lesson/Show.js'
-import {push} from 'react-router-redux'
+import { push } from 'react-router-redux'
 
 function mapStateToProps(state){
-    const uid = state.auth.key
-    //1主讲2团队讲师3普通角色
-    let isAdmin=3
-    if(state.lesson.entity){
-        isAdmin = state.lesson.entity.account_id === uid?1:3
-    }
-    state.lessonTeam.list.forEach(item=>{
-        if((item.type === 1 ||item.type === 2)&&item.account_id===uid){
-            isAdmin=2
-        }
-    })
     return {
-        lesson:state.lesson.entity,
-        olist:state.organizeLesson.list.data,
-        teamList:state.lessonTeam.list,
-        isAdmin:isAdmin,
-        uid:uid,
-        sList:{
-            data:state.section.list,
-            pageParams:{
-                limit: state.section.limit,
-                total: state.section.total
-            }
-        }
+        userId: state.auth.key,
+        id: state.routing.locationBeforeTransitions.pathname.split('/')[3]
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        push:(path)=>{
+        getSectionInfo: (params, resolve, reject) => {
+          dispatch({
+            type: 'section/info',
+            payload: {
+              params, resolve, reject
+            }
+          })
+        },
+        getLessonTeamList: (params, resolve, reject) => {
+          dispatch({
+            type: 'lessonteam/list',
+            payload: {
+              params, resolve, reject
+            }
+          })
+        },
+        getOrganizeList: (params, resolve, reject) => {
+          dispatch({
+            type: 'organize_lesson/list',
+            payload: {
+              params, resolve, reject
+            }
+          })
+        },
+        getLessonTeam: (params, resolve, reject) => {
+          dispatch({
+            type: 'lessonteam/get',
+            payload: {
+              params, resolve, reject
+            }
+          })
+        },
+        getLesson: (params, resolve, reject) => {
+          dispatch({
+            type: 'lesson/get',
+            payload: params,
+            resolve,
+            reject
+          })
+        },
+        push: path => {
             dispatch(push(path))
         },
-        handleRemove:(id)=>{
-            dispatch({
-                type:'lessonTeam/delete',
-                payload:{
-                    id
-                }
-            })
-        },
-        handleSectionEdit:(params)=>{
+        handleSectionEdit: (params) => {
             dispatch({
                 type:'section/edit',
                 payload:params
             })
         },
-        changeHandler:(offset,limit,lesson_id)=>{
+        changeHandler: (offset,limit,lesson_id) => {
             dispatch({
                 type:'section/list',
                 payload:{

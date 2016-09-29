@@ -5,14 +5,14 @@ import './index.css'
 class SelectYunbook extends Component{
     render(){
         const {
-            yunbook,handlePick,lid
+            yunbook,handlePick,lid, oid
         } = this.props
         return(
             <div className='col'>
-               <Link className='courseList' to={`/yunbook/show?lid=${lid}&yid=${yunbook.id}`}>
+               <Link className='courseList' to={`/yunbook/show?oid=${oid}&lid=${lid}&yid=${yunbook.id}`}>
                     <div className="courseImg">
                         <div className='xmoney'>
-                            <span>{yunbook.money===0?' 免费 ':`￥${yunbook.money}`}</span>
+                            <span>{yunbook.money === 0 ?' 免费 ' : `￥${yunbook.sale_amount/100}`}</span>
                         </div>
                         <img src={yunbook.cover} width="100%" />
                     </div>
@@ -21,7 +21,7 @@ class SelectYunbook extends Component{
                     </div>
                 </Link>
                 <div className="newArticle">
-                    <button onClick = {()=>handlePick(yunbook)}>
+                    <button onClick = { () => handlePick(yunbook) }>
                         引用
                     </button>
                 </div>
@@ -33,7 +33,8 @@ class SelectYunbook extends Component{
 SelectYunbook.propTypes = {
     yunbook: PropTypes.object.isRequired,
     handlePick: PropTypes.func.isRequired,
-    lid: PropTypes.string.isRequired
+    lid: PropTypes.string,
+    oid: PropTypes.string
 }
 
 export default SelectYunbook

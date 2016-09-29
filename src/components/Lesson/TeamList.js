@@ -1,19 +1,33 @@
-import React,{ Component,PropTypes } from 'react'
-import {Button,Modal} from 'antd'
+import React,{ Component, PropTypes } from 'react'
+import { Button, Modal, message } from 'antd'
 import { connect } from 'react-redux'
+import { DEFAULT_FACE } from '../../constants/api'
 import './TeamList.css'
 
 class TeamList extends Component{
+    state = {
+      list: [],
+    }
     static propTypes = {
-        list:PropTypes.array,
         visible:PropTypes.bool,
         onCancel:PropTypes.func,
         remove:PropTypes.func
     }
+    removeHandler = params => {
+      this.props.remove(params, () => {
+        message.success('操作成功!')
+        this.setState({ list: this.state.list.filter(i => i.tid !== params.id) })
+      }, error => message.error(error)
+      )
+    }
+    componentWillReceiveProps(nextProps) {
+      if (this.props.list !== nextProps.list) {
+        this.setState({ list: nextProps.list })
+      }
+    }
     render(){
-        const {
-            list,visible,onCancel,remove
-        } = this.props
+        const { visible, onCancel } = this.props
+        const { list } = this.state
         return(
             <Modal
                 footer ={null}
@@ -21,45 +35,46 @@ class TeamList extends Component{
                 onCancel = {onCancel}
             >
             {
-                list.filter(item=>item.type===1).map(item=>{
+                list.length > 0 ?
+                list.map(item=>{
                     return(<div key={item.id} className='titem'>
-                            <div className='tdivimg'>                        
-                        {
-                            item.user&&item.user.face?
-                            <img 
-                                src={item.user.face} 
+                            <div className='tdivimg'>
+                            <img
+                                src={ item.face || DEFAULT_FACE }
                                 width='100%'
                                 className='timg'
-                            />:null
-                        }
+                            />
                         </div>
                         <span className='tspan'>
-                            {item.user&&(item.user.cname||item.user.mobile)}
+                            {item.cname||item.mobile}
                         </span>
-                        <Button 
+                        <Button
                             className='tbutton'
-                            onClick = {()=>remove(item.id)}
-                        >
-                            踢除
-                        </Button>
+                            onClick = { () => this.removeHandler({ id: item.tid })}
+                        >踢除</Button>
                     </div>)
-                })
+                }):<div>没有数据</div>
             }
             </Modal>
         )
     }
 }
 
-export default connect(
-    state=>({
-        list:state.lessonTeam.list
-    }),
+export default connect(null,
     dispatch=>({
-        remove:(id)=>{
+        getInfo: (params, resovle, reject) => {
+          dispatch({
+            type: 'lessonteam/info',
+            payload: {
+              params, resovle, reject
+            }
+          })
+        },
+        remove: (params, resolve, reject) => {
             dispatch({
-                type:'lessonTeam/delete',
-                payload:{
-                    id
+                type:'lesson_team/delete',
+                payload: {
+                  params, resolve, reject
                 }
             })
         }

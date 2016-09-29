@@ -1,38 +1,39 @@
 import React ,{ Component,PropTypes } from 'react'
 import {connect} from 'react-redux'
-import { Form,Button,Upload,Input,Icon,message, Spin } from 'antd'
-import Paper from '../Paper'
+import { Form, Button, Upload, Input, Icon, Spin, message } from 'antd'
 import {
     UPLOAD_YUNBOOK_API,
     UPLOAD_PPT_API
 } from '../../constants/api.js'
-import AreaCascader from '../AreaCascader'
-import category from '../../constants/category'
+import Category from '../Category'
+import { BOOK } from '../../constants/api'
 
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 
 class New extends Component{
     static propTypes ={
-        form:PropTypes.object,
-        handleNew:PropTypes.func.isRequired,
-        loading: PropTypes.bool
+        form: PropTypes.object,
+        handleNew: PropTypes.func.isRequired,
+        loading: PropTypes.bool,
+        getList: PropTypes.func.isRequired,
+        grow: PropTypes.func.isRequired
     }
     state={
-        fileList:[],
-        action:UPLOAD_YUNBOOK_API
+        fileList: [],
+        action: UPLOAD_YUNBOOK_API
     }
     normFile(e) {
-            if (Array.isArray(e)) {
-                return e
-            }
-            return e && e.fileList
+        if (Array.isArray(e)) {
+            return e
+        }
+        return e && e.fileList
     }
     handleChange = (info)=> {
-        let fileList = info.fileList 
+        let fileList = info.fileList
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
             if (file.response) {
@@ -40,7 +41,7 @@ class New extends Component{
             }
             return file
         })
-        fileList = fileList.filter((file) => {
+        fileList = fileList.filter(file => {
             if (file.response) {
                 return file.response.code === 200
             }
@@ -48,53 +49,53 @@ class New extends Component{
         })
         this.setState({ fileList })
     }
-    submitHandler=(e)=>{
+    submitHandler= e => {
         e.preventDefault()
-        this.props.form.validateFields((errors,values)=>{
-            if(errors){
-                return
-            }
-            const first = values.area_ids[0]
-            let area_id,category_id
-            if(first === 1) {
-                if( values.area_ids.length < 3) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length - 1]
-                category_id = values.area_ids[1]
-            }else {
-                if( values.area_ids.length < 4) {
-                    return message.error('请再选一级分类')
-                }
-                area_id = values.area_ids[values.area_ids.length -1 ]
-                category_id = values.area_ids[2]
+        this.props.form.validateFields((errors, values) => {
+            if (errors) return
+            const category = this.refs.select.refs.category.state.value
+            if (category.length < 3) {
+                return message.error('请再选择一级分类')
             }
             const cover = values.upload[0].response.cover
             const params = {
-                title:values.title,
-                descript:values.descript||'',
-                area_id: area_id,
-                category_id: category_id,
-                cover:cover,
-                path:values.upload[0].response.path,
-                width:values.upload[0].response.width,
-                height:values.upload[0].response.height,
-                zoom:values.upload[0].response.zoom,
-                money: values.money,
-                file_id: 2 //不传报错，随便传一个
+                title: values.title,
+                descript: values.descript||'',
+                cover: cover,
+                path: values.upload[0].response.path,
+                width: values.upload[0].response.width,
+                height: values.upload[0].response.height,
+                zoom: values.upload[0].response.zoom,
+                sale_amount: values.money*100,
+                state: 1
             }
-            this.props.handleNew(params)
+            this.props.handleNew(params, yunbook => {
+                this.props.addAfterHandler()
+                console.log(category)
+                this.props.grow({
+                    lat: this.refs.select.getLatLng().lat,
+                    lng: this.refs.select.getLatLng().lng,
+                    title: values.title,
+                    state: 1,
+                    category_id: BOOK,
+                    foreign_id: yunbook.id,
+                    cover: cover,
+                    map_id: 1,
+                    kind: category[0].id === '1' ? category[1] : category[2]
+                }, null, error => message.error(error))   
+            }, error => message.error(error))
+            
         })
     }
     render(){
         const {
-            form, loading 
+            form, loading, getList
         } = this.props
         const {
             getFieldProps
         } = form
         return(
-            <Paper>
+            <div>
                 <Spin spinning = { loading } >
                 <Form
                     horizontal
@@ -117,6 +118,9 @@ class New extends Component{
                                 }]
                             })}
                         />
+                    </FormItem>
+                    <FormItem {...formItemLayout} label='分类'>
+                        <Category getList={getList} ref='select'/>
                     </FormItem>
                      <FormItem
                         label='云板书简介'
@@ -146,20 +150,9 @@ class New extends Component{
                                     required: true,
                                     message: '请设置售价'
                                 }],
-                                initialValue:0
+                                initialValue: '2'
                             })}
                         />
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        required
-                        label='云板书分类'
-                    >
-                       <AreaCascader
-                            props = { getFieldProps('area_ids') }
-                            level = { 4 }
-                            options = { category }
-                       />
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -204,12 +197,12 @@ class New extends Component{
                             </Button>
                         </Upload>
                     </FormItem>
-                    <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
+                    <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">保存</Button>
                     </FormItem>
                 </Form>
                 </Spin>
-            </Paper>
+            </div>
         )
     }
 }
@@ -219,11 +212,26 @@ export default connect(
         loading: state.yunbook.actionStatus.adding
     }),
     dispatch=>({
-        handleNew(yunbook){
+        getList(params, resolve, reject) {
+            dispatch({
+                type: 'category/list',
+                payload: { params, resolve, reject }
+            })
+        },
+        handleNew(yunbook, resolve, reject){
             dispatch({
                 type:'yunbook/new',
                 payload:{
                     ...yunbook
+                },
+                resolve, reject
+            })
+        },
+        grow: (params, resolve, reject) => {
+            dispatch({
+                type: 'grow/add',
+                payload: {
+                    params, resolve, reject
                 }
             })
         }

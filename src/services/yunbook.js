@@ -4,8 +4,13 @@ import {
     YUNBOOK_EDIT_API,
     YUNBOOK_GET_API,
     YUNBOOK_LIST_API,
-    YUNBOOK_INFO_API
+    YUNBOOK_INFO_API,
+    YUNBOOK_BUY_API
 } from '../constants/api'
+
+export function buy(params) {
+  return ApiClient.put(YUNBOOK_BUY_API, params)
+}
 
 export function newYunbook(params) {
     return ApiClient.post(YUNBOOK_ADD_API,params,{needAuth:true})

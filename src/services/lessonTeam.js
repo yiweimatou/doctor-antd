@@ -4,8 +4,13 @@ import {
     TEAM_INFO_API,
     TEAM_ADD_API,
     TEAM_REMOVE_API,
-    TEAM_EDIT_API
+    TEAM_EDIT_API,
+    TEAM_GET_API
 } from '../constants/api.js'
+
+export function get(params) {
+  return ApiClient.get(TEAM_GET_API, params)
+}
 
 export function getLessonTeamList(params){
     return ApiClient.get(TEAM_LIST_API,params)
