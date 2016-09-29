@@ -5,8 +5,15 @@ import React, { Component, PropTypes } from 'react';
 import { Form, Spin, Button, Input, InputNumber, DatePicker, message } from 'antd'
 import { connect } from 'react-redux'
 import { ACTIVE } from '../../constants/api'
+<<<<<<< Updated upstream
 import Simditor from '../Simditor'
 import Map from '../Map'
+=======
+import moment from 'moment'
+import Simditor from '../Simditor'
+import Map from '../Map'
+import LessonBar from '../Lesson/LessonBar'
+>>>>>>> Stashed changes
 const RangePicker = DatePicker.RangePicker
 const FormItem =Form.Item
 const formItemLayout = {
@@ -82,8 +89,13 @@ class AddActive extends Component {
                         title: values.title,
                         descript: values.descript || '',
                         address: values.address || '',
+<<<<<<< Updated upstream
                         start_ms: (new Date(values.time[0])).getTime(),
                         expires_ms: (new Date(values.time[1])).getTime(),
+=======
+                        start_ms: values.time[0].unix(),
+                        expires_ms: values.time[1].unix(),
+>>>>>>> Stashed changes
                         active_max_num: values.active_max_num,
                         content,
                         lat: latLng.lat,
@@ -105,7 +117,11 @@ class AddActive extends Component {
     }
     render() {
         const { loading, query } = this.props
+<<<<<<< Updated upstream
         const { getFieldProps } = this.props.form
+=======
+        const { getFieldDecorator } = this.props.form
+>>>>>>> Stashed changes
         const { section, initialContent, latLng } = this.state
          if (!query.oid || !query.lid) {
             return (<div>参数错误</div>)
@@ -113,41 +129,73 @@ class AddActive extends Component {
         return (
             <div>
                 <Spin spinning={loading}>
+<<<<<<< Updated upstream
                     <Form>
                         <FormItem {...formItemLayout} hasFeedback label="活动标题">
                             <Input {...getFieldProps('title', {
+=======
+                    <LessonBar lid={query.lid} current=""/>
+                    <Form>
+                        <FormItem {...formItemLayout} hasFeedback label="活动标题">
+                            {getFieldDecorator('title', {
+>>>>>>> Stashed changes
                                 rules: [{
                                     required: true,
                                     whitespace: false,
                                     message: '请填写活动标题'
+<<<<<<< Updated upstream
                                 }], 
                                 initialValue: section.title
                             })}/>
+=======
+                                }],
+                                initialValue: section.title
+                            })(<Input />)}
+>>>>>>> Stashed changes
                         </FormItem>
                         <FormItem {...formItemLayout} label="活动定位">
                             <Map latLng={ latLng } setLatlng = { latLng => this.setState({ latLng }) }/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="活动地址">
+<<<<<<< Updated upstream
                             <Input {...getFieldProps('address', {
                                 initialValue: section.address
                             })}/>
                         </FormItem>
                         <FormItem {...formItemLayout} label='活动人数上限'>
                             <InputNumber min={1} {...getFieldProps('active_max_num',{
+=======
+                            {getFieldDecorator('address', {
+                                initialValue: section.address
+                            })(<Input />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label='活动人数上限'>
+                            {getFieldDecorator('active_max_num',{
+>>>>>>> Stashed changes
                                 rules: [{
                                     required: true,
                                     type: 'number',
                                     message: '请填写活动人数上限'
+<<<<<<< Updated upstream
                                 }], 
                                 initialValue: section.active_max_num || 1
                             })}/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="选择活动时间">
                             <RangePicker showTime format="yyyy/MM/dd HH:mm:ss" {...getFieldProps('time', {
+=======
+                                }],
+                                initialValue: section.active_max_num || 1
+                            })(<InputNumber min={1} />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="选择活动时间">
+                            {getFieldDecorator('time', {
+>>>>>>> Stashed changes
                                 rules: [{
                                     required: true,
                                     type: 'array',
                                     message: '请选择活动时间'
+<<<<<<< Updated upstream
                                 }], 
                                 initialValue: section.start_ms && section.expires_ms && [new Date(section.start_ms*1000), new Date(section.expires_ms*1000)]
                             })} />
@@ -159,6 +207,24 @@ class AddActive extends Component {
                             <Input type="textarea" rows={5} {...getFieldProps('descript', {
                                 initialValue: section.descript
                             })}/>
+=======
+                                }],
+                              initialValue:
+                                section.start_ms && section.expires_ms
+                                && [
+                                    moment.unix(section.start_ms),
+                                    moment.unix(section.expires_ms)
+                                ]
+                            })(<RangePicker showTime format="YYYY/MM/DD hh:mm:ss"  />)}
+                        </FormItem>
+                        <FormItem label="图文内容" {...formItemLayout}>
+                            <Simditor ref='simditor' content={ initialContent } />
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="活动描述">
+                            {getFieldDecorator('descript', {
+                                initialValue: section.descript
+                            })(<Input type="textarea" rows={5} />)}
+>>>>>>> Stashed changes
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :

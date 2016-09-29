@@ -71,14 +71,23 @@ class Add extends Component {
       })
     }
     render() {
+<<<<<<< Updated upstream
         const { getFieldProps, getFieldValue } = this.props.form
         getFieldProps('keys', {
+=======
+        const { getFieldDecorator, getFieldValue } = this.props.form
+        getFieldDecorator('keys', {
+>>>>>>> Stashed changes
             initialValue: ['A'],
         })
         const formItems = getFieldValue('keys').map((k) => {
             return (
                 <Form.Item {...formItemLayout} label={`${k}：`} key={k}>
+<<<<<<< Updated upstream
                     <Input {...getFieldProps(`${k}`, {
+=======
+                    <Input {...getFieldDecorator(`${k}`, {
+>>>>>>> Stashed changes
                                 rules: [{
                                     required: true,
                                     whitespace: true,
@@ -86,7 +95,11 @@ class Add extends Component {
                                 }],
                             })} style={{ width: '80%', marginRight: 8 }}
                     />
+<<<<<<< Updated upstream
                     <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross"/>} {...getFieldProps(`key${k}`, {valuePropName: 'checked'})} />
+=======
+                    <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross"/>} {...getFieldDecorator(`key${k}`, {valuePropName: 'checked'})} />
+>>>>>>> Stashed changes
                 </Form.Item>
             )
         })
@@ -94,7 +107,11 @@ class Add extends Component {
             <Spin spinning = {this.state.loading}>
                       <Form horizontal onSubmit = {this.submitHandler}>
                           <FormItem label = '试题' {...formItemLayout} hasFeedback required>
+<<<<<<< Updated upstream
                               <Input type="textarea" rows = {8} {...getFieldProps('question', {
+=======
+                              <Input type="textarea" rows = {8} {...getFieldDecorator('question', {
+>>>>>>> Stashed changes
                                 rules: [{
                                   required: true,
                                   whitespace: true,

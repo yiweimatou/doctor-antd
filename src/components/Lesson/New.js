@@ -121,15 +121,24 @@ class New extends Component {
     }
     render(){
         return (<p style={{textAlign: 'center'}}>暂未开放，敬请期待！</p>)
+<<<<<<< Updated upstream
         const { getFieldProps } = this.props.form
         const lnameProps = getFieldProps('lname',{
+=======
+        const { getFieldDecorator } = this.props.form
+        const lnameProps = getFieldDecorator('lname',{
+>>>>>>> Stashed changes
             rules:[{
                 required:true,
                 max:20,
                 message:'请输入20字以内课程名'
             }]
         })
+<<<<<<< Updated upstream
         const descriptProps = getFieldProps('descript',{
+=======
+        const descriptProps = getFieldDecorator('descript',{
+>>>>>>> Stashed changes
             rules:[{
                     required:false,max:200,message:'请输入少于200字的简介'
                 }]
@@ -164,7 +173,11 @@ class New extends Component {
                             listType="picture"
                             fileList={this.state.fileList}
                             onChange = {this.handleChange}
+<<<<<<< Updated upstream
                             {...getFieldProps('upload',{
+=======
+                            {...getFieldDecorator('upload',{
+>>>>>>> Stashed changes
                                 valuePropName:'fileList',
                                 normalize: this.normFile,
                                 rules:[{
@@ -186,7 +199,11 @@ class New extends Component {
                         <Input
                             type = 'number'
                             addonAfter = '元'
+<<<<<<< Updated upstream
                             {...getFieldProps('account_money',{
+=======
+                            {...getFieldDecorator('account_money',{
+>>>>>>> Stashed changes
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if( value >= 0) {
@@ -207,7 +224,11 @@ class New extends Component {
                         <Input
                             type = 'number'
                             addonAfter = '元'
+<<<<<<< Updated upstream
                             {...getFieldProps('organize_money',{
+=======
+                            {...getFieldDecorator('organize_money',{
+>>>>>>> Stashed changes
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if( value >= 0) {

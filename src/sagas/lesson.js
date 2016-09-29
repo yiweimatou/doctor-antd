@@ -1,7 +1,11 @@
 import {
     takeLatest
 } from 'redux-saga'
+<<<<<<< Updated upstream
 import { fork, put, call } from 'redux-saga/effects'
+=======
+import { fork, put, call, select } from 'redux-saga/effects'
+>>>>>>> Stashed changes
 import {
     newLesson,
     listLesson,
@@ -15,14 +19,24 @@ import {
     getUser
 } from '../services/user'
 
+<<<<<<< Updated upstream
 
 function* handlerGet(action) {
     try {
+=======
+function* watchGet() {
+    yield * takeLatest('lesson/get', function* (action) {
+      try {
+        const entity = yield select(state => state.lesson)
+        console.log(entity)
+        // if (lesson.entity && lesson.entity.id === action.payload.id) return
+>>>>>>> Stashed changes
         const result = yield call(getLesson, action.payload)
         if (action.resolve) {
           action.resolve(result.get)
         }
         yield put({
+<<<<<<< Updated upstream
             type: 'lesson/get/success',
             payload: {
                 entity: result.get
@@ -37,6 +51,19 @@ function* handlerGet(action) {
 
 function* watchGet() {
     yield * takeLatest('lesson/get', handlerGet)
+=======
+          type: 'lesson/get/success',
+          payload: {
+            entity: result.get
+          }
+        })
+      } catch (error) {
+        if (action.reject) {
+          action.reject(error)
+        }
+      }
+    })
+>>>>>>> Stashed changes
 }
 
 function* handleNew(action) {

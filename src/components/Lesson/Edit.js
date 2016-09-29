@@ -95,7 +95,7 @@ class Edit extends Component{
         const {
             form,lesson,loading
         } = this.props
-        const { getFieldProps } = form
+        const { getFieldDecorator } = form
         return(
             <div>
              <LessonBar lesson={lesson} current='edit' />
@@ -113,7 +113,7 @@ class Edit extends Component{
                     >
                         <Input
                             type='text'
-                            {...getFieldProps('lname',{
+                            {...getFieldDecorator('lname',{
                                 rules:[{
                                     required:true,
                                     max:20,
@@ -130,7 +130,7 @@ class Edit extends Component{
                         <Input
                             type = 'number'
                             addonAfter = '元'
-                            {...getFieldProps('account_money',{
+                            {...getFieldDecorator('account_money',{
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if( value >= 0) {
@@ -151,7 +151,7 @@ class Edit extends Component{
                         <Input
                             type = 'number'
                             addonAfter = '元'
-                            {...getFieldProps('organize_money',{
+                            {...getFieldDecorator('organize_money',{
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if(value >= 0) {
@@ -166,7 +166,11 @@ class Edit extends Component{
                         />
                     </FormItem>
                     <FormItem {...formItemLayout} label="上下架">
+<<<<<<< Updated upstream
                         <Switch {...getFieldProps('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})}/>
+=======
+                        <Switch {...getFieldDecorator('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})}/>
+>>>>>>> Stashed changes
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -192,7 +196,7 @@ class Edit extends Component{
                         <Input
                             type='textarea'
                             rows = '3'
-                            {...getFieldProps('descript',{
+                            {...getFieldDecorator('descript',{
                                 rules:[{
                                     required:false,
                                     max:200,

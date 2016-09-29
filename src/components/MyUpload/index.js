@@ -39,14 +39,14 @@ class MyUpload extends Component {
   }
   render(){
     const {
-        getFieldProps,//eslint-disable-line
+        getFieldDecorator,//eslint-disable-line
         ...props
     } =  this.props
     return (
-      <Upload 
-        {...props} 
-        {...getFieldProps('logo',{
-          
+      <Upload
+        {...props}
+        {...getFieldDecorator('logo',{
+
         })}
         fileList={this.state.fileList}
         onChange = {this.handleChange}

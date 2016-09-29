@@ -21,9 +21,12 @@ class List extends Component{
         list: PropTypes.array.isRequired,
         loading: PropTypes.bool.isRequired
     }
+<<<<<<< Updated upstream
     state = {
         lesson: {}
     }
+=======
+>>>>>>> Stashed changes
     selectHandler = value => {
         const { getList, lesson_id, getInfo } = this.props
         getInfo({
@@ -43,7 +46,10 @@ class List extends Component{
       const { getInfo, getList, lesson_id, getLesson } = this.props
       getInfo({ lesson_id, state: 1 }, null, error => message.error(error))
       getList({ offset: 1, limit: 9, lesson_id, state: 1 }, null, error => message.error(error))
+<<<<<<< Updated upstream
       getLesson({ id: lesson_id }, get => this.setState({ lesson: get }), error => message.error(error))
+=======
+>>>>>>> Stashed changes
     }
     handleConfirm= id => {
         this.props.delete({ id }, () => message.success('删除成功'), error => message.error(error))
@@ -73,11 +79,19 @@ class List extends Component{
         }, {
             title:'操作',
             key:'operation',
+<<<<<<< Updated upstream
             render: (text,record) => 
                 <div>
                     <Button
                         type = 'ghost'
                         onClick={() => 
+=======
+            render: (text,record) =>
+                <div>
+                    <Button
+                        type = 'ghost'
+                        onClick={() =>
+>>>>>>> Stashed changes
                             push(`/section/add/${keyToName(record.category_id)}?oid=${record.organize_id}&lid=${record.lesson_id}&id=${record.id}&edit=1`)
                         }
                     >编辑</Button>
@@ -94,7 +108,11 @@ class List extends Component{
             <div style={{margin:10}}>
                 <Paper>
                     <div style={{marginBottom: 10}}>
+<<<<<<< Updated upstream
                         <LessonBar lesson={this.state.lesson} current='section' />
+=======
+                        <LessonBar lid={lesson_id} current='section' />
+>>>>>>> Stashed changes
                     </div>
                 </Paper>
                 <div style={{margin: '20px 0', height: '30px'}}>
@@ -140,10 +158,13 @@ export default connect(state => ({
           params, resolve, reject
       }
   }),
+<<<<<<< Updated upstream
   getLesson: (params, resolve, reject) => dispatch({
       type: 'lesson/get',
       payload: params, resolve, reject
   }),
+=======
+>>>>>>> Stashed changes
   getList: (params, resolve, reject) => dispatch({
       type: 'section/list',
       payload: {

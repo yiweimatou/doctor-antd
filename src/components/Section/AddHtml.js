@@ -20,7 +20,7 @@ class AddHtml extends Component {
     submitHandler = state => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
-            const content = this.refs.simditor.getValue() 
+            const content = this.refs.simditor.getValue()
             let cover = ''
             if (this.state.fileList.length > 0) {
                 cover = this.state.fileList[0].url
@@ -88,7 +88,6 @@ class AddHtml extends Component {
                 return message.error('请填写内容!', 6)
             }
         })
-        
     }
     componentWillMount() {
         const { query, fetchSection, getLesson } = this.props
@@ -128,7 +127,11 @@ class AddHtml extends Component {
     render() {
         const { query, loading, lesson } = this.props
         const { initialContent, section } = this.state
+<<<<<<< Updated upstream
         const { getFieldProps } = this.props.form
+=======
+        const { getFieldDecorator } = this.props.form
+>>>>>>> Stashed changes
         if (!query.oid || !query.lid) {
             return (<div>参数错误</div>)
         }
@@ -142,17 +145,29 @@ class AddHtml extends Component {
                 <Spin spinning={loading}>
                     <Form>
                         <FormItem {...formItemLayout} hasFeedback label="文章标题">
+<<<<<<< Updated upstream
                             <Input {...getFieldProps('title', {
+=======
+                            <Input {...getFieldDecorator('title', {
+>>>>>>> Stashed changes
                                 rules: [{
                                     required: true,
                                     whitespace: false,
                                     message: '请填写标题'
+<<<<<<< Updated upstream
                                 }], 
+=======
+                                }],
+>>>>>>> Stashed changes
                                 initialValue: section.title
                             })}/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="文章描述">
+<<<<<<< Updated upstream
                             <Input type="textarea" rows={5} {...getFieldProps('descript', {
+=======
+                            <Input type="textarea" rows={5} {...getFieldDecorator('descript', {
+>>>>>>> Stashed changes
                                 initialValue: section.descript
                             })}/>
                         </FormItem>
@@ -169,9 +184,9 @@ class AddHtml extends Component {
                                     <Icon type="upload" /> 点击上传
                                 </Button>
                             </Upload>
-                        </FormItem> 
+                        </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <Simditor ref='simditor' content={ initialContent } />                                                  
+                            <Simditor ref='simditor' content={ initialContent } />
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :

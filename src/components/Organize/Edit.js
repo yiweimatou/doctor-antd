@@ -64,11 +64,11 @@ class Edit extends Component{
     }
     render(){
         const { form,organize,loading } = this.props
-        const { getFieldProps } = form
+        const { getFieldDecorator } = form
         return(
             <Spin spinning = { loading } size = 'large' >
             <Form
-                horizontal 
+                horizontal
                 form = { form }
                 onSubmit = { this.submitHandler }
                 style = {{pading:30,margin:'30 0'}}
@@ -80,7 +80,7 @@ class Edit extends Component{
                     <Input
                         type='text'
                         rows = '3'
-                        {...getFieldProps('title',{
+                        {...getFieldDecorator('title',{
                             rules:[{
                                 required:true,
                                 max:20,
@@ -97,7 +97,7 @@ class Edit extends Component{
                     <Input
                         type='textarea'
                         rows = '3'
-                        {...getFieldProps('descript',{
+                        {...getFieldDecorator('descript',{
                             rules:[{
                                 required:false,
                                 max:300,
@@ -112,11 +112,11 @@ class Edit extends Component{
                     {...formItemLayout}
                 >
                     <Upload
-                        name="upload_file" 
+                        name="upload_file"
                         action={UPLOAD_COVER_API}
                         listType="picture"
-                        fileList={this.state.fileList}      
-                        onChange = {this.handleChange}         
+                        fileList={this.state.fileList}
+                        onChange = {this.handleChange}
                     >
                         <Button type="ghost">
                             <Icon type="upload" /> 点击上传

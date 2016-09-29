@@ -41,9 +41,15 @@ class AddTextPaper extends Component {
         fetchTopics({
           id: section.foreign_id
         }, topics => this.setState({
+<<<<<<< Updated upstream
           section, pending: false, currentStep: 1, 
           topics,
           tempTopics: topics 
+=======
+          section, pending: false, currentStep: 1,
+          topics,
+          tempTopics: topics
+>>>>>>> Stashed changes
         }), error => message.error(error))
       }, error => message.error(error))
     }
@@ -116,7 +122,11 @@ class AddTextPaper extends Component {
             topic_num: values.topic_num,
             descript: values.descript || ''
           }, () => message.success('编辑成功!'), error => message.error(error))
+<<<<<<< Updated upstream
         } else {   
+=======
+        } else {
+>>>>>>> Stashed changes
           addSection({
             title: values.title,
             topic_num: values.topic_num,
@@ -137,7 +147,11 @@ class AddTextPaper extends Component {
         }
       }
     })
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
   }
   render() {
     const { currentStep, total, myTotal, visible, tempTopics, confirmLoading } = this.state
@@ -145,7 +159,11 @@ class AddTextPaper extends Component {
     if (!query.oid || !query.lid) {
       return (<div>参数错误</div>)
     }
+<<<<<<< Updated upstream
     const { getFieldProps } = this.props.form
+=======
+    const { getFieldDecorator } = this.props.form
+>>>>>>> Stashed changes
     const columns = [{
       dataIndex: 'title',
       key: 'title',
@@ -205,6 +223,7 @@ class AddTextPaper extends Component {
               <Spin spinning={loading}>
                 <Form horizontal>
                   <FormItem hasFeedback {...formItemLayout} label="文章标题">
+<<<<<<< Updated upstream
                     <Input type='text' {...getFieldProps('title', {
                       rules: [{
                         required: true, whitespace: false, message: '请填写文章标题'
@@ -213,6 +232,16 @@ class AddTextPaper extends Component {
                   </FormItem>
                   <FormItem {...formItemLayout} label='出试题数'>
                     <Input type='number' {...getFieldProps('topic_num', {
+=======
+                    <Input type='text' {...getFieldDecorator('title', {
+                      rules: [{
+                        required: true, whitespace: false, message: '请填写文章标题'
+                      }]
+                    })}/>
+                  </FormItem>
+                  <FormItem {...formItemLayout} label='出试题数'>
+                    <Input type='number' {...getFieldDecorator('topic_num', {
+>>>>>>> Stashed changes
                       rules: [{
                         required: true, message: '请填写出试题数'
                       }, {
@@ -227,7 +256,11 @@ class AddTextPaper extends Component {
                     })}/>
                   </FormItem>
                   <FormItem {...formItemLayout} label="文章描述">
+<<<<<<< Updated upstream
                     <Input type="textarea" rows={5} {...getFieldProps('descript')} />
+=======
+                    <Input type="textarea" rows={5} {...getFieldDecorator('descript')} />
+>>>>>>> Stashed changes
                   </FormItem>
                   <FormItem wrapperCol={{ offset: 6 }}>
                     <Button style={{marginRight: 30}} onClick={()=>this.handleNext(0)}>上一步</Button>
@@ -236,7 +269,11 @@ class AddTextPaper extends Component {
                     }
                     <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
                   </FormItem>
+<<<<<<< Updated upstream
                 </Form>        
+=======
+                </Form>
+>>>>>>> Stashed changes
               </Spin>:null
           }
         </div>

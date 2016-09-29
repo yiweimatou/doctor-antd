@@ -2,7 +2,11 @@ import { handleActions } from 'redux-actions'
 
 const initialState = {
 	loading: false,
+<<<<<<< Updated upstream
 	entity: null,
+=======
+	entity: {},
+>>>>>>> Stashed changes
   list: [],
   unnormallist: []
 }

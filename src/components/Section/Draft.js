@@ -32,7 +32,7 @@ class Draft extends Component {
         }, null, error => message.error(error))
     }
     render() {
-        const { loading, list, total, changeHandler, query, push, lesson } = this.props
+        const { loading, list, total, changeHandler, query, push } = this.props
         if (!query.oid || !query.lid) {
             return (<div>参数错误</div>)
         }
@@ -59,7 +59,11 @@ class Draft extends Component {
         }, {
             title: '操作',
             key: 'opreation',
+<<<<<<< Updated upstream
             render: (text, record) => 
+=======
+            render: (text, record) =>
+>>>>>>> Stashed changes
                 <div>
                     <Button type = 'ghost' onClick={() => {
                         push(`/section/add/${keyToName(record.category_id)}?lid=${record.lesson_id}&oid=${record.organize_id}&id=${record.id}`)
@@ -78,7 +82,11 @@ class Draft extends Component {
                 {query.lid > 0 ?
                 <Paper>
                     <div style={{marginBottom: 10}}>
+<<<<<<< Updated upstream
                         <LessonBar lesson={lesson} current='draft' />
+=======
+                        <LessonBar lid={query.lid} current='draft' />
+>>>>>>> Stashed changes
                     </div>
                 </Paper>:null
                 }
@@ -123,7 +131,10 @@ export default connect(state => ({
     loading: state.section.loading,
     list: state.section.list,
     total: state.section.total,
+<<<<<<< Updated upstream
     lesson: state.lesson.entity,
+=======
+>>>>>>> Stashed changes
     query: state.routing.locationBeforeTransitions.query,
 }), dispatch => ({
     push: path => dispatch(push(path)),
@@ -139,4 +150,8 @@ export default connect(state => ({
         type: 'section/info',
         payload: { params, resolve, reject }
     })
+<<<<<<< Updated upstream
 }))(Draft);
+=======
+}))(Draft);
+>>>>>>> Stashed changes

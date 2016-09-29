@@ -20,7 +20,11 @@ class AddNotice extends Component {
             if (errors) return
             const { section } = this.state
             const { addSection, editSection, query } = this.props
+<<<<<<< Updated upstream
             const content = this.refs.simditor.getValue() 
+=======
+            const content = this.refs.simditor.getValue()
+>>>>>>> Stashed changes
             if (content) {
                 if (state === 0){
                     if (section.id === undefined){
@@ -89,12 +93,20 @@ class AddNotice extends Component {
                 this.setState({ section })
             }, error => message.error(error))
         }
+<<<<<<< Updated upstream
         getLesson({ id: query.lid })
     }
     render() {
         const { section } = this.state
         const { query, loading, lesson } = this.props
         const { getFieldProps } = this.props.form
+=======
+    }
+    render() {
+        const { section } = this.state
+        const { query, loading } = this.props
+        const { getFieldDecorator } = this.props.form
+>>>>>>> Stashed changes
         if ( !query.lid || !query.oid) {
             return (<div>参数错误</div>)
         }
@@ -102,12 +114,20 @@ class AddNotice extends Component {
             <Spin spinning={loading}>
                 <Paper>
                     <div style={{margin: '10px 0'}}>
+<<<<<<< Updated upstream
                         <LessonBar lesson={ lesson } current='' />
+=======
+                        <LessonBar lid={ query.lid } current='' />
+>>>>>>> Stashed changes
                     </div>
                 </Paper>
                 <Form>
                     <FormItem {...formItemLayout} hasFeedback label="通知标题">
+<<<<<<< Updated upstream
                         <Input {...getFieldProps('title', {
+=======
+                        <Input {...getFieldDecorator('title', {
+>>>>>>> Stashed changes
                             rules: [{
                                 required: true,
                                 whitespace: false,
@@ -117,7 +137,11 @@ class AddNotice extends Component {
                         })}/>
                     </FormItem>
                     <FormItem {...formItemLayout} label="通知描述">
+<<<<<<< Updated upstream
                         <Input type="textarea" rows={5} {...getFieldProps('descript',{ initialValue: section.descript })}/>
+=======
+                        <Input type="textarea" rows={5} {...getFieldDecorator('descript',{ initialValue: section.descript })}/>
+>>>>>>> Stashed changes
                     </FormItem>
                     <FormItem {...formItemLayout} label="通知内容">
                         <Simditor ref='simditor' content={section.content}/>
@@ -136,15 +160,23 @@ class AddNotice extends Component {
 
 AddNotice.propTypes = {
     query: PropTypes.object.isRequired,
+<<<<<<< Updated upstream
     loading: PropTypes.bool.isRequired,
     lesson: PropTypes.object.isRequired
+=======
+    loading: PropTypes.bool.isRequired
+>>>>>>> Stashed changes
 };
 
 export default connect(
     state => ({
         query: state.routing.locationBeforeTransitions.query,
+<<<<<<< Updated upstream
         loading: state.section.loading,
         lesson: state.lesson.entity
+=======
+        loading: state.section.loading
+>>>>>>> Stashed changes
     }),
     dispatch => ({
         fetchSection: (params, resolve, reject) => {
@@ -152,10 +184,13 @@ export default connect(
                 params, resolve, reject
             }})
         },
+<<<<<<< Updated upstream
         getLesson: (params, resolve, reject) => dispatch({
             type: 'lesson/get',
             payload: params, resolve, reject
         }),
+=======
+>>>>>>> Stashed changes
         addSection: (params, resolve, reject) => {
             dispatch({ type: 'section/add', payload: {
                 params, resolve, reject
@@ -167,4 +202,8 @@ export default connect(
             }})
         },
     })
+<<<<<<< Updated upstream
 )(Form.create()(AddNotice));
+=======
+)(Form.create()(AddNotice));
+>>>>>>> Stashed changes

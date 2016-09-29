@@ -47,7 +47,7 @@ class AddBook extends Component {
         fetchYunbook({
           id: section.foreign_id
         }, yunbook => this.setState({
-          section, pending: false, currentStep: 1, 
+          section, pending: false, currentStep: 1,
           yunbook: {...yunbook, lbl: section.lbl},
           tempYunbook: {...yunbook, lbl: section.lbl},
           lbl: section.lbl
@@ -136,7 +136,7 @@ class AddBook extends Component {
             descript: values.descript || '',
             lbl: this.state.lbl
           }, () => message.success('编辑成功!'), error => message.error(error))
-        } else {   
+        } else {
           addSection({
             title: values.title,
             descript: values.descript || '',
@@ -161,7 +161,7 @@ class AddBook extends Component {
   }
   render() {
     const { loading, bookList, myBookList, query, total, myTotal, changeHandler, userId, lesson } = this.props
-    const { getFieldProps } = this.props.form
+    const { getFieldDecorator } = this.props.form
     const { currentStep, show, pending, confirmLoading, section, tempYunbook } = this.state
     if (!query.oid || !query.lid) {
      return (<div>参数错误</div>)
@@ -191,7 +191,7 @@ class AddBook extends Component {
         <Spin spinning={loading}>
           <Form horizontal>
             <FormItem {...formItemLayout} hasFeedback label="文章标题">
-              <Input {...getFieldProps('title', {
+              <Input {...getFieldDecorator('title', {
                 rules: [{
                   required: true,
                   whitespace: false,
@@ -201,7 +201,7 @@ class AddBook extends Component {
               })}/>
               </FormItem>
             <FormItem {...formItemLayout} label="文章描述">
-                <Input type="textarea" rows={5} {...getFieldProps('descript',{ initialValue: section.descript })}/>
+                <Input type="textarea" rows={5} {...getFieldDecorator('descript',{ initialValue: section.descript })}/>
             </FormItem>
             <FormItem wrapperCol={{ offset: 6 }}>
               <Button style={{marginRight: 30}} onClick={()=>this.handleNext(1)}>上一步</Button>
@@ -219,7 +219,6 @@ class AddBook extends Component {
               <Button onClick={()=>this.handleNext(2)}>下一步</Button>
             </div>
             <EditLblView yunbook={tempYunbook} changeLbl={this.changeLblHandler}/>
-            
           </div> :null }
         { currentStep === 0 ?
           <div>
@@ -281,7 +280,7 @@ class AddBook extends Component {
               }
             </TabPane>
           </Tabs>
-            <Button disabled = { tempYunbook.id === undefined } onClick={()=>this.handleNext(1)}>下一步</Button>                      
+            <Button disabled = { tempYunbook.id === undefined } onClick={()=>this.handleNext(1)}>下一步</Button>         
           </div> :null
         }
         </Spin>

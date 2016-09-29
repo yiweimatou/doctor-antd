@@ -27,7 +27,11 @@ class Recharge extends Component {
          this.props.fetch({ id: record.id }, record => this.setState({record}))
        }
    }
+<<<<<<< Updated upstream
   
+=======
+
+>>>>>>> Stashed changes
    onSubmit = (e) => {
      e.preventDefault()
      this.props.form.validateFields( (errors, values) => {
@@ -54,7 +58,11 @@ class Recharge extends Component {
    }
     render(){
       const { form } = this.props
+<<<<<<< Updated upstream
       const { getFieldProps } = form
+=======
+      const { getFieldDecorator } = form
+>>>>>>> Stashed changes
       return(
         <div>
           <Modal title = '扫一扫' visible= {this.state.visible} footer = {null}
@@ -68,7 +76,11 @@ class Recharge extends Component {
           <Spin spinning = { this.state.loading }>
           <Form horizontal onSubmit = { this.onSubmit }>
               <FormItem {...formItemLayout} label='充值金额'>
+<<<<<<< Updated upstream
                   <Input addonAfter = '元' type='number' {...getFieldProps('money', { rules: [{
+=======
+                  <Input addonAfter = '元' type='number' {...getFieldDecorator('money', { rules: [{
+>>>>>>> Stashed changes
                       required: true, message: '请填写充值金额'
                     }, {
                       validator: (rule, value, callback) => {
@@ -82,7 +94,11 @@ class Recharge extends Component {
                   />
               </FormItem>
               <FormItem wrapperCol = {{ offset: 6 }}>
+<<<<<<< Updated upstream
                   <RadioGroup {...getFieldProps('payType',{ initialValue: 2 })}>
+=======
+                  <RadioGroup {...getFieldDecorator('payType',{ initialValue: 2 })}>
+>>>>>>> Stashed changes
                       <Radio value={2}><img src={wxImage} width='100%' /></Radio>
                   </RadioGroup>
               </FormItem>

@@ -38,6 +38,7 @@ const draftRoute = store => ({
         const organize_id = nextState.location.query.oid
         if (!lesson_id || !organize_id) {
             return replace({ pathname: '/' })
+<<<<<<< Updated upstream
         }
         store.dispatch({ type: 'section/info', payload: { params: {lesson_id, organize_id, state: 2} }})
         store.dispatch({ type: 'section/list', payload: {
@@ -56,6 +57,18 @@ const draftRoute = store => ({
                 }
             })
         }
+=======
+        }
+        store.dispatch({ type: 'section/info', payload: { params: {lesson_id, organize_id, state: 2} }})
+        store.dispatch({ type: 'section/list', payload: {
+            params: {
+            lesson_id,
+            state: 2,
+            offset: 1,
+            limit: 9,
+            organize_id
+        }}})
+>>>>>>> Stashed changes
     }
 })
 

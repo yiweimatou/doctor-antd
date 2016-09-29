@@ -1,6 +1,6 @@
 import React ,{ Component,PropTypes } from 'react'
 import {connect} from 'react-redux'
-import { 
+import {
     Form,
     Button,
     Input,
@@ -67,13 +67,13 @@ class New extends Component {
             yunbook,
             show: true
         })
-        
+
     }
     handleNext = (step)=>{
         this.setState({
             currentStep:step
         })
-    } 
+    }
     submitHandler=e=>{
         e.preventDefault()
         this.props.form.validateFields((errors,values)=>{
@@ -120,7 +120,7 @@ class New extends Component {
             })
         }).catch(error=>{
             message.error(error)
-        })   
+        })
     }
     componentWillMount(){
         let a3 = []
@@ -166,7 +166,7 @@ class New extends Component {
             list,mylist,changeHandler,uid,form
         } = this.props
         const {
-            getFieldProps
+            getFieldDecorator
         } = form
         return(
             <div>
@@ -189,7 +189,7 @@ class New extends Component {
                                     list.data.map(yunbook=>{
                                         return (<Col key={yunbook.id} span={8}>
                                                     <SelectYunbook
-                                                        lid = {this.props.params.lid} 
+                                                        lid = {this.props.params.lid}
                                                         yunbook={yunbook}
                                                         handlePick = {this.handlePick}
                                                         onClick={this.click}
@@ -201,7 +201,7 @@ class New extends Component {
                                 </Row>
                                 { list.data.length > 0 ?
                                 <div className='pagination'>
-                                    <Pagination 
+                                    <Pagination
                                         defaultCurrent={1}
                                         total={list.total}
                                         showTotal={total => `共 ${total} 条`}
@@ -218,7 +218,7 @@ class New extends Component {
                                     mylist.data.map(yunbook=>{
                                         return (
                                             <Col key={yunbook.id} span={8}>
-                                                <SelectYunbook 
+                                                <SelectYunbook
                                                     lid = {this.props.params.lid}
                                                     yunbook={yunbook}
                                                     handlePick = {this.handlePick}
@@ -231,7 +231,7 @@ class New extends Component {
                                 </Row>
                                 {mylist.data.length > 0 ?
                                 <div className='pagination'>
-                                    <Pagination 
+                                    <Pagination
                                         defaultCurrent={1}
                                         total={mylist.total}
                                         showTotal={total => `共 ${total} 条`}
@@ -245,7 +245,7 @@ class New extends Component {
                         </Tabs>
                         :
                         <Form
-                            horizontal 
+                            horizontal
                             className = 'form'
                             onSubmit = { this.submitHandler }
                         >
@@ -254,9 +254,9 @@ class New extends Component {
                                 hasFeedback
                                 {...formItemLayout}
                             >
-                                <Input 
+                                <Input
                                     type='text'
-                                    {...getFieldProps('sname',{
+                                    {...getFieldDecorator('sname',{
                                         rules:[{
                                             required:true,
                                             max:30,
@@ -272,7 +272,7 @@ class New extends Component {
                                 <Input
                                     type='textarea'
                                     rows = '3'
-                                    {...getFieldProps('descript',{
+                                    {...getFieldDecorator('descript',{
                                         rules:[{
                                             required:false,
                                             max:200,
@@ -289,7 +289,7 @@ class New extends Component {
                                     changeOnSelect = { true }
                                     loadData = { this.loadData }
                                     placeholder = '请选择分类'
-                                    {...getFieldProps('area_ids',{
+                                    {...getFieldDecorator('area_ids',{
                                         rules:[{
                                             required:true,
                                             type:'array',
@@ -299,7 +299,7 @@ class New extends Component {
                                     })}
                                     options = {
                                         this.state.initialOptions
-                                    }                 
+                                    }
                                 />
                             </FormItem>
                             <button type='submit' id='_submit'></button>
@@ -308,22 +308,22 @@ class New extends Component {
                 <div style={{ marginTop: 24 }}>
                     {
                         cs === 1?
-                        <Button 
-                            disabled = {this.state.bid===0} 
+                        <Button
+                            disabled = {this.state.bid===0}
                             onClick={()=>this.handleNext(2)}
                         >
                             下一步
                         </Button>
                         :
                         <div>
-                            <Button 
-                                disabled = {this.state.bid===0} 
+                            <Button
+                                disabled = {this.state.bid===0}
                                 onClick={()=>this.handleNext(1)}
                                 style ={{marginRight:10}}
                             >
                                 上一步
                             </Button>
-                            <Button type='primary' onClick={this.onClick}>   
+                            <Button type='primary' onClick={this.onClick}>
                                 发布
                             </Button>
                         </div>

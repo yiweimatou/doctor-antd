@@ -46,7 +46,11 @@ class Add extends Component {
       } else if(this.state.topicList.length === 0) {
         return message.error('请选择试题', 6)
       } else {
+<<<<<<< Updated upstream
         this.setState({ loading: true })      
+=======
+        this.setState({ loading: true })
+>>>>>>> Stashed changes
         topic_id_list = this.state.topicList.reduce((previousValue, currentValue, index) => {
           if (index === 0) {
             return previousValue.id
@@ -55,7 +59,11 @@ class Add extends Component {
             return `${previousValue.id},${currentValue.id}`
           } else {
             return `${previousValue},${currentValue.id}`
+<<<<<<< Updated upstream
           } 
+=======
+          }
+>>>>>>> Stashed changes
         })
       }
       this.props.add({
@@ -75,7 +83,11 @@ class Add extends Component {
     })
   }
   render() {
+<<<<<<< Updated upstream
     const { getFieldProps } = this.props.form
+=======
+    const { getFieldDecorator } = this.props.form
+>>>>>>> Stashed changes
     const columns = [{
       title: '试题',
       dataIndex: 'question',
@@ -92,7 +104,11 @@ class Add extends Component {
         <Form horizontal onSubmit = {this.submitHandler}>
           <FormItem {...formItemLayout} hasFeedback label="试卷标题">
             <Input type="text"
+<<<<<<< Updated upstream
                    {...getFieldProps('title', {
+=======
+                   {...getFieldDecorator('title', {
+>>>>>>> Stashed changes
                      rules: [{
                        required: true,
                        whitespace: true,
@@ -102,7 +118,11 @@ class Add extends Component {
             />
           </FormItem>
           <FormItem {...formItemLayout} label="金额">
+<<<<<<< Updated upstream
             <InputNumber min={0} {...getFieldProps('sale_amount', {
+=======
+            <InputNumber min={0} {...getFieldDecorator('sale_amount', {
+>>>>>>> Stashed changes
               initialValue: 2
             })}/>
             <span>元</span>

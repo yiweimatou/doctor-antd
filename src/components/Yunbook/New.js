@@ -82,9 +82,15 @@ class New extends Component{
                     cover: cover,
                     map_id: 1,
                     kind: category[0].id === '1' ? category[1] : category[2]
+<<<<<<< Updated upstream
                 }, null, error => message.error(error))   
             }, error => message.error(error))
             
+=======
+                }, null, error => message.error(error))
+            }, error => message.error(error))
+
+>>>>>>> Stashed changes
         })
     }
     render(){
@@ -92,7 +98,7 @@ class New extends Component{
             form, loading, getList
         } = this.props
         const {
-            getFieldProps
+            getFieldDecorator
         } = form
         return(
             <div>
@@ -110,7 +116,7 @@ class New extends Component{
                     >
                         <Input
                             type='text'
-                            {...getFieldProps('title',{
+                            {...getFieldDecorator('title',{
                                 rules:[{
                                     required:true,
                                     max:30,
@@ -129,7 +135,7 @@ class New extends Component{
                         <Input
                             type='textarea'
                             rows = '3'
-                            {...getFieldProps('descript',{
+                            {...getFieldDecorator('descript',{
                                 rules:[{
                                     required:true,
                                     max:300,
@@ -145,7 +151,7 @@ class New extends Component{
                         <Input
                             type = 'number'
                             addonAfter = '元'
-                            {...getFieldProps('money',{
+                            {...getFieldDecorator('money',{
                                 rules:[{
                                     required: true,
                                     message: '请设置售价'
@@ -164,7 +170,7 @@ class New extends Component{
                             action={this.state.action}
                             listType="picture"
                             fileList={this.state.fileList}
-                            {...getFieldProps('upload',{
+                            {...getFieldDecorator('upload',{
                                 valuePropName:'fileList',
                                 normalize: this.normFile,
                                 rules:[{

@@ -50,7 +50,7 @@ class Edit extends Component{
         const {
             form,yunbook
         } = this.props
-        const { getFieldProps }=form
+        const { getFieldDecorator }=form
         return(
             <div>
                 <Spin spinning = { this.state.loading } tip="玩命加载中..." >
@@ -68,7 +68,7 @@ class Edit extends Component{
                             >
                                 <Input
                                     type='text'
-                                    {...getFieldProps('title',{
+                                    {...getFieldDecorator('title',{
                                         rules:[{
                                             required:true,
                                             max:30,
@@ -85,7 +85,7 @@ class Edit extends Component{
                                 <Input
                                     type = 'number'
                                     addonAfter = '元'
-                                    {...getFieldProps('money',{
+                                    {...getFieldDecorator('money',{
                                         rules:[{validator: (rule, value, callback) => {
                                                 if(value) {
                                                     callback()
@@ -105,7 +105,7 @@ class Edit extends Component{
                                 <Input
                                     type='textarea'
                                     rows = '3'
-                                    {...getFieldProps('descript',{
+                                    {...getFieldDecorator('descript',{
                                         rules:[{
                                             required:false,
                                             max:300,

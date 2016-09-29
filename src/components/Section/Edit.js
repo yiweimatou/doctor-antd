@@ -46,7 +46,7 @@ class Edit extends Component{
                 const area = values[0].get
                 merge_id = area.merge_id.split(',').map(i => parseInt(i, 10))
                 const _index = merge_id.indexOf(values[1].get.area_id)
-                _defaultValue = merge_id.slice(_index,merge_id.length - 1)                
+                _defaultValue = merge_id.slice(_index,merge_id.length - 1)
                 merge_id = merge_id.slice(_index+1,merge_id.length)
                 return Promise.all([getAreaList({ pid_list: _defaultValue.join(','), limit: 1000 }), area])
             }).then(([areas, area]) => {
@@ -73,7 +73,7 @@ class Edit extends Component{
                     if(_idx === -1) break;
                     _list[_idx].children = areaList
                     areaList = _list
-                    _list = _array.pop()                
+                    _list = _array.pop()
                 }
                 this.setState({
                     defaultValue: [area.id].concat(merge_id),
@@ -89,7 +89,7 @@ class Edit extends Component{
             this.setState({
                 yunbook:{
                     ...nextProps.yunbook,
-                    lbl:this.state.lbl                    
+                    lbl:this.state.lbl
                 }
             })
         }
@@ -120,7 +120,7 @@ class Edit extends Component{
             })
         }).catch(error=>{
             message.error(error)
-        })   
+        })
     }
     changeLbl=lbl=>this.setState({lbl})
 
@@ -159,14 +159,14 @@ class Edit extends Component{
         const {
             options,defaultValue
         } = this.state
-        const {getFieldProps}=form
+        const {getFieldDecorator}=form
         return(
             <div>
                 <Spin spinning = { this.state.loading }>
                 <Tabs defaultActiveKey='2'>
                     <TabPane key='1' tab='基本信息修改'>
                         <Form
-                            horizontal 
+                            horizontal
                             onSubmit = { this.submitHandler }
                             style = {{pading:30,margin:'30 0'}}
                         >
@@ -177,7 +177,7 @@ class Edit extends Component{
                             >
                                 <Input
                                     type='text'
-                                    {...getFieldProps('title',{
+                                    {...getFieldDecorator('title',{
                                         rules:[{
                                             required:true,
                                             max:30,
@@ -196,7 +196,7 @@ class Edit extends Component{
                                     placeholder='请选择分类'
                                     options = {options}
                                     loadData = {this.loadData}
-                                    {...getFieldProps('area_ids',{
+                                    {...getFieldDecorator('area_ids',{
                                         rules:[{
                                             required:true,
                                             type:'array',
@@ -213,7 +213,7 @@ class Edit extends Component{
                                 <Input
                                     type='textarea'
                                     rows = '3'
-                                    {...getFieldProps('descript',{
+                                    {...getFieldDecorator('descript',{
                                         rules:[{
                                             required:false,
                                             max:300,
@@ -227,7 +227,7 @@ class Edit extends Component{
                         </Form>
                     </TabPane>
                     <TabPane key='2' tab='标注修改'>
-                        <EditLblView 
+                        <EditLblView
                             yunbook={this.state.yunbook}
                             changeLbl={this.changeLbl}
                         />
