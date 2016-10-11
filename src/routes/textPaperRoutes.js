@@ -5,6 +5,8 @@ import Add from '../components/TextPaper/Add'
 import Show from '../components/TextPaper/Show'
 import List from '../components/TextPaper/List'
 import Manage from '../components/TextPaper/Manage'
+import Edit from '../components/TextPaper/Edit'
+import { message } from 'antd'
 
 const addRoute = () => ({
   path: 'add',
@@ -26,10 +28,27 @@ const showRoute = () => ({
   component: Show
 })
 
-const textPaperRoutes = () => ({
+const editRoute = store => ({
+  path: 'edit/:id',
+  component: Edit,
+  onEnter(nextState, replace) {
+    const id = nextState.params.id
+    if(!id){
+        return replace({
+            pathname:'/'
+        })
+    }
+    store.dispatch({
+      type: 'topics/get',
+      payload: { params: {id}, reject: error => message.error(error) }
+    })
+  }
+})
+
+const textPaperRoutes = store => ({
   path: 'textpaper',
   childRoutes: [
-    addRoute(), showRoute(), listRoute(), manageRoute()
+    addRoute(), showRoute(), listRoute(), manageRoute(), editRoute(store)
   ]
 })
 

@@ -27,8 +27,7 @@ const section = handleActions({
     }),
     ['section/get']:state=>({
         ...state,
-        loading: true,
-        entity: null
+        loading: true
     }),
     ['section/get/success']: (state, action) => ({
         ...state,

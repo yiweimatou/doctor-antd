@@ -66,26 +66,20 @@ class Edit extends Component{
                                 label='云板书标题'
                                 hasFeedback
                             >
-                                <Input
-                                    type='text'
-                                    {...getFieldDecorator('title',{
+                            {getFieldDecorator('title',{
                                         rules:[{
                                             required:true,
                                             max:30,
                                             message:'请填写最多30字标题'
                                         }],
                                         initialValue:yunbook&&yunbook.title
-                                    })}
-                                />
+                            })(<Input type='text' />)}
                             </FormItem>
                             <FormItem
                                 label = '售价'
                                 {...formItemLayout}
                             >
-                                <Input
-                                    type = 'number'
-                                    addonAfter = '元'
-                                    {...getFieldDecorator('money',{
+                            {getFieldDecorator('money',{
                                         rules:[{validator: (rule, value, callback) => {
                                                 if(value) {
                                                     callback()
@@ -95,25 +89,20 @@ class Edit extends Component{
                                             }
                                         }],
                                         initialValue:yunbook&&yunbook.sale_amount/100
-                                    })}
-                                />
+                            })(<Input type = 'number' addonAfter = '元' />)}
                             </FormItem>
                             <FormItem
                                 label='课程简介'
                                 {...formItemLayout}
                             >
-                                <Input
-                                    type='textarea'
-                                    rows = '3'
-                                    {...getFieldDecorator('descript',{
+                            {getFieldDecorator('descript',{
                                         rules:[{
                                             required:false,
                                             max:300,
                                             message:'最多300字'
                                         }],
                                         initialValue:yunbook&&yunbook.descript
-                                    })}
-                                />
+                            })(<Input type='textarea' rows = '5' />)}
                             </FormItem>
                             <button type='submit' id='_submit_'></button>
                         </Form>
@@ -129,7 +118,7 @@ class Edit extends Component{
                         const submit = document.getElementById('_submit_')
                         if(!submit){
                             this.props.save({
-                                lbl: encodeURIComponent(this.state.lbl),
+                                lbl: this.state.lbl,
                                 id: this.props.yunbook.id
                             })
                         }else{

@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Simditor from '../Simditor'
 import { Form, Button, Spin, Input, message, Upload, Icon } from 'antd'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import { HTML, UPLOAD_COVER_API } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
 import Paper from '../Paper'
@@ -75,10 +76,10 @@ class AddHtml extends Component {
                             ...params,
                             state: 1
                         },() => {
-                            if (query.lid>0) {
-                                this.props.redirct(`/lesson/show/${query.lid}`)
+                            if (query.lid > 0) {
+                                this.props.redirct(`/lesson/section?id=${query.lid}`)
                             } else {
-                                this.props.redirct(`/organize/show/${query.oid}`)
+                                this.props.redirct(`/organize/section?id=${query.oid}`)
                             }
                             message.success('发布成功', 6)
                         }, error => message.error(error))
@@ -90,7 +91,7 @@ class AddHtml extends Component {
         })
     }
     componentWillMount() {
-        const { query, fetchSection, getLesson } = this.props
+        const { query, fetchSection } = this.props
         if (query.id) {
             fetchSection({ id: query.id }, section => {
                 this.setState({ section, initialContent: section.content,
@@ -99,7 +100,6 @@ class AddHtml extends Component {
                     }] })
             }, error => message.error(error))
         }
-        getLesson({ id: query.lid })
     }
     handleChange = info => {
         let fileList = info.fileList
@@ -125,13 +125,9 @@ class AddHtml extends Component {
         return e && e.fileList
     }
     render() {
-        const { query, loading, lesson } = this.props
+        const { query, loading } = this.props
         const { initialContent, section } = this.state
-<<<<<<< Updated upstream
-        const { getFieldProps } = this.props.form
-=======
         const { getFieldDecorator } = this.props.form
->>>>>>> Stashed changes
         if (!query.oid || !query.lid) {
             return (<div>参数错误</div>)
         }
@@ -139,37 +135,25 @@ class AddHtml extends Component {
             <div>
                 <Paper>
                     <div style={{margin: '10px 0'}}>
-                        <LessonBar lesson={ lesson } current='' />
+                        <LessonBar lid={ query.lid } current='' />
                     </div>
                 </Paper>
                 <Spin spinning={loading}>
                     <Form>
                         <FormItem {...formItemLayout} hasFeedback label="文章标题">
-<<<<<<< Updated upstream
-                            <Input {...getFieldProps('title', {
-=======
-                            <Input {...getFieldDecorator('title', {
->>>>>>> Stashed changes
+                            {getFieldDecorator('title', {
                                 rules: [{
                                     required: true,
                                     whitespace: false,
                                     message: '请填写标题'
-<<<<<<< Updated upstream
-                                }], 
-=======
                                 }],
->>>>>>> Stashed changes
                                 initialValue: section.title
-                            })}/>
+                            })(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="文章描述">
-<<<<<<< Updated upstream
-                            <Input type="textarea" rows={5} {...getFieldProps('descript', {
-=======
-                            <Input type="textarea" rows={5} {...getFieldDecorator('descript', {
->>>>>>> Stashed changes
+                            {getFieldDecorator('descript', {
                                 initialValue: section.descript
-                            })}/>
+                            })(<Input type="textarea" rows={5}  />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="文章封面">
                             <Upload
@@ -190,7 +174,7 @@ class AddHtml extends Component {
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :
-                                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到素材</Button>
+                                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到课程资源库</Button>
                             }
                             <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
                         </FormItem>
@@ -207,25 +191,21 @@ AddHtml.propTypes = {
     addSection: PropTypes.func.isRequired,
     editSection: PropTypes.func.isRequired,
     fetchSection: PropTypes.func.isRequired,
-    getLesson: PropTypes.func.isRequired
+    redirct: PropTypes.func.isRequired
 }
 
 export default connect(
     state => ({
         query: state.routing.locationBeforeTransitions.query,
-        loading: state.section.loading,
-        lesson: state.lesson.entity
+        loading: state.section.loading
     }),
     dispatch => ({
+        redirct: path => dispatch(push(path)),
         fetchSection: (params, resolve, reject) => {
             dispatch({ type: 'section/get', payload: {
                 params, resolve, reject
             }})
         },
-        getLesson: (params, resolve, reject) => dispatch({
-            type: 'lesson/get',
-            payload: params, resolve, reject
-        }),
         addSection: (params, resolve, reject) => {
             dispatch({ type: 'section/add', payload: {
                 params, resolve, reject

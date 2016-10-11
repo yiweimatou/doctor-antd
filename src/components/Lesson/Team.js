@@ -24,7 +24,7 @@ class Team extends Component {
         }), error => message.error(error))
     }
     render() {
-        const { lesson, query, handleRemove } = this.props
+        const { query, handleRemove } = this.props
         const { list, total, loading, user, visible } = this.state
         return (
             <div>
@@ -33,7 +33,7 @@ class Team extends Component {
                   onCancel = { this.visibleHandler }
                   lid = {query.id}
                 />
-                <LessonBar lesson={lesson} current='team' />
+                <LessonBar lid={query.id} current='team' />
                 <Spin spinning={loading}>
                     <Paper>
                     <div style={{ margin: 30, padding: '30px 0'}}>
@@ -85,15 +85,13 @@ class Team extends Component {
 Team.propTypes = {
     query: PropTypes.object.isRequired,
     getList: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired,
-    lesson: PropTypes.object
+    userId: PropTypes.number.isRequired
 };
 
 export default connect(
     state => ({
         query: state.routing.locationBeforeTransitions.query,
-        userId: state.auth.key,
-        lesson: state.lesson.entity
+        userId: state.auth.key
     }),
     dispatch => ({
         handleRemove: (params, resolve, reject) => {

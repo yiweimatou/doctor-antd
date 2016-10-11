@@ -32,6 +32,9 @@ class Select extends Component {
     if (this.props.total !== nextProps.total){
       this.setState({ pagination: { ...this.state.pagination, total: nextProps.total } })
     }
+    if (this.props.selectedIdList != nextProps.selectedIdList) {
+      this.setState({ selectedList: nextProps.selectedIdList })
+    }
   }
   selectHandler = (e, id, question) => {
     if (e.target.type === 'button') {
@@ -52,18 +55,38 @@ class Select extends Component {
     const columns = [{
       dataIndex: 'question',
       key: 'question',
-      width: '90%'
+      title: '试题'
+    }, {
+      dataIndex: 'option1',
+      key: 'option1',
+      title: '选项A'
+    }, {
+      dataIndex: 'option2',
+      key: 'option2',
+      title: '选项B'
+    }, {
+      dataIndex: 'option3',
+      key: 'option3',
+      title: '选项C'
+    }, {
+      dataIndex: 'option4',
+      key: 'option4',
+      title: '选项D'
+    }, {
+      dataIndex: 'option5',
+      key: 'option5',
+      title: '选项E'
     }, {
       key: 'opreation',
       render: (text, record) => {
-        const disabled = this.state.selectedList.some(i => i.id === record.id)
+        const disabled = this.state.selectedList.some(i => i.id == record.id)
         return <Button disabled={disabled} onClick={e => this.selectHandler(e, record.id, record.question)}>{
           disabled ? '已经添加': '添加'
         }</Button>
       }
     }]
     return (
-      <Modal visible={visible} onOk={() => okHandler(this.state.selectedList)} onCancel={cancelHandler} title="选择试题">
+      <Modal visible={visible} onOk={() => okHandler(this.state.selectedList)} width='100%' onCancel={cancelHandler} title="选择试题">
         <Table bordered columns={columns} dataSource={list} loading={loading} pagination={this.state.pagination} />
       </Modal>
     )

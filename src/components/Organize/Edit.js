@@ -77,35 +77,27 @@ class Edit extends Component{
                     label='机构名称'
                     {...formItemLayout}
                 >
-                    <Input
-                        type='text'
-                        rows = '3'
-                        {...getFieldDecorator('title',{
-                            rules:[{
-                                required:true,
-                                max:20,
-                                message:'最多20字'
-                            }],
-                            initialValue:organize&&organize.title
-                        })}
-                    />
+                {getFieldDecorator('title',{
+                        rules:[{
+                            required:true,
+                            max:20,
+                            message:'最多20字'
+                        }],
+                        initialValue:organize&&organize.title
+                    })(<Input type='text' />)}
                 </FormItem>
                 <FormItem
                     label='机构简介'
                     {...formItemLayout}
                 >
-                    <Input
-                        type='textarea'
-                        rows = '3'
-                        {...getFieldDecorator('descript',{
+                {getFieldDecorator('descript',{
                             rules:[{
                                 required:false,
                                 max:300,
                                 message:'最多300字'
                             }],
                             initialValue:organize&&organize.descript
-                        })}
-                    />
+                        })(<Input type='textarea' rows = '5' />)}
                 </FormItem>
                 <FormItem
                     label='机构封面'

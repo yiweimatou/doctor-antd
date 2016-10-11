@@ -1,8 +1,8 @@
 import React from 'react'
 import 'leaflet/dist/leaflet.css'
-import 'leaflet-draw/dist/leaflet.draw.css'
+// import 'leaflet-draw/dist/leaflet.draw.css'
 import L from 'leaflet'
-import 'leaflet-draw'
+// import 'leaflet-draw'
 import { Spin, message, Button } from 'antd'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
@@ -72,7 +72,7 @@ class Show extends React.Component{
         const { lid, oid } = this.props.params
         let query = ''
         if (lid && oid) {
-          query = `lid=${lid}&&oid=${oid}`
+          query = `lid=${lid}&oid=${oid}`
         }
         return (
             <Spin spinning = {this.state.loading}>
@@ -102,13 +102,10 @@ export default connect(state => ({
     },
     fetchYunbook(id, resolve, reject) {
         dispatch({
-            type: 'yunbook/fetch',
+            type: 'yunbook/get',
             payload: {
                 id
-            },
-            meta: {
-                resolve, reject
-            }
+            }, resolve, reject
         })
     },
     push(path) {

@@ -5,15 +5,11 @@ import React, { Component, PropTypes } from 'react';
 import { Form, Spin, Button, Input, InputNumber, DatePicker, message } from 'antd'
 import { connect } from 'react-redux'
 import { ACTIVE } from '../../constants/api'
-<<<<<<< Updated upstream
 import Simditor from '../Simditor'
 import Map from '../Map'
-=======
 import moment from 'moment'
-import Simditor from '../Simditor'
-import Map from '../Map'
 import LessonBar from '../Lesson/LessonBar'
->>>>>>> Stashed changes
+import { push } from 'react-router-redux'
 const RangePicker = DatePicker.RangePicker
 const FormItem =Form.Item
 const formItemLayout = {
@@ -24,17 +20,16 @@ const formItemLayout = {
 class AddActive extends Component {
     state = {
         section: {},
-        initialContent: '',
-        latLng: { lat: 0, lng: 0 }
+        latLng: { lat: 0, lng: 0 },
+        address: ''
     }
     componentWillMount() {
         const { query, fetchSection } = this.props
         if (query.id) {
             fetchSection({
                 id: query.id
-            }, section => this.setState({ section, initialContent: section.conent, latLng: {
-                lat: section.lat, lng: section.lng
-            } }), error => message.error(error))
+            }, section => this.setState({ section, address: section.address, latLng: {lat: section.lat, lng: section.lng} }), 
+            error => message.error(error))
         }
     }
     submitHandler = state => {
@@ -47,7 +42,7 @@ class AddActive extends Component {
                 title: values.title,
                 descript: values.descript || '',
                 category_id: ACTIVE,
-                address: values.address || '',
+                address: this.state.address || '',
                 start_ms: (new Date(values.time[0])).getTime(),
                 expires_ms: (new Date(values.time[1])).getTime(),
                 active_max_num: values.active_max_num,
@@ -59,20 +54,20 @@ class AddActive extends Component {
                 content
             }
             if (state === 0) {
-                // 保存到素材
+                // 保存到课程资源库
                 if (section.id === undefined) {
                     addSection({
                         ...params,
                         state: 2
                     }, id => {
-                        message.success('保存到素材库')
+                        message.success('保存到课程资源库库')
                         this.setState({ section: { id } })
                     }, error=> message.error(error, 5))
                 } else {
                     editSection({
                         title: values.title,
                         descript: values.descript || '',
-                        address: values.address || '',
+                        address: this.state.address,
                         start_ms: (new Date(values.time[0])).getTime(),
                         expires_ms: (new Date(values.time[1])).getTime(),
                         active_max_num: values.active_max_num,
@@ -88,147 +83,100 @@ class AddActive extends Component {
                     editSection({
                         title: values.title,
                         descript: values.descript || '',
-                        address: values.address || '',
-<<<<<<< Updated upstream
-                        start_ms: (new Date(values.time[0])).getTime(),
-                        expires_ms: (new Date(values.time[1])).getTime(),
-=======
+                        address: this.state.address,
                         start_ms: values.time[0].unix(),
                         expires_ms: values.time[1].unix(),
->>>>>>> Stashed changes
                         active_max_num: values.active_max_num,
                         content,
                         lat: latLng.lat,
                         lng: latLng.lng,
                         id: section.id
-                    }, () => message.success('活动编辑成功'), error => message.error(error))
+                    }, () => {
+                        message.success('活动编辑成功')
+                        if (query.lid>0) {
+                            this.props.redirct(`/lesson/section?id=${query.lid}`)
+                        } else {
+                            this.props.redirct(`/organize/section?id=${query.oid}`)
+                        }
+                    }, error => message.error(error))
                 } else {
                     addSection({ ...params, state: 1 }, () => {
                         message.success('发布成功', 5)
                         if (query.lid>0) {
-                            this.props.redirct(`/lesson/show/${query.lid}`)
+                            this.props.redirct(`/lesson/section?id=${query.lid}`)
                         } else {
-                            this.props.redirct(`/organize/show/${query.oid}`)
+                            this.props.redirct(`/organize/section?id=${query.oid}`)
                         }
                     }, error => message.error(error))
                 }
             }
         })
+
     }
     render() {
         const { loading, query } = this.props
-<<<<<<< Updated upstream
-        const { getFieldProps } = this.props.form
-=======
         const { getFieldDecorator } = this.props.form
->>>>>>> Stashed changes
-        const { section, initialContent, latLng } = this.state
+        const { section, latLng, address } = this.state
          if (!query.oid || !query.lid) {
             return (<div>参数错误</div>)
         }
         return (
             <div>
                 <Spin spinning={loading}>
-<<<<<<< Updated upstream
-                    <Form>
-                        <FormItem {...formItemLayout} hasFeedback label="活动标题">
-                            <Input {...getFieldProps('title', {
-=======
                     <LessonBar lid={query.lid} current=""/>
                     <Form>
                         <FormItem {...formItemLayout} hasFeedback label="活动标题">
                             {getFieldDecorator('title', {
->>>>>>> Stashed changes
                                 rules: [{
                                     required: true,
                                     whitespace: false,
                                     message: '请填写活动标题'
-<<<<<<< Updated upstream
-                                }], 
-                                initialValue: section.title
-                            })}/>
-=======
                                 }],
-                                initialValue: section.title
+                                initialValue: section && section.title
                             })(<Input />)}
->>>>>>> Stashed changes
                         </FormItem>
                         <FormItem {...formItemLayout} label="活动定位">
-                            <Map latLng={ latLng } setLatlng = { latLng => this.setState({ latLng }) }/>
+                            <Map latLng={ latLng } setAddress={(address, latLng) => this.setState({ address, latLng })}/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="活动地址">
-<<<<<<< Updated upstream
-                            <Input {...getFieldProps('address', {
-                                initialValue: section.address
-                            })}/>
-                        </FormItem>
-                        <FormItem {...formItemLayout} label='活动人数上限'>
-                            <InputNumber min={1} {...getFieldProps('active_max_num',{
-=======
-                            {getFieldDecorator('address', {
-                                initialValue: section.address
-                            })(<Input />)}
+                            <Input value={address} onChange={e => this.setState({ address: e.target.value })} />
                         </FormItem>
                         <FormItem {...formItemLayout} label='活动人数上限'>
                             {getFieldDecorator('active_max_num',{
->>>>>>> Stashed changes
                                 rules: [{
                                     required: true,
                                     type: 'number',
                                     message: '请填写活动人数上限'
-<<<<<<< Updated upstream
-                                }], 
-                                initialValue: section.active_max_num || 1
-                            })}/>
-                        </FormItem>
-                        <FormItem {...formItemLayout} label="选择活动时间">
-                            <RangePicker showTime format="yyyy/MM/dd HH:mm:ss" {...getFieldProps('time', {
-=======
                                 }],
-                                initialValue: section.active_max_num || 1
+                                initialValue: section && section.active_max_num || 1
                             })(<InputNumber min={1} />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="选择活动时间">
                             {getFieldDecorator('time', {
->>>>>>> Stashed changes
                                 rules: [{
                                     required: true,
                                     type: 'array',
                                     message: '请选择活动时间'
-<<<<<<< Updated upstream
                                 }], 
-                                initialValue: section.start_ms && section.expires_ms && [new Date(section.start_ms*1000), new Date(section.expires_ms*1000)]
-                            })} />
-                        </FormItem>
-                        <FormItem label="图文内容" {...formItemLayout}>
-                            <Simditor ref='simditor' content={ initialContent } />                                                  
-                        </FormItem>
-                        <FormItem {...formItemLayout} label="活动描述">
-                            <Input type="textarea" rows={5} {...getFieldProps('descript', {
-                                initialValue: section.descript
-                            })}/>
-=======
-                                }],
                               initialValue:
-                                section.start_ms && section.expires_ms
+                                section && section.start_ms && section.expires_ms
                                 && [
                                     moment.unix(section.start_ms),
                                     moment.unix(section.expires_ms)
                                 ]
-                            })(<RangePicker showTime format="YYYY/MM/DD hh:mm:ss"  />)}
+                            })(<RangePicker showTime format="YYYY/MM/DD hh:mm"  />)}
                         </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <Simditor ref='simditor' content={ initialContent } />
+                            <Simditor ref='simditor' content={ section && section.content } />
                         </FormItem>
                         <FormItem {...formItemLayout} label="活动描述">
                             {getFieldDecorator('descript', {
-                                initialValue: section.descript
+                                initialValue: section && section.descript
                             })(<Input type="textarea" rows={5} />)}
->>>>>>> Stashed changes
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :
-                                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到素材</Button>
+                                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到课程资源库</Button>
                             }
                             <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
                         </FormItem>
@@ -253,6 +201,7 @@ export default connect(
         query: state.routing.locationBeforeTransitions.query,
     }),
     dispatch => ({
+        redirct: path => dispatch(push(path)),
         fetchSection: (params, resolve, reject) => dispatch({ type: 'section/get', payload: {
             params, resolve, reject
         }}),

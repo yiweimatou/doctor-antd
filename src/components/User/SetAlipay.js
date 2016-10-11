@@ -29,29 +29,17 @@ class SetAlipay extends Component {
         }
     }
     click = (e) => {
-<<<<<<< Updated upstream
-        e.preventDefault()     
-        const mobile = this.refs.mobile.refs.input.value
-        if (!isMobile(mobile)) {
-            return message.error('请输入正确的手机号码')
-        }      
-=======
         e.preventDefault()
         const mobile = this.refs.mobile.refs.input.value
         if (!isMobile(mobile)) {
             return message.error('请输入正确的手机号码')
         }
->>>>>>> Stashed changes
         this.setState({
             disabled: true,
             vcodeLabel: 60
         })
         this.props.sendCode(mobile,() => {
-<<<<<<< Updated upstream
-            this.interval = setInterval(this.tick,1000)            
-=======
             this.interval = setInterval(this.tick,1000)
->>>>>>> Stashed changes
         },() => {
             this.setState({
                 disabled: false,
@@ -88,16 +76,14 @@ class SetAlipay extends Component {
                     {...formItemLayout}
                     hasFeedback
                 >
-                    <Input type='text' {
-                        ...getFieldDecorator('alipay',{
+                    {getFieldDecorator('alipay',{
                             rules: [{
                                 required: true,
                                 message:'请填写支付宝账户'
                             }],
                             initialValue: user.alipay
-                        })
+                        })(<Input type='text' />)
                     }
-                    />
                 </FormItem>
                 <FormItem {...formItemLayout} label="手机号码">
                     <Input type='text' ref='mobile'/>
@@ -108,9 +94,7 @@ class SetAlipay extends Component {
                     hasFeedback
                     required
                 >
-                    <Input type='text'
-                    {
-                        ...getFieldDecorator('vcode',{
+                    {getFieldDecorator('vcode',{
                             rules:[{
                                 validator: (rule, value, callback) => {
                                     if(!value){
@@ -123,9 +107,8 @@ class SetAlipay extends Component {
                                     }
                                 }
                             }]
-                        })
+                        })(<Input type='text' />)
                     }
-                    />
                 </FormItem>
                 <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                     <Button type="primary" htmlType="submit">保存</Button>

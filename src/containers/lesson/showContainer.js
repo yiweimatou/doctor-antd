@@ -5,7 +5,8 @@ import { push } from 'react-router-redux'
 function mapStateToProps(state){
     return {
         userId: state.auth.key,
-        id: state.routing.locationBeforeTransitions.pathname.split('/')[3]
+        id: state.routing.locationBeforeTransitions.pathname.split('/')[3],
+        lesson: state.lesson.entity
     }
 }
 

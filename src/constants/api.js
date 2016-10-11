@@ -17,6 +17,7 @@ export const MSG_API_DOMAIN = `${HOST}:4001`
 export const DEFAULT_FACE = 'http://image.yiweimatou.com/ywmt/face/default.png'
 export const DEFAULT_COVER = 'http://image.yiweimatou.com/ywmt/cover/lesson.png'
 export const DEFAULT_LOGO = 'http://image.yiweimatou.com/ywmt/logo/default.png'
+export const DEFAULT_TOPICS = 'http://image.yiweimatou.com/topics.png'
 /*
 *category
  */
@@ -61,6 +62,18 @@ export const CATEGORY_API = 'http://m.yiweimatou.com/api/area'
 export const MSG_GET_API = `${MSG_API_DOMAIN}/msg/get`
 export const MSG_INFO_API = `${MSG_API_DOMAIN}/msg/info`
 export const MSG_LIST_API = `${MSG_API_DOMAIN}/msg/list`
+/**
+ * paper
+ */
+export const PAPER_GET_API = `${USER_API_DOMAIN}/paper/get`
+export const PAPER_INFO_API = `${USER_API_DOMAIN}/paper/info`
+export const PAPER_LIST_API = `${USER_API_DOMAIN}/paper/list`
+/**
+ * papers
+ */
+export const PAPERS_GET_API = `${USER_API_DOMAIN}/papers/get`
+export const PAPERS_LIST_API = `${USER_API_DOMAIN}/papers/list`
+export const PAPERS_INFO_API = `${USER_API_DOMAIN}/papers/info`
 /**
  * topic apis
  */
@@ -153,6 +166,7 @@ export const UPLOAD_LOGO_API = `${UPLOAD_DOMAIN}/logo`
 export const UPLOAD_AVATAR_API = `${UPLOAD_DOMAIN}/face`
 export const UPLOAD_COVER_API = `${UPLOAD_DOMAIN}/cover`
 export const UPLOAD_PPT_API = `${UPLOAD_DOMAIN}/book/ppt`
+export const UPLOAD_IMG_API = `${UPLOAD_DOMAIN}/img`
 /**
  *yunbook apis
  */

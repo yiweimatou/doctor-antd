@@ -3,7 +3,7 @@ import { Table, Popconfirm, Button } from 'antd'
 
 class List extends Component {
     render() {
-        const { list, total, loading, handleChange, handleConfirm } = this.props
+        const { list, total, loading, handleChange, handleConfirm, push } = this.props
         const pagination = {
             showTotal: total => `共${total}条`,
             pageSize: 9,
@@ -30,12 +30,16 @@ class List extends Component {
             title: '操作',
             key: 'opreation',
             render: (text, record) => 
-                    <Popconfirm
-                        title="确定要删除这个试卷吗？"
-                        onConfirm={()=>handleConfirm(record.id)}
-                    >
-                        <Button type = 'ghost'>删除</Button>
-                    </Popconfirm>
+                    <div>
+                        <Button type = 'ghost' onClick={() => push(`/textpaper/edit/${record.id}`)}>编辑</Button>
+                        <span className="ant-divider"></span>
+                        <Popconfirm
+                            title="确定要删除这个试卷吗？"
+                            onConfirm={()=>handleConfirm(record.id)}
+                        >
+                            <Button type = 'ghost'>删除</Button>
+                        </Popconfirm>
+                    </div>
         }]
         return (
             <Table dataSource={list} loading={loading} columns={columns} pagination = {{
@@ -51,7 +55,8 @@ List.propTypes = {
     handleConfirm: PropTypes.func,
     loading: PropTypes.bool,
     list: PropTypes.array,
-    total: PropTypes.number
+    total: PropTypes.number,
+    push: PropTypes.func.isRequired
 };
 
 export default List;

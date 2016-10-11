@@ -53,13 +53,15 @@ class Category extends Component {
         return(
             <Cascader ref='category' placeholder='请选择分类' loadData = {this.loadData}
                 options = {this.state.options} changeOnSelect = { true } onChange = {this.changeHandler}
+                style = { this.props.style }
             />
         )
     }
 }
 
 Category.propTypes = {
-    getList: PropTypes.func.isRequired
+    getList: PropTypes.func.isRequired,
+    style: PropTypes.object
 }
 
 export default Category

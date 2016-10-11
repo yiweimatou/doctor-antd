@@ -93,12 +93,12 @@ class Edit extends Component{
     }
     render(){
         const {
-            form,lesson,loading
+            form,lesson,loading, id
         } = this.props
         const { getFieldDecorator } = form
         return(
             <div>
-             <LessonBar lesson={lesson} current='edit' />
+             <LessonBar lid={id} current='edit' />
             <Paper>
                 <Spin spinning = { loading } size = 'large'>
                 <Form
@@ -111,26 +111,20 @@ class Edit extends Component{
                         label='课程名'
                         hasFeedback
                     >
-                        <Input
-                            type='text'
-                            {...getFieldDecorator('lname',{
+                    {getFieldDecorator('lname',{
                                 rules:[{
                                     required:true,
                                     max:20,
                                     message:'请输入20字以内课程名'
                                 }],
                                 initialValue: lesson && lesson.title
-                            })}
-                        />
+                            })(<Input type='text' />)}
                     </FormItem>
                     <FormItem
                         label = '报名费'
                         {...formItemLayout}
                     >
-                        <Input
-                            type = 'number'
-                            addonAfter = '元'
-                            {...getFieldDecorator('account_money',{
+                     {getFieldDecorator('account_money',{
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if( value >= 0) {
@@ -141,36 +135,27 @@ class Edit extends Component{
                                     }
                                 }],
                                 initialValue: lesson && lesson.account_amount/100
-                            })}
-                        />
+                            })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
                     <FormItem
                         label = '机构认证费'
                         {...formItemLayout}
                     >
-                        <Input
-                            type = 'number'
-                            addonAfter = '元'
-                            {...getFieldDecorator('organize_money',{
+                    {getFieldDecorator('organize_money',{
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if(value >= 0) {
                                             callback()
                                         }else {
-                                            callback('金额必须大于等于零')
+                                            callback('金额必须大于等于零')   
                                         }
-                                    }
+                                    }  
                                 }],
                                 initialValue: lesson && lesson.organize_amount
-                            })}
-                        />
+                            })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="上下架">
-<<<<<<< Updated upstream
-                        <Switch {...getFieldProps('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})}/>
-=======
-                        <Switch {...getFieldDecorator('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})}/>
->>>>>>> Stashed changes
+                        {getFieldDecorator('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})(<Switch />)}
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -193,18 +178,15 @@ class Edit extends Component{
                         label='课程简介'
                         {...formItemLayout}
                     >
-                        <Input
-                            type='textarea'
-                            rows = '3'
-                            {...getFieldDecorator('descript',{
+                        
+                            {getFieldDecorator('descript',{
                                 rules:[{
                                     required:false,
                                     max:200,
                                     message:'请输入少于200字的简介'
                                 }],
                                 initialValue:lesson&&lesson.descript
-                            })}
-                        />
+                            })(<Input type='textarea' rows = '5' />)}
                     </FormItem>
                     <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">保存</Button>
@@ -220,7 +202,8 @@ class Edit extends Component{
 export default connect(
     state=>({
         lesson:state.lesson.entity,
-        loading : state.lesson.loading
+        loading : state.lesson.loading,
+        id: state.routing.locationBeforeTransitions.pathname.split('/')[3],
     }),
     dispatch=>({
         handleEdit: (params, resolve, reject) => {

@@ -1,11 +1,7 @@
 import {
     takeLatest
 } from 'redux-saga'
-<<<<<<< Updated upstream
-import { fork, put, call } from 'redux-saga/effects'
-=======
-import { fork, put, call, select } from 'redux-saga/effects'
->>>>>>> Stashed changes
+import { fork, put, call, select, take } from 'redux-saga/effects'
 import {
     newLesson,
     listLesson,
@@ -18,52 +14,32 @@ import {
 import {
     getUser
 } from '../services/user'
+import { loadLesson } from '../reducers/selectors'
 
-<<<<<<< Updated upstream
-
-function* handlerGet(action) {
-    try {
-=======
 function* watchGet() {
-    yield * takeLatest('lesson/get', function* (action) {
-      try {
-        const entity = yield select(state => state.lesson)
-        console.log(entity)
-        // if (lesson.entity && lesson.entity.id === action.payload.id) return
->>>>>>> Stashed changes
-        const result = yield call(getLesson, action.payload)
-        if (action.resolve) {
-          action.resolve(result.get)
-        }
-        yield put({
-<<<<<<< Updated upstream
-            type: 'lesson/get/success',
-            payload: {
-                entity: result.get
+    while (true) {
+        const action = yield take('lesson/get')
+        yield fork(function *() {      
+            const lesson = yield select(loadLesson)
+            if (lesson && lesson.id == action.payload.id) return
+            try {
+                const result = yield call(getLesson, action.payload)
+                if (action.resolve) {
+                    action.resolve(result.get)
+                }
+                yield put({
+                    type: 'lesson/get/success',
+                    payload: {
+                        entity: result.get
+                    }
+                })      
+            } catch (error) {
+                if (action.reject) {
+                    action.reject(error)
+                }
             }
         })
-    } catch (error) {
-        if (action.reject) {
-          action.reject(error)
-        }
     }
-}
-
-function* watchGet() {
-    yield * takeLatest('lesson/get', handlerGet)
-=======
-          type: 'lesson/get/success',
-          payload: {
-            entity: result.get
-          }
-        })
-      } catch (error) {
-        if (action.reject) {
-          action.reject(error)
-        }
-      }
-    })
->>>>>>> Stashed changes
 }
 
 function* handleNew(action) {
@@ -189,7 +165,7 @@ function* watchLessonResidue() {
 }
 
 export default function*() {
-    yield * [
+    yield [
         fork(watchNew),
         fork(watchList),
         fork(watchGet),

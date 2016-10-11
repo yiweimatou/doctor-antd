@@ -2,7 +2,7 @@ import {
   takeLatest, takeEvery
 } from 'redux-saga'
 import {
-  fork, put, call
+  fork, put, call, select
 } from 'redux-saga/effects'
 import {
   getYunbook,
@@ -15,6 +15,7 @@ import {
 import { push } from 'react-router-redux'
 import { info as getBillInfo } from '../services/bill'
 import { LESSON, ORGANIZE } from '../constants/api'
+import { loadYunbook } from '../reducers/selectors'
 
 function* watchBuy() {
   yield* takeLatest('yunbook/buy', function *(action) {
@@ -76,22 +77,6 @@ function* watchFetchYunbookInfo() {
        }
      }
   })
-}
-
-
-function* watchFetchYunbook () {
-   yield * takeLatest('yunbook/fetch', function* (action) {
-     try {
-       const data = yield call(getYunbook, action.payload)
-       if (action.meta && action.meta.resolve) {
-         yield call(action.meta.resolve, data.get)
-       }
-     } catch (error) {
-       if (action.meta && action.meta.reject) {
-         yield call(action.meta.reject, error)
-       }
-     }
-   })
 }
 
 const handleInfo = function* (action) {
@@ -184,7 +169,17 @@ function* watchEdit() {
 
 function* handleGet(action) {
   try {
+    const yunbook = select(loadYunbook)
+    if (yunbook.id == action.payload.id) {
+      if (action.resolve) {
+        action.resolve(yunbook)
+      }
+      return
+    }
     const result = yield call(getYunbook, action.payload)
+    if (action.resolve) {
+      action.resolve(result.get)
+    }
     yield put({
       type: 'yunbook/get/success',
       payload: {
@@ -253,7 +248,6 @@ export default function*() {
     fork(watchInfo),
     fork(watchMyList),
     fork(watchMyInfo),
-    fork(watchFetchYunbook),
     fork(watchFetchYunbookList),
     fork(watchFetchYunbookInfo),
     fork(watchBuy)

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, message, Switch, Upload, Icon, Spin, } from 'antd';
+import Category from '../Category'
+import { TOPIC } from '../../constants/api'
 const FormItem = Form.Item;
 const formItemLayout = {
     labelCol: { span: 6 },
@@ -47,6 +49,11 @@ class Add extends Component {
             answer += val
           }
         })
+        if (answer === '') return message.error('至少要有一个答案')
+        const category = this.refs.select.refs.category.state.value
+        if (category.length > 0 && category.length < 3) {
+            return message.error('请再选择一级分类')
+        }
         const params = {
           state: 1,//默认发布
           question_imgurl: this.state.fileList[0] || '',
@@ -59,11 +66,24 @@ class Add extends Component {
           option5: values.E || ''
         }
         this.setState({ loading: true })
-        this.props.add(params, () => {
+        this.props.add(params, topic => {
           message.success('新增成功', 5)
           this.setState({ loading: false })
           this.props.form.resetFields()
           this.props.afterAddHandler()
+          if (category.length >= 3) {
+            this.props.grow({
+                lat: this.refs.select.getLatLng().lat,
+                lng: this.refs.select.getLatLng().lng,
+                title: values.question,
+                state: 1,
+                category_id: TOPIC,
+                foreign_id: topic.id,
+                // cover: cover,
+                map_id: 1,
+                kind: category[0].id === '1' ? category[1] : category[2]
+            }, null, error => message.error(error))
+          }
         }, (error) => {
           message.error(error, 7)
           this.setState({ loading: false })
@@ -71,35 +91,23 @@ class Add extends Component {
       })
     }
     render() {
-<<<<<<< Updated upstream
-        const { getFieldProps, getFieldValue } = this.props.form
-        getFieldProps('keys', {
-=======
         const { getFieldDecorator, getFieldValue } = this.props.form
         getFieldDecorator('keys', {
->>>>>>> Stashed changes
             initialValue: ['A'],
         })
         const formItems = getFieldValue('keys').map((k) => {
             return (
                 <Form.Item {...formItemLayout} label={`${k}：`} key={k}>
-<<<<<<< Updated upstream
-                    <Input {...getFieldProps(`${k}`, {
-=======
-                    <Input {...getFieldDecorator(`${k}`, {
->>>>>>> Stashed changes
+                    {getFieldDecorator(`${k}`, {
                                 rules: [{
                                     required: true,
                                     whitespace: true,
                                     message: '请填写选项！'
                                 }],
-                            })} style={{ width: '80%', marginRight: 8 }}
-                    />
-<<<<<<< Updated upstream
-                    <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross"/>} {...getFieldProps(`key${k}`, {valuePropName: 'checked'})} />
-=======
-                    <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross"/>} {...getFieldDecorator(`key${k}`, {valuePropName: 'checked'})} />
->>>>>>> Stashed changes
+                            })(<Input style={{ width: '80%', marginRight: 8 }} />)}
+                    {getFieldDecorator(`key${k}`, {valuePropName: 'checked'})(
+                        <Switch checkedChildren={<Icon type="check" />} unCheckedChildren={<Icon type="cross"/>} />
+                    )} 
                 </Form.Item>
             )
         })
@@ -107,17 +115,16 @@ class Add extends Component {
             <Spin spinning = {this.state.loading}>
                       <Form horizontal onSubmit = {this.submitHandler}>
                           <FormItem label = '试题' {...formItemLayout} hasFeedback required>
-<<<<<<< Updated upstream
-                              <Input type="textarea" rows = {8} {...getFieldProps('question', {
-=======
-                              <Input type="textarea" rows = {8} {...getFieldDecorator('question', {
->>>>>>> Stashed changes
+                              {getFieldDecorator('question', {
                                 rules: [{
                                   required: true,
                                   whitespace: true,
                                   message: '请填写试题'
                                 }]
-                              })} />
+                              })(<Input type="textarea" rows = {8} />)}
+                          </FormItem>
+                          <FormItem label = '分类' {...formItemLayout}>
+                            <Category getList={this.props.getList} ref='select'/>
                           </FormItem>
                           <FormItem label = '试题图片' {...formItemLayout}>
                               <Upload

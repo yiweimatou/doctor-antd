@@ -3,6 +3,8 @@ import List from './List'
 import Add from './Add'
 import { Tabs, Spin, Icon, message, Modal } from 'antd'
 import { connect } from 'react-redux'
+import Category from '../Category'
+import { TOPIC } from '../../constants/api'
 const TabPane = Tabs.TabPane
 
 class Manage extends Component {
@@ -56,6 +58,10 @@ class Manage extends Component {
     fileChangeHandler = (e) => {
       this.setState({ uploading: true })
       e.preventDefault()
+      const category = this.refs.select.refs.category.state.value
+      if (category.length > 0 && category.length < 3) {
+          return message.error('请再选择一级分类')
+      }
       const files  = e.target.files
       const ext = files[0].name.split('.').slice(-1)[0].toUpperCase()
       if (ext !== 'XLS' && ext !== 'XLSX') {
@@ -78,6 +84,7 @@ class Manage extends Component {
         this.setState({ total: _json.length })
         this.interval = setInterval(this.tick, 1000)
         _json.forEach(item => {
+          if (item['标准答案'] === '') return
           this.props.add({
             state: 1,
             question: item['试题题目（标题）'],
@@ -87,7 +94,20 @@ class Manage extends Component {
             option4: item['备选D'] || '',
             option5: item['备选E'] || '',
             answer: item['标准答案']
-          }, () => {
+          }, topic => {
+            if (category.length >= 3) {
+            this.props.grow({
+                lat: this.refs.select.getLatLng().lat,
+                lng: this.refs.select.getLatLng().lng,
+                title: topic.question,
+                state: 1,
+                category_id: TOPIC,
+                foreign_id: topic.id,
+                // cover: cover,
+                map_id: 1,
+                kind: category[0].id === '1' ? category[1] : category[2]
+            }, null, error => message.error(error))
+          }
             this.setState({ success: this.state.success + 1 })
           }, () => {
             this.setState({ failure: this.state.failure + 1 })
@@ -106,11 +126,15 @@ class Manage extends Component {
                     <List />
                 </TabPane>
                 <TabPane tab='新建试题' key='2'>
-                    <Add afterAddHandler={() => this.setState({ activeKey: '1' })} add={this.props.add}/>
+                    <Add afterAddHandler={() => this.setState({ activeKey: '1' })} add={this.props.add} getList={this.props.getList} grow={this.props.grow}/>
                 </TabPane>
                 <TabPane tab='批量上传' key='3'>
                     <Spin spinning={this.state.uploading}>
                       <div style = {{textAlign: 'center'}} >
+                        <div style={{ display: 'inline-block', width: '600px', marginBottom: 20}}>
+                          <span>试卷分类:&nbsp;</span>
+                          <Category getList={this.props.getList} style={{width: '500px'}} ref='select'/>
+                        </div>
                         <p >请根据模板格式填写Excel &nbsp;
                             <a href = "http://7xp3s1.com1.z0.glb.clouddn.com/%E9%A2%98%E5%BA%93%E6%A8%A1%E6%9D%BF.xlsx" target = '_blank'>
                                 下载Excel模板
@@ -132,11 +156,23 @@ export default connect(
     dispatch => ({
         add: (params, resolve, reject) => {
             dispatch({
-            type: 'topic/add',
-            payload: {
-                params, resolve, reject
-            }
+              type: 'topic/add',
+              payload: {
+                  params, resolve, reject
+              }
             })
+        },
+        getList(params, resolve, reject) {
+            dispatch({
+                type: 'category/list',
+                payload: { params, resolve, reject }
+            })
+        },
+        grow(params, resolve, reject) {
+          dispatch({
+            type: 'grow/add',
+            payload: { params, resolve, reject }
+          })
         }
     })
 )(Manage);

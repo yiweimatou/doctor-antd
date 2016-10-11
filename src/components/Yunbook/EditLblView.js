@@ -94,11 +94,11 @@ class EditLblView extends React.Component{
         if(yunbook.lbl){
             let  obj = {}
             try {
-                obj = JSON.parse(yunbook.lbl)
+                obj = JSON.parse(decodeURIComponent(yunbook.lbl))
             } catch (error) {
                 console.log(error)
             }
-            if (obj.type !== undefined ) { 
+            if (obj && obj.type !== undefined ) { 
                 this._drawnItems = L.geoJson(obj, {
                     onEachFeature: function (featureData, layer) {
                         if (featureData.geometry.type === 'Point') {
@@ -137,7 +137,7 @@ class EditLblView extends React.Component{
         //     removeGeoJson(id)
         // }
         function updateGeoJson(geoJson) {
-            self._geoJson = self._geoJson.features.map(item=>{
+            self._geoJson.features = self._geoJson.features.map(item=>{
                 if(item.properties._id === geoJson.properties._id){
                     return geoJson
                 }

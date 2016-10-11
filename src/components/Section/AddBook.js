@@ -9,6 +9,7 @@ import SelectYunbook from '../Yunbook/SelectYunbook'
 import EditLblView from '../Yunbook/EditLblView'
 import { BOOK } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
+import ImgUploader from '../ImgUploader'
 import Paper from '../Paper'
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
@@ -31,12 +32,11 @@ class AddBook extends Component {
     tempYunbook: {}
   }
   componentWillMount() {
-    const { getInfo, fetchSection, fetchYunbook, changeHandler, userId, query, getLesson } = this.props
+    const { getInfo, fetchSection, fetchYunbook, changeHandler, userId, query } = this.props
     getInfo({ account_id: this.props.userId })
     getInfo({})
     changeHandler({ offset: 1, limit: 6 })
     changeHandler({ offset: 1, limit: 6, account_id: userId })
-    getLesson({ id: query.lid })
     /*当从预览购买跳转回来有yid
      *当编辑状态时有id
      *yid和id不会共存
@@ -56,7 +56,7 @@ class AddBook extends Component {
     } else if (query.yid) {
       this.setState({ pending: true })
       fetchYunbook({ id: query.yid }, yunbook => {
-          this.setState({ yunbook, tempYunbook:yunbook, currentStep: 1, pending: false, lbl: yunbook.lbl })
+          this.setState({ yunbook, tempYunbook: yunbook, currentStep: 1, pending: false, lbl: yunbook.lbl })
       }, error => message.error(error))
     }
   }
@@ -103,6 +103,11 @@ class AddBook extends Component {
       }
       const { section, tempYunbook } = this.state
       const { query, addSection, editSection } = this.props
+      let cover = ''
+      const files = this.refs.uploader.state.fileList
+      if (files && files[0]) {
+        cover = files[0].url
+      }
       if (state === 0) {
         if (section.id === undefined) {
           addSection({
@@ -111,12 +116,12 @@ class AddBook extends Component {
             state: 2,//1:正常,2:冻结,3:删除
             category_id: BOOK,
             foreign_id: tempYunbook.id,
-            cover: tempYunbook.cover,
+            cover: cover || tempYunbook.cover,
             lesson_id: query.lid,
             organize_id: query.oid,
             lbl: this.state.lbl
           }, id => {
-            message.success('保存到素材', 6)
+            message.success('保存到课程资源库', 6)
             this.setState({ section: { id } })
           }, error => message.error(error, 8))
         } else {
@@ -124,7 +129,8 @@ class AddBook extends Component {
             id: this.state.section.id,
             title: values.title,
             descript: values.descript || '',
-            lbl: this.state.lbl
+            lbl: this.state.lbl,
+            cover: cover || tempYunbook.cover
           }, () => message.success('保存成功!'), error => message.error(error))
         }
       } else if (state === 1) {
@@ -134,7 +140,8 @@ class AddBook extends Component {
             id: section.id,
             title: values.title,
             descript: values.descript || '',
-            lbl: this.state.lbl
+            lbl: this.state.lbl,
+            cover: cover || tempYunbook.cover
           }, () => message.success('编辑成功!'), error => message.error(error))
         } else {
           addSection({
@@ -146,13 +153,13 @@ class AddBook extends Component {
             lesson_id: query.lid,
             organize_id: query.oid,
             lbl: this.state.lbl,
-             cover: tempYunbook.cover,
+            cover: cover || tempYunbook.cover
           }, () => {
             message.success('创建成功!')
             if (query.lid>0) {
               this.props.redirct(`/lesson/section?id=${query.lid}`)
             } else {
-              this.props.redirct(`/organize/show/${query.oid}`)
+              this.props.redirct(`/organize/section?id=${query.oid}`)
             }
           }, error => message.error(error, 8))
         }
@@ -160,7 +167,7 @@ class AddBook extends Component {
     })
   }
   render() {
-    const { loading, bookList, myBookList, query, total, myTotal, changeHandler, userId, lesson } = this.props
+    const { loading, bookList, myBookList, query, total, myTotal, changeHandler, userId } = this.props
     const { getFieldDecorator } = this.props.form
     const { currentStep, show, pending, confirmLoading, section, tempYunbook } = this.state
     if (!query.oid || !query.lid) {
@@ -179,7 +186,7 @@ class AddBook extends Component {
         </Modal>
          <Paper>
               <div style={{margin: '10px 0'}}>
-                  <LessonBar lesson={ lesson } current='' />
+                  <LessonBar lid={query.lid} current='' />
               </div>
         </Paper>
         <Steps current={ currentStep }>
@@ -191,22 +198,25 @@ class AddBook extends Component {
         <Spin spinning={loading}>
           <Form horizontal>
             <FormItem {...formItemLayout} hasFeedback label="文章标题">
-              <Input {...getFieldDecorator('title', {
+              {getFieldDecorator('title', {
                 rules: [{
                   required: true,
                   whitespace: false,
                   message: '请填写标题'
                 }],
                 initialValue: section.title
-              })}/>
-              </FormItem>
+              })(<Input />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="文章封面">
+              <ImgUploader ref='uploader'/>
+            </FormItem>
             <FormItem {...formItemLayout} label="文章描述">
-                <Input type="textarea" rows={5} {...getFieldDecorator('descript',{ initialValue: section.descript })}/>
+                {getFieldDecorator('descript',{ initialValue: section.descript })(<Input type="textarea" rows={5} />)}
             </FormItem>
             <FormItem wrapperCol={{ offset: 6 }}>
               <Button style={{marginRight: 30}} onClick={()=>this.handleNext(1)}>上一步</Button>
               { query.edit === '1' ? null:
-                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到素材</Button>
+                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到课程资源库</Button>
               }
               <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
             </FormItem>
@@ -301,8 +311,7 @@ AddBook.propTypes = {
   fetchYunbook: PropTypes.func.isRequired,
   addSection: PropTypes.func.isRequired,
   buyBook: PropTypes.func.isRequired,
-  getLesson: PropTypes.func.isRequired,
-  lesson: PropTypes.object
+  getLesson: PropTypes.func.isRequired
 }
 
 export default connect(
@@ -313,8 +322,7 @@ export default connect(
     userId: state.auth.key,
     query: state.routing.locationBeforeTransitions.query,
     total: state.yunbook.total,
-    myTotal: state.yunbook.myTotal,
-    lesson: state.lesson.entity
+    myTotal: state.yunbook.myTotal
   }),
   dispatch => ({
     redirct: path => {
@@ -339,9 +347,7 @@ export default connect(
       }
     },
     fetchYunbook: (params, resolve, reject) => {
-      dispatch({ type: 'yunbook/fetch', payload: params, meta: {
-        resolve, reject
-      }})
+      dispatch({ type: 'yunbook/get', payload: params, resolve, reject })
     },
     fetchSection: (params, resolve, reject) => {
       dispatch({ type: 'section/get', payload: {

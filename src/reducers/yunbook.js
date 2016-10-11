@@ -17,10 +17,6 @@ const initialState = {
 }
 
 const yunbook = handleActions({
-    ['yunbook/get']:state=>({
-        ...state,
-        entity:null
-    }),
     ['yunbook/get/success']:(state,action)=>({
         ...state,
         entity:action.payload.entity

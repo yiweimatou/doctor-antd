@@ -28,19 +28,19 @@ class Login extends Component{
     render(){
         const { loading,isAuthed,form } = this.props
         const { getFieldDecorator } = form
-        const accountProps = getFieldDecorator('mobile',{
+        const account = getFieldDecorator('mobile',{
             rules:[{
                 required:true,
                 message:'请输入正确的手机号码',
                 validator:mobileChecker
             }]
-        })
-        const passwordProps = getFieldDecorator('password',{
+        })(<Input type="text" autoComplete="off" />)
+        const password = getFieldDecorator('password',{
             rules:[{
                 required:true,
                 message:'请输入密码'
             }]
-        })
+        })(<Input type="password" autoComplete="off" />)
         return(
             <Modal
                 title = '登录'
@@ -57,27 +57,8 @@ class Login extends Component{
                 }
             >
                 <Form horizontal>
-                    <FormItem
-                        {...formItemLayout}
-                        label = '帐号'
-                        hasFeedback
-                    >
-                        <Input
-                            type="text" autoComplete="off"
-                            {...accountProps}
-                        />
-                    </FormItem>
-                    <FormItem
-                        {...formItemLayout}
-                        label="密码"
-                        hasFeedback
-                    >
-                        <Input
-                            type="password"
-                            autoComplete="off"
-                            {...passwordProps}
-                        />
-                    </FormItem>
+                    <FormItem {...formItemLayout} label = '帐号' hasFeedback>{account}</FormItem>
+                    <FormItem {...formItemLayout} label="密码" hasFeedback >{password}</FormItem>
                 </Form>
             </Modal>
         )

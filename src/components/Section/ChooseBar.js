@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import { Menu, Dropdown } from 'antd'
+import { Menu, Dropdown, Icon, Button } from 'antd'
 
 
 class ChooseBar extends Component {
@@ -11,7 +11,7 @@ class ChooseBar extends Component {
                     <a href={`/section/add/book?lid=${lid}&oid=0`}>引用云板书</a>
                 </Menu.Item>
                 <Menu.Item key="1">
-                    <a href={`/section/add/textpaper?lid=${lid}&oid=0`}>引用试卷</a>
+                    <a href={`/section/add/topics?lid=${lid}&oid=0`}>引用试卷</a>
                 </Menu.Item>
                 <Menu.Item key="2">
                     <a href={`/section/add/notice?lid=${lid}&oid=0`}>创建通知</a>
@@ -25,9 +25,11 @@ class ChooseBar extends Component {
             </Menu>
         )
         return (
-                <Dropdown.Button overlay={menu} type="primary">
-                    创建资讯
-                </Dropdown.Button>
+                <Dropdown overlay={menu}>
+                    <Button type="primary" style={{ marginLeft: 8 }}>
+                            创建课程资源 <Icon type="down" />
+                    </Button>
+                </Dropdown>
         );
     }
 }

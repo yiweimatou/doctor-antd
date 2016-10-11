@@ -2,8 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux'
 import { Table, Button, Popconfirm, message, Select } from 'antd'
 import { push } from 'react-router-redux'
-import { keyToName } from '../../utils'
-import Paper from '../Paper'
+import { keyToName, keyToDisplayname } from '../../utils'
+// import Paper from '../Paper'
 import LessonBar from '../Lesson/LessonBar'
 import ChooseBar from './ChooseBar'
 const Option = Select.Option
@@ -48,7 +48,7 @@ class Draft extends Component {
             }, null, error => message.error(error))
         }
         const columns = [{
-            title: '文章标题',
+            title: '课程资源标题',
             dataIndex: 'title',
             key: 'title'
         }, {
@@ -57,13 +57,14 @@ class Draft extends Component {
             key:'put_ms',
             render:text=>new Date(text*1000).toLocaleString()
         }, {
+            title: '资源类型',
+            dataIndex: 'category_id',
+            key: 'category_id',
+            render: text => keyToDisplayname(text)
+        }, {
             title: '操作',
             key: 'opreation',
-<<<<<<< Updated upstream
-            render: (text, record) => 
-=======
             render: (text, record) =>
->>>>>>> Stashed changes
                 <div>
                     <Button type = 'ghost' onClick={() => {
                         push(`/section/add/${keyToName(record.category_id)}?lid=${record.lesson_id}&oid=${record.organize_id}&id=${record.id}`)
@@ -80,15 +81,7 @@ class Draft extends Component {
         return (
              <div style={{margin:10}}>
                 {query.lid > 0 ?
-                <Paper>
-                    <div style={{marginBottom: 10}}>
-<<<<<<< Updated upstream
-                        <LessonBar lesson={lesson} current='draft' />
-=======
-                        <LessonBar lid={query.lid} current='draft' />
->>>>>>> Stashed changes
-                    </div>
-                </Paper>:null
+                    <LessonBar lid={query.lid} current='draft' />:null
                 }
                 <div style={{margin: '20px 0', height: '30px'}}>
                     <div style={{float: 'left'}}>
@@ -131,10 +124,6 @@ export default connect(state => ({
     loading: state.section.loading,
     list: state.section.list,
     total: state.section.total,
-<<<<<<< Updated upstream
-    lesson: state.lesson.entity,
-=======
->>>>>>> Stashed changes
     query: state.routing.locationBeforeTransitions.query,
 }), dispatch => ({
     push: path => dispatch(push(path)),
@@ -150,8 +139,4 @@ export default connect(state => ({
         type: 'section/info',
         payload: { params, resolve, reject }
     })
-<<<<<<< Updated upstream
 }))(Draft);
-=======
-}))(Draft);
->>>>>>> Stashed changes

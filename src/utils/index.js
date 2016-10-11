@@ -2,6 +2,25 @@ import {
     HTML, ACCOUNT, ACTIVE, TOPICS, BOOK, NOTICE 
 } from '../constants/api'
 
+export function keyToDisplayname(key) {
+    switch (key.toString()) {
+        case HTML:
+            return '图文'
+        case ACCOUNT:
+            return '账户'
+        case ACTIVE:
+            return '活动'
+        case TOPICS:
+            return '试卷'
+        case BOOK:
+            return '板书'
+        case NOTICE:
+            return '通知'
+        default:
+            return ''
+    }
+}
+
 export function keyToName(key) {
     switch (key.toString()) {
         case HTML:
