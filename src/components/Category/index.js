@@ -14,6 +14,19 @@ class Category extends Component {
         }],
         latLng: { lat: 0, lng: 0 }
     }
+    componentWillReceiveProps(nextProps) {
+        const { options } = nextProps
+        if (options && options.length > 0) {
+            this.setState({
+                options
+            })
+        }
+    }
+    componentWillMount() {
+        this.setState({
+            options: this.props.options
+        })
+    }
     loadData = selectedOptions => {
         const targetOption = selectedOptions[selectedOptions.length-1]
         targetOption.loading = true
@@ -52,7 +65,8 @@ class Category extends Component {
     render (){
         return(
             <Cascader ref='category' placeholder='请选择分类' loadData = {this.loadData}
-                options = {this.state.options} changeOnSelect = { true } onChange = {this.changeHandler}
+                options = { this.state.options } changeOnSelect = { true } onChange = {this.changeHandler}
+                defaultValue = { this.props.defaultValue }
                 style = { this.props.style }
             />
         )
@@ -61,7 +75,8 @@ class Category extends Component {
 
 Category.propTypes = {
     getList: PropTypes.func.isRequired,
-    style: PropTypes.object
+    style: PropTypes.object,
+    options: PropTypes.array
 }
 
 export default Category

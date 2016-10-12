@@ -148,6 +148,9 @@ function* watchNew() {
 function* handleEdit(action) {
   try {
     yield call(editYunbook, action.payload)
+    if (action.resolve) {
+      action.resolve()
+    }
     yield put({
       type: 'yunbook/edit/success',
       payload: action.payload

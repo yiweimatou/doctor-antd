@@ -3,6 +3,7 @@
  */
 import React, { Component, PropTypes } from 'react';
 import { Form, Spin, Button, Input, InputNumber, DatePicker, message } from 'antd'
+import ImgUploader from '../ImgUploader'
 import { connect } from 'react-redux'
 import { ACTIVE } from '../../constants/api'
 import Simditor from '../Simditor'
@@ -38,6 +39,11 @@ class AddActive extends Component {
             const { section, latLng } = this.state
             const { addSection, editSection, query } = this.props
             const content = this.refs.simditor.getValue()
+            let cover = ''
+            const files = this.refs.uploader.state.fileList
+            if (files && files[0]) {
+                cover = files[0].url
+            }
             const params = {
                 title: values.title,
                 descript: values.descript || '',
@@ -51,7 +57,8 @@ class AddActive extends Component {
                 lat: latLng.lat,
                 lng: latLng.lng,
                 foreign_id: 0,
-                content
+                content,
+                cover
             }
             if (state === 0) {
                 // 保存到课程资源库
@@ -74,6 +81,7 @@ class AddActive extends Component {
                         lat: latLng.lat,
                         lng: latLng.lng,
                         content,
+                        cover,
                         id: section.id
                     }, () => message.success('素材保存成功'), error => message.error(error))
                 }
@@ -88,6 +96,7 @@ class AddActive extends Component {
                         expires_ms: values.time[1].unix(),
                         active_max_num: values.active_max_num,
                         content,
+                        cover,
                         lat: latLng.lat,
                         lng: latLng.lng,
                         id: section.id
@@ -150,6 +159,9 @@ class AddActive extends Component {
                                 }],
                                 initialValue: section && section.active_max_num || 1
                             })(<InputNumber min={1} />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="文章封面">
+                            <ImgUploader ref='uploader'/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="选择活动时间">
                             {getFieldDecorator('time', {

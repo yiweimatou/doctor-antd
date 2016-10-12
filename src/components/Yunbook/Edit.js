@@ -1,12 +1,14 @@
-import React,{ Component,PropTypes } from 'react'
+import React,{ Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Tabs,Button,Form,Input, Spin } from 'antd'
+import { Tabs, Button, Form, Input, Spin, message } from 'antd'
 import EditLblView from './EditLblView.js'
+import { BOOK } from '../../constants/api'
+import Category from '../Category'
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 class Edit extends Component{
@@ -22,33 +24,67 @@ class Edit extends Component{
         loading: PropTypes.bool
     }
     componentWillReceiveProps(nextProps){
-        if(!this.props.yunbook){
+        const { yunbook, getGrow, getCategory, init } = this.props
+        if(nextProps.yunbook && !yunbook){
             this.setState({
                 lbl:nextProps.yunbook.lbl
             })
+            getGrow({ category_id: BOOK, foreign_id: nextProps.yunbook.id }, record => {
+                if (record.id > 0){
+                    getCategory({ lat: record.lat, lng: record.lng }, list => {
+                        const num = list.length
+                        let values = []                   
+                        if (record.kind && record.kind.startsWith(2)) {
+                            values = values.concat(record.kind.slice(0,1), record.kind.slice(0,2), record.kind).concat(list.slice(1, num).map(i => i.id))
+                        } else if (record.kind) {
+                            values = values.concat(record.kind.slice(0,1), record.kind).concat(list.slice(1, num).map(i => i.id))
+                        }
+                        this.setState({
+                            defaultValue: values
+                        })
+                        init(values, opt => this.setState({ options: opt }), error => message.error(error))
+                    }, error => message.error(error))
+                }
+            }, error => message.error(error))
         }
     }
     changeLbl = lbl => this.setState({ lbl })
 
     submitHandler=(e)=>{
         e.preventDefault()
+        const { grow, save, yunbook } = this.props
         this.props.form.validateFields((errors,values)=>{
             if(errors){
                 return
             }
             const params = {
-                lbl:this.state.lbl,
-                title:values.title,
-                descript:values.descript,
-                id:this.props.yunbook.id,
+                lbl: this.state.lbl,
+                title: values.title,
+                descript: values.descript,
+                id: yunbook.id,
                 sale_amount: values.money*100
             }
-            this.props.save(params)
+            save(params, () => {
+                const category = this.refs.select.refs.category.state.value
+                if (category.length >= 0 && category.length < 3 ) {
+                    return
+                }
+                grow({
+                    lat: this.refs.select.getLatLng().lat,
+                    lng: this.refs.select.getLatLng().lng,
+                    title: values.title,
+                    state: 1,
+                    category_id: BOOK,
+                    foreign_id: yunbook.id,
+                    map_id: 1,
+                    kind: category[0].id === '1' ? category[1] : category[2]
+                })
+            }, error => message.error(error))
         })
     }
     render(){
         const {
-            form,yunbook
+            form, yunbook, getList
         } = this.props
         const { getFieldDecorator }=form
         return(
@@ -65,7 +101,7 @@ class Edit extends Component{
                                 {...formItemLayout}
                                 label='云板书标题'
                                 hasFeedback
-                            >
+                             >
                             {getFieldDecorator('title',{
                                         rules:[{
                                             required:true,
@@ -90,6 +126,9 @@ class Edit extends Component{
                                         }],
                                         initialValue:yunbook&&yunbook.sale_amount/100
                             })(<Input type = 'number' addonAfter = '元' />)}
+                            </FormItem>
+                            <FormItem {...formItemLayout} label='分类'>
+                                <Category ref='select' defaultValue={this.state.defaultValue} getList={getList} options={this.state.options}/>
                             </FormItem>
                             <FormItem
                                 label='课程简介'
@@ -139,10 +178,46 @@ export default connect(
         yunbook: state.yunbook.entity
     }),
     dispatch=>({
-        save:(params)=>{
+        save: (params, resolve, reject)=>{
             dispatch({
                 type: 'yunbook/edit',
-                payload:params
+                payload:params, resolve, reject
+            })
+        },
+        getGrow: (params, resolve, reject) => {
+            dispatch({
+              type: 'grow/get',
+              payload: { params, resolve, reject }
+            })
+        },
+        getCategory: (params, resolve, reject) => {
+            dispatch({
+                type: 'category/get',
+                payload: { params, resolve, reject }
+            })
+        },
+        getList: (params, resolve, reject) => {
+            dispatch({
+                type: 'category/list',
+                payload: {
+                    params, resolve, reject
+                }
+            })
+        },
+        init: (params, resolve, reject) => {
+            dispatch({
+                type: 'category/init',
+                payload: {
+                    params, resolve, reject
+                }
+            })
+        },
+        grow: (params, resolve, reject) => {
+            dispatch({
+                type: 'grow/add',
+                payload: {
+                    params, resolve, reject
+                }
             })
         }
     })
