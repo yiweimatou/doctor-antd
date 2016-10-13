@@ -11,6 +11,7 @@ import Test from '../components/Test'
 import questionRoutes from './questionRoutes'
 import textPaperRoutes from './textPaperRoutes'
 import paperRoutes from './paperRoutes'
+import resourceRoutes from './resourceRoutes'
 
 const routes = (store) => ([{
     path: '/',
@@ -34,7 +35,8 @@ const routes = (store) => ([{
         messageRoutes(store),
         questionRoutes(store),
         textPaperRoutes(store),
-        paperRoutes(store)
+        paperRoutes(store),
+        resourceRoutes()
     ]
 }, {
     path: '*',

@@ -1,7 +1,7 @@
 import { takeLatest } from 'redux-saga'
 import { fork, call } from 'redux-saga/effects'
 import { list, get as getCategory } from '../services/category'
-import { add, get } from '../services/grow'
+import { add, get, edit } from '../services/grow'
 
 function* watchList() {
     yield takeLatest('category/list', function* (action) {
@@ -48,6 +48,21 @@ function* watchGet() {
     })
 }
 
+function* watchEdit() {
+    yield takeLatest('grow/edit', function* (action) {
+        try {
+            yield call(edit, action.payload.params)
+            if (action.payload.resolve) {
+                action.payload.resolve()
+            }
+        } catch (error) {
+            if (action.payload.reject) {
+                action.payload.reject(error)
+            }
+        }
+    })
+}
+
 function* watchGetCategory() {
     yield takeLatest('category/get', function* (action) {
         try {
@@ -78,7 +93,7 @@ function* watchInit() {
             const values = action.payload.params
             const num = values.length
             const data = {}
-            for (let i = 0; i <= num - 1; i ++) {
+            for (let i = 0; i < num - 1; i ++) {
                 const result = yield call(list, { parent_id: values[i]})
                 data[values[i]] = result.list.map(i => ({
                     label: i.title,
@@ -89,7 +104,7 @@ function* watchInit() {
             let opt = []
             for(let i = num - 1; i > 0; i--) {
                 if (i === num -1){
-                    opt = data[values[i]]
+                    opt = data[values[i-1]]
                 } else {
                     opt = data[values[i-1]].map(item => {
                         if (item.value === values[i]) {
@@ -125,6 +140,7 @@ export default function* () {
         fork(watchGrow),
         fork(watchGet),
         fork(watchGetCategory),
-        fork(watchInit)
+        fork(watchInit),
+        fork(watchEdit)
     ]
 }

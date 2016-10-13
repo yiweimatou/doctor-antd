@@ -12,19 +12,22 @@ class Category extends Component {
             label: '普通大众',
             isLeaf: false
         }],
+        value: [],
         latLng: { lat: 0, lng: 0 }
     }
     componentWillReceiveProps(nextProps) {
-        const { options } = nextProps
-        if (options && options.length > 0) {
+        const { options, defaultValue } = nextProps
+        if (options && options.length > 0 && options !== this.props.options) {
             this.setState({
-                options
+                options,
+                value: defaultValue
             })
         }
     }
     componentWillMount() {
         this.setState({
-            options: this.props.options
+            options: this.props.options,
+            value: this.props.defaultValue
         })
     }
     loadData = selectedOptions => {
@@ -46,7 +49,8 @@ class Category extends Component {
                 targetOption.children = []
             }
             this.setState({
-                options: [...this.state.options]
+                options: [...this.state.options],
+                value: selectedOptions.map(i => i.value)
             })
         }, error =>  message.error(error))
     }
@@ -66,7 +70,7 @@ class Category extends Component {
         return(
             <Cascader ref='category' placeholder='请选择分类' loadData = {this.loadData}
                 options = { this.state.options } changeOnSelect = { true } onChange = {this.changeHandler}
-                defaultValue = { this.props.defaultValue }
+                value = { this.state.value }
                 style = { this.props.style }
             />
         )

@@ -16,7 +16,8 @@ class Edit extends Component{
         lbl:'',
         options:[],
         defaultValue:[],
-        loading: false
+        loading: false,
+        id: 0
     }
     static propTypes = {
         yunbook: PropTypes.object,
@@ -31,6 +32,7 @@ class Edit extends Component{
             })
             getGrow({ category_id: BOOK, foreign_id: nextProps.yunbook.id }, record => {
                 if (record.id > 0){
+                    this.setState({ id: record.id })
                     getCategory({ lat: record.lat, lng: record.lng }, list => {
                         const num = list.length
                         let values = []                   
@@ -69,16 +71,16 @@ class Edit extends Component{
                 if (category.length >= 0 && category.length < 3 ) {
                     return
                 }
-                grow({
-                    lat: this.refs.select.getLatLng().lat,
-                    lng: this.refs.select.getLatLng().lng,
-                    title: values.title,
-                    state: 1,
-                    category_id: BOOK,
-                    foreign_id: yunbook.id,
-                    map_id: 1,
-                    kind: category[0].id === '1' ? category[1] : category[2]
-                })
+                if (this.state.id > 0){
+                    grow({
+                        id: this.state.id,
+                        lat: this.refs.select.getLatLng().lat,
+                        lng: this.refs.select.getLatLng().lng,
+                        foreign_id: yunbook.id,
+                        map_id: 1,
+                        kind: category[0].id === '1' ? category[1] : category[2]
+                    })
+                }
             }, error => message.error(error))
         })
     }
@@ -214,7 +216,7 @@ export default connect(
         },
         grow: (params, resolve, reject) => {
             dispatch({
-                type: 'grow/add',
+                type: 'grow/edit',
                 payload: {
                     params, resolve, reject
                 }
