@@ -46,6 +46,9 @@ class NavMenu extends Component {
                 <Item key='3'>
                     <Link to='/yunbook/manage'><Icon type="book" />云板书管理</Link>
                 </Item>
+                <Item key='15'>
+                    <Link to='/resource'><Icon type="folder" />个人素材库</Link>
+                </Item>
                 <Item key='2'>
                     <Link to='/message/index'>
                         <Icon type="notification" />消息管理

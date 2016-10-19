@@ -71,6 +71,18 @@ export const isMobile = value => {
     return matchRegexp(value, /^(13\d|15[^4,\D]|17[13678]|18\d)\d{8}|170[^346,\D]\d{7}$/)
 }
 
+export const isUrl = value => {
+    return matchRegexp(value, /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.?)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\\d_]*)?$/i)
+}
+
+export const isBaike = value => {
+    return isUrl(value) && matchRegexp(value, /^http:\/\/baike.baidu.com*/)
+}
+
+export const isWX = value => {
+    return isUrl(value) && matchRegexp(value, /^mp.weixin.qq.com*/)
+}
+
 export const mapModalToId = {
     ['area']: 'aid',
     ['user']: 'uid',

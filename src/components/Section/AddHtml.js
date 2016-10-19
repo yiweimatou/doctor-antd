@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import Simditor from '../Simditor'
 import { Form, Button, Spin, Input, message, Upload, Icon } from 'antd'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { HTML, UPLOAD_COVER_API } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
 import Paper from '../Paper'
+import RichTextEditor, {createValueFromString, createEmptyValue} from '../RichTextEditor'
 const FormItem =Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -15,13 +15,13 @@ const formItemLayout = {
 class AddHtml extends Component {
     state = {
         section: {},
-        initialContent: '',
+        initialContent: createEmptyValue(),
         fileList: []
     }
     submitHandler = state => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
-            const content = this.refs.simditor.getValue()
+            const content = this.state.initialContent.toString('html')
             let cover = ''
             if (this.state.fileList.length > 0) {
                 cover = this.state.fileList[0].url
@@ -94,10 +94,10 @@ class AddHtml extends Component {
         const { query, fetchSection } = this.props
         if (query.id) {
             fetchSection({ id: query.id }, section => {
-                this.setState({ section, initialContent: section.content,
-                    fileList: [{
+                this.setState({ section, initialContent: createValueFromString(section.content,'html'),
+                    fileList: section.cover? [{
                         uid: -1, name: '封面.png', status: 'done', url: section.cover
-                    }] })
+                    }]:[] })
             }, error => message.error(error))
         }
     }
@@ -123,6 +123,9 @@ class AddHtml extends Component {
             return e
         }
         return e && e.fileList
+    }
+    _onChange = value => {
+        this.setState({initialContent: value})
     }
     render() {
         const { query, loading } = this.props
@@ -170,7 +173,11 @@ class AddHtml extends Component {
                             </Upload>
                         </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <Simditor ref='simditor' content={ initialContent } />
+                            <RichTextEditor value={initialContent}
+                                onChange={this._onChange}
+                                placeholder="请填写内容"
+                                readOnly={false}
+                            />
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :

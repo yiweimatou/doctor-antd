@@ -1,5 +1,6 @@
 import { Cascader, message } from 'antd'
 import React,{ Component, PropTypes } from 'react'
+import {connect} from 'react-redux'
 
 class Category extends Component {
     state = {
@@ -25,10 +26,13 @@ class Category extends Component {
         }
     }
     componentWillMount() {
-        this.setState({
-            options: this.props.options,
-            value: this.props.defaultValue
-        })
+        const {options, defaultValue} = this.props
+        if (options && defaultValue) {
+            this.setState({
+                options: options,
+                value: defaultValue
+            })
+        }
     }
     loadData = selectedOptions => {
         const targetOption = selectedOptions[selectedOptions.length-1]
@@ -54,14 +58,20 @@ class Category extends Component {
             })
         }, error =>  message.error(error))
     }
-    changeHandler = (value, selectedOptions) => {       
+    changeHandler = (value, selectedOptions) => {      
+        const targetOption = selectedOptions[selectedOptions.length-1]         
         if (selectedOptions.length > 2) {
-            const targetOption = selectedOptions[selectedOptions.length-1]
             this.setState({
                 latLng: {
                     lat: targetOption.lat,
                     lng: targetOption.lng
                 }
+            })
+        }
+        if (this.props.onChange) {
+            this.props.onChange(selectedOptions.map(i => i.value), {
+                lat: targetOption.lat,
+                lng: targetOption.lng
             })
         }
     }
@@ -80,7 +90,15 @@ class Category extends Component {
 Category.propTypes = {
     getList: PropTypes.func.isRequired,
     style: PropTypes.object,
-    options: PropTypes.array
+    options: PropTypes.array,
+    onChange: PropTypes.func
 }
 
-export default Category
+export default connect(null, dispatch => ({
+    getList(params, resolve, reject) {
+            dispatch({
+                type: 'category/list',
+                payload: { params, resolve, reject }
+            })
+    }
+}))(Category)

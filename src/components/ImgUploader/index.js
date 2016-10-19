@@ -37,13 +37,23 @@ class ImgUploader extends Component {
     }
     getValue = () => this.state.fileList[0]
     render() {
+        const {action} = this.props
         return (
             <Upload 
                 name = 'upload_file' 
-                action = {UPLOAD_COVER_API}
+                action = {action ? action : UPLOAD_COVER_API}
                 listType = 'picture' 
                 fileList = {this.state.fileList}
                 onChange = {this.changeHandler}
+                accept = 'image/git, image/jpeg, image/png'
+                beforeUpload = {file => {
+                    const fiveM = 5*1024*1024
+                    const isToobig = file.size > fiveM
+                    if (isToobig) {
+                        message.error('只允许上传不大于5M的图片!')
+                    }
+                    return !isToobig
+                }}
             >
                 <Button type = 'ghost'>
                     <Icon type = 'upload'/>点击上传图片

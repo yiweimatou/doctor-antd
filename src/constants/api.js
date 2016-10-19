@@ -21,6 +21,12 @@ export const DEFAULT_TOPICS = 'http://image.yiweimatou.com/topics.png'
 /*
 *category
  */
+export const DOC = '16'
+export const WX = '15'
+export const BAIKE = '14'
+export const AUDIO = '13'
+export const VIDEO = '12'
+export const IMAGE = '11'
 export const NOTICE = '10'
 export const HTML = '9'
 export const ACTIVE = '8'
@@ -39,6 +45,15 @@ export const BAD_REQUEST = 400
 export const UNAUTHORIZED = 401
 export const FORBIDDEN = 403
 export const INTERNAL_SERVER_ERROR = 500
+/**
+ * source apis
+ */
+export const SOURCE_GET_API = `${USER_API_DOMAIN}/source/get`
+export const SOURCE_Add_API = `${USER_API_DOMAIN}/source/add`
+export const SOURCE_INFO_API = `${USER_API_DOMAIN}/source/info`
+export const SOURCE_LIST_API = `${USER_API_DOMAIN}/source/list`
+export const SOURCE_EDIT_API = `${USER_API_DOMAIN}/source/put`
+export const SOURCE_DELETE_API = `${USER_API_DOMAIN}/source/del`
 /**
  * grow apis
  */
@@ -167,6 +182,7 @@ export const UPLOAD_AVATAR_API = `${UPLOAD_DOMAIN}/face`
 export const UPLOAD_COVER_API = `${UPLOAD_DOMAIN}/cover`
 export const UPLOAD_PPT_API = `${UPLOAD_DOMAIN}/book/ppt`
 export const UPLOAD_IMG_API = `${UPLOAD_DOMAIN}/img`
+export const UPLOAD_FILE_API = `${UPLOAD_DOMAIN}/file`
 /**
  *yunbook apis
  */
