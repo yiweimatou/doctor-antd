@@ -26,7 +26,8 @@ class AddTextPaper extends Component {
     tempTopics: {},
     visible: false,
     section: {},
-    confirmLoading: false
+    confirmLoading: false,
+    topic_num: 1
   }
   componentWillMount() {
     const { getInfo, changeHandler, query, fetchSection, fetchTopics  } = this.props
@@ -67,8 +68,8 @@ class AddTextPaper extends Component {
     }, () => {
       this.props.fetchTopics({ id: this.state.tempTopics.id }, topics => {
         message.success('引用成功')        
-        this.setState({ visible: false, currentStep: 1, confirmLoading: false, topicList: topics.topic_list })
-        this.props.form.setFieldsValue({ topic_num: topics.topic_list.length.toString() })         
+        this.setState({ visible: false, currentStep: 1, confirmLoading: false, topicList: topics.topic_list, topic_num: topics.topic_list.length })
+        // this.props.form.setFieldsValue({ topic_num: topics.topic_list.length.toString() })         
       }, error => {
         this.setState({ confirmLoading: false })
         message.error(error)
@@ -156,7 +157,7 @@ class AddTextPaper extends Component {
     })
   }
   render() {
-    const { currentStep, total, myTotal, visible, tempTopics, confirmLoading, section, topicList } = this.state
+    const { currentStep, total, myTotal, visible, tempTopics, confirmLoading, section, topicList, topic_num } = this.state
     const { loading, list, myList, changeHandler, userId, query } = this.props
     if (!query.oid || !query.lid) {
       return (<div>参数错误</div>)
@@ -244,7 +245,7 @@ class AddTextPaper extends Component {
                       initialValue: section.title
                     })(<Input type='text' />)}
                   </FormItem>
-                  <FormItem {...formItemLayout} label='出试题数'>
+                  <FormItem {...formItemLayout} label='出试题数' help={`最大题数：${topic_num}`}>
                     {getFieldDecorator('topic_num', {
                       rules: [{
                         required: true, message: '请填写出试题数'
@@ -252,6 +253,8 @@ class AddTextPaper extends Component {
                         validator: (rule, value, callback) => {
                           if (value <= 0) {
                             callback('题数必须大于0')
+                          } else if(value > topic_num) {
+                            callback(`题数不能大于${topic_num}`)
                           } else {
                             callback()
                           }

@@ -82,6 +82,12 @@ export const isBaike = value => {
 export const isWX = value => {
     return isUrl(value) && matchRegexp(value, /^mp.weixin.qq.com*/)
 }
+export const ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/    
+export const youkuRegExp = /https?:\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/
+export const qqRegExp = /\S*v.qq.com\S*vid=(\S+)/
+export const isVideo = value => {
+    return matchRegexp(value, ytRegExp) || matchRegexp(value, qqRegExp) || matchRegexp(value, youkuRegExp)
+}
 
 export const mapModalToId = {
     ['area']: 'aid',

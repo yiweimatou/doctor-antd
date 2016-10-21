@@ -13,7 +13,9 @@ class Add extends Component {
     state = {
       num: 65,
       loading: false,
-      fileList: []
+      fileList: [],
+      category: '',
+      latLng: {}
     }
     //remove latest optoin
     remove = () => {
@@ -50,7 +52,7 @@ class Add extends Component {
           }
         })
         if (answer === '') return message.error('至少要有一个答案')
-        const category = this.refs.select.refs.category.state.value
+        const category = this.state.category
         if (category.length > 0 && category.length < 3) {
             return message.error('请再选择一级分类')
         }
@@ -73,8 +75,8 @@ class Add extends Component {
           this.props.afterAddHandler()
           if (category.length >= 3) {
             this.props.grow({
-                lat: this.refs.select.getLatLng().lat,
-                lng: this.refs.select.getLatLng().lng,
+                lat: this.state.latLng.lat,
+                lng: this.state.latLng.lng,
                 title: values.question,
                 state: 1,
                 category_id: TOPIC,
@@ -124,7 +126,7 @@ class Add extends Component {
                               })(<Input type="textarea" rows = {8} />)}
                           </FormItem>
                           <FormItem label = '分类' {...formItemLayout}>
-                            <Category getList={this.props.getList} ref='select'/>
+                            <Category onChange={(value, latLng) => this.setState({category: value, latLng})}/>
                           </FormItem>
                           <FormItem label = '试题图片' {...formItemLayout}>
                               <Upload

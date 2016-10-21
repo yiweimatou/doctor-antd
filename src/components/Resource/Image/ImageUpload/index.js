@@ -37,16 +37,20 @@ class ImageUpload extends Component {
                 this.setState({loading: false})
                 return message.error('请上传图片', 5)
             }
-            this.props.add({
+            const params = {
                 category_id: IMAGE,
                 state: 1,
                 path: image,
                 title: values.title,
                 descript: values.descript || ''
-            }).then(data => {
+            }
+            this.props.add(params).then(data => {
                 message.success('新建成功')
                 this.setState({loading: false})
-                this.props.hideModal()
+                this.props.hideModal({
+                    ...params,
+                    id: data.identity
+                })
                 if (category.length > 3) {
                     this.props.grow({
                         map_id: 1,

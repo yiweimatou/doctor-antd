@@ -16,7 +16,9 @@ class New extends Component{
         handleNew: PropTypes.func.isRequired,
         loading: PropTypes.bool,
         getList: PropTypes.func.isRequired,
-        grow: PropTypes.func.isRequired
+        grow: PropTypes.func.isRequired,
+        latLng: {},
+        category: ''
     }
     state={
         fileList: []
@@ -45,7 +47,7 @@ class New extends Component{
         e.preventDefault()
         this.props.form.validateFields((errors, values) => {
             if (errors) return
-            const category = this.refs.select.refs.category.state.value
+            const category = this.state.category
             if (category.length > 0 && category.length < 3) {
                 return message.error('请再选择一级分类')
             }
@@ -65,8 +67,8 @@ class New extends Component{
             this.props.handleNew(params, yunbook => {
                 this.props.addAfterHandler()
                 this.props.grow({
-                    lat: this.refs.select.getLatLng().lat,
-                    lng: this.refs.select.getLatLng().lng,
+                    lat: this.state.latLng.lat,
+                    lng: this.state.latLng.lng,
                     title: values.title,
                     state: 1,
                     category_id: BOOK,
@@ -80,7 +82,7 @@ class New extends Component{
     }
     render(){
         const {
-            form, loading, getList, action
+            form, loading, action
         } = this.props
         const {
             getFieldDecorator
@@ -109,7 +111,7 @@ class New extends Component{
                     })(<Input type='text' />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label='分类'>
-                        <Category getList={getList} ref='select'/>
+                        <Category onChange={(category, latLng) => this.setState({category, latLng})}/>
                     </FormItem>
                      <FormItem
                         label='云板书简介'

@@ -20,7 +20,12 @@ import clearEntityForRange from './clearEntityForRange';
 import autobind from 'class-autobind';
 import cx from 'classnames';
 import { Modal } from 'antd'
-
+import ImageSelect from '../../Resource/Image/Select'
+import VideoSelect from '../../Resource/Video/Select'
+import Select from '../../Resource/Select'
+import AudioSeelct from '../../Resource/Audio/Select'
+import {BAIKE, WX, DOC} from '../../../constants/api'
+import {message} from 'antd'
 import './EditorToolbar.css';
 
 import type EventEmitter from 'events';
@@ -38,6 +43,13 @@ type Props = {
 type State = {
   showLinkInput: boolean;
   showImageButton: boolean;
+  showBaike: boolean;
+  showDoc: boolean;
+  showWX: boolean;
+  ulr: string;
+  title: string;
+  showVideo: boolean;
+  showAudio: boolean;
 };
 
 export default class EditorToolbar extends Component {
@@ -49,7 +61,14 @@ export default class EditorToolbar extends Component {
     autobind(this);
     this.state = {
       showLinkInput: false,
-      showImageButton: false
+      showImageButton: false,
+      showBaike: false,
+      showDoc: false,
+      showWX: false,
+      showVideo: false,
+      showAudio: false,
+      url: '',
+      title: '',
     };
   }
 
@@ -70,7 +89,8 @@ export default class EditorToolbar extends Component {
         {this._renderInlineStyleButtons()}
         {this._renderBlockTypeButtons()}
         {this._renderLinkButtons()}
-        {this._renderImageButton()}
+        {this._renderMediaButtons()}
+        {this._renderLinks()}
         {this._renderUndoRedo()}
       </div>
     );
@@ -156,24 +176,110 @@ export default class EditorToolbar extends Component {
     );
   }
 
-  _renderImageButton = () => {
+_onVideoOk = () => {
+  const {url} = this.state
+  if (!url) return message.error('请选择一项')
+  let {editorState, onChange} = this.props;
+    let contentState = editorState.getCurrentContent();
+    let selection = editorState.getSelection();
+    let entityKey = Entity.create(ENTITY_TYPE.VIDEO, 'IMMUTABLE', {src: url});
+    const updatedContent = Modifier.insertText(contentState, selection, ' ', null, entityKey);
+    this.setState({showVideo: false, url: ''})
+    onChange(
+      EditorState.push(editorState, updatedContent)
+    );
+    this._focusEditor();
+}
+
+_onAudioOk = () => {
+  const {url} = this.state
+  if (!url) return message.error('请选择一项')
+  let {editorState, onChange} = this.props;
+    let contentState = editorState.getCurrentContent();
+    let selection = editorState.getSelection();
+    let entityKey = Entity.create('AUDIO', 'IMMUTABLE', {src: url});
+    const updatedContent = Modifier.insertText(contentState, selection, ' ', null, entityKey);
+    this.setState({showAudio: false, url: ''})
+    onChange(
+      EditorState.push(editorState, updatedContent)
+    );
+    this._focusEditor();
+}
+  _renderMediaButtons = () => {
     return(
       <ButtonGroup>
-        <Modal title='选择图片' visible={this.state.showImageButton} onOk={this._onOk} onCancel={this._onCancel}></Modal>
+        <Modal title='选择图片' visible={this.state.showImageButton} onOk={this._onOk} onCancel={this._onCancel} width={720} maskClosable={false}>
+          <ImageSelect onChange = {url => this.setState({url})}/>
+        </Modal>
+        <Modal title="选择视频" visible={this.state.showVideo} onOk={this._onVideoOk} onCancel={()=>this.setState({showVideo: false})} maskClosable={false} width={720}>
+          <VideoSelect onChange={url => this.setState({url})}/>
+        </Modal>
+        <Modal title="选择音频" visible={this.state.showAudio} onOk={this._onAudioOk} onCancel={()=>this.setState({showVideo: false})} maskClosable={false} width={720}>
+          <AudioSeelct onChange={(url) => this.setState({url})} />
+        </Modal>
+        <IconButton label="插入视频" value="插入视频" focusOnClick={false} onClick={() => this.setState({showVideo: true})} />
+        <IconButton label="插入音频" value="插入音频" focusOnClick={false} onClick={() => this.setState({showAudio: true})} />
         <IconButton label="插入图片" value="插入图片" focusOnClick={false} onClick={this._toggleShowImage} />
       </ButtonGroup>
     )
   }
 
-  _onCancel = () => this.setState({showImageButton: false})
+  _renderLinks = () => {
+    return (
+       <ButtonGroup>
+        <Modal title='选择百科' maskClosable={false} visible={this.state.showBaike} onOk={() => this._onLinksOk(BAIKE)} onCancel={() => this.setState({showBaike: false})} width={720}>
+          <Select category={BAIKE} onChange = {(url, title) => this.setState({url, title})}/>
+        </Modal>
+        <Modal title='选择微信' maskClosable={false} visible={this.state.showWX} onOk={() => this._onLinksOk(WX)} onCancel={() => this.setState({showWX: false})} width={720}>
+          <Select category={WX} onChange = {(url, title) => this.setState({url, title})}/>
+        </Modal>
+        <Modal title='选择文档' maskClosable={false} visible={this.state.showDoc} onOk={() => this._onLinksOk(DOC)} onCancel={() => this.setState({showDoc: false})} width={720}>
+          <Select category={DOC} onChange = {(url, title) => this.setState({url, title})}/>
+        </Modal>
+        <IconButton label="插入百科" value="插入百科" focusOnClick={false} onClick={() => this.setState({showBaike: true})} />
+        <IconButton label="插入微信" value="插入微信" focusOnClick={false} onClick={() => this.setState({showWX: true})} />
+        <IconButton label="插入文档" value="插入文档" focusOnClick={false} onClick={() => this.setState({showDoc: true})} />
+      </ButtonGroup>
+    )
+  }
 
-  _onOk = () => {
+  _onLinksOk = category => {
+    const {url, title} = this.state
+    if (!url || !title) return message.error('请选择一项')
     let {editorState, onChange} = this.props;
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
-    let entityKey = Entity.create(ENTITY_TYPE.IMAGE, 'IMMUTABLE', {src: 'http://image.yiweimatou.com/ywmt/logo/default.png'});
+    let entityKey = Entity.create(ENTITY_TYPE.LINK, 'MUTABLE', {url});
+    const updatedContent = Modifier.insertText(contentState, selection, title, null, entityKey);
+    onChange(
+      EditorState.push(editorState, updatedContent)
+    );
+    switch(category) {
+      case WX:
+        this.setState({showWX: false, url: '', title: ''})
+        break;
+      case BAIKE:
+        this.setState({showBaike: false, url: '', title: ''})
+        break;
+      case DOC:
+        this.setState({showDoc: false, url: '', title: ''})
+        break
+      default:
+        break
+    }
+  }
+
+  _onCancel = () => this.setState({showImageButton: false})
+
+  _onOk = () => {
+    const {url} = this.state
+    if (!url) return message.error('请选择一项')
+    let {editorState, onChange} = this.props;
+    let contentState = editorState.getCurrentContent();
+    let selection = editorState.getSelection();
+    let entityKey = Entity.create(ENTITY_TYPE.IMAGE, 'IMMUTABLE', {src: url});
     const updatedContent = Modifier.insertText(contentState, selection, ' ', null, entityKey);
-    this.setState({showImageButton: false})
+    this.setState({showImageButton: false, url: ''})
     onChange(
       EditorState.push(editorState, updatedContent)
     );

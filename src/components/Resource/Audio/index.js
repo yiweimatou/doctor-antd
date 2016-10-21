@@ -9,12 +9,14 @@ const formItemLayout = {
 }
 
 class Audio extends Component {
-    state: {
+    state = {
         total: 0,
         list: [],
         visible: false,
+        loading: true,
         category: [],
-        latLng: {}
+        latLng: {},
+        path: ''
     }
     componentWillMount() {
         const {info, list} = this.props
@@ -27,46 +29,103 @@ class Audio extends Component {
     }
     _submitHandler = e => {
         e.preventDefault()
+        this.props.form.validateFields((errors, values) => {
+            if (errors) return
+            const {path} = this.state
+            if (!path) {
+                return message.error('请上传音频文件!', 5)
+            }
+            this.setState({loading: true})
+            const category = this.state.category
+            if (category.length > 0 && category.length < 3) {
+                this.setState({loading: false})
+                return message.error('请再选择一级分类')
+            }
+            const params = {
+                category_id: AUDIO,
+                state: 1,
+                path,
+                title: values.title,
+                descript: values.descript || ''
+            }
+            this.props.add(params).then(data => {
+                message.success('新建成功')
+                this.setState({
+                    loading: false, visible: false,
+                    list: this.state.list.concat({
+                        ...params,
+                        id: data.identity
+                    }),
+                    total: this.state.total + 1
+                })
+                if (category.length > 3) {
+                    this.props.grow({
+                        map_id: 1,
+                        lat: this.state.latLng.lat,
+                        lng: this.state.latLng.lng,
+                        state: 1,
+                        category_id: AUDIO,
+                        foreign_id: data.identity,
+                        title: values.title,
+                        kind: category[0].id === '1' ? category[1] : category[2]
+                    })
+                }
+            }).catch(error => {
+                message.error(error)
+                this.setState({loading: false})
+            })
+        })
     }
     _onCancel = () => this.setState({visible: false})
+    _removeHandler = id => {
+        this.props.remove({id}).then(() => {
+            this.setState({
+                list: this.state.list.filter(i => i.id !== id),
+                total: this.state.total - 1
+            })    
+        }).catch(error => message.error(error))
+    }
     render() {
-        const {list, visible, total} = this.state
+        const {list, visible, total, loading} = this.state
         const {getFieldDecorator} = this.props.form
         const uploadProps = {
             name: 'upload_file',
             action: UPLOAD_FILE_API,
+            accept: 'audio/*',
             beforeUpload: file => {
                 const fiveM = 30*1024*1024
                 const isToobig = file.size > fiveM
                 if (isToobig) {
-                    message.error('只允许上传不大于5M的图片!')
+                    message.error('只允许上传不大于30M的文件!')
                 }
                 return !isToobig
             },
-            onChange(info) {
-                if (info.file.status !== 'uploading') {
-                    console.log(info.file, info.fileList);
-                }
+            onChange: info => {
                 if (info.file.status === 'done') {
-                    message.success(`${info.file.name} file uploaded successfully`);
+                    if (info.file.response.code === 200) {
+                        this.setState({path: info.file.response.file})
+                        message.success(`${info.file.name} 上传成功！`);
+                    } else {
+                        message.error(`${info.file.name} 上传失败！`)
+                    }
                 } else if (info.file.status === 'error') {
-                    message.error(`${info.file.name} file upload failed.`);
+                    message.error(`${info.file.name} 上传失败！`);
                 }
             },
         }
         return (
-            <Spin>
-                <Modal visible={visible} title="上传音频" footer="" onCancel={this._onCancel}>
+            <Spin spinning = {loading}>
+                <Modal visible={visible} title="上传音频" footer="" onCancel={this._onCancel} width={720} maskClosable={false}>
                     <Form onSubmit={this._submitHandler}>
                         <FormItem {...formItemLayout} label="音频素材名称" hasFeedback>
                         {getFieldDecorator('title', {rules:[{required: true, whitespace: true, message: '请填写名称'}]})(<Input />)}
                         </FormItem>
-                        <FormItem {...formItemLayout} label="音频">
-                            <Button type="ghost">
-                                <Upload {...uploadProps}>
+                        <FormItem {...formItemLayout} label="音频" required>
+                            <Upload {...uploadProps}>
+                                <Button type="ghost">
                                     <Icon type="upload" />上传音频
-                                </Upload>
-                            </Button>
+                                </Button>
+                            </Upload>
                         </FormItem>
                         <FormItem {...formItemLayout} label="分类">
                             <Category onChange={(value, latLng) => this.setState({category: value, latLng})}/>
@@ -86,10 +145,18 @@ class Audio extends Component {
                 <Row>
                 {
                     list.map(item => {
-                        <Col key={item.id} span={6}>
-                            <audio contol src={item.path}>请使用现代浏览器</audio>
-                            {item.title}
-                        </Col>
+                        return (<Col key={item.id} span={6}>
+                                    <div style={{width: 302, borderRadius: '4px', border: '1px solid #d9d9d9'}}>
+                                        <div onClick={() => this._removeHandler(item.id)} style={{color: 'red', float: 'right', padding: '2px 6px'}}>
+                                            <Icon type="close" />
+                                        </div>
+                                        <div style={{ padding: '10px 16px'}}>
+                                            <h3>{item.title}</h3>
+                                            <p style={{color: '#999'}}>{item.descript||'无'}</p>
+                                        </div>
+                                        <audio controls src={item.path}>请使用现代浏览器</audio>                                        
+                                    </div>
+                                </Col>) 
                     })
                 }
                 </Row>
@@ -107,7 +174,8 @@ class Audio extends Component {
 Audio.propTypes = {
     add: PropTypes.func.isRequired,
     info: PropTypes.func.isRequired,
-    list: PropTypes.func.isRequired
+    list: PropTypes.func.isRequired,
+    remove: PropTypes.func.isRequired
 };
 
-export default Audio;
+export default Form.create()(Audio);

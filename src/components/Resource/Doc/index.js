@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {message, Spin, Modal, Button, Row, Col, Pagination, Form, Input} from 'antd'
-import { BAIKE } from '../../../constants/api'
-import BaikeCard from './BaikeCard'
-import {isBaike} from '../../../utils/index'
+import { DOC } from '../../../constants/api'
+import BaikeCard from '../Baike/BaikeCard'
+import {isUrl} from '../../../utils/index'
 import Category from '../../Category'
 const FormItem = Form.Item
 const formItemLayout = {
@@ -11,7 +11,7 @@ const formItemLayout = {
 }
 
 
-class Baike extends Component {
+class Doc extends Component {
     state = {
         total: 0,
         list: [],
@@ -22,10 +22,10 @@ class Baike extends Component {
     }
     componentWillMount() {
         const {info, list} = this.props
-        info({state: 1, category_id: BAIKE})
+        info({state: 1, category_id: DOC})
             .then(data => this.setState({total: data.count}))
             .catch(error => message.error(error))
-        list({state: 1, limit: 8, offset: 1, category_id: BAIKE})
+        list({state: 1, limit: 8, offset: 1, category_id: DOC})
             .then(data => this.setState({list: data.list, loading: false}))
             .catch(error => message.error(error))
     }
@@ -41,7 +41,7 @@ class Baike extends Component {
                 return message.error('请再选择一级分类')
             }
             const params = {
-                category_id: BAIKE,
+                category_id: DOC,
                 state: 1,
                 path: values.path,
                 title: values.title,
@@ -59,7 +59,7 @@ class Baike extends Component {
                         lat: this.state.latLng.lat,
                         lng: this.state.latLng.lng,
                         state: 1,
-                        category_id: BAIKE,
+                        category_id: DOC,
                         foreign_id: data.identity,
                         title: values.title,
                         kind: category[0].id === '1' ? category[1] : category[2]
@@ -76,16 +76,16 @@ class Baike extends Component {
         const {getFieldDecorator} = this.props.form      
         return (
             <Spin spinning={loading}>
-                <Modal visible={visible} title='添加百科' footer='' width={720} onCancel={this._onCancel}>
+                <Modal visible={visible} title='添加文献' footer='' width={720} onCancel={this._onCancel}>
                     <Form onSubmit={this._submitHandler}>
-                        <FormItem {...formItemLayout} label='百科地址' required hasFeedback>
+                        <FormItem {...formItemLayout} label='文献地址' required hasFeedback>
                             {getFieldDecorator('path', {
                                 rules: [{
                                     validator(rule, value, callback) {
                                         if (value.length === 0) {
-                                            callback('请输入百科地址')
-                                        } else if(!isBaike(value)) {
-                                            callback('请输入正确的百科地址')
+                                            callback('请输入文献地址')
+                                        } else if(!isUrl(value)) {
+                                            callback('请输入正确的地址')
                                         } else {
                                             callback()
                                         }
@@ -93,7 +93,7 @@ class Baike extends Component {
                                 }]
                             })(<Input />)}
                         </FormItem>
-                        <FormItem {...formItemLayout} label='百科素材名称' hasFeedback>
+                        <FormItem {...formItemLayout} label='文献素材名称' hasFeedback>
                             {getFieldDecorator('title', {
                                 rules: [{
                                     required: true,
@@ -114,8 +114,8 @@ class Baike extends Component {
                     </Form>
                 </Modal>
                 <div className='image-div-topbar'>
-                        <Button type='primary' onClick={() => this.setState({visible: true})}>添加百科</Button>
-                        <span className='image-div-topbar-span'>在http://baike.baidu.com 进行添加</span>
+                        <Button type='primary' onClick={() => this.setState({visible: true})}>添加文献</Button>
+                        <span className='image-div-topbar-span'>添加互联网上文献资料</span>
                 </div>
                 <Row>
                 {
@@ -135,11 +135,11 @@ class Baike extends Component {
     }
 }
 
-Baike.propTypes = {
+Doc.propTypes = {
     add: PropTypes.func.isRequired,
     list: PropTypes.func.isRequired,
     info: PropTypes.func.isRequired,
     grow: PropTypes.func.isRequired
 };
 
-export default Form.create()(Baike);
+export default Form.create()(Doc);

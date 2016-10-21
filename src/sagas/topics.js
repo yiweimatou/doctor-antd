@@ -112,7 +112,7 @@ function* watchGet() {
       const result =  yield call(get, action.payload.params)
       const topic_id_list = result.get.topic_id_list
       if (topic_id_list && topic_id_list.length > 0) {
-        const data = yield call(getTopicList, { id_list: topic_id_list })  
+        const data = yield call(getTopicList, { id_list: topic_id_list, offset: 1, limit: topic_id_list.length })  
         result.get.topic_list = data.list      
       }
       if (action.payload.resolve) {

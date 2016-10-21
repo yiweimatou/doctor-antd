@@ -13,7 +13,9 @@ class Manage extends Component {
         uploading: false,
         success: 0,
         failure: 0,
-        total: 0
+        total: 0,
+        latLng: {},
+        category: ''
     }
     componentWillMount() {
       if (!window.XLSX) {
@@ -58,7 +60,7 @@ class Manage extends Component {
     fileChangeHandler = (e) => {
       this.setState({ uploading: true })
       e.preventDefault()
-      const category = this.refs.select.refs.category.state.value
+      const category = this.state.category
       if (category.length > 0 && category.length < 3) {
           return message.error('请再选择一级分类')
       }
@@ -97,8 +99,8 @@ class Manage extends Component {
           }, topic => {
             if (category.length >= 3) {
             this.props.grow({
-                lat: this.refs.select.getLatLng().lat,
-                lng: this.refs.select.getLatLng().lng,
+                lat: this.state.latLng.lat,
+                lng: this.state.latLng.lng,
                 title: topic.question,
                 state: 1,
                 category_id: TOPIC,
@@ -133,7 +135,7 @@ class Manage extends Component {
                       <div style = {{textAlign: 'center'}} >
                         <div style={{ display: 'inline-block', width: '600px', marginBottom: 20}}>
                           <span>试卷分类:&nbsp;</span>
-                          <Category getList={this.props.getList} style={{width: '500px'}} ref='select'/>
+                          <Category style={{width: '500px'}} onChange={(category, latLng) => this.setState({category, latLng})}/>
                         </div>
                         <p >请根据模板格式填写Excel &nbsp;
                             <a href = "http://7xp3s1.com1.z0.glb.clouddn.com/%E9%A2%98%E5%BA%93%E6%A8%A1%E6%9D%BF.xlsx" target = '_blank'>

@@ -69,6 +69,6 @@ export default function* () {
     yield * [
         fork(watchList),
         fork(watchInfo),
-        // fork(watchGet)
+        fork(watchGet)
     ]
 }

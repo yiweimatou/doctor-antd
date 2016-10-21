@@ -17,7 +17,9 @@ class Edit extends Component{
         options:[],
         defaultValue:[],
         loading: false,
-        id: 0
+        id: 0,
+        category: '',
+        latLng: {}
     }
     static propTypes = {
         yunbook: PropTypes.object,
@@ -67,15 +69,15 @@ class Edit extends Component{
                 sale_amount: values.money*100
             }
             save(params, () => {
-                const category = this.refs.select.refs.category.state.value
+                const category = this.state.category
                 if (category.length >= 0 && category.length < 3 ) {
                     return
                 }
                 if (this.state.id > 0){
                     grow({
                         id: this.state.id,
-                        lat: this.refs.select.getLatLng().lat,
-                        lng: this.refs.select.getLatLng().lng,
+                        lat: this.state.latLng.lat,
+                        lng: this.state.latLng.lng,
                         foreign_id: yunbook.id,
                         map_id: 1,
                         kind: category[0].id === '1' ? category[1] : category[2]
@@ -86,7 +88,7 @@ class Edit extends Component{
     }
     render(){
         const {
-            form, yunbook, getList
+            form, yunbook
         } = this.props
         const { getFieldDecorator }=form
         return(
@@ -130,7 +132,7 @@ class Edit extends Component{
                             })(<Input type = 'number' addonAfter = '元' />)}
                             </FormItem>
                             <FormItem {...formItemLayout} label='分类'>
-                                <Category ref='select' defaultValue={this.state.defaultValue} getList={getList} options={this.state.options}/>
+                                <Category defaultValue={this.state.defaultValue} options={this.state.options} onChange={(category, latLng) => this.setState({category, latLng})}/>
                             </FormItem>
                             <FormItem
                                 label='课程简介'

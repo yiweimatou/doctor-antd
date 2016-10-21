@@ -12,6 +12,8 @@ import EditorToolbar from './lib/EditorToolbar';
 import EditorValue from './lib/EditorValue';
 import LinkDecorator from './lib/LinkDecorator';
 import ImageDecorator from './lib/ImageDecorator';
+import VideoDecorator from './lib/VideoDecorator';
+import AudioDecorator from './lib/AudioDecorator'
 import cx from 'classnames';
 // import autobind from 'class-autobind';
 import EventEmitter from 'events';
@@ -307,7 +309,7 @@ function getBlockStyle(block: ContentBlock): string {
   }
 }
 
-const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
+const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator, VideoDecorator, AudioDecorator]);
 
 function createEmptyValue(): EditorValue {
   return EditorValue.createEmpty(decorator);

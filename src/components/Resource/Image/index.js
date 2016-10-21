@@ -28,11 +28,15 @@ class Image extends Component {
         return (
             <Spin spinning={loading}>
                 <Modal visible={visible} title='图片上传' footer='' width={720} onCancel={this._onCancel}>
-                    <ImageUpload add={this.props.add} hideModal={() => this.setState({visible: false})} grow={grow}/>
+                    <ImageUpload add={this.props.add} hideModal={image => this.setState({
+                        visible: false,
+                        list: this.state.list.concat(image),
+                        total: this.state.total + 1
+                    })} grow={grow}/>
                 </Modal>
                 <div className='image-div-topbar'>
-                        <Button type='primary' onClick={() => this.setState({visible: true})}>上传图片</Button>
-                        <span className='image-div-topbar-span'>格式支持jpg,png,gif等，大小不超过5M</span>
+                    <Button type='primary' onClick={() => this.setState({visible: true})}>上传图片</Button>
+                    <span className='image-div-topbar-span'>格式支持jpg,png,gif等，大小不超过5M</span>
                 </div>
                 <Row>
                 {
