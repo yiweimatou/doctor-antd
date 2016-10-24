@@ -118,12 +118,6 @@ class AddHtml extends Component {
         })
         this.setState({ fileList })
     }
-    normFile(e) {
-        if (Array.isArray(e)) {
-            return e
-        }
-        return e && e.fileList
-    }
     _onChange = value => {
         this.setState({initialContent: value})
     }

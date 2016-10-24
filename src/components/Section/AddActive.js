@@ -6,11 +6,11 @@ import { Form, Spin, Button, Input, InputNumber, DatePicker, message } from 'ant
 import ImgUploader from '../ImgUploader'
 import { connect } from 'react-redux'
 import { ACTIVE } from '../../constants/api'
-import Simditor from '../Simditor'
 import Map from '../Map'
 import moment from 'moment'
 import LessonBar from '../Lesson/LessonBar'
 import { push } from 'react-router-redux'
+import RichTextEditor, {createValueFromString, createEmptyValue} from '../RichTextEditor'
 const RangePicker = DatePicker.RangePicker
 const FormItem =Form.Item
 const formItemLayout = {
@@ -22,14 +22,26 @@ class AddActive extends Component {
     state = {
         section: {},
         latLng: { lat: 0, lng: 0 },
-        address: ''
+        address: '',
+        content: createEmptyValue(),
+        fileList: [],
+        initialFileList: []
     }
     componentWillMount() {
         const { query, fetchSection } = this.props
         if (query.id) {
             fetchSection({
                 id: query.id
-            }, section => this.setState({ section, address: section.address, latLng: {lat: section.lat, lng: section.lng} }), 
+            }, section => this.setState({ 
+                section, address: section.address, latLng: {lat: section.lat, lng: section.lng},
+                content: createValueFromString(section.content, 'html'),
+                fileList: section.cover? [{
+                        uid: -1, name: '封面.png', status: 'done', url: section.cover
+                    }]:[],
+                initialFileList:  section.cover? [{
+                        uid: -1, name: '封面.png', status: 'done', url: section.cover
+                    }]:[]
+            }), 
             error => message.error(error))
         }
     }
@@ -38,9 +50,9 @@ class AddActive extends Component {
             if (errors) return
             const { section, latLng } = this.state
             const { addSection, editSection, query } = this.props
-            const content = this.refs.simditor.getValue()
+            const content = this.state.content.toString('html')
             let cover = ''
-            const files = this.refs.uploader.state.fileList
+            const files = this.state.fileList
             if (files && files[0]) {
                 cover = files[0].url
             }
@@ -125,7 +137,7 @@ class AddActive extends Component {
     render() {
         const { loading, query } = this.props
         const { getFieldDecorator } = this.props.form
-        const { section, latLng, address } = this.state
+        const { section, latLng, address, content } = this.state
          if (!query.oid || !query.lid) {
             return (<div>参数错误</div>)
         }
@@ -161,7 +173,7 @@ class AddActive extends Component {
                             })(<InputNumber min={1} />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="文章封面">
-                            <ImgUploader ref='uploader'/>
+                            <ImgUploader fileList={this.state.fileList} onChange={fileList => this.setState({fileList})}/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="选择活动时间">
                             {getFieldDecorator('time', {
@@ -179,7 +191,7 @@ class AddActive extends Component {
                             })(<RangePicker showTime format="YYYY/MM/DD hh:mm"  />)}
                         </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <Simditor ref='simditor' content={ section && section.content } />
+                            <RichTextEditor value={content} placeholder="请填写内容" readOnly={false} onChange={content => this.setState({content})}/>
                         </FormItem>
                         <FormItem {...formItemLayout} label="活动描述">
                             {getFieldDecorator('descript', {

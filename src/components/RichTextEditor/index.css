@@ -1,7 +1,7 @@
 .root {
   background: #fff;
   border: 1px solid #ddd;
-  border-radius: 3px;
+  border-radius: 4px;
   font-family: 'Georgia', serif;
   font-size: 14px;
   padding: 10px;
@@ -15,6 +15,8 @@
   cursor: text;
   font-size: 16px;
   margin-top: 10px;
+  border-radius: 4px;
+  min-height: 300px;
 }
 
 .editor :global(.public-DraftEditorPlaceholder-root),

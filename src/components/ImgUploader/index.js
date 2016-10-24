@@ -6,8 +6,8 @@ class ImgUploader extends Component {
     state = {
         fileList: []
     }
-    componentWillMount() {
-        const { fileList } = this.props
+    componentWillReceiveProps(nextProps) {
+        const { fileList } = nextProps
         this.setState({ fileList })
     }
     changeHandler = info => {
@@ -31,6 +31,9 @@ class ImgUploader extends Component {
             return true
         })
         this.setState({ fileList })
+        if (this.props.onChange) {
+            this.props.onChange(fileList)
+        }
         if (info.file.status === 'error') {
             return message.error('服务器未响应，请稍后再试', 6)
         }

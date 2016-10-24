@@ -37,16 +37,18 @@ class Edit extends Component{
                     this.setState({ id: record.id })
                     getCategory({ lat: record.lat, lng: record.lng }, list => {
                         const num = list.length
-                        let values = []                   
+                        let values = []            
                         if (record.kind && record.kind.startsWith(2)) {
                             values = values.concat(record.kind.slice(0,1), record.kind.slice(0,2), record.kind).concat(list.slice(1, num).map(i => i.id))
-                        } else if (record.kind) {
+                        } else if (record.kind && record.kind.startsWith(1)) {
                             values = values.concat(record.kind.slice(0,1), record.kind).concat(list.slice(1, num).map(i => i.id))
                         }
-                        this.setState({
-                            defaultValue: values
-                        })
-                        init(values, opt => this.setState({ options: opt }), error => message.error(error))
+                        if (values.length > 0) {
+                            this.setState({
+                                defaultValue: values
+                            })
+                            init(values, opt => this.setState({ options: opt }), error => message.error(error))
+                        }
                     }, error => message.error(error))
                 }
             }, error => message.error(error))
@@ -56,7 +58,7 @@ class Edit extends Component{
 
     submitHandler=(e)=>{
         e.preventDefault()
-        const { grow, save, yunbook } = this.props
+        const { grow, save, yunbook, addGrow } = this.props
         this.props.form.validateFields((errors,values)=>{
             if(errors){
                 return
@@ -78,9 +80,15 @@ class Edit extends Component{
                         id: this.state.id,
                         lat: this.state.latLng.lat,
                         lng: this.state.latLng.lng,
-                        foreign_id: yunbook.id,
-                        map_id: 1,
                         kind: category[0].id === '1' ? category[1] : category[2]
+                    })
+                } else {
+                    addGrow({
+                        lat: this.state.latLng.lat,
+                        lng: this.state.latLng.lng,
+                        kind: category[0].id === '1' ? category[1] : category[2],
+                        foreign_id: yunbook.id,
+                        map_id: 1
                     })
                 }
             }, error => message.error(error))
@@ -219,6 +227,14 @@ export default connect(
         grow: (params, resolve, reject) => {
             dispatch({
                 type: 'grow/edit',
+                payload: {
+                    params, resolve, reject
+                }
+            })
+        },
+        addGrow: (params, resolve, reject) => {
+            dispatch({
+                type: 'grow/add',
                 payload: {
                     params, resolve, reject
                 }

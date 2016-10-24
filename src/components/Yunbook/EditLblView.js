@@ -3,9 +3,8 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
-import MyEditor from '../MyEditor'
+import RichTextEditor, {createEmptyValue} from '../RichTextEditor'
 import { Modal } from 'antd'
-import { stateToHTML } from 'nodeman-draft-js-export-html'
 
 const styles = {
     map:{
@@ -19,7 +18,7 @@ class EditLblView extends React.Component{
         this.state = {
             open: false,
             layer: null,
-            editorState: null
+            content: createEmptyValue()
         }
         this.handleClose = ()=>{
             this.setState({
@@ -27,7 +26,7 @@ class EditLblView extends React.Component{
             })
         }
         this.submit = () => {
-            const content = stateToHTML(this.state.editorState.getCurrentContent())
+            const content = this.state.content.toString('html')
             if( content ){
                 const popup  = L.popup()
                 popup.setContent(content)
@@ -210,20 +209,19 @@ class EditLblView extends React.Component{
         if(this._map || !yunbook) return
         this.initMap(yunbook)
     }
-    setEditorState = editorState => {
-        this.setState({
-            editorState
-        })
-    }
     render(){
+        const {content} = this.state
         return (
             <div>
                 <Modal
                     visible={this.state.open}
                     onCancel={this.handleClose}
                     onOk = {this.submit}
+                    width = {720}
                     maskClosable = {false} >
-                    <MyEditor setEditorState={this.setEditorState} open = {this.state.open} />
+                    <div style={{margin: '20px 10px'}}>
+                        <RichTextEditor value={content} onChange={content => this.setState({content})} placeholder="请填写内容" readOnly={false} />
+                    </div>
                 </Modal>
                 <div id = '_map' style ={ styles.map }></div>
             </div>

@@ -1,10 +1,11 @@
 import React, {Component, PropTypes} from 'react';
-import Simditor from '../Simditor'
+
 import { Form, Button, Spin, Input, message } from 'antd'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { NOTICE } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
+import RichTextEditor, {createValueFromString, createEmptyValue} from '../RichTextEditor'
 import Paper from '../Paper'
 const FormItem =Form.Item
 const formItemLayout = {
@@ -14,14 +15,15 @@ const formItemLayout = {
 
 class AddNotice extends Component {
     state = {
-        section: {}
+        section: {},
+        content: createEmptyValue()
     }
     submitHandler = state => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
             const { section } = this.state
             const { addSection, editSection, query } = this.props
-            const content = this.refs.simditor.getValue()
+            const content = this.state.content.toString('html')
             if (content) {
                 if (state === 0){
                     if (section.id === undefined){
@@ -87,12 +89,12 @@ class AddNotice extends Component {
         const { query,fetchSection } = this.props
         if (query.id) {
             fetchSection({ id: query.id }, section => {
-                this.setState({ section })
+                this.setState({ section, content: createValueFromString(section.content, 'html') })
             }, error => message.error(error))
         }
     }
     render() {
-        const { section } = this.state
+        const { section, content } = this.state
         const { query, loading } = this.props
         const { getFieldDecorator } = this.props.form
         if ( !query.lid || !query.oid) {
@@ -120,7 +122,7 @@ class AddNotice extends Component {
                         {getFieldDecorator('descript',{ initialValue: section.descript })(<Input type="textarea" rows={5}  />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="通知内容">
-                        <Simditor ref='simditor' content={section.content}/>
+                        <RichTextEditor value={content} placeholder="请填写内容" readOnly={false} onChange={content => this.setState({content})}/>
                     </FormItem>
                     <FormItem wrapperCol={{ offset: 6 }}>
                     { query.edit === '1' ? null:
