@@ -239,7 +239,7 @@ function* handleMyList(action) {
 }
 
 function* watchMyList() {
-  yield * takeEvery('yunbook/mylist', handleMyList)
+  yield takeEvery('yunbook/mylist', handleMyList)
 }
 
 export default function*() {

@@ -3,7 +3,7 @@ import { Tabs, message } from 'antd'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import List from './List'
-import New from './Add'
+import Add from './Add'
 const TabPane = Tabs.TabPane
 
 class Manage extends Component {
@@ -55,7 +55,7 @@ class Manage extends Component {
                     <List handleConfirm={this.handleConfirm} handleChange={this.handleChange} list={list} total={total} loading={loading} push={this.props.push}/>
                 </TabPane>
                 <TabPane tab='新建试卷' key='2'>
-                    <New add={this.props.addTopics} afterAddHandler={this.afterAddHandler}/>
+                    <Add add={this.props.addTopics} afterAddHandler={this.afterAddHandler}/>
                 </TabPane>
             </Tabs>
         );

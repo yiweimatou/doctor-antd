@@ -1,7 +1,43 @@
 import { takeLatest } from 'redux-saga'
 import { fork, call } from 'redux-saga/effects'
 import { list, get as getCategory } from '../services/category'
-import { add, get, edit } from '../services/grow'
+import { add, get, edit, list as search,  info } from '../services/grow'
+import {TOPIC} from '../constants/api'
+
+function* watchTopicSearch() {
+    yield takeLatest('topic/search', function* (action) {
+        if (action.payload.params.category_id != TOPIC) {
+            if (action.payload.reject) {
+                action.payload.reject('缺省参数')
+            }
+        }
+        try {
+            const data = yield call(search, action.payload.params)
+            if (action.payload.resolve) { 
+                action.payload.resolve(data.list.map(i => i.foreign_id))
+            }
+        } catch (error) {
+            if (action.payload.reject) {
+                action.payload.reject(error)
+            }
+        }
+    })
+}
+
+function* watchTopicSearchInfo() {
+    yield takeLatest('topic/search/info', function* (action) {
+        try {
+            const data = yield call(info, action.payload.params)
+            if (action.payload.resolve) {
+                action.payload.resolve(data.count)
+            }
+        } catch (error) {
+            if (action.payload.reject) {
+                action.payload.reject(error)
+            }
+        }
+    })
+}
 
 function* watchList() {
     yield takeLatest('category/list', function* (action) {
@@ -141,6 +177,8 @@ export default function* () {
         fork(watchGet),
         fork(watchGetCategory),
         fork(watchInit),
-        fork(watchEdit)
+        fork(watchEdit),
+        fork(watchTopicSearch),
+        fork(watchTopicSearchInfo)
     ]
 }

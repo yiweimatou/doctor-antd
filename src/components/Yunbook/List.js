@@ -8,10 +8,8 @@ class List extends Component {
         fetchYunbookList: PropTypes.func.isRequired,
         uid: PropTypes.number
     }
-    changeHandler = (offset, limit, account_id) => {
-        this.props.fetchYunbookList({ offset, limit, account_id },
-         null,
-         error => message.error(error))
+    changeHandler = (offset, account_id) => {
+        this.props.fetchYunbookList({ offset, limit: 6, account_id },error => message.error(error))
     }
     componentWillMount() {
         this.props.fetchYunbookInfo(
@@ -23,12 +21,18 @@ class List extends Component {
             limit: 6,
             offset: 1,
             account_id: this.props.uid
-        }, null, error => message.error(error))
+        }, error => message.error(error))
     }
     render(){
         const {
             loading, list, total, uid
         } = this.props
+        const pagination = {
+            total,
+            defaultPageSize: 6,
+            showTotal: total => `共 ${total} 条`,
+            onChange: offset => this.changeHandler(offset, uid)
+        }
         return(
             <Spin spinning ={loading}>
             <div>
@@ -43,12 +47,7 @@ class List extends Component {
                 </Row>
                 {total ?
                     <div className='pagination'>
-                        <Pagination 
-                            total={total}
-                            showTotal={total => `共 ${total} 条`}
-                            pageSize = {6}
-                            onChange = {page=> this.changeHandler(page, 6, uid)}
-                        />
+                        <Pagination {...pagination}/>
                     </div>:
                     <p style={{textAlign: 'center'}}>暂无数据</p>
                 }
@@ -66,11 +65,10 @@ export default connect(
         list: state.yunbook.mylist
     }),
     dispatch=>({
-        fetchYunbookList:(params, resolve, reject)=>{
+        fetchYunbookList:(params, reject)=>{
             dispatch({
                 type:'yunbook/mylist',
-                payload: params,
-                resolve, reject
+                payload: params, reject
             })
         },
         fetchYunbookInfo(params, resolve, reject) {

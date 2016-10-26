@@ -80,13 +80,13 @@ class Edit extends Component{
                         id: this.state.id,
                         lat: this.state.latLng.lat,
                         lng: this.state.latLng.lng,
-                        kind: category[0].id === '1' ? category[1] : category[2]
+                        kind: category[0] === '1' ? category[1] : category[2]
                     })
                 } else {
                     addGrow({
                         lat: this.state.latLng.lat,
                         lng: this.state.latLng.lng,
-                        kind: category[0].id === '1' ? category[1] : category[2],
+                        kind: category[0] === '1' ? category[1] : category[2],
                         foreign_id: yunbook.id,
                         map_id: 1
                     })

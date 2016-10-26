@@ -3,20 +3,15 @@
  */
 import React, { Component, PropTypes } from 'react'
 import { Table, Modal, message, Button } from 'antd'
+import {TOPIC} from '../../constants/api'
+import Category from '../Category'
 import { connect } from 'react-redux'
 
 class Select extends Component {
   state = {
     selectedList: [],
-    pagination: {
-      total: this.props.total,
-      showTotal: total => `共 ${total} 条`,
-      onChange: offset => this.props.getList({
-        limit: 9,
-        offset,
-        account_id: this.props.userId
-      }, error => message.error(error))
-    }
+    area: {},
+    value: []
   }
   componentWillMount() {
     this.props.getInfo({
@@ -30,28 +25,67 @@ class Select extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.total !== nextProps.total){
-      this.setState({ pagination: { ...this.state.pagination, total: nextProps.total } })
+      this.setState({ total: nextProps.total })
     }
     if (this.props.selectedIdList != nextProps.selectedIdList) {
       this.setState({ selectedList: nextProps.selectedIdList })
     }
   }
-  selectHandler = (e, id, question) => {
-    if (e.target.type === 'button') {
-      e.target.setAttribute('disabled', 'true')
-      e.target.childNodes[0].innerHTML = '已经添加'
-    } else {
-      e.target.parentNode.setAttribute('disabled', 'true')
-      e.target.innerHTML = '已经添加'
-    }
-    this.setState({
-      selectedList: this.state.selectedList.concat({
-        id, question
+  _changeHandler = (value, latLng, area) => {
+      Promise.resolve(this.setState({value, area})).then(() => {
+        this._search(1)        
       })
-    })
+  }
+  _search = offset => {
+     const {search, getList, searchInfo, userId, clear} = this.props
+     const {value, area} = this.state
+     console.log(value, area)
+     if (value.length === 0) {
+       getList({
+         offset, limit: 8, account_id: userId, state: 1
+       }, error => message.error(error))
+       return
+     }
+      let params = {
+        account_id: userId,
+        category_id: TOPIC,
+        state: 1,
+        map_id: 1
+      }
+      if ((value.length <= 3 && value[0].startsWith('2')) || (value.length <= 2 && value[0].startsWith('1')) ) {
+        params = { 
+          ...params,
+          kind: value.slice(-1)[0]
+        }
+      } else {
+        params = {
+          ...params,
+          ...area
+        }
+      }
+      searchInfo(params, total => this.setState({total}), error => message.error(error))
+      search({
+        ...params,
+        offset,
+        limit: 8
+      }, ids => {
+        if (ids.length === 0) {
+          clear()
+        } else {
+          getList({
+            id_list: ids.join(',')
+          }, error => message.error(error))
+        }
+      }, error => message.error(error))
   }
   render() {
-    const { list, loading, visible, okHandler, cancelHandler } = this.props
+    const {list, loading, visible, okHandler, cancelHandler} = this.props
+    const pagination = {
+      total: this.state.total,
+      showTotal: total => `共 ${total} 条`,
+      defaultPageSize: 8,
+      onChange: offset => this._search(offset)
+    }
     const columns = [{
       dataIndex: 'question',
       key: 'question',
@@ -76,18 +110,25 @@ class Select extends Component {
       dataIndex: 'option5',
       key: 'option5',
       title: '选项E'
-    }, {
-      key: 'opreation',
-      render: (text, record) => {
-        const disabled = this.state.selectedList.some(i => i.id == record.id)
-        return <Button disabled={disabled} onClick={e => this.selectHandler(e, record.id, record.question)}>{
-          disabled ? '已经添加': '添加'
-        }</Button>
-      }
     }]
+    const rowSelection = {
+      selectedRowKeys: this.state.selectedList.map(i => i.id),
+      onSelect: (record, selected) => {
+        let selectedList = this.state.selectedList
+        if (selected) {
+          selectedList = selectedList.concat(record)
+        } else {
+          selectedList = selectedList.filter(i => i.id != record.id)
+        }
+        this.setState({selectedList})
+      }
+    }
     return (
-      <Modal visible={visible} onOk={() => okHandler(this.state.selectedList)} width='100%' onCancel={cancelHandler} title="选择试题">
-        <Table bordered columns={columns} dataSource={list} loading={loading} pagination={this.state.pagination} />
+      <Modal visible={visible} onOk={() => okHandler(this.state.selectedList)} width='100%' onCancel={cancelHandler} title="选择试题" >
+        <div style={{margin: '10px 0'}}>
+          <Category onChange={this._changeHandler} style={{width: '520px'}}/>
+        </div>
+        <Table rowKey='id' bordered columns={columns} dataSource={list} loading={loading} pagination={pagination} rowSelection={rowSelection} />
       </Modal>
     )
   }
@@ -113,6 +154,27 @@ export default connect(
     total: state.topic.total
   }),
   dispatch => ({
+    clear() {
+      dispatch({
+        type: 'topic/list/clear'
+      })
+    },
+    search(params, resolve, reject) {
+      dispatch({
+        type: 'topic/search',
+        payload: {
+          params, resolve, reject
+        }
+      })
+    },
+    searchInfo(params, resolve, reject) {
+      dispatch({
+        type: 'topic/search/info',
+        payload: {
+          params, resolve, reject
+        }
+      })
+    },
     getList(params, reject) {
       dispatch({
         type: 'topic/list',

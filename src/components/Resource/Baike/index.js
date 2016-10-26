@@ -62,7 +62,7 @@ class Baike extends Component {
                         category_id: BAIKE,
                         foreign_id: data.identity,
                         title: values.title,
-                        kind: category[0].id === '1' ? category[1] : category[2]
+                        kind: category[0] === '1' ? category[1] : category[2]
                     })
                 }
             }).catch(error => {

@@ -40,6 +40,10 @@ const topic = handleActions({
     ...state,
     loading: true
   }),
+  ['topic/list/clear']: state => ({
+    ...state,
+    list: []
+  }),
   ['topic/list/success']: (state, action) => ({
     ...state,
     loading: false,

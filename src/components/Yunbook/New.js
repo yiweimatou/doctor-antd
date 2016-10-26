@@ -16,12 +16,12 @@ class New extends Component{
         handleNew: PropTypes.func.isRequired,
         loading: PropTypes.bool,
         getList: PropTypes.func.isRequired,
-        grow: PropTypes.func.isRequired,
-        latLng: {},
-        category: ''
+        grow: PropTypes.func.isRequired
     }
     state={
-        fileList: []
+        fileList: [],
+        latLng: {},
+        category: []
     }
     handleChange = (info)=> {
         let fileList = info.fileList
@@ -75,7 +75,7 @@ class New extends Component{
                     foreign_id: yunbook.id,
                     cover: file.url,
                     map_id: 1,
-                    kind: category[0].id === '1' ? category[1] : category[2]
+                    kind: category[0] === '1' ? category[1] : category[2]
                 }, null, error => message.error(error))
             }, error => message.error(error))
         })

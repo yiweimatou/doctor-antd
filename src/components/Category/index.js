@@ -47,7 +47,13 @@ class Category extends Component {
                     value: item.id,
                     isLeaf: false,
                     lat: item.lat,
-                    lng: item.lng
+                    lng: item.lng,
+                    area: {
+                        lat1: item.lat1,
+                        lat2: item.lat2,
+                        lng1: item.lng1,
+                        lng2: item.lng2
+                    }                    
                 }))
             } else {
                 targetOption.children = []
@@ -72,7 +78,7 @@ class Category extends Component {
             this.props.onChange(selectedOptions.map(i => i.value), {
                 lat: targetOption.lat,
                 lng: targetOption.lng
-            })
+            }, targetOption.area)
         }
     }
     getLatLng = () => this.state.latLng

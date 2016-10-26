@@ -107,7 +107,7 @@ class Manage extends Component {
                 foreign_id: topic.id,
                 // cover: cover,
                 map_id: 1,
-                kind: category[0].id === '1' ? category[1] : category[2]
+                kind: category[0] === '1' ? category[1] : category[2]
             }, null, error => message.error(error))
           }
             this.setState({ success: this.state.success + 1 })
