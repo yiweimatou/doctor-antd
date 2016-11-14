@@ -45,7 +45,8 @@ class AddTextPaper extends Component {
           section, pending: false, currentStep: 1,
           topics,
           tempTopics: topics,
-          topicList: topics.topic_list
+          topicList: topics.topic_list,
+          topic_num: topics.topic_sum
         }), error => message.error(error))
       }, error => message.error(error))
     }
@@ -294,7 +295,7 @@ AddTextPaper.propTypes = {
   loading: PropTypes.bool.isRequired,
   addSection: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired,
+  // userId: PropTypes.number.isRequired,
   buyTopics: PropTypes.func.isRequired,
   query: PropTypes.object.isRequired,
   fetchTopics: PropTypes.func.isRequired,

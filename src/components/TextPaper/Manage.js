@@ -66,7 +66,7 @@ Manage.propTypes = {
     getInfo: PropTypes.func.isRequired,
     changeHandler: PropTypes.func.isRequired,
     deleteTopics: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired,
+    // userId: PropTypes.number.isRequired,
     addTopics: PropTypes.func.isRequired
 };
 

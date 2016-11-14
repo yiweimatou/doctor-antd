@@ -1,35 +1,36 @@
-import React, {Component, PropTypes} from 'react';
-import {message, Spin, Modal, Button, Row, Col, Pagination, Form, Input} from 'antd'
-import { DOC } from '../../../constants/api'
-import BaikeCard from '../Baike/BaikeCard'
-import {isUrl} from '../../../utils/index'
+import React, { Component } from 'react'
+import { Form, Spin, Modal, Input, message, Button, Row, Col, Pagination } from 'antd'
 import Category from '../../Category'
+import TextCard from './TextCard'
+import { TEXT } from '../../../constants/api'
+
 const FormItem = Form.Item
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 12 }
 }
-
-
-class Doc extends Component {
-    state = {
-        total: 0,
-        list: [],
-        loading: true,
-        visible: false,
-        category: [],
-        latLng: {}
+class Text extends Component {
+    constructor() {
+        super()
+        this.state = {
+            total: 0,
+            list: [],
+            loading: true,
+            visible: false,
+            category: [],
+            latLng: {}
+        }
     }
     componentWillMount() {
         const {info, list} = this.props
-        info({state: 1, category_id: DOC})
+        info({state: 1, category_id: TEXT})
             .then(data => this.setState({total: data.count}))
             .catch(error => message.error(error))
-        list({state: 1, limit: 8, offset: 1, category_id: DOC})
+        list({state: 1, limit: 8, offset: 1, category_id: TEXT})
             .then(data => this.setState({list: data.list, loading: false}))
             .catch(error => message.error(error))
     }
-    _onCancel = () => this.setState({visible: false})
+     _onCancel = () => this.setState({visible: false})
     _submitHandler = e => {
         e.preventDefault()
         this.props.form.validateFields((errors, values) => {
@@ -41,7 +42,7 @@ class Doc extends Component {
                 return message.error('请再选择一级分类')
             }
             const params = {
-                category_id: DOC,
+                category_id: TEXT,
                 state: 1,
                 path: values.path,
                 title: values.title,
@@ -49,7 +50,7 @@ class Doc extends Component {
             }
             this.props.add(params).then(data => {
                 message.success('新建成功')
-                this.setState({loading: false, list: this.state.list.concat({
+                this.setState({loading: false, visible: false, list: this.state.list.concat({
                     ...params,
                     id: data.identity
                 }), total: this.state.total + 1})
@@ -59,7 +60,7 @@ class Doc extends Component {
                         lat: this.state.latLng.lat,
                         lng: this.state.latLng.lng,
                         state: 1,
-                        category_id: DOC,
+                        category_id: TEXT,
                         foreign_id: data.identity,
                         title: values.title,
                         kind: category[0] === '1' ? category[1] : category[2]
@@ -76,37 +77,22 @@ class Doc extends Component {
         const {getFieldDecorator} = this.props.form      
         return (
             <Spin spinning={loading}>
-                <Modal visible={visible} title='添加文献' footer='' width={720} onCancel={this._onCancel}>
+                <Modal visible={visible} title='添加名词解释' footer='' width={720} onCancel={this._onCancel}>
                     <Form onSubmit={this._submitHandler}>
-                        <FormItem {...formItemLayout} label='文献地址' required hasFeedback>
-                            {getFieldDecorator('path', {
-                                rules: [{
-                                    validator(rule, value, callback) {
-                                        if (value.length === 0) {
-                                            callback('请输入文献地址')
-                                        } else if(!isUrl(value)) {
-                                            callback('请输入正确的地址')
-                                        } else {
-                                            callback()
-                                        }
-                                    }
-                                }]
-                            })(<Input />)}
-                        </FormItem>
-                        <FormItem {...formItemLayout} label='文献素材名称' hasFeedback>
+                        <FormItem {...formItemLayout} label='名词' hasFeedback>
                             {getFieldDecorator('title', {
                                 rules: [{
                                     required: true,
                                     whitespace: true,
-                                    message: '请填写名称'
+                                    message: '请填写名词'
                                 }]
                             })(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label='分类'>
                             <Category onChange={(value, latLng) => this.setState({category: value, latLng})}/>
                         </FormItem>
-                        <FormItem {...formItemLayout} label='说明'>
-                            {getFieldDecorator('descript')(<Input type='textarea' rows={5}/>)}
+                        <FormItem {...formItemLayout} label='说明' hasFeedback>
+                            {getFieldDecorator('descript', { rules: [{ required: true, message: '请填写说明' }]})(<Input type='textarea' rows={5}/>)}
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             <Button type="primary" htmlType="submit">保存</Button>
@@ -114,13 +100,12 @@ class Doc extends Component {
                     </Form>
                 </Modal>
                 <div className='image-div-topbar'>
-                        <Button type='primary' onClick={() => this.setState({visible: true})}>添加文献</Button>
-                        <span className='image-div-topbar-span'>添加互联网上文献资料</span>
+                        <Button type='primary' onClick={() => this.setState({visible: true})}>添加名词解释</Button>
                 </div>
                 <Row>
                 {
                     list.map(item => {
-                        return <Col span='6' key={item.id}><BaikeCard record={item}/></Col>
+                        return <Col span='6' key={item.id}><TextCard record={item}/></Col>
                     })
                 }
                 </Row>
@@ -131,15 +116,8 @@ class Doc extends Component {
                 </div>
                 }
             </Spin>
-        );
+        )
     }
 }
 
-Doc.propTypes = {
-    add: PropTypes.func.isRequired,
-    list: PropTypes.func.isRequired,
-    info: PropTypes.func.isRequired,
-    grow: PropTypes.func.isRequired
-};
-
-export default Form.create()(Doc);
+export default Form.create()(Text)

@@ -1,5 +1,4 @@
 import {Entity} from 'draft-js'
-import {ENTITY_TYPE} from 'draft-js-utils'
 import VideoSpan from '../ui/VideoSpan'
 
 import type {ContentBlock} from 'draft-js'
@@ -11,7 +10,7 @@ function findVideoEntities(contentBlock: ContentBlock, callback: EntityRangeCall
         const entityKey = charactor.getEntity()
         return (
             entityKey != null &&
-            Entity.get(entityKey).getType() === ENTITY_TYPE.VIDEO
+            Entity.get(entityKey).getType() === 'VIDEO'
         )
     }, callback)
 }

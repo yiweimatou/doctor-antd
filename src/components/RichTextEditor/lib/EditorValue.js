@@ -1,6 +1,6 @@
 /* @flow */
 import {ContentState, EditorState} from 'draft-js';
-import {stateToHTML} from 'draft-js-export-html';
+import {stateToHTML} from 'nodeman-draft-js-export-html';
 import {stateFromHTML} from 'draft-js-import-html';
 // import {stateToMarkdown} from 'draft-js-export-markdown';
 // import {stateFromMarkdown} from 'draft-js-import-markdown';

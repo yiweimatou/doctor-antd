@@ -18,7 +18,7 @@ class Show extends Component {
         push: PropTypes.func.isRequired,
         changeHandler: PropTypes.func.isRequired,
         deleteSection: PropTypes.func.isRequired,
-        userId: PropTypes.number.isRequired,
+        // userId: PropTypes.number.isRequired,
         id: PropTypes.string.isRequired,
         getLessonTeamList: PropTypes.func.isRequired,
         getOrganizeList: PropTypes.func.isRequired,

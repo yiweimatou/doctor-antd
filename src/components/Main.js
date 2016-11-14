@@ -1,19 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import './Main.css';
 import NavMenu from './NavMenu'
-import Login from '../components/Login'
 import { Button } from 'antd'
 
 class Main extends Component{
     render(){
-        const { auth,children,login,logout } = this.props
+        const { auth, children, logout } = this.props
         return (
             <div className="ant-layout-topaside">
-                <Login
-                    isAuthed = {auth.isAuthed}
-                    loading = {auth.loading}
-                    login={login}
-                />
                 <div className="ant-layout-header">
                     <div className="ant-layout-wrapper">
                         <div className="ant-layout-logo">

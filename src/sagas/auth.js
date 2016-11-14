@@ -15,7 +15,7 @@ import {
 import {
     message
 } from 'antd'
-import { push } from 'react-router-redux'
+import { WECHATLOGIN } from '../constants/api'
 
 function* watchSetUser() {
     yield* takeLatest('user/set', function*(action) {
@@ -71,9 +71,9 @@ function* loginHandler(action) {
 
 
 function* watchLogout() {
-    yield* takeLatest('logout',function* (){
+    yield* takeLatest('logout', function(){
         localStorage.clear()
-        yield put(push('/'))
+        window.location.replace(WECHATLOGIN)
     })
 }
 

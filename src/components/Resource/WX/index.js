@@ -127,7 +127,7 @@ class Weixin extends Component {
                 {
                     total === 0 ? <p style={{marginTop: 20, textAlign: 'center'}}>暂无数据</p> :
                 <div style={{marginTop: 20}}>
-                    <Pagination total={total} showTotal={total => `共${total}条`}/>
+                    <Pagination total={total} pageSize={8} showTotal={total => `共${total}条`}/>
                 </div>
                 }
             </Spin>

@@ -38,7 +38,8 @@ class EditLblView extends React.Component{
                 this._drawnItems.addLayer(this.state.layer)
             }
             this.setState({
-                layer:null
+                layer:null,
+                content: createEmptyValue()
             })
             this.handleClose()
         }

@@ -5,6 +5,7 @@ import Audio from './Audio'
 import Video from './Video'
 import Doc from './Doc'
 import WX from './WX'
+import Text from './Text'
 import { Tabs } from 'antd'
 import {add, list, info, remove} from '../../services/source'
 import {add as grow} from '../../services/grow'
@@ -43,6 +44,9 @@ class Resource extends Component {
                 </TabPen>
                 <TabPen key='6' tab='文献'>
                     <Doc add={this._add} list={this._list} info={this._info} grow={grow} remove={this._remove} />
+                </TabPen>
+                <TabPen key='7' tab='名词'>
+                    <Text add={this._add} list={this._list} info={this._info} remove={this._remove}/>
                 </TabPen>
             </Tabs>
         );

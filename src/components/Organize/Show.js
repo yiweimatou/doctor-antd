@@ -123,7 +123,7 @@ Show.propTypes = {
     getLessonList: PropTypes.func.isRequired,
     getOrganizeTeam: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired,
+    // userId: PropTypes.number.isRequired,
     getOrganizeTeamList: PropTypes.func.isRequired
 }
 

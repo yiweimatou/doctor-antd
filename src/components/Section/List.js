@@ -77,17 +77,16 @@ class List extends Component{
             key:'operation',
             render: (text,record) =>
                 <div>
+                    { record.category_id == TOPICS ?
+                    <Button type='ghost' onClick={() => push(`/paper/list?id=${record.id}`)}>查看详情</Button>:
                     <Button
                         type = 'ghost'
                         onClick={() =>
                             push(`/section/add/${keyToName(record.category_id)}?oid=${record.organize_id}&lid=${record.lesson_id}&id=${record.id}&edit=1`)
                         }
                     >编辑</Button>
-                    <span className="ant-divider"></span>
-                    { record.category_id == TOPICS ?
-                    <div style={{display: 'inline-block'}}><Button type='ghost' onClick={() => push(`/paper/list?id=${record.id}`)}>查看详情</Button>
-                    <span className='ant-divider'></span></div>:null
-                    }   
+                    }
+                    <span className='ant-divider'></span>
                     <Popconfirm
                         title="确定要删除这个文章吗？"
                         onConfirm={()=>this.handleConfirm(record.id)}

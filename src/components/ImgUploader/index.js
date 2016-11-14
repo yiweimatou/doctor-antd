@@ -13,11 +13,11 @@ class ImgUploader extends Component {
     changeHandler = info => {
         let fileList = info.fileList
         fileList = fileList.slice(-1)
-        fileList = fileList.map((file) => {    
+        fileList = fileList.map((file) => {
             if (file.response) {
                 file.url = file.response.cover
-            }   
-            return file            
+            }
+            return file
         })
         fileList = fileList.filter(file => {
             if (file.response) {
@@ -42,10 +42,10 @@ class ImgUploader extends Component {
     render() {
         const {action} = this.props
         return (
-            <Upload 
-                name = 'upload_file' 
+            <Upload
+                name = 'upload_file'
                 action = {action ? action : UPLOAD_COVER_API}
-                listType = 'picture' 
+                listType = 'picture'
                 fileList = {this.state.fileList}
                 onChange = {this.changeHandler}
                 accept = 'image/git, image/jpeg, image/png'

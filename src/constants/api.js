@@ -1,5 +1,7 @@
 export const HOST = 'http://api.yiweimatou.com'
 
+export const WECHATLOGIN = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxe17a9f1153e4a1b5&scope=snsapi_login&redirect_uri=http%3A%2F%2Fwww.yiweimatou.com&state=doctor'
+
 export const USER_API_DOMAIN = `${HOST}:4001`
 export const ADMIN_API_DOMAIN = `${HOST}:4001`
 export const UPLOAD_DOMAIN = 'http://image.yiweimatou.com:999'
@@ -21,6 +23,7 @@ export const DEFAULT_TOPICS = 'http://image.yiweimatou.com/topics.png'
 /*
 *category
  */
+export const TEXT = '17'
 export const DOC = '16'
 export const WX = '15'
 export const BAIKE = '14'

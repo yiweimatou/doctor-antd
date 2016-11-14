@@ -182,7 +182,7 @@ _onVideoOk = () => {
   let {editorState, onChange} = this.props;
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
-    let entityKey = Entity.create(ENTITY_TYPE.VIDEO, 'IMMUTABLE', {src: url});
+    let entityKey = Entity.create('VIDEO', 'IMMUTABLE', {src: url});
     const updatedContent = Modifier.insertText(contentState, selection, ' ', null, entityKey);
     this.setState({showVideo: false, url: ''})
     onChange(

@@ -6,7 +6,7 @@ import YunbookCard from './YunbookCard'
 class List extends Component {
     static propTypes = {
         fetchYunbookList: PropTypes.func.isRequired,
-        uid: PropTypes.number
+        // uid: PropTypes.number
     }
     changeHandler = (offset, account_id) => {
         this.props.fetchYunbookList({ offset, limit: 6, account_id },error => message.error(error))

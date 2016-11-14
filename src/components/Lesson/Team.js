@@ -85,7 +85,7 @@ class Team extends Component {
 Team.propTypes = {
     query: PropTypes.object.isRequired,
     getList: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired
+    // userId: PropTypes.number.isRequired
 };
 
 export default connect(

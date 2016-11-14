@@ -306,7 +306,7 @@ AddBook.propTypes = {
   query: PropTypes.object.isRequired,
   total: PropTypes.number.isRequired,
   myTotal: PropTypes.number.isRequired,
-  userId: PropTypes.number.isRequired,
+  // userId: PropTypes.number.isRequired,
   getInfo: PropTypes.func.isRequired,
   fetchYunbook: PropTypes.func.isRequired,
   addSection: PropTypes.func.isRequired,

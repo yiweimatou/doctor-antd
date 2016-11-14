@@ -65,7 +65,7 @@ class List extends Component {
 List.propTypes = {
     getList: PropTypes.func.isRequired,
     getInfo: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired
+    // userId: PropTypes.number.isRequired
 }
 
 export default connect(

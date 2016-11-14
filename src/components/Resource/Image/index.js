@@ -41,14 +41,14 @@ class Image extends Component {
                 <Row>
                 {
                     list.map(image => {
-                        return <Col span='6' key={image.id}><ImageCard image={image}/></Col>
+                        return <Col span='8' key={image.id}><ImageCard image={image}/></Col>
                     })
                 }
                 </Row>
                  {
                     total === 0 ? <p style={{marginTop: 20, textAlign: 'center'}}>暂无数据</p> :
                     <div style={{marginTop: 20}}>
-                        <Pagination total={total} showTotal={total => `共${total}条`}/>
+                        <Pagination total={total} pageSize={8} showTotal={total => `共${total}条`}/>
                     </div>
                 }
             </Spin>

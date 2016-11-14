@@ -2,7 +2,7 @@
  * Created by zhangruofan on 2016/9/18.
  */
 import React, { Component, PropTypes } from 'react'
-import { Table, Modal, message, Button } from 'antd'
+import { Table, Modal, message } from 'antd'
 import {TOPIC} from '../../constants/api'
 import Category from '../Category'
 import { connect } from 'react-redux'
@@ -142,7 +142,7 @@ Select.propTypes = {
   okHandler: PropTypes.func.isRequired,
   cancelHandler: PropTypes.func.isRequired,
   getInfo: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired,
+  // userId: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired
 }
 

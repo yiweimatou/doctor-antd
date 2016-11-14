@@ -67,7 +67,7 @@ class Edit extends Component{
                 title:values.lname,
                 descript:values.descript,
                 cover:cover,
-                organize_amount: values.organize_money,
+                organize_amount: values.organize_money*100,
                 account_amount: values.account_money*100,
                 id:this.props.lesson.id,
                 state: values.state ? 1: 2
@@ -106,6 +106,8 @@ class Edit extends Component{
             form,lesson,loading, id
         } = this.props
         const { getFieldDecorator } = form
+        const account_amount = lesson && lesson.account_amount/100
+        const organize_amount = lesson && lesson.organize_amount/100
         return(
             <div>
              <LessonBar lid={id} current='edit' />
@@ -144,7 +146,7 @@ class Edit extends Component{
                                         }
                                     }
                                 }],
-                                initialValue: lesson && lesson.account_amount/100
+                                initialValue: account_amount
                             })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
                     <FormItem
@@ -161,7 +163,7 @@ class Edit extends Component{
                                         }
                                     }  
                                 }],
-                                initialValue: lesson && lesson.organize_amount
+                                initialValue: organize_amount
                             })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="上下架">

@@ -85,8 +85,9 @@ export const isWX = value => {
 export const ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/    
 export const youkuRegExp = /https?:\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/
 export const qqRegExp = /\S*v.qq.com\S*vid=(\S+)/
+const qqRegExp2 = /\S*v.qq.com\S*\/(\S+).html/
 export const isVideo = value => {
-    return matchRegexp(value, ytRegExp) || matchRegexp(value, qqRegExp) || matchRegexp(value, youkuRegExp)
+    return matchRegexp(value, ytRegExp) || matchRegexp(value, qqRegExp) || matchRegexp(value, youkuRegExp) || matchRegexp(value, qqRegExp2)
 }
 
 export const mapModalToId = {

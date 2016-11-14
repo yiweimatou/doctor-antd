@@ -6,6 +6,7 @@ import { HTML, UPLOAD_COVER_API } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
 import Paper from '../Paper'
 import RichTextEditor, {createValueFromString, createEmptyValue} from '../RichTextEditor'
+import ReactQuill from '../ReactQuill'
 const FormItem =Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -15,7 +16,7 @@ const formItemLayout = {
 class AddHtml extends Component {
     state = {
         section: {},
-        initialContent: createEmptyValue(),
+        content: '',
         fileList: []
     }
     submitHandler = state => {
@@ -123,7 +124,7 @@ class AddHtml extends Component {
     }
     render() {
         const { query, loading } = this.props
-        const { initialContent, section } = this.state
+        const { content, section } = this.state
         const { getFieldDecorator } = this.props.form
         if (!query.oid || !query.lid) {
             return (<div>参数错误</div>)
@@ -167,11 +168,7 @@ class AddHtml extends Component {
                             </Upload>
                         </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <RichTextEditor value={initialContent}
-                                onChange={this._onChange}
-                                placeholder="请填写内容"
-                                readOnly={false}
-                            />
+                            <ReactQuill />
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :

@@ -14,7 +14,7 @@ class List extends Component{
     }
     static propTypes = {
         changeHandler: PropTypes.func.isRequired,
-        userId: PropTypes.number.isRequired
+        // userId: PropTypes.number.isRequired
     }
     componentWillMount() {
       const { userId, changeHandler } = this.props

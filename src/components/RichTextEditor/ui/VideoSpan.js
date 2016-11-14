@@ -28,14 +28,16 @@ export default class VideoSpan extends Component {
             }
         }
         return(
-            <iframe src = {src} 
-                allowFullScreen
-                frameBorder = {0} 
-                width={300}
-                height={200}
-            >
-                你的垃圾浏览器不行啊
-            </iframe>
+            <p>
+                <iframe src = {src} 
+                    allowFullScreen
+                    frameBorder = {0} 
+                    width={300}
+                    height={200}
+                >
+                    你的垃圾浏览器不行啊
+                </iframe>
+            </p>
         )
     }
 }

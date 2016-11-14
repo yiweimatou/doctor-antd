@@ -28,7 +28,7 @@ class New extends Component {
         newLesson:PropTypes.func.isRequired,
         push: PropTypes.func.isRequired,
         residue: PropTypes.func.isRequired,
-        userId: PropTypes.number
+        // userId: PropTypes.number
     }
     state = {
         fileList: [],

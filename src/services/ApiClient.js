@@ -1,4 +1,6 @@
 import fetch from 'isomorphic-fetch'
+import { WECHATLOGIN } from '../constants/api'
+
 const initialFetchConfig = {
     needAuth:false
 }
@@ -11,7 +13,7 @@ function checkStatus(data) {
         return data
     } else if (code === 401){
         localStorage.clear()
-        window.location.reload()
+        window.location.reload(WECHATLOGIN)
     } else if (code === 500) {
         return Promise.reject('服务器开小差啦，请待会再试!')
     } else {

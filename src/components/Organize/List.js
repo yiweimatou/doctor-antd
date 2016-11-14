@@ -59,7 +59,7 @@ class List extends Component{
 List.propTypes = {
     changeHandler: PropTypes.func.isRequired,
     total: PropTypes.number.isRequired,
-    userId: PropTypes.number.isRequired
+    // userId: PropTypes.number.isRequired
 }
 
 export default List
