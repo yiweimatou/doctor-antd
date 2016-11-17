@@ -1,0 +1,26 @@
+.draft-extend {
+
+}
+
+.draft-extend-editor {
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 200px;
+}
+
+.draft-extend-controls {
+}
+
+.draft-extend-controls > li {
+  display: inline-block;
+  list-style-type: none;
+  margin: 0 1px;
+}
+
+.imagespan-root {
+  background-repeat: no-repeat;
+  display: inline-block;
+  overflow: hidden;
+  cursor: pointer;
+}

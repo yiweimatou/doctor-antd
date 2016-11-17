@@ -1,7 +1,7 @@
 /* @flow */
 import {ContentState, EditorState} from 'draft-js';
 import {stateToHTML} from 'nodeman-draft-js-export-html';
-import {stateFromHTML} from 'draft-js-import-html';
+import { convertFromHTML, parseHTML } from 'draft-convert';
 // import {stateToMarkdown} from 'draft-js-export-markdown';
 // import {stateFromMarkdown} from 'draft-js-import-markdown';
 
@@ -55,7 +55,7 @@ export default class EditorValue {
   }
 
   static createFromString(markup: string, format: string, decorator: ?Decorator): EditorValue {
-    let contentState = fromString(markup, format);
+    let contentState = fromString(markup, format)
     let editorState = EditorState.createWithContent(contentState, decorator);
     return new EditorValue(editorState, {[format]: markup});
   }
@@ -79,7 +79,8 @@ function toString(editorState: EditorState, format: string): string {
 function fromString(markup: string, format: string): ContentState {
   switch (format) {
     case 'html': {
-      return stateFromHTML(markup);
+        console.log(parseHTML(markup))
+      return convertFromHTML(markup)
     }
     // case 'markdown': {
     //   return stateFromMarkdown(markup);

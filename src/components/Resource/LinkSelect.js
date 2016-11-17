@@ -1,16 +1,15 @@
 import React, {Component, PropTypes} from 'react';
 import {Table, message} from 'antd'
-import {list, info}from '../../../services/source'
-import {VIDEO} from '../../../constants/api'
+import {list, info}from '../../services/source'
 
-class Select extends Component {
+class LinkSelect extends Component {
     state = {
         loading: true,
         total: 0,
         list: []
     }
     componentWillMount() {
-        info({state: 1, category_id: VIDEO}).then(data => this.setState({total: data.count}))
+        info({state: 1, category_id: this.props.category}).then(data => this.setState({total: data.count}))
         this._getList(1)
     }
     _getList = offset => {
@@ -18,7 +17,7 @@ class Select extends Component {
             state: 1,
             limit: 9,
             offset,
-            category_id: VIDEO
+            category_id: this.props.category
         }).then(data => {
             this.setState({
                 loading: false,
@@ -46,18 +45,21 @@ class Select extends Component {
         }]
         const rowSelection = {
             type: 'radio',
-            onChange: (selectedRowKeys, selectedRows) => onChange(selectedRows[0])
+            onChange: (selectedRowKeys, selectedRows) => {
+                onChange(selectedRows[0])
+            }
         }
         return (
             <div>
-                <Table dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
+                <Table rowKey="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
             </div>
         );
     }
 }
 
-Select.propTypes = {
-    onChange: PropTypes.func.isRequired
+LinkSelect.propTypes = {
+    onChange: PropTypes.func.isRequired,
+    category: PropTypes.string.isRequired
 };
 
-export default Select;
+export default LinkSelect;

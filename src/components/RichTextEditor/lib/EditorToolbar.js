@@ -67,8 +67,9 @@ export default class EditorToolbar extends Component {
       showWX: false,
       showVideo: false,
       showAudio: false,
-      url: '',
-      title: '',
+      selectedAudio: null,
+      selectedVideo: null,
+      selectedImage: null
     };
   }
 
@@ -177,14 +178,14 @@ export default class EditorToolbar extends Component {
   }
 
 _onVideoOk = () => {
-  const {url} = this.state
-  if (!url) return message.error('请选择一项')
-  let {editorState, onChange} = this.props;
+    const { selectedVideo } = this.state
+    if (!selectedVideo) return message.error('请选择一项')
+    let {editorState, onChange} = this.props;
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
-    let entityKey = Entity.create('VIDEO', 'IMMUTABLE', {src: url});
+    let entityKey = Entity.create('VIDEO', 'IMMUTABLE', { src: selectedVideo.path });
     const updatedContent = Modifier.insertText(contentState, selection, ' ', null, entityKey);
-    this.setState({showVideo: false, url: ''})
+    this.setState({ showVideo: false })
     onChange(
       EditorState.push(editorState, updatedContent)
     );
@@ -192,14 +193,14 @@ _onVideoOk = () => {
 }
 
 _onAudioOk = () => {
-  const {url} = this.state
-  if (!url) return message.error('请选择一项')
+  const { selectedAudio } = this.state
+  if (!selectedAudio) return message.error('请选择一项')
   let {editorState, onChange} = this.props;
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
-    let entityKey = Entity.create('AUDIO', 'IMMUTABLE', {src: url});
-    const updatedContent = Modifier.insertText(contentState, selection, ' ', null, entityKey);
-    this.setState({showAudio: false, url: ''})
+    let entityKey = Entity.create('AUDIO', 'IMMUTABLE', { src: selectedAudio.path });
+    const updatedContent = Modifier.insertText(contentState, selection, '\n', null, entityKey);
+    this.setState({ showAudio: false })
     onChange(
       EditorState.push(editorState, updatedContent)
     );
@@ -209,13 +210,13 @@ _onAudioOk = () => {
     return(
       <ButtonGroup>
         <Modal title='选择图片' visible={this.state.showImageButton} onOk={this._onOk} onCancel={this._onCancel} width={720} maskClosable={false}>
-          <ImageSelect onChange = {url => this.setState({url})}/>
+          <ImageSelect onChange = { val => this.setState({ selectedImage: val })}/>
         </Modal>
         <Modal title="选择视频" visible={this.state.showVideo} onOk={this._onVideoOk} onCancel={()=>this.setState({showVideo: false})} maskClosable={false} width={720}>
-          <VideoSelect onChange={url => this.setState({url})}/>
+          <VideoSelect onChange={ val => this.setState({ selectedVideo: val })}/>
         </Modal>
-        <Modal title="选择音频" visible={this.state.showAudio} onOk={this._onAudioOk} onCancel={()=>this.setState({showVideo: false})} maskClosable={false} width={720}>
-          <AudioSeelct onChange={(url) => this.setState({url})} />
+        <Modal title="选择音频" visible={this.state.showAudio} onOk={this._onAudioOk} onCancel={()=>this.setState({ showAudio: false })} maskClosable={false} width={720}>
+          <AudioSeelct onChange={ val => this.setState({ selectedAudio: val })} />
         </Modal>
         <IconButton label="插入视频" value="插入视频" focusOnClick={false} onClick={() => this.setState({showVideo: true})} />
         <IconButton label="插入音频" value="插入音频" focusOnClick={false} onClick={() => this.setState({showAudio: true})} />
@@ -272,12 +273,12 @@ _onAudioOk = () => {
   _onCancel = () => this.setState({showImageButton: false})
 
   _onOk = () => {
-    const {url} = this.state
-    if (!url) return message.error('请选择一项')
+    const { selectedImage } = this.state
+    if (!selectedImage) return message.error('请选择一项')
     let {editorState, onChange} = this.props;
     let contentState = editorState.getCurrentContent();
     let selection = editorState.getSelection();
-    let entityKey = Entity.create(ENTITY_TYPE.IMAGE, 'IMMUTABLE', {src: url});
+    let entityKey = Entity.create(ENTITY_TYPE.IMAGE, 'IMMUTABLE', { src: selectedImage.path });
     const updatedContent = Modifier.insertText(contentState, selection, ' ', null, entityKey);
     this.setState({showImageButton: false, url: ''})
     onChange(
@@ -287,7 +288,7 @@ _onAudioOk = () => {
   }
 
   _toggleShowImage = () => this.setState({showImageButton: !this.state.showImageButton})
-  
+
   _renderUndoRedo() {
     let {editorState} = this.props;
     let canUndo = editorState.getUndoStack().size !== 0;

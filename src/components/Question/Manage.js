@@ -1,12 +1,18 @@
 import React, {Component} from 'react';
 import List from './List'
 import Add from './Add'
-import { Tabs, Spin, Icon, message, Modal } from 'antd'
+import { Tabs, Spin, Icon, message, Modal, Table } from 'antd'
 import { connect } from 'react-redux'
 import Category from '../Category'
 import { TOPIC } from '../../constants/api'
-const TabPane = Tabs.TabPane
 
+
+const TabPane = Tabs.TabPane
+const columns = [{
+    title: '问题',
+    key: '试题题目（标题）',
+    dataIndex: '试题题目（标题）'
+}]
 class Manage extends Component {
     state = {
         activeKey: '1',
@@ -15,7 +21,8 @@ class Manage extends Component {
         failure: 0,
         total: 0,
         latLng: {},
-        category: ''
+        category: '',
+        failData: []
     }
     componentWillMount() {
       if (!window.XLSX) {
@@ -54,7 +61,22 @@ class Manage extends Component {
       if(this.state.success + this.state.failure === this.state.total) {
         clearInterval(this.interval)
         this.setState({ uploading: false })
-        Modal.info({ content: `上传:${this.state.total},成功:${this.state.success}`})
+        if (this.state.failure > 0) {
+            Modal.confirm({
+                content: <div>上传:{this.state.total},成功:{this.state.success}<Table bordered dataSource={this.state.failData} columns={columns}/></div>,
+                title: '失败列表',
+                okText: '继续上传',
+                onOk: (resolve) => {
+                    const temp = this.state.failData
+                    resolve()
+                    this.setState({ uploading: true, total: temp.length, failure: 0, success: 0, failData: [] })
+                    this.interval = setInterval(this.tick, 1000)
+                    this.upload(temp)
+                }
+            })
+        } else {
+            Modal.info({ content: `上传:${this.state.total},成功:${this.state.success}`})
+        }
       }
     }
     fileChangeHandler = (e) => {
@@ -85,9 +107,15 @@ class Manage extends Component {
         const _json = window.XLSX.utils.sheet_to_json(worksheet)
         this.setState({ total: _json.length })
         this.interval = setInterval(this.tick, 1000)
-        _json.forEach(item => {
-          if (item['标准答案'] === '') return
-          this.props.add({
+        this.upload(_json)
+      }
+      reader.readAsBinaryString(files[0])
+    }
+    upload = (data) => {
+        const category = this.state.category
+        data.forEach(item => {
+          if (item['标准答案'] === '') return this.setState({ failure: this.state.failure + 1 })
+          const params = {
             state: 1,
             question: item['试题题目（标题）'],
             option1: item['备选A'] || '',
@@ -96,7 +124,8 @@ class Manage extends Component {
             option4: item['备选D'] || '',
             option5: item['备选E'] || '',
             answer: item['标准答案']
-          }, topic => {
+          }
+          this.props.add(params, topic => {
             if (category.length >= 3) {
             this.props.grow({
                 lat: this.state.latLng.lat,
@@ -112,11 +141,9 @@ class Manage extends Component {
           }
             this.setState({ success: this.state.success + 1 })
           }, () => {
-            this.setState({ failure: this.state.failure + 1 })
+              this.setState({ failure: this.state.failure + 1, failData: this.state.failData.concat(item) })
           })
         })
-      }
-      reader.readAsBinaryString(files[0])
     }
     render() {
         const { activeKey } = this.state

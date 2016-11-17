@@ -46,11 +46,11 @@ class Select extends Component {
         }]
         const rowSelection = {
             type: 'radio',
-            onChange: (selectedRowKeys, selectedRows) => onChange(selectedRows[0].path, selectedRows[0].title)
+            onChange: (selectedRowKeys, selectedRows) => onChange(selectedRows[0])
         }
         return (
             <div>
-                <Table dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
+                <Table key="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
             </div>
         );
     }

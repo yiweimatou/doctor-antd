@@ -1,5 +1,5 @@
-import { 
-    HTML, ACCOUNT, ACTIVE, TOPICS, BOOK, NOTICE 
+import {
+    HTML, ACCOUNT, ACTIVE, TOPICS, BOOK, NOTICE
 } from '../constants/api'
 
 export function keyToDisplayname(key) {
@@ -80,14 +80,32 @@ export const isBaike = value => {
 }
 
 export const isWX = value => {
-    return isUrl(value) && matchRegexp(value, /^mp.weixin.qq.com*/)
+    return isUrl(value) && matchRegexp(value, /mp.weixin.qq.com*/)
 }
-export const ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/    
+export const ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
 export const youkuRegExp = /https?:\/\/v\.youku\.com\/v_show\/id_(\w+)=*\.html/
 export const qqRegExp = /\S*v.qq.com\S*vid=(\S+)/
 const qqRegExp2 = /\S*v.qq.com\S*\/(\S+).html/
 export const isVideo = value => {
     return matchRegexp(value, ytRegExp) || matchRegexp(value, qqRegExp) || matchRegexp(value, youkuRegExp) || matchRegexp(value, qqRegExp2)
+}
+
+export const videoUrlConvert = url => {
+    const ytMatch = url.match(ytRegExp)
+    const youkuMatch = url.match(youkuRegExp)
+    const qqMatch = url.match(qqRegExp)
+    const qqMatch2 = url.match(qqRegExp2)
+    if (youkuMatch && youkuMatch[1].length > 0) {
+        return `//player.youku.com/embed/${youkuMatch[1]}`
+    } else if (qqMatch && qqMatch[1].length > 0) {
+        return `http://v.qq.com/iframe/player.html?tiny=0&auto=0&vid=${qqMatch[1]}`
+    } else if (qqMatch2 && qqMatch2[1].length > 0) {
+        return `http://v.qq.com/iframe/player.html?tiny=0&auto=0&vid=${qqMatch2[1]}`
+    } else if (ytMatch && ytMatch[1].length > 0) {
+        return `//www.youtube.com/embed/${ytMatch[1]}`
+    } else {
+        return ''
+    }
 }
 
 export const mapModalToId = {
@@ -116,5 +134,5 @@ export function loadJS(url, success) {
             this.parentNode.removeChild(this);
         }
     }
-    document.getElementsByTagName('head')[0].appendChild(domScript);        
+    document.getElementsByTagName('head')[0].appendChild(domScript);
 }

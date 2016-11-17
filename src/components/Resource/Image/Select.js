@@ -3,7 +3,7 @@ import {Table, message} from 'antd'
 import {list, info}from '../../../services/source'
 import {IMAGE} from '../../../constants/api'
 
-class Select extends Component {
+class ImageSelect extends Component {
     state = {
         loading: true,
         total: 0,
@@ -46,7 +46,7 @@ class Select extends Component {
         }]
         const rowSelection = {
             type: 'radio',
-            onChange: (selectedRowKeys, selectedRows) => onChange(selectedRows[0].path)
+            onChange: (selectedRowKeys, selectedRows) => onChange(selectedRows[0])
         }
         return (
             <div>
@@ -56,8 +56,8 @@ class Select extends Component {
     }
 }
 
-Select.propTypes = {
+ImageSelect.propTypes = {
     onChange: PropTypes.func.isRequired
 };
 
-export default Select;
+export default ImageSelect

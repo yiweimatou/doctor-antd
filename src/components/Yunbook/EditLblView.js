@@ -3,8 +3,12 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import 'leaflet-draw'
 import 'leaflet-draw/dist/leaflet.draw.css'
-import RichTextEditor, {createEmptyValue} from '../RichTextEditor'
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
+import ResourceSelect from '../Resource/Select'
+import {
+    AUDIO, VIDEO, WX, DOC, TEXT, BAIKE, IMAGE
+} from '../../constants/api'
+import { videoUrlConvert } from '../../utils'
 
 const styles = {
     map:{
@@ -14,34 +18,60 @@ const styles = {
 class EditLblView extends React.Component{
     constructor(props){
         super(props)
-        //禁用默认右击弹出菜单
         this.state = {
             open: false,
             layer: null,
-            content: createEmptyValue()
+            record: null
         }
-        this.handleClose = ()=>{
+        this.handleClose = () => {
             this.setState({
                 open:!this.state.open
             })
         }
-        this.submit = () => {
-            const content = this.state.content.toString('html')
-            if( content ){
-                const popup  = L.popup()
-                popup.setContent(content)
-                this.state.layer.bindPopup(popup).openPopup()
-                const _geoJsonTemp = this.state.layer.toGeoJSON()
-                _geoJsonTemp.properties._popup = content
-                this._geoJson.features.push(_geoJsonTemp)
-                this.props.changeLbl(JSON.stringify(this._geoJson))
-                this._drawnItems.addLayer(this.state.layer)
+        this.toHtml = (record) => {
+            if (record) {
+                const { category_id, path, title, descript } = record
+                if (category_id.toString() === WX || category_id.toString() === DOC || category_id.toString() === BAIKE) {
+                    return `<a href=${path}>${title}</a>`
+                } else if (category_id.toString() === IMAGE) {
+                    return `<img width="300" height="200" src=${path} />`
+                } else if (category_id.toString() === AUDIO) {
+                    return `<audio controls src=${path}>浏览器不支持</audio>`
+                } else if (category_id.toString() === VIDEO) {
+                    const src = videoUrlConvert(path)
+                    if (src) {
+                        return `<iframe allowfullscreen frameborder=0 width="300" height="200"  src="${src}" controls />`
+                    }
+                    return '<p>视频显示出错！</p>'
+                } else if (category_id.toString() === TEXT) {
+                    return `<div><h3>${title}</h3><p>${descript}</p></div>`
+                } else {
+                    return ''
+                }
             }
-            this.setState({
-                layer:null,
-                content: createEmptyValue()
-            })
-            this.handleClose()
+            return ''
+        }
+        this.submit = () => {
+            const { record } = this.state
+            if (record){
+                const content = this.toHtml(record)
+                if( content ){
+                    const popup  = L.popup()
+                    popup.setContent(content)
+                    this.state.layer.bindPopup(popup).openPopup()
+                    const _geoJsonTemp = this.state.layer.toGeoJSON()
+                    _geoJsonTemp.properties._popup = content
+                    this._geoJson.features.push(_geoJsonTemp)
+                    this.props.changeLbl(JSON.stringify(this._geoJson))
+                    this._drawnItems.addLayer(this.state.layer)
+                }
+                this.setState({
+                    layer:null
+                })
+                this.handleClose()
+            } else {
+                message.warn('请选择一项!')
+            }
         }
         document.oncontextmenu = function () {
             return false
@@ -98,7 +128,7 @@ class EditLblView extends React.Component{
             } catch (error) {
                 console.log(error)
             }
-            if (obj && obj.type !== undefined ) { 
+            if (obj && obj.type !== undefined ) {
                 this._drawnItems = L.geoJson(obj, {
                     onEachFeature: function (featureData, layer) {
                         if (featureData.geometry.type === 'Point') {
@@ -211,7 +241,6 @@ class EditLblView extends React.Component{
         this.initMap(yunbook)
     }
     render(){
-        const {content} = this.state
         return (
             <div>
                 <Modal
@@ -221,7 +250,7 @@ class EditLblView extends React.Component{
                     width = {720}
                     maskClosable = {false} >
                     <div style={{margin: '20px 10px'}}>
-                        <RichTextEditor value={content} onChange={content => this.setState({content})} placeholder="请填写内容" readOnly={false} />
+                        <ResourceSelect onChange={record => this.setState({record})} />
                     </div>
                 </Modal>
                 <div id = '_map' style ={ styles.map }></div>

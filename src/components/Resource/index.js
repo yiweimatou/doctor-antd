@@ -9,7 +9,7 @@ import Text from './Text'
 import { Tabs } from 'antd'
 import {add, list, info, remove} from '../../services/source'
 import {add as grow} from '../../services/grow'
-const TabPen = Tabs.TabPane
+const TabPane = Tabs.TabPane
 
 class Resource extends Component {
     _add = params => {
@@ -27,27 +27,27 @@ class Resource extends Component {
     render() {
         return (
             <Tabs defaultActiveKey='1'>
-                <TabPen key='1' tab='图片'>
+                <TabPane key='1' tab='图片'>
                     <Image add={this._add} list={this._list} info={this._info} remove={this._remove}/>
-                </TabPen>
-                <TabPen key='2' tab='视频'>
+                </TabPane>
+                <TabPane key='2' tab='视频'>
                     <Video add={this._add} list={this._list} info={this._info} grow={grow} remove={this._remove}/>
-                </TabPen>
-                <TabPen key='3' tab='音频'>
+                </TabPane>
+                <TabPane key='3' tab='音频'>
                     <Audio add={this._add} list={this._list} info={this._info} grow={grow} remove={this._remove}/>
-                </TabPen>
-                <TabPen key='4' tab='百科'>
+                </TabPane>
+                <TabPane key='4' tab='百科'>
                     <Baike add={this._add} list={this._list} info={this._info} grow={grow} remove={this._remove}/>
-                </TabPen>
-                <TabPen key='5' tab='微信'>
+                </TabPane>
+                <TabPane key='5' tab='微信'>
                     <WX add={this._add} list={this._list} info={this._info} grow={grow} remove={this._remove}/>
-                </TabPen>
-                <TabPen key='6' tab='文献'>
+                </TabPane>
+                <TabPane key='6' tab='文献'>
                     <Doc add={this._add} list={this._list} info={this._info} grow={grow} remove={this._remove} />
-                </TabPen>
-                <TabPen key='7' tab='名词'>
+                </TabPane>
+                <TabPane key='7' tab='名词'>
                     <Text add={this._add} list={this._list} info={this._info} remove={this._remove}/>
-                </TabPen>
+                </TabPane>
             </Tabs>
         );
     }

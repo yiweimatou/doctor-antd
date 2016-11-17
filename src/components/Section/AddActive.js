@@ -10,7 +10,7 @@ import Map from '../Map'
 import moment from 'moment'
 import LessonBar from '../Lesson/LessonBar'
 import { push } from 'react-router-redux'
-import RichTextEditor, {createValueFromString, createEmptyValue} from '../RichTextEditor'
+import DraftEditor, { toHTML, fromHTML, create } from '../DraftEditor'
 const RangePicker = DatePicker.RangePicker
 const FormItem =Form.Item
 const formItemLayout = {
@@ -23,7 +23,7 @@ class AddActive extends Component {
         section: {},
         latLng: { lat: 0, lng: 0 },
         address: '',
-        content: createEmptyValue(),
+        content: create(fromHTML('<div></div>')),
         fileList: [],
         initialFileList: []
     }
@@ -32,16 +32,16 @@ class AddActive extends Component {
         if (query.id) {
             fetchSection({
                 id: query.id
-            }, section => this.setState({ 
+            }, section => this.setState({
                 section, address: section.address, latLng: {lat: section.lat, lng: section.lng},
-                content: createValueFromString(section.content, 'html'),
+                content: create(fromHTML(section.content)),
                 fileList: section.cover? [{
                         uid: -1, name: '封面.png', status: 'done', url: section.cover
                     }]:[],
                 initialFileList:  section.cover? [{
                         uid: -1, name: '封面.png', status: 'done', url: section.cover
                     }]:[]
-            }), 
+            }),
             error => message.error(error))
         }
     }
@@ -50,7 +50,7 @@ class AddActive extends Component {
             if (errors) return
             const { section, latLng } = this.state
             const { addSection, editSection, query } = this.props
-            const content = this.state.content.toString('html')
+            const content = toHTML(this.state.content.getCurrentContent())
             let cover = ''
             const files = this.state.fileList
             if (files && files[0]) {
@@ -181,7 +181,7 @@ class AddActive extends Component {
                                     required: true,
                                     type: 'array',
                                     message: '请选择活动时间'
-                                }], 
+                                }],
                               initialValue:
                                 section && section.start_ms && section.expires_ms
                                 && [
@@ -191,7 +191,7 @@ class AddActive extends Component {
                             })(<RangePicker showTime format="YYYY/MM/DD hh:mm"  />)}
                         </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <RichTextEditor value={content} placeholder="请填写内容" readOnly={false} onChange={content => this.setState({content})}/>
+                            <DraftEditor editorState={content} placeholder="请填写内容" onChange={content => this.setState({content})} />
                         </FormItem>
                         <FormItem {...formItemLayout} label="活动描述">
                             {getFieldDecorator('descript', {

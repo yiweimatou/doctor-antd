@@ -5,8 +5,8 @@ import { push } from 'react-router-redux'
 import { HTML, UPLOAD_COVER_API } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
 import Paper from '../Paper'
-import RichTextEditor, {createValueFromString, createEmptyValue} from '../RichTextEditor'
-import ReactQuill from '../ReactQuill'
+import DraftEditor, { toHTML, fromHTML, create } from '../DraftEditor'
+
 const FormItem =Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -16,13 +16,13 @@ const formItemLayout = {
 class AddHtml extends Component {
     state = {
         section: {},
-        content: '',
+        content: create(fromHTML('<div></div>')),
         fileList: []
     }
     submitHandler = state => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
-            const content = this.state.initialContent.toString('html')
+            const content = toHTML(this.state.content.getCurrentContent())
             let cover = ''
             if (this.state.fileList.length > 0) {
                 cover = this.state.fileList[0].url
@@ -95,7 +95,7 @@ class AddHtml extends Component {
         const { query, fetchSection } = this.props
         if (query.id) {
             fetchSection({ id: query.id }, section => {
-                this.setState({ section, initialContent: createValueFromString(section.content,'html'),
+                this.setState({ section, content: create(fromHTML(section.content)),
                     fileList: section.cover? [{
                         uid: -1, name: '封面.png', status: 'done', url: section.cover
                     }]:[] })
@@ -118,9 +118,6 @@ class AddHtml extends Component {
             return true
         })
         this.setState({ fileList })
-    }
-    _onChange = value => {
-        this.setState({initialContent: value})
     }
     render() {
         const { query, loading } = this.props
@@ -168,7 +165,7 @@ class AddHtml extends Component {
                             </Upload>
                         </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <ReactQuill />
+                            <DraftEditor editorState={content} onChange={content => this.setState({ content })} />
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :

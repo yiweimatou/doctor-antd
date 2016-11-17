@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {Table, message} from 'antd'
 import {list, info}from '../../../services/source'
-import {VIDEO} from '../../../constants/api'
+import { TEXT } from '../../../constants/api'
 
 class Select extends Component {
     state = {
@@ -10,7 +10,7 @@ class Select extends Component {
         list: []
     }
     componentWillMount() {
-        info({state: 1, category_id: VIDEO}).then(data => this.setState({total: data.count}))
+        info({state: 1, category_id: TEXT}).then(data => this.setState({total: data.count}))
         this._getList(1)
     }
     _getList = offset => {
@@ -18,7 +18,7 @@ class Select extends Component {
             state: 1,
             limit: 9,
             offset,
-            category_id: VIDEO
+            category_id: TEXT
         }).then(data => {
             this.setState({
                 loading: false,
@@ -39,10 +39,9 @@ class Select extends Component {
             key: 'title',
             dataIndex: 'title'
         }, {
-            title: '链接',
-            key: 'path',
-            dataIndex: 'path',
-            render: path => (<a target="_blank" href={path}>{path}</a>)
+            title: '解释',
+            key: 'descript',
+            dataIndex: 'descript'
         }]
         const rowSelection = {
             type: 'radio',

@@ -4,7 +4,7 @@ import {Entity} from 'draft-js'
 export default class VideoSpan extends Component {
     render() {
         const entity = Entity.get(this.props.entityKey)
-        let {src} = entity.getData()        
+        let { src } = entity.getData()
         const ytRegExp = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/
         const ytMatch = src.match(ytRegExp)
 
@@ -28,16 +28,14 @@ export default class VideoSpan extends Component {
             }
         }
         return(
-            <p>
-                <iframe src = {src} 
-                    allowFullScreen
-                    frameBorder = {0} 
-                    width={300}
-                    height={200}
-                >
-                    你的垃圾浏览器不行啊
-                </iframe>
-            </p>
+            <iframe src = {src}
+                allowFullScreen
+                frameBorder = {0}
+                width={300}
+                height={200}
+            >
+                你的浏览器不行啊
+            </iframe>
         )
     }
 }

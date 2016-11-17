@@ -15,7 +15,7 @@ import ImageDecorator from './lib/ImageDecorator';
 import VideoDecorator from './lib/VideoDecorator';
 import AudioDecorator from './lib/AudioDecorator'
 import cx from 'classnames';
-// import autobind from 'class-autobind';
+import autobind from 'class-autobind';
 import EventEmitter from 'events';
 import {BLOCK_TYPE} from 'draft-js-utils';
 
@@ -58,7 +58,7 @@ export default class RichTextEditor extends Component {
   constructor() {
     super(...arguments);
     this._keyEmitter = new EventEmitter();
-    // autobind(this);
+    autobind(this);
   }
 
   render() {
@@ -254,8 +254,8 @@ export default class RichTextEditor extends Component {
     let {onChange, value} = this.props;
     if (onChange != null) {
       let newValue = value.setEditorState(editorState);
-      let newEditorState = newValue.getEditorState()
-      this._handleInlineImageSelection(newEditorState);
+    //   let newEditorState = newValue.getEditorState()
+    //   this._handleInlineImageSelection(newEditorState);
       onChange(newValue);
     }
   }
@@ -266,7 +266,7 @@ export default class RichTextEditor extends Component {
 
     const selectImage = (block, offset) => {
       const imageKey = block.getEntityAt(offset);
-      Entity.mergeData(imageKey, {selected: true});
+      Entity.mergeData(imageKey, { selected: true });
     };
 
     let isInMiddleBlock = (index) => index > 0 && index < blocks.size - 1;
@@ -320,11 +320,11 @@ function createValueFromString(markup: string, format: string): EditorValue {
 }
 
 // $FlowIssue - This should probably not be done this way.
-Object.assign(RichTextEditor, {
-  EditorValue,
-  decorator,
-  createEmptyValue,
-  createValueFromString,
-});
+// Object.assign(RichTextEditor, {
+//   EditorValue,
+//   decorator,
+//   createEmptyValue,
+//   createValueFromString,
+// });
 
-export {EditorValue, decorator, createEmptyValue, createValueFromString};
+export { EditorValue, decorator, createEmptyValue, createValueFromString };
