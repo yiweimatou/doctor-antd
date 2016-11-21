@@ -1,8 +1,10 @@
 import { takeLatest } from 'redux-saga'
-import { fork,put,call } from 'redux-saga/effects'
+import { fork,put,call, select } from 'redux-saga/effects'
 import { getOrganizeList,getOrganizeInfo,getOrganize,editOrganize } from '../services/organize.js'
 import { list as get_organize_team_list } from '../services/organizeTeam'
-import { push } from 'react-router-redux'
+import { info as getFansInfo } from '../services/organize_focus'
+import { getOrganizeLessonInfo } from '../services/organizeLesson'
+import { getUser } from '../services/user'
 
 function* watchMyList() {
   yield takeLatest('organize/mylist', function *(action) {
@@ -70,22 +72,52 @@ function* watchOrganizeInfo(){
     yield* takeLatest('organize/info',organizeInfoHandler)
 }
 
+function* organizeProcess(organize) {
+  const { count }= yield call(getFansInfo, { organize_id: organize.id })
+  const res = yield call(getOrganizeLessonInfo, { organize_id: organize.id })
+  organize.fans = count
+  organize.lessons = res.count
+  const result = yield call(get_organize_team_list, { role: 1, state: 1, organize_id: organize.id })
+  if (result.list.length > 0) {
+    const data = yield call(getUser, { id: result.list[0].account_id })
+    if (data.get.id > 0) {
+      organize.admin = data.get.cet_cname || data.get.cname
+    }
+  }
+  return organize
+}
+
 function* organizeGetHandler(action){
     try{
-        const result = yield call( getOrganize,action.payload.params)
-        if (action.payload.resolve) {
-          action.payload.resolve(result.get)
+      const { entity, list } = yield select(state => state.organize)
+      let organize = {}
+      if (entity.id === action.payload.params.id) {
+        organize = entity
+      } else if(list.length > 0 && list.some(i => i.id === action.payload.params.id)) {
+        organize = list.find(i => i.id === action.payload.params.id)
+        organize = yield organizeProcess(organize)
+      } else {
+        const result = yield call(getOrganize, action.payload.params)
+        if (result.get.id > 0) {
+          organize = yield organizeProcess(result.get)
         }
-        yield put({
-            type:'organize/get/success',
-            payload:{
-                entity:result.get
-            }
-        })
+      }
+      if (action.payload.resolve) {
+        action.payload.resolve(organize)
+      }
+      yield put({
+          type:'organize/get/success',
+          payload:{
+              entity: organize
+          }
+      })
     }catch(error){
       if (action.payload.reject) {
         action.payload.reject(error)
       }
+      yield put({
+        type: 'organize/get/failre'
+      })
     }
 }
 
@@ -95,15 +127,21 @@ function* watchOrganizeGet() {
 
 function* editHandler(action){
     try{
-        yield call(editOrganize,action.payload)
+        yield call(editOrganize,action.payload.params)
+        if (action.payload.resolve) {
+          action.payload.resolve()
+        }
         yield put({
-            type:'organize/edit/success'
+            type:'organize/edit/success',
+            payload: action.payload.params
         })
-        yield put(push(`/organize/show/${action.payload.id}`))
     }catch(error){
-        yield put({
-            type:'orgnanize/edit/failure'
-        })
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
+      yield put({
+          type:'orgnanize/edit/failure'
+      })
     }
 }
 

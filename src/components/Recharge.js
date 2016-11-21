@@ -3,6 +3,8 @@ import { Form, Button, Input, Modal, Radio, Spin, message } from 'antd'
 import QRCode from 'qrcode.react'
 // import alipayImage from '../images/alipay.gif'
 import wxImage from '../images/weixin.gif'
+import { add, get } from '../services/bill'
+import { ORGANIZE } from '../constants/api'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -24,21 +26,30 @@ class Recharge extends Component {
          message.success('充值成功!')
          this.setState({ visible: false })
        }else {
-         this.props.fetch({ id: record.id }, record => this.setState({record}))
+         get({ id: record.id })
+         .then(data => this.setState({ record: data.get }))
+         .catch(error => {
+           message.error(error)
+           this.setState({ visible: false })
+           clearInterval(this.interval)
+         })
        }
    }
    onSubmit = (e) => {
      e.preventDefault()
      this.props.form.validateFields( (errors, values) => {
        if(errors) return
-         this.props.recharge({
+         add({
            way: 3,
-           trade_amount: values.money*100,
-           foreign_id: this.props.foreignId
-         }, ({url, id}) => {
-           this.interval = setInterval(this.tick,2000)
-           this.setState({ url, visible: true, record: { id } })}, error => message.error(error, 6))
-       })
+           trade_amount: values.money * 100,
+           foreign_id: this.props.organize.id,
+           category_id: ORGANIZE
+         }).then(data => {
+           this.interval = setInterval(this.tick, 2000)
+           console.log(data.get)
+           this.setState({ url: data.get.code_url, visible: true, record: { id: data.identity, dispose:1 } })
+         }).catch(error => message.error(error, 6))
+      })
    }
    componentWillUnmount() {
      if (this.interval){
@@ -96,9 +107,7 @@ class Recharge extends Component {
 }
 
 Recharge.propTypes = {
-  recharge: PropTypes.func.isRequired,
-  fetch: PropTypes.func.isRequired,
-  foreignId: PropTypes.number.isRequired
+  organize: PropTypes.object.isRequired
 }
 
 export default Form.create()(Recharge)

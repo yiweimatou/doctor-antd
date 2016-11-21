@@ -48,7 +48,7 @@ class ImgUploader extends Component {
                 listType = 'picture'
                 fileList = {this.state.fileList}
                 onChange = {this.changeHandler}
-                accept = 'image/git, image/jpeg, image/png'
+                accept = 'image/jpeg, image/png'
                 beforeUpload = {file => {
                     const fiveM = 5*1024*1024
                     const isToobig = file.size > fiveM

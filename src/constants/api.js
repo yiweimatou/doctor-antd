@@ -196,6 +196,11 @@ export const YUNBOOK_LIST_API = `${BOOK_API_DOMAIN}/book/list`
 export const YUNBOOK_INFO_API = `${BOOK_API_DOMAIN}/book/info`
 export const YUNBOOK_BUY_API = `${BOOK_API_DOMAIN}/book/buy`
 /**
+*organize_focus
+*/
+export const ORGANIZE_FOCUS_INFO = `${ORGANIZE_API_DOMAIN}/organize_focus/info`
+export const ORGANIZE_FOCUS_LIST = `${ORGANIZE_API_DOMAIN}/organize_focus/list`
+/**
  * organizelesson apis
  */
 export const ORGANIZELESSON_INFO_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/info`

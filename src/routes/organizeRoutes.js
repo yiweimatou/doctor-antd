@@ -93,15 +93,12 @@ const rechargeRoute = store => ({
     if( !id ){
       return replace({ pathname: '/' })
     }
-    const organize = store.getState().organize.entity
-    if( organize === null || organize.id !== id ) {
-      store.dispatch({
+    store.dispatch({
         type: 'organize/get',
         payload: {
-          id
+            params: { id }
         }
-      })
-    }
+    })
   }
 })
 
