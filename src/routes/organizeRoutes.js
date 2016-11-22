@@ -3,6 +3,7 @@ import showContainer from '../containers/organize/showContainer'
 import Edit from '../components/Organize/Edit'
 import Bill from '../components/Organize/Bill'
 import rechargeContainer from '../containers/organize/rechargeContainer'
+import OrganizeLesson from '../components/Organize/organize_lesson'
 import { ORGANIZE } from '../constants/api'
 
 const showRoute = store => ({
@@ -102,6 +103,17 @@ const rechargeRoute = store => ({
   }
 })
 
+const lessonRoute = () => ({
+    path: 'lesson/:id',
+    component: OrganizeLesson,
+    onEnter(nextState, replace) {
+        const id = nextState.params.id
+        if (!id) {
+            replace({ pathname: '/' })
+        }
+    }
+})
+
 const organizeRoutes = store=>({
     path:'organize',
     childRoutes:[
@@ -109,7 +121,8 @@ const organizeRoutes = store=>({
         showRoute(store),
         editRoutes(store),
         billRoute(store),
-        rechargeRoute(store)
+        rechargeRoute(store),
+        lessonRoute()
     ]
 })
 

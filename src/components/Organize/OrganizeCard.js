@@ -25,7 +25,7 @@ class OrganizeCard extends Component{
             >
                 <div className='organize-image'>
                     <Link to={`/organize/show/${organize.id}`}>
-                        <img alt='pic' width="100%" height='160' src={organize.logo || DEFAULT_LOGO} />
+                        <img alt='pic' width="100%" height='160' src={organize.cover || DEFAULT_LOGO} />
                     </Link>
                 </div>
                 <div className='organize-card'>

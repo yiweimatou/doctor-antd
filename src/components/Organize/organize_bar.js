@@ -18,11 +18,11 @@ class OrganizeBar extends React.Component {
     return (
       <Paper>
         <div style={{ margin: '10px', height: '80px' }}>
-          <div style={{ display: 'inline-block', float: 'left', margin: '5px' }}>
+          <div style={{ display: 'inline-block', float: 'left', margin: '5px', width: 70, height: 70 }}>
             <img
               style={{ borderRadius: '50%' }}
               src={ organize.cover || DEFAULT_COVER }
-              width={ 70 } height={ 70 }
+              width="100%" height="100%"
             />
           </div>
           <div style={{ display: 'inline-block', overflow: 'hidden', height: '80px', lineHeight: '80px', marginLeft: '10px' }}>

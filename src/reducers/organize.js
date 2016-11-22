@@ -4,10 +4,24 @@ const initialState = {
     list: [],
     loading: false,
     total: 0,
-    entity: {}
+    entity: {},
+    lessons: []
 }
 
 const organize = handleActions({
+    ['organize/lesson/list']: state => ({
+        ...state,
+        loading: true
+    }),
+    ['organize/lesson/list/failre']: state => ({
+        ...state,
+        loading: false
+    }),
+    ['organize/lesson/list/success']: (state, action) => ({
+        ...state,
+        lessons: action.payload,
+        loading: false
+    }),
     ['organzie/edit']: state=>({
         ...state,
         loading: true

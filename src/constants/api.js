@@ -208,6 +208,7 @@ export const ORGANIZELESSON_GET_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/ge
 export const ORGANIZELESSON_LIST_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/list`
 export const ORGANIZELESSON_ADD_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/add`
 export const ORGANIZELESSON_EDIT_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/put`
+export const ORGANIZE_BUY = `${ORGANIZE_API_DOMAIN}/organize_lesson/buy`
 /**
  * organizeteam apis
  */

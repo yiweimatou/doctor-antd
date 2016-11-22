@@ -51,7 +51,10 @@ class Show extends Component {
     this.props.edit({
       descript: this.state.descript,
       id: this.props.organize.id
-    },() => message.success('修改成功!'), error => message.error(error))
+    },() => {
+      message.success('修改成功!')
+      this.setState({ editable: false })
+    }, error => message.error(error))
   }
   cancelHandler = () => {
     this.setState({
@@ -62,6 +65,7 @@ class Show extends Component {
   render(){
     const { organize, loading } = this.props
     const { editable, descript, uploading } = this.state
+    const money = organize.balance_amount && organize.balance_amount / 100 || 0
     return(
       <Spin spinning={loading}>
         <div>
@@ -69,7 +73,7 @@ class Show extends Component {
         </div>
         <Paper>
             <div style={{ margin: '30px 20px 10px', padding: '20px 0 10px' }}>
-              <div style={{ margin: '40px 0'}}>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
                 <span>机构名称</span>
                 <strong style={{ marginLeft: '30px' }}>{ organize.title }</strong>
                 <span style={{ marginLeft: '30px' }}>(修改机构名称请拨打0571-88208250)</span>
@@ -81,10 +85,9 @@ class Show extends Component {
                   <span style={{ marginLeft: '20px' }}>{organize.lessons}</span>
                 </div>
               </div>
-              <hr style={{ color: 'grey', marginTop: '10px' }}/>
-              <div style={{ margin: '40px 0'}}>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
                 <span>机构余额</span>
-                <span style={{ marginLeft: '30px', fontSize: '40px', color: 'orange' }}>{organize.balance_amount}</span>元
+                <span style={{ marginLeft: '30px', fontSize: '40px', color: 'orange' }}>{money}</span>元
                 <div style={{ float: 'right', lineHeight: '60px' }}>
                   <Button type="primary">
                     <Link to={`/organize/recharge/${organize.id}`}>充值</Link>
@@ -94,8 +97,7 @@ class Show extends Component {
                   </Button>
                 </div>
               </div>
-              <hr style={{ color: 'grey' }}/>
-              <div style={{ margin: '40px 0' }}>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
                 <span>机构logo</span>
                 <img style={{ marginLeft: '30px' }} src={organize.cover || DEFAULT_COVER } width={100} height={100} />
                 <div style={{ float: 'right', display: 'inline-block', lineHeight: '100px' }}>
@@ -118,8 +120,7 @@ class Show extends Component {
                   </Upload>
                 </div>
               </div>
-              <hr style={{ color: 'grey', marginTop: '10px' }}/>
-              <div style={{ margin: '40px 0' }}>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
                 <span>机构简介</span>
                 { editable ?
                   <div style={{ display: 'inline-block', marginLeft: '30px' }}>
@@ -136,18 +137,15 @@ class Show extends Component {
                   <Button onClick={() => this.setState({ editable: true })}>修改</Button>
                 </div>
               </div>
-              <hr style={{ color: 'grey', marginTop: '10px' }}/>
-              <div style={{ margin: '40px 0' }}>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
                 <span>机构地址</span>
                 <span style={{ marginLeft: '30px' }}>{organize.address}</span>
                 <div style={{ float: 'right' }}>如需修改请拨打0571-88208250</div>
               </div>
-              <hr style={{ color: 'grey', marginTop: '10px' }}/>
-              <div style={{ margin: '40px 0' }}>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
                 <span>管理员</span>
                 <span style={{ marginLeft: '30px' }}>{organize.admin}</span>
               </div>
-              <hr style={{ color: 'grey', marginTop: '10px' }}/>
             </div>
         </Paper>
       </Spin>
