@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Spin, Form, Steps, Table, message, Input, Tabs, Button, Modal } from 'antd'
 import { TOPICS } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
+import OrganizeBar from '../Organize/organize_bar'
 import { push } from 'react-router-redux'
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
@@ -148,9 +149,9 @@ class AddTextPaper extends Component {
           }, () => {
             message.success('创建成功!')
             if (query.lid > 0) {
-              this.props.redirct(`/lesson/section?id=${query.lid}`)
+              this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
             } else {
-              this.props.redirct(`/organize/section?id=${query.oid}`)
+              this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
             }
           }, error => message.error(error, 8))
         }
@@ -204,7 +205,11 @@ class AddTextPaper extends Component {
               <p>试卷价格：<em style={{color:'orange', fontSize:'200%'}}>{sale_amount}</em>元</p>
             </div>
           </Modal>
-          <LessonBar lid={ query.lid } current='' />
+          {
+            query.oid > 0 ?
+            <OrganizeBar organize={this.props.organize} /> :
+            <LessonBar lid={ query.lid } current='' />
+          }
           <Steps current={currentStep}>
             <Step title="选择试卷"/>
             <Step title="文章基本信息"/>
@@ -308,7 +313,8 @@ export default connect(
     myList: state.topics.myList,
     loading: state.section.loading,
     userId: state.auth.key,
-    query: state.routing.locationBeforeTransitions.query
+    query: state.routing.locationBeforeTransitions.query,
+    organize: state.organize.entity
   }),
   dispatch => ({
     redirct: path => dispatch(push(path)),

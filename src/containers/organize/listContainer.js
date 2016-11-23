@@ -2,7 +2,6 @@ import {connect} from 'react-redux'
 import List from '../../components/Organize/List.js'
 
 const mapStateToProps = state=>({
-    total: state.organize.total,
     loading: state.organize.loading,
     userId: state.auth.key
 })

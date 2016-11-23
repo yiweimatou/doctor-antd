@@ -137,6 +137,8 @@ export async function list(params, callback) {
                     if (organizeLesson) {
                         item.start_ms = organizeLesson.start_ms
                         item.expires_ms = organizeLesson.expires_ms
+                        item.buy_state = organizeLesson.state
+                        item.ol_id = organizeLesson.id
                     }
                     return item
                 })

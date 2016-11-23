@@ -4,30 +4,30 @@ import { Menu, Dropdown, Icon, Button } from 'antd'
 
 class ChooseBar extends Component {
     render() {
-        const { lid } = this.props        
+        const { lid, oid } = this.props        
         const menu = (
             <Menu>
                 <Menu.Item key="0">
-                    <a href={`/section/add/book?lid=${lid}&oid=0`}>引用云板书</a>
+                    <a href={`/section/add/book?lid=${lid}&oid=${oid}`}>引用云板书</a>
                 </Menu.Item>
                 <Menu.Item key="1">
-                    <a href={`/section/add/topics?lid=${lid}&oid=0`}>引用试卷</a>
+                    <a href={`/section/add/topics?lid=${lid}&oid=${oid}`}>引用试卷</a>
                 </Menu.Item>
                 <Menu.Item key="2">
-                    <a href={`/section/add/notice?lid=${lid}&oid=0`}>创建通知</a>
+                    <a href={`/section/add/notice?lid=${lid}&oid=${oid}`}>创建通知</a>
                 </Menu.Item>
                 <Menu.Item key="3">
-                    <a href={`/section/add/active?lid=${lid}&oid=0`}>创建活动</a>
+                    <a href={`/section/add/active?lid=${lid}&oid=${oid}`}>创建活动</a>
                 </Menu.Item>
                 <Menu.Item key="4">
-                    <a href={`/section/add/html?lid=${lid}&oid=0`}>创建图文</a>
+                    <a href={`/section/add/html?lid=${lid}&oid=${oid}`}>创建图文</a>
                 </Menu.Item>
             </Menu>
         )
         return (
                 <Dropdown overlay={menu}>
                     <Button type="primary" style={{ marginLeft: 8 }}>
-                            创建课程资源 <Icon type="down" />
+                            创建资源 <Icon type="down" />
                     </Button>
                 </Dropdown>
         );
@@ -35,7 +35,8 @@ class ChooseBar extends Component {
 }
 
 ChooseBar.propTypes = {
-    lid: PropTypes.string.isRequired
+    lid: PropTypes.string.isRequired,
+    oid: PropTypes.string.isRequired,
 };
 
 export default ChooseBar;

@@ -74,7 +74,7 @@ function* watchOrganizeInfo(){
 
 function* organizeProcess(organize) {
   const { count }= yield call(getFansInfo, { organize_id: organize.id })
-  const res = yield call(getOrganizeLessonInfo, { organize_id: organize.id })
+  const res = yield call(getOrganizeLessonInfo, { organize_id: organize.id, state: 1 })
   organize.fans = count
   organize.lessons = res.count
   const result = yield call(get_organize_team_list, { role: 1, state: 1, organize_id: organize.id })

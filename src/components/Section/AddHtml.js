@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { HTML, UPLOAD_COVER_API } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
+import OrganizeBar from '../Organize/organize_bar'
 import Paper from '../Paper'
 import DraftEditor, { toHTML, fromHTML, create } from '../DraftEditor'
 
@@ -78,9 +79,9 @@ class AddHtml extends Component {
                             state: 1
                         },() => {
                             if (query.lid > 0) {
-                                this.props.redirct(`/lesson/section?id=${query.lid}`)
+                                this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
                             } else {
-                                this.props.redirct(`/organize/section?id=${query.oid}`)
+                                this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
                             }
                             message.success('发布成功', 6)
                         }, error => message.error(error))
@@ -130,7 +131,11 @@ class AddHtml extends Component {
             <div>
                 <Paper>
                     <div style={{margin: '10px 0'}}>
-                        <LessonBar lid={ query.lid } current='' />
+                        {
+                            query.oid > 0 ?
+                            <OrganizeBar organize={this.props.organize} /> :
+                            <LessonBar lid={ query.lid } current='' />
+                        }
                     </div>
                 </Paper>
                 <Spin spinning={loading}>
@@ -186,13 +191,15 @@ AddHtml.propTypes = {
     addSection: PropTypes.func.isRequired,
     editSection: PropTypes.func.isRequired,
     fetchSection: PropTypes.func.isRequired,
-    redirct: PropTypes.func.isRequired
+    redirct: PropTypes.func.isRequired,
+    organize: PropTypes.object.isRequired,
 }
 
 export default connect(
     state => ({
         query: state.routing.locationBeforeTransitions.query,
-        loading: state.section.loading
+        loading: state.section.loading,
+        organize: state.organize.entity
     }),
     dispatch => ({
         redirct: path => dispatch(push(path)),

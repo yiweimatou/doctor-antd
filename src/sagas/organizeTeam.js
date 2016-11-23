@@ -1,7 +1,7 @@
 /**
  * Created by zhangruofan on 2016/9/22.
  */
-import { takeLatest } from 'redux-saga'
+import { takeLatest, takeEvery } from 'redux-saga'
 import { call, fork, put } from 'redux-saga/effects'
 import { add, list as getList, info, get as getOrganizeTeam } from '../services/organizeTeam'
 import { getUserList } from '../services/user'
@@ -51,7 +51,7 @@ function* watchInfo() {
 }
 
 function* watchList() {
-  yield takeLatest('organize_team/list', function *(action) {
+  yield takeEvery('organize_team/list', function *(action) {
     try {
       if (!action.payload.resolve) return
       const { list } = yield call(getList, action.payload.params)

@@ -217,3 +217,4 @@ export const ORGANIZE_TEAM_GET_API = `${ORGANIZE_API_DOMAIN}/organize_team/get`
 export const ORGANIZE_TEAM_LIST_API = `${ORGANIZE_API_DOMAIN}/organize_team/list`
 export const ORGANIZE_TEAM_EDIT_API = `${ORGANIZE_API_DOMAIN}/organize_team/put`
 export const ORGANIZE_TEAM_ADD_API = `${ORGANIZE_API_DOMAIN}/organize_team/add`
+export const ORGANIZE_TEAM_DEL = `${ORGANIZE_API_DOMAIN}/organize_team/del`

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { NOTICE } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
+import OrganizeBar from '../Organize/organize_bar'
 import DraftEditor, { toHTML, fromHTML, create } from '../DraftEditor'
 import Paper from '../Paper'
 const FormItem =Form.Item
@@ -72,9 +73,9 @@ class AddNotice extends Component {
                             state: 1
                         },() => {
                             if (query.lid>0) {
-                                this.props.redirct(`/lesson/section?id=${query.lid}`)
+                                this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
                             } else {
-                                this.props.redirct(`/organize/section?id=${query.oid}`)
+                                this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
                             }
                             message.success('发布成功', 6)
                         }, error => message.error(error))
@@ -104,7 +105,10 @@ class AddNotice extends Component {
             <Spin spinning={loading}>
                 <Paper>
                     <div style={{margin: '10px 0'}}>
-                        <LessonBar lid={ query.lid } current='' />
+                        { query.oid > 0 ?
+                            <OrganizeBar organize={this.props.organize} /> :
+                            <LessonBar lid={ query.lid } current='' />
+                        }
                     </div>
                 </Paper>
                 <Form>
@@ -144,7 +148,8 @@ AddNotice.propTypes = {
 export default connect(
     state => ({
         query: state.routing.locationBeforeTransitions.query,
-        loading: state.section.loading
+        loading: state.section.loading,
+        organize: state.organize.entity
     }),
     dispatch => ({
         fetchSection: (params, resolve, reject) => {

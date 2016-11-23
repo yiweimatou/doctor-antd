@@ -3,7 +3,7 @@ import Paper from '../Paper'
 import { Button, message, Spin, Upload, Input } from 'antd'
 import { DEFAULT_COVER } from '../../constants/api'
 import OrganizeBar from './organize_bar'
-import { UPLOAD_COVER_API } from '../../constants/api'
+import { UPLOAD_LOGO_API } from '../../constants/api'
 import { Link } from 'react-router'
 
 class Show extends Component {
@@ -28,7 +28,7 @@ class Show extends Component {
       if (info.file.response.code === 200) {
         this.props.edit({
           id: this.props.organize.id,
-          cover: info.file.response.cover
+          logo: info.file.response.logo
         }, () => {
           message.success('更换封面成功!')
           this.setState({ uploading: false })
@@ -99,11 +99,11 @@ class Show extends Component {
               </div>
               <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
                 <span>机构logo</span>
-                <img style={{ marginLeft: '30px' }} src={organize.cover || DEFAULT_COVER } width={100} height={100} />
+                <img style={{ marginLeft: '30px' }} src={ organize.logo || DEFAULT_COVER } width={100} height={100} />
                 <div style={{ float: 'right', display: 'inline-block', lineHeight: '100px' }}>
                   <Upload
                     name = 'upload_file'
-                    action = {UPLOAD_COVER_API}
+                    action = {UPLOAD_LOGO_API}
                     showUploadList = {false}
                     accept = 'image/jpeg, image/png'
                     onChange = {this.changeHandler}

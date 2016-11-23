@@ -9,6 +9,7 @@ import SelectYunbook from '../Yunbook/SelectYunbook'
 import EditLblView from '../Yunbook/EditLblView'
 import { BOOK } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
+import OrganizeBar from '../Organize/organize_bar'
 import ImgUploader from '../ImgUploader'
 import Paper from '../Paper'
 const TabPane = Tabs.TabPane
@@ -157,9 +158,9 @@ class AddBook extends Component {
           }, () => {
             message.success('创建成功!')
             if (query.lid>0) {
-              this.props.redirct(`/lesson/section?id=${query.lid}`)
+              this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
             } else {
-              this.props.redirct(`/organize/section?id=${query.oid}`)
+              this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
             }
           }, error => message.error(error, 8))
         }
@@ -186,7 +187,11 @@ class AddBook extends Component {
         </Modal>
          <Paper>
               <div style={{margin: '10px 0'}}>
+                {
+                  query.oid > 0 ?
+                  <OrganizeBar organize={this.props.organize} /> :
                   <LessonBar lid={query.lid} current='' />
+                }
               </div>
         </Paper>
         <Steps current={ currentStep }>
@@ -322,7 +327,8 @@ export default connect(
     userId: state.auth.key,
     query: state.routing.locationBeforeTransitions.query,
     total: state.yunbook.total,
-    myTotal: state.yunbook.myTotal
+    myTotal: state.yunbook.myTotal,
+    organize: state.organize.entity
   }),
   dispatch => ({
     redirct: path => {

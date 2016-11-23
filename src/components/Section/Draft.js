@@ -5,6 +5,7 @@ import { push } from 'react-router-redux'
 import { keyToName, keyToDisplayname } from '../../utils'
 // import Paper from '../Paper'
 import LessonBar from '../Lesson/LessonBar'
+import OrganizeBar from '../Organize/organize_bar'
 import ChooseBar from './ChooseBar'
 const Option = Select.Option
 
@@ -81,13 +82,13 @@ class Draft extends Component {
         return (
              <div style={{margin:10}}>
                 {query.lid > 0 ?
-                    <LessonBar lid={query.lid} current='draft' />:null
+                    <LessonBar lid={query.lid} current='draft' />: <OrganizeBar selectedKey="draft" organize={this.props.organize}/>
                 }
                 <div style={{margin: '20px 0', height: '30px'}}>
                     <div style={{float: 'left'}}>
                         <span>资讯类型</span>
-                        <Select defaultValue='0' style={{margin: '0 10px'}} size="large" onSelect={this.selectHandler}>
-                            <Option value='0'>全部</Option>
+                        <Select defaultValue='null' style={{margin: '0 10px'}} size="large" onSelect={this.selectHandler}>
+                            <Option value='null'>全部</Option>
                             <Option value='5'>云板书</Option>
                             <Option value='6'>试卷</Option>
                             <Option value='10'>通知</Option>
@@ -96,7 +97,7 @@ class Draft extends Component {
                         </Select>
                     </div>
                     <div style={{float: 'right'}}>
-                        <ChooseBar lid={ query.lid }/>
+                        <ChooseBar lid={ query.lid } oid={query.oid}/>
                     </div>
                 </div>
                 <hr style={{margin: '20px 0'}}/>
@@ -117,7 +118,8 @@ Draft.propTypes = {
     changeHandler: PropTypes.func.isRequired,
     deleteSection: PropTypes.func.isRequired,
     query: PropTypes.object.isRequired,
-    getInfo: PropTypes.func.isRequired
+    getInfo: PropTypes.func.isRequired,
+    organize: PropTypes.object.isRequired,
 };
 
 export default connect(state => ({
@@ -125,6 +127,7 @@ export default connect(state => ({
     list: state.section.list,
     total: state.section.total,
     query: state.routing.locationBeforeTransitions.query,
+    organize: state.organize.entity
 }), dispatch => ({
     push: path => dispatch(push(path)),
     deleteSection: (params, resolve, reject) => dispatch({

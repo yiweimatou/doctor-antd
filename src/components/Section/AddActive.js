@@ -11,6 +11,7 @@ import moment from 'moment'
 import LessonBar from '../Lesson/LessonBar'
 import { push } from 'react-router-redux'
 import DraftEditor, { toHTML, fromHTML, create } from '../DraftEditor'
+import OrganizeBar from '../Organize/organize_bar'
 const RangePicker = DatePicker.RangePicker
 const FormItem =Form.Item
 const formItemLayout = {
@@ -115,18 +116,18 @@ class AddActive extends Component {
                     }, () => {
                         message.success('活动编辑成功')
                         if (query.lid>0) {
-                            this.props.redirct(`/lesson/section?id=${query.lid}`)
+                            this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
                         } else {
-                            this.props.redirct(`/organize/section?id=${query.oid}`)
+                            this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
                         }
                     }, error => message.error(error))
                 } else {
                     addSection({ ...params, state: 1 }, () => {
                         message.success('发布成功', 5)
                         if (query.lid>0) {
-                            this.props.redirct(`/lesson/section?id=${query.lid}`)
+                            this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
                         } else {
-                            this.props.redirct(`/organize/section?id=${query.oid}`)
+                            this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
                         }
                     }, error => message.error(error))
                 }
@@ -144,7 +145,10 @@ class AddActive extends Component {
         return (
             <div>
                 <Spin spinning={loading}>
-                    <LessonBar lid={query.lid} current=""/>
+                    {
+                        query.oid > 0 ? 
+                        <OrganizeBar organize={this.props.organize} /> : <LessonBar lid={query.lid} current=""/>
+                    }
                     <Form>
                         <FormItem {...formItemLayout} hasFeedback label="活动标题">
                             {getFieldDecorator('title', {
@@ -223,6 +227,7 @@ export default connect(
     state => ({
         loading: state.section.loading,
         query: state.routing.locationBeforeTransitions.query,
+        organize: state.organize.entity
     }),
     dispatch => ({
         redirct: path => dispatch(push(path)),

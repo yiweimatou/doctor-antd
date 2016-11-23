@@ -6,8 +6,19 @@ import Draft from '../components/Section/Draft'
 import AddHtml from '../components/Section/AddHtml'
 import AddNotice from '../components/Section/AddNotice'
 
-const newRoute = () => ({
+const newRoute = (store) => ({
   path: 'add',
+  onEnter: (nextState) => {
+      const organize_id = nextState.location.query.oid
+      if (organize_id > 0) {
+          store.dispatch({
+              type: 'organize/get',
+              payload: {
+                  params: { id: organize_id }
+              }
+          })
+      }
+  },
   childRoutes: [{
     path: 'topics',
     component: AddTextPaper

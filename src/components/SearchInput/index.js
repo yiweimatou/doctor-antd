@@ -5,16 +5,13 @@ const InputGroup = Input.Group
 
 class SearchInput extends Component{
     state = {
-        value: '',
         focus: false
     }
     static defaultProps = {
         size:'default'
     }
     handleInputChange=(e)=> {
-        this.setState({
-            value: e.target.value,
-        })
+        this.props.changeHandler(e)
     }
     handleFocusBlur=(e)=> {
         this.setState({
@@ -22,15 +19,13 @@ class SearchInput extends Component{
         })
     }
     handleSearch=()=> {
-        if (this.props.onSearch && this.state.value) {
-            this.props.onSearch(this.state.value)
-        }
+        this.props.onSearch
     }
     render() {
-        const { style, size, placeholder } = this.props;
+        const { style, size, placeholder, value } = this.props;
         const btnCls = classNames({
         'ant-search-btn': true,
-        'ant-search-btn-noempty': !!this.state.value.trim(),
+        'ant-search-btn-noempty': !!value.trim(),
         });
         const searchCls = classNames({
         'ant-search-input': true,
@@ -39,7 +34,7 @@ class SearchInput extends Component{
         return (
         <div className="ant-search-input-wrapper" style={style}>
             <InputGroup className={searchCls}>
-            <Input placeholder={placeholder} value={this.state.value} onChange={this.handleInputChange}
+            <Input placeholder={placeholder} value={this.props.value} onChange={this.handleInputChange}
                 onFocus={this.handleFocusBlur} onBlur={this.handleFocusBlur} onPressEnter={this.handleSearch}
             />
             <div className="ant-input-group-wrap">
