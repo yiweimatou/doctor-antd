@@ -46,7 +46,6 @@ class Add extends Component {
       } else if(this.state.topicList.length === 0) {
         return message.error('请选择试题', 6)
       } else {
-        this.setState({ loading: true })      
         topic_id_list = this.state.topicList.reduce((previousValue, currentValue, index) => {
           if (index === 0) {
             return previousValue.id
@@ -55,9 +54,10 @@ class Add extends Component {
             return `${previousValue.id},${currentValue.id}`
           } else {
             return `${previousValue},${currentValue.id}`
-          } 
+          }
         })
       }
+      this.setState({ loading: true })
       this.props.add({
         title: values.title,
         sale_amount: values.sale_amount*100,
@@ -75,7 +75,7 @@ class Add extends Component {
     })
   }
   render() {
-    const { getFieldProps } = this.props.form
+    const { getFieldDecorator } = this.props.form
     const columns = [{
       title: '试题',
       dataIndex: 'question',
@@ -88,24 +88,21 @@ class Add extends Component {
     }]
     return (
       <Spin spinning={this.state.loading}>
-        <Select visible={this.state.visible} okHandler={this.okHandler} cancelHandler={this.cancelHandler}/>
+        <Select selectedIdList={this.state.topicList.map(i=>({id: i.id,question: i.question}))} visible={this.state.visible} okHandler={this.okHandler} cancelHandler={this.cancelHandler}/>
         <Form horizontal onSubmit = {this.submitHandler}>
           <FormItem {...formItemLayout} hasFeedback label="试卷标题">
-            <Input type="text"
-                   {...getFieldProps('title', {
+                   {getFieldDecorator('title', {
                      rules: [{
                        required: true,
                        whitespace: true,
                        message: '请填写标题'
                      }]
-                   })}
-            />
+                   })(<Input type="text" />)}
           </FormItem>
           <FormItem {...formItemLayout} label="金额">
-            <InputNumber min={0} {...getFieldProps('sale_amount', {
+            {getFieldDecorator('sale_amount', {
               initialValue: 2
-            })}/>
-            <span>元</span>
+            })(<InputNumber min={0}/>)}
           </FormItem>
           <FormItem {...formItemLayout} label="试题列表">
             <Table pagination={this.state.pagination} dataSource={this.state.topicList} columns={columns} bordered title={

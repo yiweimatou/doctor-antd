@@ -4,9 +4,11 @@ import {
 } from 'antd'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { keyToName } from '../../utils'
+import { keyToName, keyToDisplayname } from '../../utils'
+import { TOPICS } from '../../constants/api'
 import Paper from '../Paper'
 import LessonBar from '../Lesson/LessonBar'
+import OrganizeBar from '../Organize/organize_bar'
 import ChooseBar from '../Section/ChooseBar'
 const Option = Select.Option
 
@@ -21,67 +23,75 @@ class List extends Component{
         list: PropTypes.array.isRequired,
         loading: PropTypes.bool.isRequired
     }
-    state = {
-        lesson: {}
-    }
     selectHandler = value => {
-        const { getList, lesson_id, getInfo } = this.props
+        const { getList, query, getInfo } = this.props
         getInfo({
             state: 1,
-            lesson_id,
+            lesson_id: query.lid,
+            organize_id: query.oid,
             category_id: value
         }, null, error => message.error(error))
         getList({
             limit: 9,
             offset: 1,
             state: 1,
-            lesson_id,
+            lesson_id: query.lid,
+            organize_id: query.oid,
             category_id: value
         }, null, error => message.error(error))
     }
     componentWillMount() {
-      const { getInfo, getList, lesson_id, getLesson } = this.props
-      getInfo({ lesson_id, state: 1 }, null, error => message.error(error))
-      getList({ offset: 1, limit: 9, lesson_id, state: 1 }, null, error => message.error(error))
-      getLesson({ id: lesson_id }, get => this.setState({ lesson: get }), error => message.error(error))
+      const { getInfo, getList, query } = this.props
+      getInfo({ lesson_id: query.lid, organize_id: query.oid , state: 1 }, null, error => message.error(error))
+      getList({ offset: 1, limit: 9, lesson_id: query.lid, organize_id: query.oid , state: 1 }, null, error => message.error(error))
     }
     handleConfirm= id => {
         this.props.delete({ id }, () => message.success('删除成功'), error => message.error(error))
     }
     render(){
         const {
-            lesson_id, total, dispatch, push, list
+            query, total, getList, push, list, organize
         } = this.props
+        const lesson_id = query.lid
+        const organize_id = query.oid
         const pagination = {
             pageSize: 9,
             showTotal:total=>`共 ${total} 条`,
             onChange(current) {
-                dispatch('section/list', {
-                  offset: current, limit: 9, lesson_id, state: 1
-                })
+                getList({
+                  offset: current, limit: 9, lesson_id, state: 1, organize_id
+                },null, error => message.error(error, 6))
             }
         }
         const columns = [{
-            title:'文章标题',
+            title:'课程资源标题',
             dataIndex:'title',
             key:'title'
         }, {
             title:'更新时间',
             dataIndex:'put_ms',
             key:'put_ms',
-            render:text=>new Date(text*1000).toLocaleString()
+            render: text => new Date(text*1000).toLocaleString()
+        }, {
+            title: '资源类型',
+            dataIndex: 'category_id',
+            key: 'category_id',
+            render: text => keyToDisplayname(text)
         }, {
             title:'操作',
             key:'operation',
-            render: (text,record) => 
+            render: (text,record) =>
                 <div>
+                    { record.category_id == TOPICS ?
+                    <Button type='ghost' onClick={() => push(`/paper/list?id=${record.id}`)}>查看详情</Button>:
                     <Button
                         type = 'ghost'
-                        onClick={() => 
+                        onClick={() =>
                             push(`/section/add/${keyToName(record.category_id)}?oid=${record.organize_id}&lid=${record.lesson_id}&id=${record.id}&edit=1`)
                         }
                     >编辑</Button>
-                    <span className="ant-divider"></span>
+                    }
+                    <span className='ant-divider'></span>
                     <Popconfirm
                         title="确定要删除这个文章吗？"
                         onConfirm={()=>this.handleConfirm(record.id)}
@@ -94,14 +104,16 @@ class List extends Component{
             <div style={{margin:10}}>
                 <Paper>
                     <div style={{marginBottom: 10}}>
-                        <LessonBar lesson={this.state.lesson} current='section' />
+                        { organize_id > 0 ?
+                            <OrganizeBar organize={organize} selectedKey="section" /> : <LessonBar lid={lesson_id} current='section' />
+                        }
                     </div>
                 </Paper>
                 <div style={{margin: '20px 0', height: '30px'}}>
                     <div style={{float: 'left'}}>
-                        <span>资讯类型</span>
-                        <Select defaultValue='0' style={{margin: '0 10px'}} size="large" onSelect={this.selectHandler}>
-                            <Option value='0'>全部</Option>
+                        <span>资源类型</span>
+                        <Select defaultValue='null' sbyle={{margin: '0 10px'}} size="large" onSelect={this.selectHandler}>
+                            <Option value='null'>全部</Option>
                             <Option value='5'>云板书</Option>
                             <Option value='6'>试卷</Option>
                             <Option value='10'>通知</Option>
@@ -110,7 +122,7 @@ class List extends Component{
                         </Select>
                     </div>
                     <div style={{float: 'right'}}>
-                        <ChooseBar lid={ lesson_id }/>
+                        <ChooseBar lid={ lesson_id } oid={organize_id}/>
                     </div>
                 </div>
                 <hr style={{margin: '20px 0'}}/>
@@ -131,7 +143,8 @@ export default connect(state => ({
   list: state.section.list,
   loading: state.section.loading,
   total: state.section.total,
-  lesson_id: state.routing.locationBeforeTransitions.query.id
+  query: state.routing.locationBeforeTransitions.query,
+  organize: state.organize.entity
 }), dispatch => ({
   push: path => dispatch(push(path)),
   getInfo: (params, resolve, reject) => dispatch({
@@ -140,16 +153,16 @@ export default connect(state => ({
           params, resolve, reject
       }
   }),
-  getLesson: (params, resolve, reject) => dispatch({
-      type: 'lesson/get',
-      payload: params, resolve, reject
-  }),
   getList: (params, resolve, reject) => dispatch({
       type: 'section/list',
       payload: {
           params, resolve, reject
       }
   }),
+//   edit: (params, resolve, reject) => dispatch({
+//       type: 'section/edit',
+//       payload: { params, resolve, reject }
+//   }),
   delete: (params, resolve, reject) => dispatch({
       type: 'section/delete',
       payload: {

@@ -1,5 +1,5 @@
 import React,{ Component,PropTypes } from 'react'
-import { Card,Icon } from 'antd'
+import { Card } from 'antd'
 import { Link } from 'react-router'
 import './OrganizeCard.css'
 import { DEFAULT_LOGO } from '../../constants/api'
@@ -25,13 +25,10 @@ class OrganizeCard extends Component{
             >
                 <div className='organize-image'>
                     <Link to={`/organize/show/${organize.id}`}>
-                        <img alt='pic' width="100%" height='160' src={organize.logo || DEFAULT_LOGO} />
+                        <img alt='pic' width="100%" height='160' src={organize.cover || DEFAULT_LOGO} />
                     </Link>
                 </div>
                 <div className='organize-card'>
-                    <Link to={`/organize/edit/${organize.id}`} style = {{float:'right'}}>
-                        <Icon type="edit"/>
-                    </Link>
                     <h3>{organize.title}</h3>  
                 </div>
             </Card>

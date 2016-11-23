@@ -1,4 +1,4 @@
-import { takeLatest } from 'redux-saga'
+import { takeLatest, takeEvery } from 'redux-saga'
 import { fork,put,call } from 'redux-saga/effects'
 import {
     getSection,
@@ -117,7 +117,7 @@ function* handleGet(action) {
 }
 
 function* watchGet() {
-    yield* takeLatest('section/get',handleGet)
+    yield* takeEvery('section/get',handleGet)
 }
 
 function* handleInfo(action) {

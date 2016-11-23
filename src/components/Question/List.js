@@ -9,7 +9,7 @@ class List extends Component {
             showTotal: total => `共${total}条` ,
             pageSize: 9,
             onChange: offset => changeHandler({
-                offset, limit: 9, account_id: userId
+                offset, limit: 9, account_id: userId, state: 1
             }, null, error => message.error(error))
         }
         const columns = [{
@@ -63,7 +63,7 @@ List.propTypes = {
     list: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     total: PropTypes.number.isRequired,
-    userId: PropTypes.number.isRequired,
+    // userId: PropTypes.number.isRequired,
     changeHandler: PropTypes.func.isRequired
 };
 

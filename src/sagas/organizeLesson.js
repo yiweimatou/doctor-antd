@@ -1,5 +1,6 @@
 import { takeLatest } from 'redux-saga'
-import { fork, call } from 'redux-saga/effects'
+import { fork, call, put } from 'redux-saga/effects'
+import array from 'lodash/array'
 import {
     getOrganizeLessonInfo,
     editOrganizeLesson,
@@ -9,6 +10,8 @@ import {
 } from '../services/organizeLesson.js'
 import { getOrganizeList } from '../services/organize'
 import { listLesson } from '../services/lesson'
+import { getLessonTeamList } from '../services/lessonTeam'
+import { getUserList } from '../services/user'
 
 function* watchList() {
   yield takeLatest('organize_lesson/list', function *(action) {
@@ -112,12 +115,57 @@ function* watchNew(){
 //   })
 // }
 
+function* watchOrganizeLessonList() {
+  yield* takeLatest('organize/lesson/list', function*(action) {
+    try {
+      const result = yield  call(getOrganizeLessonList, action.payload.params)
+      let payload = []
+      if (result.list && result.length > 0) {
+        const lessons = yield call(listLesson, { 
+          id_list: result.list.map(i => i.lesson_id).join(','),
+          state: action.payload.params.lesson_state || 0
+        })
+        if (lessons.list && lessons.list.length > 0) {       
+          const teams = yield call(getLessonTeamList, {
+            lesson_id_list: lessons.list.map(i => i.id).join(','),
+            role: 1
+          })
+          if (teams.list && teams.list.length > 0) {
+            const users = yield call(getUserList, { id_list: array.uniq(teams.list.map(i => i.account_id).join(',')) })
+            payload = lessons.list.map(item => {
+              const user = users.list.find(u => u.id === item.account_id)
+              if (user) {
+                item.admin = `${user.cname}/${user.mobile}`
+                return item
+              }
+              return item
+            })
+          } else {
+            payload = lessons.list
+          }
+        }
+      }
+      yield put({
+        type: 'organize/lesson/list/success',
+        payload
+      })
+    } catch(error) {
+      yield put({
+        type: 'organize/lesson/list/failure'
+      })
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
+    }
+  })
+}
 export default function* () {
     yield [
         fork( watchOrganzieLessonInfo ),
         fork( watchOrganzieLessonEdit ),
         fork(watchNew),
         fork(watchList),
+        fork(watchOrganizeLessonList)
         // fork(watchGet)
     ]
 }

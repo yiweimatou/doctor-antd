@@ -2,9 +2,9 @@ import { handleActions } from 'redux-actions'
 
 const initialState = {
 	loading: false,
-	entity: null,
-  list: [],
-  unnormallist: []
+	entity: {},
+	list: [],
+	unnormallist: []
 }
 
 const lesson = handleActions({
@@ -97,14 +97,10 @@ const lesson = handleActions({
 		...state,
 		loading: false
 	}),
-	['lesson/get']:(state)=>({
+	['lesson/get/success']: (state, action) => ({
 		...state,
-		entity:null
-	}),
-	['lesson/get/success']:(state,action)=>({
-		...state,
-		entity:action.payload.entity
+		entity:	action.payload.entity
 	})
-},initialState)
+}, initialState)
 
 export default lesson

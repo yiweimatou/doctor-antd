@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import { Tabs, message } from 'antd'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import List from './List'
-import New from './Add'
+import Add from './Add'
 const TabPane = Tabs.TabPane
 
 class Manage extends Component {
@@ -10,7 +11,7 @@ class Manage extends Component {
         list: [],
         total: 0,
         loading: true,
-        activeKey: 1
+        activeKey: '1'
     }
     componentWillMount() {
         const { getInfo, userId } = this.props
@@ -43,7 +44,7 @@ class Manage extends Component {
     afterAddHandler = record => this.setState({ 
         list: [record].concat(this.state.list),
         total: this.state.total + 1,
-        activeKey: 1 
+        activeKey: '1' 
     })
     render() {
         const { loading, total, list, activeKey } = this.state
@@ -51,10 +52,10 @@ class Manage extends Component {
             <Tabs defaultActiveKey='1' activeKey={activeKey} onTabClick={
                 activeKey => this.setState({activeKey})}>
                 <TabPane tab='试卷列表' key='1'>
-                    <List handleConfirm={this.handleConfirm} handleChange={this.handleChange} list={list} total={total} loading={loading}/>
+                    <List handleConfirm={this.handleConfirm} handleChange={this.handleChange} list={list} total={total} loading={loading} push={this.props.push}/>
                 </TabPane>
                 <TabPane tab='新建试卷' key='2'>
-                    <New add={this.props.addTopics} afterAddHandler={this.afterAddHandler}/>
+                    <Add add={this.props.addTopics} afterAddHandler={this.afterAddHandler}/>
                 </TabPane>
             </Tabs>
         );
@@ -65,7 +66,7 @@ Manage.propTypes = {
     getInfo: PropTypes.func.isRequired,
     changeHandler: PropTypes.func.isRequired,
     deleteTopics: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired,
+    // userId: PropTypes.number.isRequired,
     addTopics: PropTypes.func.isRequired
 };
 
@@ -99,6 +100,7 @@ export default connect(
                 type: 'topics/delete',
                 payload: { params, resolve, reject }
             })
-        }
+        },
+        push: path => dispatch(push(path))
     })
 )(Manage);

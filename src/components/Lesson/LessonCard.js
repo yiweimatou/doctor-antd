@@ -1,6 +1,7 @@
 import React,{ Component,PropTypes } from 'react'
 import { Link } from 'react-router'
 import './LessonCard.css'
+import ChooseBar from '../Section/ChooseBar'
 
 class LessonCard extends Component{
     render(){
@@ -9,7 +10,7 @@ class LessonCard extends Component{
         } = this.props
         return(
             <div>
-               <Link className='courseList' to={`/lesson/show/${lesson.id}`}>
+               <Link className='courseList' to={`/section/draft/?oid=0&lid=${lesson.id}`}>
                     <div className="courseImg">
                         <img src={lesson.cover} width='256' height='96'/>
                         {lesson.state === 2 ?
@@ -37,9 +38,7 @@ class LessonCard extends Component{
                     </ul>
                 </Link>
                 <div className="newArticle">
-                    <Link to={`/section/add/choose?lid=${lesson.id}&oid=0`}>
-                        新建文章
-                    </Link>
+                    <ChooseBar lid={lesson.id.toString()}/>
                 </div>
             </div>
         )

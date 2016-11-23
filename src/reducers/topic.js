@@ -21,7 +21,7 @@ const topic = handleActions({
   ['topic/delete/success']: (state, action) => ({
     ...state,
     loading: false,
-    list: state.list.filter(i => i.id !== action.payload)
+    list: state.list.filter(i => i.id != action.payload)
   }),
   ['topic/delete/failure']: state => ({
     ...state,
@@ -39,6 +39,10 @@ const topic = handleActions({
   ['topic/list']: state => ({
     ...state,
     loading: true
+  }),
+  ['topic/list/clear']: state => ({
+    ...state,
+    list: []
   }),
   ['topic/list/success']: (state, action) => ({
     ...state,

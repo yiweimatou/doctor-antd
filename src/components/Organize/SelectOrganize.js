@@ -1,7 +1,6 @@
 import React,{ Component, PropTypes } from 'react'
-import { Pagination, Button, message, Spin } from 'antd'
+import { Pagination, Button, message, Spin, Input, Col } from 'antd'
 import './SelectOrganize.css'
-import SearchInput from '../SearchInput'
 import { DEFAULT_LOGO } from '../../constants/api'
 
 const styles = {
@@ -31,7 +30,8 @@ class SelectOrganize extends Component{
             title: this.state.name
         }, null, error => message.error(error))
     }
-    onSearch= name => {
+    onSearch= () => {
+        const { name } = this.state
         this.props.fetchInfo({
           title: name
         }, total => this.setState({ total }), error => message.error(error))
@@ -64,51 +64,46 @@ class SelectOrganize extends Component{
     render(){
         const { total, pending } = this.state
         const {
-            list, lid, onChange, loading
+            list, lid, loading
         } = this.props
         return(
             <div className='container'>
                 <Spin spinning={loading || pending}>
-                <SearchInput
-                    onSearch = { this.onSearch }
-                    placeholder = '输入机构名称搜索'
-                    value = { this.state.name }
-                    onChange = { this.changeHandler }
-                />
-                {list.map(item=>{
-                    return (
-                        <div key={item.id} className='oitem'>
-                            <img src={ item.logo || DEFAULT_LOGO } className='oimg' width='100%' />
-                            <div className='otitle'>{item.title}</div>
-                            <Button
-                                onClick={() => this.onClick({
-                                  organize_id: item.id,
-                                  lesson_id: lid
-                                })}
-                                className='button'
-                            >
-                                申请
-                            </Button>
-                        </div>
-                    )
-                })}
-                <div style={styles.marginTop}>
-                { total > 0 ?
-                    <Pagination
-                        total={ total }
-                        showTotal={total => `共 ${total} 条`}
-                        pageSize = {9}
-                        onChange = { page => {
-                            onChange({
-                              title: this.state.name,
-                              limit: 9,
-                              offset: page
-                            })
-                        }}
-                    /> :
-                    <p style={{textAlign: 'center'}}>暂无数据</p>
-                }
-                </div>
+                    <Input.Group>
+                        <Col span="8">
+                            <Input placeholder="机构名称" value={this.state.name} onChange={e => this.setState({ name: e.target.value })}/>
+                        </Col>
+                        <Col span="4">
+                            <Button type="primary" onClick={this.onSearch}>搜索</Button>
+                        </Col>
+                    </Input.Group>
+                    {list.map(item=>{
+                        return (
+                            <div key={item.id} className='oitem'>
+                                <img src={ item.logo || item.cover || DEFAULT_LOGO } className='oimg' width='100%' />
+                                <div className='otitle'>{item.title}</div>
+                                <Button
+                                    onClick={() => this.onClick({
+                                        organize_id: item.id,
+                                        lesson_id: lid
+                                    })}
+                                    className='button'
+                                >
+                                    申请
+                                </Button>
+                            </div>
+                        )
+                    })}
+                    <div style={styles.marginTop}>
+                    { total > 0 ?
+                        <Pagination
+                            total={ total }
+                            showTotal={total => `共 ${total} 条`}
+                            onChange = { this.onChange }
+                        /> :
+                        <p style={{textAlign: 'center'}}>暂无数据</p>
+                    }
+                    </div>
                 </Spin>
             </div>
         )

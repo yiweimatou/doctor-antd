@@ -22,7 +22,7 @@
         "react"
     ],
     "globals": {
-        "$":"jquery"
+        "$": "jQuery"
     },
     "settings": {
         "import/parser": "babel-eslint",
@@ -43,9 +43,11 @@
         "no-console": 0,
         "no-case-declarations": 0,
         "comma-dangle":0,
-        "react/prop-types":0
+        "react/prop-types":0,
+        "react/display-name": 0,
+        "no-constant-condition": "off"
     },
     "ecmaFeatures": {
     "experimentalObjectRestSpread": true
   }
-} 
+}

@@ -3,7 +3,59 @@ import showContainer from '../containers/organize/showContainer'
 import Edit from '../components/Organize/Edit'
 import Bill from '../components/Organize/Bill'
 import rechargeContainer from '../containers/organize/rechargeContainer'
+import OrganizeLesson from '../components/Organize/organize_lesson'
 import { ORGANIZE } from '../constants/api'
+import Draft from '../components/Section/Draft'
+import SectionList from  '../components/Section/List'
+import OrganizeTeam from '../components/Organize/organize_team'
+
+const teamRoute = store => ({
+    path: ':id/team',
+    component: OrganizeTeam,
+    onEnter(nextState) {
+        const id = nextState.params.id
+        store.dispatch({
+            type: 'organize/get',
+            payload: {
+                params: {
+                    id
+                }
+            }
+        })
+    }
+})
+
+const sectionRoute = store => ({
+    path: 'section',
+    component: SectionList,
+    onEnter(nextState) {
+        const id = nextState.location.query.oid
+        store.dispatch({
+            type: 'organize/get',
+            payload: {
+                params: {
+                    id
+                }
+            }
+        })
+    }
+})
+
+const draftRoute = store => ({
+    path: 'draft',
+    component: Draft,
+    onEnter(nextState) {
+        const id = nextState.location.query.oid
+        store.dispatch({
+            type: 'organize/get',
+            payload: {
+                params: {
+                    id
+                }
+            }
+        })
+    }
+})
 
 const showRoute = store => ({
     path:'show/:id',
@@ -22,17 +74,8 @@ const showRoute = store => ({
     component:showContainer
 })
 
-const listRoute = store => ({
+const listRoute = () => ({
     path:'list',
-    onEnter(){
-        const account_id = store.getState().auth.key
-        store.dispatch({
-            type:'organize_team/info',
-            payload:{
-                params: { role: 1, state: 1, account_id }
-            }
-        })
-    },
     component:listContainer
 })
 
@@ -93,16 +136,32 @@ const rechargeRoute = store => ({
     if( !id ){
       return replace({ pathname: '/' })
     }
-    const organize = store.getState().organize.entity
-    if( organize === null || organize.id !== id ) {
-      store.dispatch({
+    store.dispatch({
         type: 'organize/get',
         payload: {
-          id
+            params: { id }
         }
-      })
-    }
+    })
   }
+})
+
+const lessonRoute = (store) => ({
+    path: 'lesson/:id',
+    component: OrganizeLesson,
+    onEnter(nextState, replace) {
+        const id = nextState.params.id
+        if (id) {
+            store.dispatch({
+                type: 'organize/get',
+                payload: {
+                    params: { id }
+                }
+            })
+        } else {
+            replace({ pathname: '/' })            
+        }
+        
+    }
 })
 
 const organizeRoutes = store=>({
@@ -112,7 +171,11 @@ const organizeRoutes = store=>({
         showRoute(store),
         editRoutes(store),
         billRoute(store),
-        rechargeRoute(store)
+        rechargeRoute(store),
+        lessonRoute(store),
+        sectionRoute(store),
+        draftRoute(store),
+        teamRoute(store)
     ]
 })
 

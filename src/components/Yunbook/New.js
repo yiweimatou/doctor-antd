@@ -1,10 +1,6 @@
 import React ,{ Component,PropTypes } from 'react'
 import {connect} from 'react-redux'
 import { Form, Button, Upload, Input, Icon, Spin, message } from 'antd'
-import {
-    UPLOAD_YUNBOOK_API,
-    UPLOAD_PPT_API
-} from '../../constants/api.js'
 import Category from '../Category'
 import { BOOK } from '../../constants/api'
 
@@ -24,13 +20,8 @@ class New extends Component{
     }
     state={
         fileList: [],
-        action: UPLOAD_YUNBOOK_API
-    }
-    normFile(e) {
-        if (Array.isArray(e)) {
-            return e
-        }
-        return e && e.fileList
+        latLng: {},
+        category: []
     }
     handleChange = (info)=> {
         let fileList = info.fileList
@@ -48,51 +39,53 @@ class New extends Component{
             return true
         })
         this.setState({ fileList })
+        if (info.file.status === 'error') {
+            return message.error('服务器未响应，请稍后再试', 6)
+        }
     }
     submitHandler= e => {
         e.preventDefault()
         this.props.form.validateFields((errors, values) => {
             if (errors) return
-            const category = this.refs.select.refs.category.state.value
-            if (category.length < 3) {
+            const category = this.state.category
+            if (category.length > 0 && category.length < 3) {
                 return message.error('请再选择一级分类')
             }
-            const cover = values.upload[0].response.cover
+            const file = this.state.fileList[0]
+            if (!file) return message.error('请上传图片')
             const params = {
                 title: values.title,
                 descript: values.descript||'',
-                cover: cover,
-                path: values.upload[0].response.path,
-                width: values.upload[0].response.width,
-                height: values.upload[0].response.height,
-                zoom: values.upload[0].response.zoom,
+                cover: file.url || '',
+                path: file.response.path,
+                width: file.response.width,
+                height: file.response.height,
+                zoom: file.response.zoom,
                 sale_amount: values.money*100,
                 state: 1
             }
             this.props.handleNew(params, yunbook => {
                 this.props.addAfterHandler()
-                console.log(category)
                 this.props.grow({
-                    lat: this.refs.select.getLatLng().lat,
-                    lng: this.refs.select.getLatLng().lng,
+                    lat: this.state.latLng.lat,
+                    lng: this.state.latLng.lng,
                     title: values.title,
                     state: 1,
                     category_id: BOOK,
                     foreign_id: yunbook.id,
-                    cover: cover,
+                    cover: file.url,
                     map_id: 1,
-                    kind: category[0].id === '1' ? category[1] : category[2]
-                }, null, error => message.error(error))   
+                    kind: category[0] === '1' ? category[1] : category[2]
+                }, null, error => message.error(error))
             }, error => message.error(error))
-            
         })
     }
     render(){
         const {
-            form, loading, getList
+            form, loading, action
         } = this.props
         const {
-            getFieldProps
+            getFieldDecorator
         } = form
         return(
             <div>
@@ -108,51 +101,41 @@ class New extends Component{
                         label='云板书标题'
                         hasFeedback
                     >
-                        <Input
-                            type='text'
-                            {...getFieldProps('title',{
-                                rules:[{
-                                    required:true,
-                                    max:30,
-                                    message:'请填写最多30字标题'
-                                }]
-                            })}
-                        />
+                        
+                    {getFieldDecorator('title',{
+                        rules:[{
+                            required:true,
+                            max:30,
+                            message:'请填写最多30字标题'
+                        }]
+                    })(<Input type='text' />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label='分类'>
-                        <Category getList={getList} ref='select'/>
+                        <Category onChange={(category, latLng) => this.setState({category, latLng})}/>
                     </FormItem>
                      <FormItem
                         label='云板书简介'
                         {...formItemLayout}
                     >
-                        <Input
-                            type='textarea'
-                            rows = '3'
-                            {...getFieldProps('descript',{
+                    {getFieldDecorator('descript',{
                                 rules:[{
                                     required:true,
                                     max:300,
                                     message:'描述必填且最多300字'
                                 }]
-                            })}
-                        />
+                    })(<Input type='textarea'rows = '3' />)}
                     </FormItem>
                     <FormItem
                         label = '售价'
                         {...formItemLayout}
                     >
-                        <Input
-                            type = 'number'
-                            addonAfter = '元'
-                            {...getFieldProps('money',{
+                    {getFieldDecorator('money',{
                                 rules:[{
                                     required: true,
                                     message: '请设置售价'
                                 }],
                                 initialValue: '2'
-                            })}
-                        />
+                    })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -161,41 +144,14 @@ class New extends Component{
                     >
                         <Upload
                             name='upload_file'
-                            action={this.state.action}
-                            listType="picture"
-                            fileList={this.state.fileList}
-                            {...getFieldProps('upload',{
-                                valuePropName:'fileList',
-                                normalize: this.normFile,
-                                rules:[{
-                                    required:true,
-                                    type:'array',
-                                    message:'请上传云板书文件'
-                                }],
-                                onChange: (info)=>this.handleChange(info)
-                            })}
-                            beforeUpload = {
-                                (file)=>{
-                                    return new Promise((resolve,reject) => {
-                                        if( file.type.indexOf('image') > -1 ){
-                                            return resolve()
-                                        }else if(file.name.toLowerCase().indexOf('ppt') > -1){
-                                            this.setState({
-                                                action:UPLOAD_PPT_API
-                                            })
-                                            return resolve()
-                                        }else{
-                                            return reject(false)
-                                        }
-
-                                    })
-                                }
-                            }
+                            action={action}
+                            fileList={this.state.fileList}  
+                            onChange = {this.handleChange}
                         >
                             <Button type='ghost'>
                                 <Icon type="upload" /> 点击上传文件
                             </Button>
-                        </Upload>
+                        </Upload>         
                     </FormItem>
                     <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">保存</Button>

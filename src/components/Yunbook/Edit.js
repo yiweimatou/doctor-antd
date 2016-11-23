@@ -1,12 +1,14 @@
-import React,{ Component,PropTypes } from 'react'
+import React,{ Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Tabs,Button,Form,Input, Spin } from 'antd'
+import { Tabs, Button, Form, Input, Spin, message } from 'antd'
 import EditLblView from './EditLblView.js'
+import { BOOK } from '../../constants/api'
+import Category from '../Category'
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 class Edit extends Component{
@@ -14,7 +16,10 @@ class Edit extends Component{
         lbl:'',
         options:[],
         defaultValue:[],
-        loading: false
+        loading: false,
+        id: 0,
+        category: '',
+        latLng: {}
     }
     static propTypes = {
         yunbook: PropTypes.object,
@@ -22,35 +27,78 @@ class Edit extends Component{
         loading: PropTypes.bool
     }
     componentWillReceiveProps(nextProps){
-        if(!this.props.yunbook){
+        const { yunbook, getGrow, getCategory, init } = this.props
+        if(nextProps.yunbook && !yunbook){
             this.setState({
                 lbl:nextProps.yunbook.lbl
             })
+            getGrow({ category_id: BOOK, foreign_id: nextProps.yunbook.id }, record => {
+                if (record.id > 0){
+                    this.setState({ id: record.id })
+                    getCategory({ lat: record.lat, lng: record.lng }, list => {
+                        const num = list.length
+                        let values = []            
+                        if (record.kind && record.kind.startsWith(2)) {
+                            values = values.concat(record.kind.slice(0,1), record.kind.slice(0,2), record.kind).concat(list.slice(1, num).map(i => i.id))
+                        } else if (record.kind && record.kind.startsWith(1)) {
+                            values = values.concat(record.kind.slice(0,1), record.kind).concat(list.slice(1, num).map(i => i.id))
+                        }
+                        if (values.length > 0) {
+                            this.setState({
+                                defaultValue: values
+                            })
+                            init(values, opt => this.setState({ options: opt }), error => message.error(error))
+                        }
+                    }, error => message.error(error))
+                }
+            }, error => message.error(error))
         }
     }
     changeLbl = lbl => this.setState({ lbl })
 
     submitHandler=(e)=>{
         e.preventDefault()
+        const { grow, save, yunbook, addGrow } = this.props
         this.props.form.validateFields((errors,values)=>{
             if(errors){
                 return
             }
             const params = {
-                lbl:this.state.lbl,
-                title:values.title,
-                descript:values.descript,
-                id:this.props.yunbook.id,
+                lbl: this.state.lbl,
+                title: values.title,
+                descript: values.descript,
+                id: yunbook.id,
                 sale_amount: values.money*100
             }
-            this.props.save(params)
+            save(params, () => {
+                const category = this.state.category
+                if (category.length >= 0 && category.length < 3 ) {
+                    return
+                }
+                if (this.state.id > 0){
+                    grow({
+                        id: this.state.id,
+                        lat: this.state.latLng.lat,
+                        lng: this.state.latLng.lng,
+                        kind: category[0] === '1' ? category[1] : category[2]
+                    })
+                } else {
+                    addGrow({
+                        lat: this.state.latLng.lat,
+                        lng: this.state.latLng.lng,
+                        kind: category[0] === '1' ? category[1] : category[2],
+                        foreign_id: yunbook.id,
+                        map_id: 1
+                    })
+                }
+            }, error => message.error(error))
         })
     }
     render(){
         const {
-            form,yunbook
+            form, yunbook
         } = this.props
-        const { getFieldProps }=form
+        const { getFieldDecorator }=form
         return(
             <div>
                 <Spin spinning = { this.state.loading } tip="玩命加载中..." >
@@ -65,27 +113,21 @@ class Edit extends Component{
                                 {...formItemLayout}
                                 label='云板书标题'
                                 hasFeedback
-                            >
-                                <Input
-                                    type='text'
-                                    {...getFieldProps('title',{
+                             >
+                            {getFieldDecorator('title',{
                                         rules:[{
                                             required:true,
                                             max:30,
                                             message:'请填写最多30字标题'
                                         }],
                                         initialValue:yunbook&&yunbook.title
-                                    })}
-                                />
+                            })(<Input type='text' />)}
                             </FormItem>
                             <FormItem
                                 label = '售价'
                                 {...formItemLayout}
                             >
-                                <Input
-                                    type = 'number'
-                                    addonAfter = '元'
-                                    {...getFieldProps('money',{
+                            {getFieldDecorator('money',{
                                         rules:[{validator: (rule, value, callback) => {
                                                 if(value) {
                                                     callback()
@@ -95,25 +137,23 @@ class Edit extends Component{
                                             }
                                         }],
                                         initialValue:yunbook&&yunbook.sale_amount/100
-                                    })}
-                                />
+                            })(<Input type = 'number' addonAfter = '元' />)}
+                            </FormItem>
+                            <FormItem {...formItemLayout} label='分类'>
+                                <Category defaultValue={this.state.defaultValue} options={this.state.options} onChange={(category, latLng) => this.setState({category, latLng})}/>
                             </FormItem>
                             <FormItem
                                 label='课程简介'
                                 {...formItemLayout}
                             >
-                                <Input
-                                    type='textarea'
-                                    rows = '3'
-                                    {...getFieldProps('descript',{
+                            {getFieldDecorator('descript',{
                                         rules:[{
                                             required:false,
                                             max:300,
                                             message:'最多300字'
                                         }],
                                         initialValue:yunbook&&yunbook.descript
-                                    })}
-                                />
+                            })(<Input type='textarea' rows = '5' />)}
                             </FormItem>
                             <button type='submit' id='_submit_'></button>
                         </Form>
@@ -129,7 +169,7 @@ class Edit extends Component{
                         const submit = document.getElementById('_submit_')
                         if(!submit){
                             this.props.save({
-                                lbl: encodeURIComponent(this.state.lbl),
+                                lbl: this.state.lbl,
                                 id: this.props.yunbook.id
                             })
                         }else{
@@ -150,10 +190,54 @@ export default connect(
         yunbook: state.yunbook.entity
     }),
     dispatch=>({
-        save:(params)=>{
+        save: (params, resolve, reject)=>{
             dispatch({
                 type: 'yunbook/edit',
-                payload:params
+                payload:params, resolve, reject
+            })
+        },
+        getGrow: (params, resolve, reject) => {
+            dispatch({
+              type: 'grow/get',
+              payload: { params, resolve, reject }
+            })
+        },
+        getCategory: (params, resolve, reject) => {
+            dispatch({
+                type: 'category/get',
+                payload: { params, resolve, reject }
+            })
+        },
+        getList: (params, resolve, reject) => {
+            dispatch({
+                type: 'category/list',
+                payload: {
+                    params, resolve, reject
+                }
+            })
+        },
+        init: (params, resolve, reject) => {
+            dispatch({
+                type: 'category/init',
+                payload: {
+                    params, resolve, reject
+                }
+            })
+        },
+        grow: (params, resolve, reject) => {
+            dispatch({
+                type: 'grow/edit',
+                payload: {
+                    params, resolve, reject
+                }
+            })
+        },
+        addGrow: (params, resolve, reject) => {
+            dispatch({
+                type: 'grow/add',
+                payload: {
+                    params, resolve, reject
+                }
             })
         }
     })

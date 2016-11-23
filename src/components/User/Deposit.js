@@ -56,12 +56,12 @@ class Deposit extends Component {
     }
     render() {
         const { form,user } = this.props
-        const { getFieldProps } = form
+        const { getFieldDecorator } = form
         return (
             <Spin spinning = { user.loading }>
                 <Form horizontal onSubmit ={ this.submitHandler }>
                     <FormItem label = '提现金额' {...formItemLayout} hasFeedback required>
-                        <Input type='text' {...getFieldProps('money', {
+                        {getFieldDecorator('money', {
                             rules: [{
                                 validator: (rule, value, callback) => {
                                     if(value && value < 100){
@@ -72,8 +72,7 @@ class Deposit extends Component {
                                 }
                             }],
                             initialValue: 100
-                        })}
-                        />
+                        })(<Input type='text'  addonAfter='元'/>)}
                     </FormItem>
                     <FormItem
                         label='验证码'
@@ -81,9 +80,7 @@ class Deposit extends Component {
                         hasFeedback
                         required
                     >
-                        <Input type='text'
-                        {
-                            ...getFieldProps('vcode',{
+                        {getFieldDecorator('vcode',{
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if(!value){
@@ -96,9 +93,8 @@ class Deposit extends Component {
                                         }
                                     }
                                 }]
-                            })
+                            })(<Input type='text' />)
                         }
-                        />
                     </FormItem>
                     <FormItem wrapperCol={{ span: 16, offset: 4 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">确定提现</Button>

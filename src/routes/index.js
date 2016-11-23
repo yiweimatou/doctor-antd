@@ -10,12 +10,38 @@ import messageRoutes from './messageRoutes'
 import Test from '../components/Test'
 import questionRoutes from './questionRoutes'
 import textPaperRoutes from './textPaperRoutes'
+import paperRoutes from './paperRoutes'
+import resourceRoutes from './resourceRoutes'
+import { WECHATLOGIN} from '../constants/api'
 
 const routes = (store) => ([{
     path: '/',
     component: MainContainer,
     indexRoute: {
         component: Dashboard
+    },
+    onEnter(nextState) {
+        const { key, token } = nextState.location.query
+        const auth = localStorage.auth
+        if (key && token) {
+          localStorage.auth = JSON.stringify({
+            key, token
+          })
+          store.dispatch({
+            type: 'login/success',
+            payload: {
+              key, token, user: { id: key }
+            }
+          })
+          store.dispatch({
+            type: 'user/set',
+            payload: {
+              id: key
+            }
+          })
+        } else if (!auth) {
+          window.location.replace(WECHATLOGIN)
+        }
     },
     childRoutes: [{
             path: 'dashboard',
@@ -32,7 +58,9 @@ const routes = (store) => ([{
         userRoutes(store),
         messageRoutes(store),
         questionRoutes(store),
-        textPaperRoutes(store)
+        textPaperRoutes(store),
+        paperRoutes(store),
+        resourceRoutes()
     ]
 }, {
     path: '*',

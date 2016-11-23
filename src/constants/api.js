@@ -1,5 +1,7 @@
 export const HOST = 'http://api.yiweimatou.com'
 
+export const WECHATLOGIN = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxe17a9f1153e4a1b5&scope=snsapi_login&redirect_uri=http%3A%2F%2Fwww.yiweimatou.com&state=doctor'
+
 export const USER_API_DOMAIN = `${HOST}:4001`
 export const ADMIN_API_DOMAIN = `${HOST}:4001`
 export const UPLOAD_DOMAIN = 'http://image.yiweimatou.com:999'
@@ -17,9 +19,17 @@ export const MSG_API_DOMAIN = `${HOST}:4001`
 export const DEFAULT_FACE = 'http://image.yiweimatou.com/ywmt/face/default.png'
 export const DEFAULT_COVER = 'http://image.yiweimatou.com/ywmt/cover/lesson.png'
 export const DEFAULT_LOGO = 'http://image.yiweimatou.com/ywmt/logo/default.png'
+export const DEFAULT_TOPICS = 'http://image.yiweimatou.com/topics.png'
 /*
 *category
  */
+export const TEXT = '17'
+export const DOC = '16'
+export const WX = '15'
+export const BAIKE = '14'
+export const AUDIO = '13'
+export const VIDEO = '12'
+export const IMAGE = '11'
 export const NOTICE = '10'
 export const HTML = '9'
 export const ACTIVE = '8'
@@ -38,6 +48,15 @@ export const BAD_REQUEST = 400
 export const UNAUTHORIZED = 401
 export const FORBIDDEN = 403
 export const INTERNAL_SERVER_ERROR = 500
+/**
+ * source apis
+ */
+export const SOURCE_GET_API = `${USER_API_DOMAIN}/source/get`
+export const SOURCE_Add_API = `${USER_API_DOMAIN}/source/add`
+export const SOURCE_INFO_API = `${USER_API_DOMAIN}/source/info`
+export const SOURCE_LIST_API = `${USER_API_DOMAIN}/source/list`
+export const SOURCE_EDIT_API = `${USER_API_DOMAIN}/source/put`
+export const SOURCE_DELETE_API = `${USER_API_DOMAIN}/source/del`
 /**
  * grow apis
  */
@@ -61,6 +80,18 @@ export const CATEGORY_API = 'http://m.yiweimatou.com/api/area'
 export const MSG_GET_API = `${MSG_API_DOMAIN}/msg/get`
 export const MSG_INFO_API = `${MSG_API_DOMAIN}/msg/info`
 export const MSG_LIST_API = `${MSG_API_DOMAIN}/msg/list`
+/**
+ * paper
+ */
+export const PAPER_GET_API = `${USER_API_DOMAIN}/paper/get`
+export const PAPER_INFO_API = `${USER_API_DOMAIN}/paper/info`
+export const PAPER_LIST_API = `${USER_API_DOMAIN}/paper/list`
+/**
+ * papers
+ */
+export const PAPERS_GET_API = `${USER_API_DOMAIN}/papers/get`
+export const PAPERS_LIST_API = `${USER_API_DOMAIN}/papers/list`
+export const PAPERS_INFO_API = `${USER_API_DOMAIN}/papers/info`
 /**
  * topic apis
  */
@@ -153,6 +184,8 @@ export const UPLOAD_LOGO_API = `${UPLOAD_DOMAIN}/logo`
 export const UPLOAD_AVATAR_API = `${UPLOAD_DOMAIN}/face`
 export const UPLOAD_COVER_API = `${UPLOAD_DOMAIN}/cover`
 export const UPLOAD_PPT_API = `${UPLOAD_DOMAIN}/book/ppt`
+export const UPLOAD_IMG_API = `${UPLOAD_DOMAIN}/img`
+export const UPLOAD_FILE_API = `${UPLOAD_DOMAIN}/file`
 /**
  *yunbook apis
  */
@@ -163,6 +196,11 @@ export const YUNBOOK_LIST_API = `${BOOK_API_DOMAIN}/book/list`
 export const YUNBOOK_INFO_API = `${BOOK_API_DOMAIN}/book/info`
 export const YUNBOOK_BUY_API = `${BOOK_API_DOMAIN}/book/buy`
 /**
+*organize_focus
+*/
+export const ORGANIZE_FOCUS_INFO = `${ORGANIZE_API_DOMAIN}/organize_focus/info`
+export const ORGANIZE_FOCUS_LIST = `${ORGANIZE_API_DOMAIN}/organize_focus/list`
+/**
  * organizelesson apis
  */
 export const ORGANIZELESSON_INFO_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/info`
@@ -170,6 +208,7 @@ export const ORGANIZELESSON_GET_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/ge
 export const ORGANIZELESSON_LIST_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/list`
 export const ORGANIZELESSON_ADD_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/add`
 export const ORGANIZELESSON_EDIT_API = `${ORGANIZE_API_DOMAIN}/organize_lesson/put`
+export const ORGANIZE_BUY = `${ORGANIZE_API_DOMAIN}/organize_lesson/buy`
 /**
  * organizeteam apis
  */
@@ -178,3 +217,4 @@ export const ORGANIZE_TEAM_GET_API = `${ORGANIZE_API_DOMAIN}/organize_team/get`
 export const ORGANIZE_TEAM_LIST_API = `${ORGANIZE_API_DOMAIN}/organize_team/list`
 export const ORGANIZE_TEAM_EDIT_API = `${ORGANIZE_API_DOMAIN}/organize_team/put`
 export const ORGANIZE_TEAM_ADD_API = `${ORGANIZE_API_DOMAIN}/organize_team/add`
+export const ORGANIZE_TEAM_DEL = `${ORGANIZE_API_DOMAIN}/organize_team/del`

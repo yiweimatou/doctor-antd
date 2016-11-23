@@ -4,19 +4,37 @@ const initialState = {
     list: [],
     loading: false,
     total: 0,
-    entity: null
+    entity: {},
+    lessons: []
 }
 
 const organize = handleActions({
-    ['organzie/edit']:state=>({
+    ['organize/lesson/list']: state => ({
         ...state,
-        isSuccess: false
+        loading: true
     }),
-    ['organize/edit/success']:state=>({
+    ['organize/lesson/list/failre']: state => ({
         ...state,
+        loading: false
+    }),
+    ['organize/lesson/list/success']: (state, action) => ({
+        ...state,
+        lessons: action.payload,
+        loading: false
+    }),
+    ['organzie/edit']: state=>({
+        ...state,
+        loading: true
+    }),
+    ['organize/edit/success']: (state, action) => ({
+        ...state,
+        entity: {
+            ...state.entity,
+            ...action.payload
+        },
         loading:false
     }),
-    ['organize/edit/failure']:state=>({
+    ['organize/edit/failure']: state => ({
         ...state,
         loading: false
     }),
@@ -44,10 +62,16 @@ const organize = handleActions({
     }),
     ['organize/get']:(state)=>({
         ...state,
-        entity: null
+        loading: true,
+        entity: {}
+    }),
+    ['organize/get/failure']: state => ({
+      ...state,
+      loading: false
     }),
     ['organize/get/success']: (state, action) => ({
         ...state,
+        loading: false,
         entity: action.payload.entity
     })
 },initialState)

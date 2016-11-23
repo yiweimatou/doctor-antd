@@ -2,10 +2,34 @@
  * Created by zhangruofan on 2016/9/17.
  */
 import { takeEvery, takeLatest } from 'redux-saga'
-import { put, call, fork } from 'redux-saga/effects'
-import { add, list, get, info, buy, remove } from '../services/topics'
+import { put, call, fork, select } from 'redux-saga/effects'
+import { add, list, get, info, buy, remove, edit } from '../services/topics'
+import { list as getTopicList } from '../services/topic'
 import { ORGANIZE, LESSON } from '../constants/api'
 import { info as getBillInfo } from '../services/bill'
+import { loadTopics } from '../reducers/selectors'
+
+function* watchEdit() {
+  yield takeLatest('topics/edit', function* (action) {
+    try {
+      yield call(edit, action.payload.params)
+      if (action.payload.resolve) {
+        action.payload.resolve()
+      }
+      yield put({
+        type: 'topics/edit/success',
+        payload: action.payload.params
+      })
+    } catch (error) {
+      if (action.payload.reject) {
+        action.payload.reject(error)
+      }
+      yield put({
+        type: 'topics/edit/failure'
+      })
+    }
+  })
+}
 
 function* watchDelete() {
   yield takeLatest('topics/delete', function* (action) {
@@ -78,14 +102,33 @@ function* watchMyList() {
 function* watchGet() {
   yield takeEvery('topics/get', function *(action) {
     try {
+      const topics = yield select(loadTopics)
+      if (topics.id === action.payload.params.id) {
+        if (action.payload.resolve) {
+          action.payload.resolve(topics)
+        }
+        return
+      }
       const result =  yield call(get, action.payload.params)
+      const topic_id_list = result.get.topic_id_list
+      if (topic_id_list && topic_id_list.length > 0) {
+        const data = yield call(getTopicList, { id_list: topic_id_list, offset: 1, limit: topic_id_list.length })  
+        result.get.topic_list = data.list      
+      }
       if (action.payload.resolve) {
         action.payload.resolve(result.get)
       }
+      yield put({
+        type: 'topics/get/success',
+        payload: result.get
+      })
     } catch (error) {
       if (action.payload.reject) {
         action.payload.reject(error)
       }
+      yield put({
+        type: 'topics/get/failure'
+      })
     }
   })
 }
@@ -144,6 +187,7 @@ export default function* () {
     fork(watchInfo),
     fork(watchMyList),
     fork(watchBuy),
-    fork(watchDelete)
+    fork(watchDelete),
+    fork(watchEdit)
   ]
 }

@@ -2,7 +2,6 @@ import React,{ Component, PropTypes } from 'react'
 import { Router } from 'react-router'
 import { Provider } from 'react-redux'
 
-
 class App extends Component{
     static propTypes = {
         history: PropTypes.object.isRequired,

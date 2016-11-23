@@ -1,17 +1,28 @@
 import React, {Component} from 'react';
 import List from './List'
 import Add from './Add'
-import { Tabs, Spin, Icon, message, Modal } from 'antd'
+import { Tabs, Spin, Icon, message, Modal, Table } from 'antd'
 import { connect } from 'react-redux'
-const TabPane = Tabs.TabPane
+import Category from '../Category'
+import { TOPIC } from '../../constants/api'
 
+
+const TabPane = Tabs.TabPane
+const columns = [{
+    title: '问题',
+    key: '试题题目（标题）',
+    dataIndex: '试题题目（标题）'
+}]
 class Manage extends Component {
     state = {
         activeKey: '1',
         uploading: false,
         success: 0,
         failure: 0,
-        total: 0
+        total: 0,
+        latLng: {},
+        category: '',
+        failData: []
     }
     componentWillMount() {
       if (!window.XLSX) {
@@ -50,12 +61,31 @@ class Manage extends Component {
       if(this.state.success + this.state.failure === this.state.total) {
         clearInterval(this.interval)
         this.setState({ uploading: false })
-        Modal.info({ content: `上传:${this.state.total},成功:${this.state.success}`})
+        if (this.state.failure > 0) {
+            Modal.confirm({
+                content: <div>上传:{this.state.total},成功:{this.state.success}<Table bordered dataSource={this.state.failData} columns={columns}/></div>,
+                title: '失败列表',
+                okText: '继续上传',
+                onOk: (resolve) => {
+                    const temp = this.state.failData
+                    resolve()
+                    this.setState({ uploading: true, total: temp.length, failure: 0, success: 0, failData: [] })
+                    this.interval = setInterval(this.tick, 1000)
+                    this.upload(temp)
+                }
+            })
+        } else {
+            Modal.info({ content: `上传:${this.state.total},成功:${this.state.success}`})
+        }
       }
     }
     fileChangeHandler = (e) => {
       this.setState({ uploading: true })
       e.preventDefault()
+      const category = this.state.category
+      if (category.length > 0 && category.length < 3) {
+          return message.error('请再选择一级分类')
+      }
       const files  = e.target.files
       const ext = files[0].name.split('.').slice(-1)[0].toUpperCase()
       if (ext !== 'XLS' && ext !== 'XLSX') {
@@ -77,8 +107,15 @@ class Manage extends Component {
         const _json = window.XLSX.utils.sheet_to_json(worksheet)
         this.setState({ total: _json.length })
         this.interval = setInterval(this.tick, 1000)
-        _json.forEach(item => {
-          this.props.add({
+        this.upload(_json)
+      }
+      reader.readAsBinaryString(files[0])
+    }
+    upload = (data) => {
+        const category = this.state.category
+        data.forEach(item => {
+          if (item['标准答案'] === '') return this.setState({ failure: this.state.failure + 1 })
+          const params = {
             state: 1,
             question: item['试题题目（标题）'],
             option1: item['备选A'] || '',
@@ -87,14 +124,26 @@ class Manage extends Component {
             option4: item['备选D'] || '',
             option5: item['备选E'] || '',
             answer: item['标准答案']
-          }, () => {
+          }
+          this.props.add(params, topic => {
+            if (category.length >= 3) {
+            this.props.grow({
+                lat: this.state.latLng.lat,
+                lng: this.state.latLng.lng,
+                title: topic.question,
+                state: 1,
+                category_id: TOPIC,
+                foreign_id: topic.id,
+                // cover: cover,
+                map_id: 1,
+                kind: category[0] === '1' ? category[1] : category[2]
+            }, null, error => message.error(error))
+          }
             this.setState({ success: this.state.success + 1 })
           }, () => {
-            this.setState({ failure: this.state.failure + 1 })
+              this.setState({ failure: this.state.failure + 1, failData: this.state.failData.concat(item) })
           })
         })
-      }
-      reader.readAsBinaryString(files[0])
     }
     render() {
         const { activeKey } = this.state
@@ -106,11 +155,15 @@ class Manage extends Component {
                     <List />
                 </TabPane>
                 <TabPane tab='新建试题' key='2'>
-                    <Add afterAddHandler={() => this.setState({ activeKey: '1' })} add={this.props.add}/>
+                    <Add afterAddHandler={() => this.setState({ activeKey: '1' })} add={this.props.add} getList={this.props.getList} grow={this.props.grow}/>
                 </TabPane>
                 <TabPane tab='批量上传' key='3'>
                     <Spin spinning={this.state.uploading}>
                       <div style = {{textAlign: 'center'}} >
+                        <div style={{ display: 'inline-block', width: '600px', marginBottom: 20}}>
+                          <span>试卷分类:&nbsp;</span>
+                          <Category style={{width: '500px'}} onChange={(category, latLng) => this.setState({category, latLng})}/>
+                        </div>
                         <p >请根据模板格式填写Excel &nbsp;
                             <a href = "http://7xp3s1.com1.z0.glb.clouddn.com/%E9%A2%98%E5%BA%93%E6%A8%A1%E6%9D%BF.xlsx" target = '_blank'>
                                 下载Excel模板
@@ -132,11 +185,23 @@ export default connect(
     dispatch => ({
         add: (params, resolve, reject) => {
             dispatch({
-            type: 'topic/add',
-            payload: {
-                params, resolve, reject
-            }
+              type: 'topic/add',
+              payload: {
+                  params, resolve, reject
+              }
             })
+        },
+        getList(params, resolve, reject) {
+            dispatch({
+                type: 'category/list',
+                payload: { params, resolve, reject }
+            })
+        },
+        grow(params, resolve, reject) {
+          dispatch({
+            type: 'grow/add',
+            payload: { params, resolve, reject }
+          })
         }
     })
 )(Manage);

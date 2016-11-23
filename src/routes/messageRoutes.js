@@ -2,7 +2,7 @@ import Message from '../components/Message'
 
 const indexRoutes = store => ({
     path: 'index',
-    components: Message,
+    component: Message,
     onEnter() {
         const uid = store.getState().auth.key
         store.dispatch({

@@ -1,130 +1,161 @@
-import React,{Component,PropTypes} from 'react'
+import React,{ Component, PropTypes } from 'react'
 import Paper from '../Paper'
-import { Row, Col, Button, message } from 'antd'
-import './Show.css'
-import OrganzieLessonList from './OrganzieLessonList.js'
-import { DEFAULT_COVER, DEFAULT_FACE } from '../../constants/api'
+import { Button, message, Spin, Upload, Input } from 'antd'
+import { DEFAULT_COVER } from '../../constants/api'
+import OrganizeBar from './organize_bar'
+import { UPLOAD_LOGO_API } from '../../constants/api'
+import { Link } from 'react-router'
 
 class Show extends Component {
-    state: {
-        list: [],
-        total: 0,
-        loading: true,
-        organize_team: {},
-        team_list: []
+  constructor(props) {
+    super(props)
+    this.state = {
+      editable: false,
+      descript: '',
+      uploading: false
     }
-    changeHandler = offset => {
-        const { id, getLessonList } = this.props
-        getLessonList({
-            offset, limit: 9, organize_id: id, state: 1
-        }, list => this.setState({ list, loading: false }), error => {
-            this.setState({ loading: false })
-            message.error(error)
+  }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.organize.descript !== nextProps.organize.descript) {
+      this.setState({ descript: nextProps.organize.descript })
+    }
+  }
+  changeHandler = info => {
+    if (info.file.status === 'uploading' && this.state.uploading === false) {
+      this.setState({ uploading: true })
+    }
+    if (info.file.status === 'done') {
+      if (info.file.response.code === 200) {
+        this.props.edit({
+          id: this.props.organize.id,
+          logo: info.file.response.logo
+        }, () => {
+          message.success('更换封面成功!')
+          this.setState({ uploading: false })
+        }, error => {
+          message.error(error)
+          this.setState({ uploading: false })
         })
+      } else {
+        this.setState({
+          uploading: false
+        })
+        message.error(`文件上传出错: ${info.file.response.msg}`)
+      }
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} 上传失败!`);
+      this.setState({ uploading: false })
     }
-    componetWillMount() {
-        const { id, getInfo, getOrganizeTeam, userId, getOrganizeTeamList } = this.props
-        getInfo({
-            organize_id: id, state: 1
-        }, total => this.setState({ total }), error => message.error(error))
-        this.changeHandler(1)
-        getOrganizeTeam({
-            organize_id: id,
-            account_id: userId, 
-            state: 1
-        }, organize_team => this.setState({ organize_team }), error => message.error(error))
-        getOrganizeTeamList({
-            organize_id: id,
-            state: 1,
-            offset: 1,
-            limit: 100
-        }, list => this.setState({ team_list:  list }), error => message.error(error))
-    }
-    render(){
-        const {
-            organize, push
-        } = this.props
-        const { team_list } = this.state
-        return(
-            <div>
-                <Paper>
-                    <div className='row'>
-                        <Row gutter={16}>
-                            <Col span={6}>
-                                <img width='100%' alt='pic' src={(organize&&organize.cover) || DEFAULT_COVER} />
-                            </Col>
-                            <Col span={12}>
-                                <Row>
-                                    <Col span={3}><span>机构名称:</span></Col>
-                                    <Col span={4}><span>{organize&&organize.title}</span></Col>
-                                </Row>
-                                <Row>
-                                    <Col span={3}><span>机构简介:</span></Col>
-                                    <Col span={8}><p>{organize&&organize.descript}</p></Col>
-                                </Row>
-                                <Row>
-                                    <Col span={3}><span>创建时间:</span></Col>
-                                    <Col span={8}><span>{organize&&new Date(organize.add_ms*1000).toLocaleString()}</span></Col>
-                                </Row>
-                                <Row>
-                                    <Col span={3}><span>更新时间:</span></Col>
-                                    <Col span={8}><span>{organize&&new Date(organize.put_ms*1000).toLocaleString()}</span></Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={16}>
-                                <span>机构余额:<em style={{color:'orange',fontSize:'200%'}}>{organize&&organize.balance_amount}</em>元</span>
-                            </Col>
-                            <Col span={4}>
-                                <Button type='primary' onClick={()=>push(`/organize/recharge/${organize.id}`)}>充值</Button>
-                            </Col>
-                            <Col span={4}>
-                                <Button type='ghost' onClick = {() => push(`/organize/bill/${organize.id}`)}>交易明细</Button>
-                            </Col>
-                        </Row>
-                    </div>
-                </Paper>
-                <div className='paper'>
-                    <Paper>
-                        <h2>团队成员</h2>
-                      {
-                        team_list.map(item=>{
-                          return(
-                            <div nowrap key={item.id} className='item'>
-                              <img
-                                src={  item.face ||  DEFAULT_FACE }
-                                className='img'
-                                width='100%'
-                              />
-                              {
-                                item.role === 1 ?
-                                  <em className='bar'>主讲</em>:''
-                              }
-                              <span className='span'>{item.cname || item.mobile}</span>
-                            </div>
-                          )
-                        })
+  }
+  okHandler = () => {
+    this.props.edit({
+      descript: this.state.descript,
+      id: this.props.organize.id
+    },() => {
+      message.success('修改成功!')
+      this.setState({ editable: false })
+    }, error => message.error(error))
+  }
+  cancelHandler = () => {
+    this.setState({
+      editable: false,
+      descript: this.props.organize.descript
+    })
+  }
+  render(){
+    const { organize, loading } = this.props
+    const { editable, descript, uploading } = this.state
+    const money = organize.balance_amount && organize.balance_amount / 100 || 0
+    return(
+      <Spin spinning={loading}>
+        <div>
+            <OrganizeBar selectedKey="show" organize={organize} />
+        </div>
+        <Paper>
+            <div style={{ margin: '30px 20px 10px', padding: '20px 0 10px' }}>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
+                <span>机构名称</span>
+                <strong style={{ marginLeft: '30px' }}>{ organize.title }</strong>
+                <span style={{ marginLeft: '30px' }}>(修改机构名称请拨打0571-88208250)</span>
+                <div style={{ float: 'right' }}>
+                  <span>粉丝数</span>
+                  <span style={{ marginLeft: '20px'}}>{organize.fans}</span>
+                  <span className="ant-divider" style={{ height: '10px' }}/>
+                  <span>课程数</span>
+                  <span style={{ marginLeft: '20px' }}>{organize.lessons}</span>
+                </div>
+              </div>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
+                <span>机构余额</span>
+                <span style={{ marginLeft: '30px', fontSize: '40px', color: 'orange' }}>{money}</span>元
+                <div style={{ float: 'right', lineHeight: '60px' }}>
+                  <Button type="primary">
+                    <Link to={`/organize/recharge/${organize.id}`}>充值</Link>
+                  </Button>
+                  <Button style={{ marginLeft: '10px' }}>
+                    <Link to={`/organize/bill/${organize.id}`}>交易明细</Link>
+                  </Button>
+                </div>
+              </div>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
+                <span>机构logo</span>
+                <img style={{ marginLeft: '30px' }} src={ organize.logo || DEFAULT_COVER } width={100} height={100} />
+                <div style={{ float: 'right', display: 'inline-block', lineHeight: '100px' }}>
+                  <Upload
+                    name = 'upload_file'
+                    action = {UPLOAD_LOGO_API}
+                    showUploadList = {false}
+                    accept = 'image/jpeg, image/png'
+                    onChange = {this.changeHandler}
+                    beforeUpload = {file => {
+                      const fiveM = 5*1024*1024
+                      const isToobig = file.size > fiveM
+                      if (isToobig) {
+                          message.error('只允许上传不大于5M的图片!')
                       }
-                    </Paper>
+                      return !isToobig
+                  }}
+                  >
+                    <Button loading={uploading}>修改封面</Button>
+                  </Upload>
                 </div>
-                <div className='paper'>
-                    <Paper>
-                        
-                    </Paper>
+              </div>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
+                <span>机构简介</span>
+                { editable ?
+                  <div style={{ display: 'inline-block', marginLeft: '30px' }}>
+                    <Input value={descript} type="textarea" rows={3} onChange={e => this.setState({ descript: e.target.value })}/>
+                    <div style={{ marginTop: '10px' }}>
+                      <Button onClick={this.okHandler} type="primary">确定</Button>
+                      <Button onClick={this.cancelHandler} style={{ marginLeft: '10px' }}>取消</Button>
+                    </div>
+                  </div>
+                  :
+                  <span style={{ marginLeft: '30px' }}>{organize.descript}</span>
+                }
+                <div style={{ float: 'right' }}>
+                  <Button onClick={() => this.setState({ editable: true })}>修改</Button>
                 </div>
+              </div>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
+                <span>机构地址</span>
+                <span style={{ marginLeft: '30px' }}>{organize.address}</span>
+                <div style={{ float: 'right' }}>如需修改请拨打0571-88208250</div>
+              </div>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
+                <span>管理员</span>
+                <span style={{ marginLeft: '30px' }}>{organize.admin}</span>
+              </div>
             </div>
-        )
+        </Paper>
+      </Spin>
+      )
     }
 }
 
 Show.propTypes = {
     organize: PropTypes.object.isRequired,
-    getLessonList: PropTypes.func.isRequired,
-    getOrganizeTeam: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
-    userId: PropTypes.number.isRequired,
-    getOrganizeTeamList: PropTypes.func.isRequired
+    edit: PropTypes.func.isRequired,
 }
 
 export default Show

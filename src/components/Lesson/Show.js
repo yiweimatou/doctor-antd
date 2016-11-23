@@ -1,10 +1,11 @@
 import React,{Component,PropTypes} from 'react'
 import Paper from '../Paper'
-import { Button, Modal, message, Spin } from 'antd'
+import { Button, Modal, message } from 'antd'
 import SelectContainer from '../../containers/organize/selectContainer.js'
 import './Show.css'
 import { DEFAULT_COVER, DEFAULT_LOGO } from '../../constants/api'
 import LessonBar from './LessonBar'
+import ChooseBar from '../Section/ChooseBar'
 
 const styles = {
     row:{
@@ -17,7 +18,7 @@ class Show extends Component {
         push: PropTypes.func.isRequired,
         changeHandler: PropTypes.func.isRequired,
         deleteSection: PropTypes.func.isRequired,
-        userId: PropTypes.number.isRequired,
+        // userId: PropTypes.number.isRequired,
         id: PropTypes.string.isRequired,
         getLessonTeamList: PropTypes.func.isRequired,
         getOrganizeList: PropTypes.func.isRequired,
@@ -27,17 +28,13 @@ class Show extends Component {
     state = {
         organize_list: [],
         team_list: [],
-        //role: 0,//1:主讲,2:辅导员,3:助教
-        //tid: 0,
-        loading: true,
-        lesson: {},
         organize_select_visible: false,
         pending: true
     }
     componentWillMount() {
       this.props.getLesson({
         id: this.props.id
-      }, lesson => this.setState({ lesson, loading: false }), error => message.error(error))
+      })
       this.props.getOrganizeList({
         lesson_id: this.props.id,
         state: 1
@@ -64,38 +61,36 @@ class Show extends Component {
     handlerOrganizeVisible = () => this.setState({ organize_select_visible: false })
     render(){
         const {
-          push, id
+          push, id, lesson
         } = this.props
-        const { loading, lesson,organize_list, team_list } = this.state
+        const { organize_list, team_list } = this.state
         const master = team_list.find(i => i.role === 1)
-        const money = lesson.account_amount ? lesson.account_amount/100 : 0
-        const time = lesson.add_ms ? new Date(lesson.add_ms*1000).toLocaleString(): ''
-        const balance_amount = lesson.balance_amount ? lesson.account_amount/100 : 0
-        const credit_amount = lesson.credit_amount ? lesson.credit_amount/100 : 0
+        const money = lesson && lesson.account_amount ? lesson.account_amount/100 : 0
+        const time = lesson && lesson.add_ms ? new Date(lesson.add_ms*1000).toLocaleString(): ''
+        const balance_amount = lesson && lesson.balance_amount ? lesson.account_amount/100 : 0
+        const credit_amount = lesson && lesson.credit_amount ? lesson.credit_amount/100 : 0
         return(
             <div>
-                <LessonBar lesson={lesson} current='detail' />
+                <LessonBar lid={id} current='detail' />
                 <Paper>
                     <div style={styles.row}>
-                      <Spin spinning={loading}>
                         <div className='cover'>
-                            <img alt='pic' width='534' height='200' src={ lesson.cover|| DEFAULT_COVER} />
+                            <img alt='pic' width='534' height='200' src={ lesson && lesson.cover|| DEFAULT_COVER} />
                         </div>
                         <div className='detail'>
-                            <div><h2>{lesson.title}</h2></div>
+                            <div><h2>{lesson && lesson.title}</h2></div>
                             <div>主讲 <em>{master && (master.cname || master.mobile) }</em> &nbsp;&nbsp;
-                                |&nbsp;&nbsp; 浏览量 <em>{lesson.pv}</em> &nbsp;&nbsp;|&nbsp;&nbsp; 粉丝数 <em>{lesson.uv}</em></div>
+                                |&nbsp;&nbsp; 浏览量 <em>{lesson && lesson.pv}</em> &nbsp;&nbsp;|&nbsp;&nbsp; 粉丝数 <em>{lesson && lesson.uv}</em></div>
                             <div>创建时间&nbsp;&nbsp;{time}</div>
                             <div>课程金额
                                 <span className='money'>{money}</span>元
                             </div>
                             <div>
-                                <Button onClick = { () => push(`/section/add/choose?oid=0&lid=${lesson.id}`)} type='primary' size='large'>新建资讯</Button>
-                                <Button onClick = {() => push(`/lesson/edit/${lesson.id}`)} className='marginLeft' type='ghost' size='large'>编辑课程</Button>
-                                <Button onClick = {() => push(`/lesson/bill?id=${lesson.id}`)} className='marginLeft' type='ghost' size='large'>交易明细</Button>
+                                <ChooseBar lid={id}/>
+                                <Button onClick = {() => push(`/lesson/edit/${id}`)} className='marginLeft' type='ghost' size='large'>编辑课程</Button>
+                                <Button onClick = {() => push(`/lesson/bill?id=${id}`)} className='marginLeft' type='ghost' size='large'>交易明细</Button>
                             </div>
                         </div>
-                      </Spin>
                     </div>
                     <hr style={{margin: '0 30px'}} color='#ddd'/>
                     <div style = { styles.row } >

@@ -67,7 +67,7 @@ class Edit extends Component{
                 title:values.lname,
                 descript:values.descript,
                 cover:cover,
-                organize_amount: values.organize_money,
+                organize_amount: values.organize_money*100,
                 account_amount: values.account_money*100,
                 id:this.props.lesson.id,
                 state: values.state ? 1: 2
@@ -80,7 +80,7 @@ class Edit extends Component{
     }
     componentWillReceiveProps(nextProps){
         //prelesson is null next is not null
-        if(!this.props.lesson && nextProps.lesson){
+        // if(!this.props.lesson && nextProps.lesson){
             this.setState({
                 fileList:[{
                     uid:-1,
@@ -89,16 +89,28 @@ class Edit extends Component{
                     url: nextProps.lesson.cover
                 }]
             })
-        }
+        // }
+    }
+    componentWillMount() {
+        this.setState({
+            fileList:[{
+                uid:-1,
+                name: '封面.png',
+                status: 'done',
+                url: this.props.lesson.cover
+            }]
+        })
     }
     render(){
         const {
-            form,lesson,loading
+            form,lesson,loading, id
         } = this.props
-        const { getFieldProps } = form
+        const { getFieldDecorator } = form
+        const account_amount = lesson && lesson.account_amount/100
+        const organize_amount = lesson && lesson.organize_amount/100
         return(
             <div>
-             <LessonBar lesson={lesson} current='edit' />
+             <LessonBar lid={id} current='edit' />
             <Paper>
                 <Spin spinning = { loading } size = 'large'>
                 <Form
@@ -111,26 +123,20 @@ class Edit extends Component{
                         label='课程名'
                         hasFeedback
                     >
-                        <Input
-                            type='text'
-                            {...getFieldProps('lname',{
+                    {getFieldDecorator('lname',{
                                 rules:[{
                                     required:true,
                                     max:20,
                                     message:'请输入20字以内课程名'
                                 }],
                                 initialValue: lesson && lesson.title
-                            })}
-                        />
+                            })(<Input type='text' />)}
                     </FormItem>
                     <FormItem
                         label = '报名费'
                         {...formItemLayout}
                     >
-                        <Input
-                            type = 'number'
-                            addonAfter = '元'
-                            {...getFieldProps('account_money',{
+                     {getFieldDecorator('account_money',{
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if( value >= 0) {
@@ -140,33 +146,28 @@ class Edit extends Component{
                                         }
                                     }
                                 }],
-                                initialValue: lesson && lesson.account_amount/100
-                            })}
-                        />
+                                initialValue: account_amount
+                            })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
                     <FormItem
                         label = '机构认证费'
                         {...formItemLayout}
                     >
-                        <Input
-                            type = 'number'
-                            addonAfter = '元'
-                            {...getFieldProps('organize_money',{
+                    {getFieldDecorator('organize_money',{
                                 rules:[{
                                     validator: (rule, value, callback) => {
                                         if(value >= 0) {
                                             callback()
                                         }else {
-                                            callback('金额必须大于等于零')
+                                            callback('金额必须大于等于零')   
                                         }
-                                    }
+                                    }  
                                 }],
-                                initialValue: lesson && lesson.organize_amount
-                            })}
-                        />
+                                initialValue: organize_amount
+                            })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="上下架">
-                        <Switch {...getFieldProps('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})}/>
+                        {getFieldDecorator('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})(<Switch />)}
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
@@ -189,18 +190,15 @@ class Edit extends Component{
                         label='课程简介'
                         {...formItemLayout}
                     >
-                        <Input
-                            type='textarea'
-                            rows = '3'
-                            {...getFieldProps('descript',{
+                        
+                            {getFieldDecorator('descript',{
                                 rules:[{
                                     required:false,
                                     max:200,
                                     message:'请输入少于200字的简介'
                                 }],
                                 initialValue:lesson&&lesson.descript
-                            })}
-                        />
+                            })(<Input type='textarea' rows = '5' />)}
                     </FormItem>
                     <FormItem wrapperCol={{ offset: 6 }} style={{ marginTop: 24 }}>
                         <Button type="primary" htmlType="submit">保存</Button>
@@ -216,7 +214,8 @@ class Edit extends Component{
 export default connect(
     state=>({
         lesson:state.lesson.entity,
-        loading : state.lesson.loading
+        loading : state.lesson.loading,
+        id: state.routing.locationBeforeTransitions.pathname.split('/')[3],
     }),
     dispatch=>({
         handleEdit: (params, resolve, reject) => {
