@@ -18,7 +18,6 @@ class List extends Component{
         getList: PropTypes.func.isRequired,
         delete: PropTypes.func.isRequired,
         push: PropTypes.func.isRequired,
-        lesson_id: PropTypes.string.isRequired,
         total: PropTypes.number.isRequired,
         list: PropTypes.array.isRequired,
         loading: PropTypes.bool.isRequired

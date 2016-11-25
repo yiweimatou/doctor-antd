@@ -30,6 +30,15 @@ module.exports = function(webpackConfig) {
         }
     });
 
+    webpackConfig.module.loaders.push({
+        test: /\.(ico|png|jpe?g|gif|svg)(\?.*)?$/,
+        loader: 'url'
+      },
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url'
+        })
+
     // Load src/entries/*.js as entry automatically.
     const files = glob.sync('./src/entries/*.js');
     const newEntries = files.reduce(function(memo, file) {

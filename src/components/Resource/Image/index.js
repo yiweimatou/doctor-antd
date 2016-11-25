@@ -3,6 +3,7 @@ import './styles/index.css'
 import { Button, message, Spin, Modal, Col, Pagination, Row } from 'antd'
 import { IMAGE } from '../../../constants/api'
 import { add as grow } from '../../../services/grow'
+import { remove } from '../../../services/source'
 import ImageCard from './ImageCard'
 import ImageUpload from './ImageUpload'
 
@@ -23,6 +24,14 @@ class Image extends Component {
             .catch(error => message.error(error))
     }
     _onCancel = () => this.setState({visible: false})
+    _remove = id => {
+        remove({ id }).then(() => {
+            this.setState({ 
+                list: this.state.list.filter(i => i.id !== id)
+            })
+            message.success('删除成功!')
+        }).catch(error => message.error(error))
+    }
     render() {
         const {loading, total, list, visible} = this.state        
         return (
@@ -41,7 +50,7 @@ class Image extends Component {
                 <Row>
                 {
                     list.map(image => {
-                        return <Col span='8' key={image.id}><ImageCard image={image}/></Col>
+                        return <Col span='8' key={image.id}><ImageCard remove={this._remove} image={image}/></Col>
                     })
                 }
                 </Row>

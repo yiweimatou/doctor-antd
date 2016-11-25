@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
-import {Table, message} from 'antd'
-import {list, info}from '../../../services/source'
-import {IMAGE} from '../../../constants/api'
+import { Table, message, Upload, Button } from 'antd'
+import { add, list, info }from '../../../services/source'
+import { UPLOAD_IMG_API, IMAGE} from '../../../constants/api'
 
 class ImageSelect extends Component {
     state = {
@@ -25,6 +25,38 @@ class ImageSelect extends Component {
                 list: data.list
             })
         }).catch(error => message.error(error))
+    }
+    changeHandler = info => {
+        if (info.file.status === 'uploading' && this.state.loading === false) {
+            this.setState({ loading: true })
+        }
+        if (info.file.status === 'done') {
+            if (info.file.response.code === 200) {
+                const params = { 
+                    title: info.file.name.split('.')[0], 
+                    category_id: IMAGE,
+                    state: 1,
+                    path: info.file.response.img
+                }
+                add(params).then(() => {
+                    this.setState({
+                        list: this.state.list.concat(params),
+                        loading: false
+                    })
+                }).catch(error => {
+                    message.error(error),
+                    this.setState({ loading: false })
+                })
+            } else {
+                this.setState({
+                    loading: false
+                })
+                message.error(`文件上传出错: ${info.file.response.msg}`)
+            }
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} 上传失败!`)
+            this.setState({ loading: false })
+        }
     }
     render() {
         const { total, loading, list } = this.state
@@ -50,6 +82,23 @@ class ImageSelect extends Component {
         }
         return (
             <div>
+                <Upload
+                    name = 'upload_file'
+                    action = {UPLOAD_IMG_API}
+                    showUploadList = {false}
+                    accept = 'image/jpeg, image/png'
+                    onChange = {this.changeHandler}
+                    beforeUpload = {file => {
+                      const fiveM = 5*1024*1024
+                      const isToobig = file.size > fiveM
+                      if (isToobig) {
+                          message.error('只允许上传不大于5M的图片!')
+                      }
+                      return !isToobig
+                  }}
+                >
+                    <Button style={{ marginBottom: 10 }} type="primary">上传</Button>
+                </Upload>
                 <Table dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
             </div>
         );

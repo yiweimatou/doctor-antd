@@ -167,7 +167,7 @@ class OrganizeLesson extends Component {
         return (
             <div>
                 <Modal width={720} visible ={visible} title="认购课程" onOk={this.toggleVisible} onCancel={this.toggleVisible} maskClosable={false}>
-                    <LessonSelect organize_id={this.props.id}/>
+                    <LessonSelect organize_id={this.props.params.id}/>
                 </Modal>
                 <OrganizeBar selectedKey="lesson" organize={this.props.organize}/>
                 <div>

@@ -12,7 +12,7 @@ const sectionListRoute = () => ({
     path: 'section',
     component: SectionList,
     onEnter(nextState, replace) {
-       if (nextState.location.query.id === undefined) {
+       if (nextState.location.query.lid === undefined) {
            replace({
                pathname: '/'
            })

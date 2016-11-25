@@ -72,7 +72,7 @@ export async function asyncInfo(params, callback) {
                     const result = await infoLesson({ title, id_list: data.list.map(i => i.lesson_id).join(',') })
                     count = result.count
                 } else {
-                    count = data.list.count
+                    count = data.list && data.list.length
                 }
         }
         callback(null, count)

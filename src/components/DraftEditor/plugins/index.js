@@ -4,9 +4,11 @@ import LinkPlugin from './LinkPlugin'
 // import VideoPlugin from './VideoPlugin'
 // import ImagePlugin from './ImagePlugin'
 import MediaPlugin from './MediaPlugin'
+import TextPlugin from './TextPlugin'
 
 const plugins = compose(
     LinkPlugin,
+    TextPlugin,
     // ImagePlugin,
     // VideoPlugin,
     // AudioPlugin,

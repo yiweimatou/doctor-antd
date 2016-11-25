@@ -38,7 +38,7 @@ class LessonCard extends Component{
                     </ul>
                 </Link>
                 <div className="newArticle">
-                    <ChooseBar lid={lesson.id.toString()}/>
+                    <ChooseBar lid={lesson.id.toString()} oid="0" />
                 </div>
             </div>
         )

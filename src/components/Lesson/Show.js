@@ -86,7 +86,7 @@ class Show extends Component {
                                 <span className='money'>{money}</span>元
                             </div>
                             <div>
-                                <ChooseBar lid={id}/>
+                                <ChooseBar lid={id} oid="0"/>
                                 <Button onClick = {() => push(`/lesson/edit/${id}`)} className='marginLeft' type='ghost' size='large'>编辑课程</Button>
                                 <Button onClick = {() => push(`/lesson/bill?id=${id}`)} className='marginLeft' type='ghost' size='large'>交易明细</Button>
                             </div>

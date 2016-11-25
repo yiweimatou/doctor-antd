@@ -7,7 +7,6 @@ import yunbookRoutes from './yunbookRoutes'
 import sectionRoutes from './sectionRoutes.js'
 import userRoutes from './userRoutes'
 import messageRoutes from './messageRoutes'
-import Test from '../components/Test'
 import questionRoutes from './questionRoutes'
 import textPaperRoutes from './textPaperRoutes'
 import paperRoutes from './paperRoutes'
@@ -46,10 +45,6 @@ const routes = (store) => ([{
     childRoutes: [{
             path: 'dashboard',
             component: Dashboard
-        },
-        {
-            path:'test',
-            component:Test
         },
         organizeRoutes(store),
         lessonRoutes(store),

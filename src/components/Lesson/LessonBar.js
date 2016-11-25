@@ -30,7 +30,7 @@ class LessonBar extends Component {
                                 <Link to={`/section/draft/?oid=0&lid=${lid}`}>课程资源库</Link>
                             </Menu.Item>
                              <Menu.Item key="section">
-                                <Link to={`/lesson/section/?id=${lid}`}>发表列表</Link>
+                                <Link to={`/lesson/section/?oid=0&lid=${lid}`}>发表列表</Link>
                             </Menu.Item>
                             <Menu.Item key="detail">
                                 <Link to={`/lesson/show/${lid}`}>课程详情</Link>
