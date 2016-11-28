@@ -218,3 +218,9 @@ export const ORGANIZE_TEAM_LIST_API = `${ORGANIZE_API_DOMAIN}/organize_team/list
 export const ORGANIZE_TEAM_EDIT_API = `${ORGANIZE_API_DOMAIN}/organize_team/put`
 export const ORGANIZE_TEAM_ADD_API = `${ORGANIZE_API_DOMAIN}/organize_team/add`
 export const ORGANIZE_TEAM_DEL = `${ORGANIZE_API_DOMAIN}/organize_team/del`
+/**
+ * timetable
+ */
+export const TIME_TABLE_ADD = `${USER_API_DOMAIN}/timetable/add`
+export const TIME_TABLE_EDIT = `${USER_API_DOMAIN}/timetable/put`
+export const TIME_TABLE_GET = `${USER_API_DOMAIN}/timetable/get`

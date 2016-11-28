@@ -12,6 +12,7 @@ import textPaperRoutes from './textPaperRoutes'
 import paperRoutes from './paperRoutes'
 import resourceRoutes from './resourceRoutes'
 import { WECHATLOGIN} from '../constants/api'
+import Schedule from '../components/schedule'
 
 const routes = (store) => ([{
     path: '/',
@@ -55,7 +56,11 @@ const routes = (store) => ([{
         questionRoutes(store),
         textPaperRoutes(store),
         paperRoutes(store),
-        resourceRoutes()
+        resourceRoutes(),
+        {
+          path: 'schedule',
+          component: Schedule
+        }
     ]
 }, {
     path: '*',

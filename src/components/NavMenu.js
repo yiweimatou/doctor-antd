@@ -61,6 +61,11 @@ class NavMenu extends Component {
                         </Link>
                     </Item>
                 </SubMenu>
+                <Item key="schedule">
+                    <Link to='/schedule'>
+                        <Icon type="calendar" />排班表管理
+                    </Link>
+                </Item>
             </Menu>
         )
     }
