@@ -134,3 +134,24 @@ export async function asyncList(params, callback) {
         callback(error, [])
     }
 }
+
+export async function getLessonListByUserId(params, callback) {
+    try {
+        let list = [], count = 0
+        const teams = await getLessonTeamList({ account_id: params.userId, state: 1, limit: 10000 })
+        if (teams.list && teams.list.length) {
+            count = teams.list.length
+            const lessons = await listLesson({ 
+                id_list: teams.list.map(i => i.lesson_id).join(','),
+                limit: params.limit,
+                offset: params.offset
+            })
+            if (lessons.list && lessons.list.length > 0) {
+                list = lessons.list
+            }
+        }
+        callback(null, list, count)
+    } catch (error) {
+        callback(error, [])
+    }
+}

@@ -33,7 +33,7 @@ class AddBook extends Component {
     tempYunbook: {}
   }
   componentWillMount() {
-    const { getInfo, fetchSection, fetchYunbook, changeHandler, userId, query } = this.props
+    const { getInfo, fetchSection, fetchYunbook, changeHandler, userId, query, buyBook } = this.props
     getInfo({ account_id: this.props.userId })
     getInfo({})
     changeHandler({ offset: 1, limit: 6 })
@@ -56,8 +56,16 @@ class AddBook extends Component {
       }, error => message.error(error))
     } else if (query.yid) {
       this.setState({ pending: true })
+      buyBook({
+        id: query.yid,
+        organize_id: this.props.query.oid,
+        lesson_id: this.props.query.lid
+      }, null, error => {
+        this.setState({ pending: false })
+        message.error(error)
+      })
       fetchYunbook({ id: query.yid }, yunbook => {
-          this.setState({ yunbook, tempYunbook: yunbook, currentStep: 1, pending: false, lbl: yunbook.lbl })
+          this.setState({ yunbook, tempYunbook: yunbook, currentStep: 2, pending: false, lbl: yunbook.lbl })
       }, error => message.error(error))
     }
   }

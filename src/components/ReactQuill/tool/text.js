@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { TEXT } from '../../../constants/api'
 import TextSelect from '../../Resource/Text/Select'
-import { Modal, Button } from 'antd'
+import { Modal, Button, message } from 'antd'
 
 
 class TextButton extends Component {
@@ -27,8 +27,12 @@ class TextButton extends Component {
         })
     }
     okHandler() {
-        this.props.okHandler(this.state.record)
-        this.toggleVisible()
+        if (this.state.record.id > 0) {
+            this.props.okHandler(this.state.record)
+            this.toggleVisible()
+         } else {
+            message.error('请选择一项!')
+        }
     }
     render() {
         const { visible } = this.state

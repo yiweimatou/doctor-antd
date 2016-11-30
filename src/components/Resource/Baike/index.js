@@ -4,6 +4,7 @@ import { BAIKE } from '../../../constants/api'
 import BaikeCard from './BaikeCard'
 import {isBaike} from '../../../utils/index'
 import Category from '../../Category'
+import { get } from '../../../services/html'
 const FormItem = Form.Item
 const formItemLayout = {
     labelCol: { span: 6 },
@@ -49,7 +50,7 @@ class Baike extends Component {
             }
             this.props.add(params).then(data => {
                 message.success('新建成功')
-                this.setState({loading: false, list: this.state.list.concat({
+                this.setState({loading: false, visible: false, list: this.state.list.concat({
                     ...params,
                     id: data.identity
                 }), total: this.state.total + 1})
@@ -73,7 +74,8 @@ class Baike extends Component {
     }
     render() {
         const {loading, total, list, visible} = this.state  
-        const {getFieldDecorator} = this.props.form      
+        const form = this.props.form
+        const {getFieldDecorator} = form      
         return (
             <Spin spinning={loading}>
                 <Modal visible={visible} title='添加百科' footer='' width={720} onCancel={this._onCancel}>
@@ -87,10 +89,17 @@ class Baike extends Component {
                                         } else if(!isBaike(value)) {
                                             callback('请输入正确的百科地址')
                                         } else {
+                                            get(value).then((data) => {
+                                                form.setFieldsValue({
+                                                    title: data.title,
+                                                    descript: data.description
+                                                })
+                                            })
                                             callback()
                                         }
                                     }
-                                }]
+                                }],
+                                validateTrigger: 'onBlur'
                             })(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label='百科素材名称' hasFeedback>

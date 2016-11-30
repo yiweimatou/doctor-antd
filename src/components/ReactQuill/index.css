@@ -70,7 +70,26 @@
   background-color: #f8f9fb;
 }
 
+.audio {
+  display: block;
+  text-decoration: none;
+  margin: 20px 0;
+  padding-left: 55px;
+  overflow: hidden;
+  position: relative;
+  height: 70px;
+  border: 1px solid #d4d8dd;
+  background-color: #f8f9fb;
+}
+
 .wx i {
+  line-height: 70px;
+  font-size: 30px;
+  position: absolute;
+  left: 12px;
+}
+
+.audio i {
   line-height: 70px;
   font-size: 30px;
   position: absolute;
@@ -95,6 +114,10 @@
   width: 100%;
 }
 
+.audio div {
+  width: 100%;
+}
+
 .doc div {
   width: 100%;
 }
@@ -104,6 +127,16 @@
 }
 
 .wx div span {
+  display: block;
+  font-size: 16px;
+  color: #333;
+  margin-top: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.audio div span {
   display: block;
   font-size: 16px;
   color: #333;
@@ -134,6 +167,17 @@
 }
 
 .wx div em {
+  margin-top: 2px;
+  font-style: normal;
+  display: block;
+  font-size: 14px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.audio div em {
   margin-top: 2px;
   font-style: normal;
   display: block;

@@ -163,18 +163,36 @@ VideoBlot.blotName = 'videoA'
 VideoBlot.tagName = 'iframe'
 
 class AudioBlot extends BlockEmbed {
-    static create(url) {
+    static create(value) {
         let node = super.create()
-        node.setAttribute('controls', true)
-        node.setAttribute('src', url)
+        node.setAttribute('class', 'audio')
+        let i = document.createElement('i')
+        i.setAttribute('class', 'icon-yinp f-fc1')
+        let audio = document.createElement('audio')
+        audio.setAttribute('src', value.url)
+        let span = document.createElement('span')
+        span.innerText = value.title
+        let em = document.createElement('em')
+        em.innerText = value.descript
+        let div = document.createElement('div')
+        div.appendChild(span)
+        div.appendChild(em)
+        node.appendChild(i)
+        node.appendChild(audio)
+        node.appendChild(div)
         return node
     }
      static value(node) {
-        return node.getAttribute('src')
+        return {
+            url: node.childNodes[1].getAttribute('src'),
+            title: node.childNodes[2].childNodes[0].innerText,
+            descript: node.childNodes[2].childNodes[1].innerText,
+        }
     }
 }
 AudioBlot.blotName = 'audio'
-AudioBlot.tagName = 'audio'
+AudioBlot.tagName = 'div'
+AudioBlot.className = 'audio'
 
 Quill.register(MCBlot)
 Quill.register(ImageABlot)
@@ -268,7 +286,11 @@ class ReactQuill extends Component {
     }
     audioOkHandler(record) {
         let range = this.quill.getSelection(true)
-        this.quill.insertEmbed(range.index, 'audio', record.path, 'user')
+        this.quill.insertEmbed(range.index, 'audio', {
+            url: record.path,
+            title: record.title,
+            descript: record.descript
+        }, 'user')
         this.quill.setSelection(range.index + 1, 'silent')
     }
     render() {

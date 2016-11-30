@@ -31,6 +31,7 @@ class YunbookCard extends Component{
                     </Link>
                 </div>
                 <div className='yunbook-card'>
+                    <a onClick={this.props.onClick}><Icon type="to-top" />发布到课程</a>
                     <Link 
                         to={`/yunbook/edit/${yunbook.id}`}
                         style = {{float:'right'}}

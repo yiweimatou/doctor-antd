@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { WX } from '../../../constants/api'
-import { Modal, Button } from 'antd'
+import { Modal, Button, message } from 'antd'
 import LinkSelect from '../../Resource/LinkSelect'
 
 class WxButton extends Component {
@@ -26,8 +26,12 @@ class WxButton extends Component {
         })
     }
     okHandler() {
-        this.props.okHandler(this.state.record)
-        this.toggleVisible()
+        if (this.state.record.id > 0) {
+            this.props.okHandler(this.state.record)
+            this.toggleVisible()
+         } else {
+            message.error('请选择一项!')
+        }
     }
     render() {
         const { visible } = this.state

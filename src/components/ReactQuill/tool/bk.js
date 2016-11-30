@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { BAIKE } from '../../../constants/api'
-import { Modal, Button } from 'antd'
+import { Modal, Button, message } from 'antd'
 import LinkSelect from '../../Resource/LinkSelect'
 
 class BaikeButton extends Component {
@@ -26,8 +26,12 @@ class BaikeButton extends Component {
         })
     }
     okHandler() {
-        this.props.okHandler(this.state.record)
-        this.toggleVisible()
+        if (this.state.record.id > 0) {
+            this.props.okHandler(this.state.record)
+            this.toggleVisible()
+        } else {
+            message.error('请选择一项!')
+        }
     }
     render() {
         const { visible } = this.state
@@ -39,6 +43,7 @@ class BaikeButton extends Component {
                         onOk={this.okHandler}
                         onCancel={this.toggleVisible}
                         maskClosable={false}
+                        width={720}
                     >
                         <LinkSelect category={BAIKE} onChange={this.changeHandler} />
                     </Modal>

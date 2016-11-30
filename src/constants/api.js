@@ -224,3 +224,7 @@ export const ORGANIZE_TEAM_DEL = `${ORGANIZE_API_DOMAIN}/organize_team/del`
 export const TIME_TABLE_ADD = `${USER_API_DOMAIN}/timetable/add`
 export const TIME_TABLE_EDIT = `${USER_API_DOMAIN}/timetable/put`
 export const TIME_TABLE_GET = `${USER_API_DOMAIN}/timetable/get`
+/**
+ * url
+ */
+export const HTML_GET = `${UPLOAD_DOMAIN}/header/info`

@@ -64,6 +64,7 @@ class ImageSelect extends Component {
         const pagination = {
             showTotal: total => `共${total}条`,
             total: total,
+            pageSize: 3,
             onChange: offset => this._getList(offset)
         }
         const columns = [{

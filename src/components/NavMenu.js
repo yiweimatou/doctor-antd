@@ -35,7 +35,10 @@ class NavMenu extends Component {
                         </Link>
                     </Item>
                 </SubMenu>
-                <SubMenu key = 'sub5' title = { <span><Icon type="calculator" />试卷管理</span> } disabled = {user && user.lesson === 1}>
+                <SubMenu key = 'sub5' title = { <span><Icon type="book" />我的资源管理</span> } disabled = {user && user.lesson === 1}>
+                    <Item key="book">
+                        <Link to='/yunbook/manage'>云板书管理</Link>
+                    </Item>
                     <Item key = '13'>
                         <Link to = '/question/manage'>我的题库</Link>
                     </Item>
@@ -43,9 +46,6 @@ class NavMenu extends Component {
                       <Link to="/textpaper/manage">我的试卷</Link>
                     </Item>
                 </SubMenu>
-                <Item key='3'>
-                    <Link to='/yunbook/manage'><Icon type="book" />云板书管理</Link>
-                </Item>
                 <Item key='15'>
                     <Link to='/resource'><Icon type="folder" />个人素材库</Link>
                 </Item>

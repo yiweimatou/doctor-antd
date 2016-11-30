@@ -31,6 +31,8 @@ class List extends Component {
             key: 'opreation',
             render: (text, record) => 
                     <div>
+                        <Button type="ghost" onClick={() => this.props.onClick(record.id)}>发布到课程</Button>
+                        <span className="ant-divider"></span>
                         <Button type = 'ghost' onClick={() => push(`/textpaper/edit/${record.id}`)}>编辑</Button>
                         <span className="ant-divider"></span>
                         <Popconfirm

@@ -31,7 +31,7 @@ class AddTextPaper extends Component {
     topic_num: 1
   }
   componentWillMount() {
-    const { getInfo, changeHandler, query, fetchSection, fetchTopics  } = this.props
+    const { getInfo, changeHandler, query, fetchSection, fetchTopics, buyTopics } = this.props
     //获取分页信息
     getInfo({}, total => this.setState({ total }), error => message.error(error))
     getInfo({ account_id: this.props.userId }, total => this.setState({ myTotal: total }), error => message.error(error))
@@ -50,6 +50,20 @@ class AddTextPaper extends Component {
           topic_num: topics.topic_sum
         }), error => message.error(error))
       }, error => message.error(error))
+    } else if (query.tid > 0) {
+      buyTopics({
+        organize_id: this.props.query.oid,
+        lesson_id: this.props.query.lid,
+        id: query.tid
+      }, () => {
+        this.props.fetchTopics({ id: query.tid }, topics => {
+          this.setState({ visible: false, currentStep: 1, topicList: topics.topic_list, topic_num: topics.topic_list.length })
+        }, error => {
+          message.error(error)
+        })
+      }, error => {
+        message.error(error)
+      })
     }
   }
   handleNext = step => this.setState({ currentStep: step })
@@ -71,7 +85,6 @@ class AddTextPaper extends Component {
       this.props.fetchTopics({ id: this.state.tempTopics.id }, topics => {
         message.success('引用成功')        
         this.setState({ visible: false, currentStep: 1, confirmLoading: false, topicList: topics.topic_list, topic_num: topics.topic_list.length })
-        // this.props.form.setFieldsValue({ topic_num: topics.topic_list.length.toString() })         
       }, error => {
         this.setState({ confirmLoading: false })
         message.error(error)

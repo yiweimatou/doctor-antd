@@ -4,13 +4,13 @@ import { VIDEO } from '../../../constants/api'
 import BaikeCard from '../Baike/BaikeCard'
 import {isVideo} from '../../../utils/index'
 import Category from '../../Category'
+import { get } from '../../../services/html'
+
 const FormItem = Form.Item
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 12 }
 }
-
-
 class Video extends Component {
     state = {
         total: 0,
@@ -73,7 +73,8 @@ class Video extends Component {
     }
     render() {
         const {loading, total, list, visible} = this.state  
-        const {getFieldDecorator} = this.props.form      
+        const form = this.props.form
+        const {getFieldDecorator} = form      
         return (
             <Spin spinning={loading}>
                 <Modal visible={visible} title='添加视频' footer='' width={720} onCancel={this._onCancel}>
@@ -87,10 +88,17 @@ class Video extends Component {
                                         } else if(!isVideo(value)) {
                                             callback('现在支持优酷和腾讯视频！')
                                         } else {
+                                            get(value).then((data) => {
+                                                form.setFieldsValue({
+                                                    title: data.title,
+                                                    descript: data.description
+                                                })
+                                            })
                                             callback()
                                         }
                                     }
-                                }]
+                                }],
+                                validateTrigger: 'onBlur'
                             })(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label='视频素材名称' hasFeedback>

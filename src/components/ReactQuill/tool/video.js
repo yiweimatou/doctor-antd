@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import VideoSelect from '../../Resource/Video/Select'
-import { Modal, Button } from 'antd'
+import { Modal, Button, message } from 'antd'
 
 class VideoButton extends Component {
     constructor(props) {
@@ -25,8 +25,12 @@ class VideoButton extends Component {
         })
     }
     okHandler() {
-        this.props.okHandler(this.state.record)
-        this.toggleVisible()
+        if (this.state.record.id > 0) {
+            this.props.okHandler(this.state.record)
+            this.toggleVisible()
+         } else {
+            message.error('请选择一项!')
+        }
     }
     render() {
         const { visible } = this.state

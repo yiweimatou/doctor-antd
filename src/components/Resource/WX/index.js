@@ -4,13 +4,13 @@ import { WX } from '../../../constants/api'
 import BaikeCard from '../Baike/BaikeCard'
 import {isWX} from '../../../utils/index'
 import Category from '../../Category'
+import { get } from '../../../services/html'
+
 const FormItem = Form.Item
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 12 }
 }
-
-
 class Weixin extends Component {
     state = {
         total: 0,
@@ -73,7 +73,8 @@ class Weixin extends Component {
     }
     render() {
         const {loading, total, list, visible} = this.state  
-        const {getFieldDecorator} = this.props.form      
+        const form = this.props.form
+        const {getFieldDecorator} = form      
         return (
             <Spin spinning={loading}>
                 <Modal visible={visible} title='添加微信' footer='' width={720} onCancel={this._onCancel}>
@@ -87,10 +88,17 @@ class Weixin extends Component {
                                         } else if(!isWX(value)) {
                                             callback('请输入正确的地址')
                                         } else {
+                                            get(value).then((data) => {
+                                                form.setFieldsValue({
+                                                    title: data.title,
+                                                    descript: data.description
+                                                })
+                                            })
                                             callback()
                                         }
                                     }
-                                }]
+                                }],
+                                validateTrigger: 'onBlur'
                             })(<Input />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label='微信素材名称' hasFeedback>

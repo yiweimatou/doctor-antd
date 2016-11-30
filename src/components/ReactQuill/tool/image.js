@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Modal, Button } from 'antd'
+import { Modal, Button, message } from 'antd'
 import ImageSelect from '../../Resource/Image/Select'
 
 class ImageButton extends Component {
@@ -25,8 +25,12 @@ class ImageButton extends Component {
         })
     }
     okHandler() {
-        this.props.okHandler(this.state.record)
-        this.toggleVisible()
+        if (this.state.record.id > 0) {
+            this.props.okHandler(this.state.record)
+            this.toggleVisible()
+         } else {
+            message.error('请选择一项!')
+        }
     }
     render() {
         const { visible } = this.state
