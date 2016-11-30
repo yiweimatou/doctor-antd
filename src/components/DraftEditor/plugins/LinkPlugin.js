@@ -4,7 +4,7 @@ import { createPlugin, pluginUtils } from 'draft-extend'
 import { Button, Modal, message } from 'antd'
 import LinkSelect from '../../Resource/LinkSelect'
 import { WX, DOC, BAIKE } from '../../../constants/api'
-import './index.css'
+// import './index.css'
 
 const ENTITY_TYPE = 'LINK'
 class baike extends Component {

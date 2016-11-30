@@ -16,7 +16,7 @@ class ImageSelect extends Component {
     _getList = offset => {
         list({
             state: 1,
-            limit: 9,
+            limit: 3,
             offset,
             category_id: IMAGE
         }).then(data => {

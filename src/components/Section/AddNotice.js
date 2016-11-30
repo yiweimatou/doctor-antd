@@ -6,8 +6,9 @@ import { push } from 'react-router-redux'
 import { NOTICE } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
 import OrganizeBar from '../Organize/organize_bar'
-import DraftEditor, { toHTML, fromHTML, create } from '../DraftEditor'
 import Paper from '../Paper'
+import ReactQuill from '../ReactQuill'
+
 const FormItem =Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -17,14 +18,14 @@ const formItemLayout = {
 class AddNotice extends Component {
     state = {
         section: {},
-        content: create(fromHTML('<div></div>'))
+        content: ''
     }
     submitHandler = state => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
             const { section } = this.state
             const { addSection, editSection, query } = this.props
-            const content = toHTML(this.state.content.getCurrentContent())
+            const content = this.refs.editor.quill.root.innerHTML
             if (content) {
                 if (state === 0){
                     if (section.id === undefined){
@@ -90,7 +91,7 @@ class AddNotice extends Component {
         const { query,fetchSection } = this.props
         if (query.id) {
             fetchSection({ id: query.id }, section => {
-                this.setState({ section, content: create(fromHTML(section.content)) })
+                this.setState({ section, content: section.content })
             }, error => message.error(error))
         }
     }
@@ -126,7 +127,7 @@ class AddNotice extends Component {
                         {getFieldDecorator('descript',{ initialValue: section.descript })(<Input type="textarea" rows={5}  />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="通知内容">
-                        <DraftEditor editorState={content} placeholder="请填写内容" onChange={content => this.setState({content})}/>
+                        <ReactQuill content={content} ref="editor" />
                     </FormItem>
                     <FormItem wrapperCol={{ offset: 6 }}>
                     { query.edit === '1' ? null:

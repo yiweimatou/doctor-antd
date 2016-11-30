@@ -6,7 +6,7 @@ import { HTML, UPLOAD_COVER_API } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
 import OrganizeBar from '../Organize/organize_bar'
 import Paper from '../Paper'
-import DraftEditor, { toHTML, fromHTML, create } from '../DraftEditor'
+import ReactQuill from '../ReactQuill'
 
 const FormItem =Form.Item
 const formItemLayout = {
@@ -17,13 +17,13 @@ const formItemLayout = {
 class AddHtml extends Component {
     state = {
         section: {},
-        content: create(fromHTML('<div></div>')),
+        content: '',
         fileList: []
     }
     submitHandler = state => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
-            const content = toHTML(this.state.content.getCurrentContent())
+            const content = this.refs.editor.quill.root.innerHTML
             let cover = ''
             if (this.state.fileList.length > 0) {
                 cover = this.state.fileList[0].url
@@ -96,7 +96,7 @@ class AddHtml extends Component {
         const { query, fetchSection } = this.props
         if (query.id) {
             fetchSection({ id: query.id }, section => {
-                this.setState({ section, content: create(fromHTML(section.content)),
+                this.setState({ section, content: section.content,
                     fileList: section.cover? [{
                         uid: -1, name: '封面.png', status: 'done', url: section.cover
                     }]:[] })
@@ -170,7 +170,7 @@ class AddHtml extends Component {
                             </Upload>
                         </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <DraftEditor editorState={content} onChange={content => this.setState({ content })} />
+                            <ReactQuill ref="editor" content={content} />
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :

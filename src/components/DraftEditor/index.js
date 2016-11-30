@@ -3,7 +3,7 @@ import { EditorState } from 'draft-js'
 import { Editor } from 'draft-extend'
 import { convertFromHTML, convertToHTML } from 'draft-convert'
 import plugins from './plugins'
-import './index.css'
+// import './index.css'
 
 const EditorWithPlugins = plugins(Editor)
 const toHTML = plugins(convertToHTML)

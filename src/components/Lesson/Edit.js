@@ -80,7 +80,7 @@ class Edit extends Component{
     }
     componentWillReceiveProps(nextProps){
         //prelesson is null next is not null
-        // if(!this.props.lesson && nextProps.lesson){
+        if(this.props.lesson.cover !== nextProps.lesson.cover){
             this.setState({
                 fileList:[{
                     uid:-1,
@@ -89,17 +89,7 @@ class Edit extends Component{
                     url: nextProps.lesson.cover
                 }]
             })
-        // }
-    }
-    componentWillMount() {
-        this.setState({
-            fileList:[{
-                uid:-1,
-                name: '封面.png',
-                status: 'done',
-                url: this.props.lesson.cover
-            }]
-        })
+        }
     }
     render(){
         const {

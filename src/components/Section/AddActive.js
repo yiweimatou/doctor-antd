@@ -9,8 +9,9 @@ import { ACTIVE } from '../../constants/api'
 import Map from '../Map'
 import moment from 'moment'
 import LessonBar from '../Lesson/LessonBar'
+import ReactQuill from '../ReactQuill'
 import { push } from 'react-router-redux'
-import DraftEditor, { toHTML, fromHTML, create } from '../DraftEditor'
+
 import OrganizeBar from '../Organize/organize_bar'
 const RangePicker = DatePicker.RangePicker
 const FormItem =Form.Item
@@ -24,7 +25,7 @@ class AddActive extends Component {
         section: {},
         latLng: { lat: 0, lng: 0 },
         address: '',
-        content: create(fromHTML('<div></div>')),
+        content: '',
         fileList: [],
         initialFileList: []
     }
@@ -35,7 +36,7 @@ class AddActive extends Component {
                 id: query.id
             }, section => this.setState({
                 section, address: section.address, latLng: {lat: section.lat, lng: section.lng},
-                content: create(fromHTML(section.content)),
+                content: section.content,
                 fileList: section.cover? [{
                         uid: -1, name: '封面.png', status: 'done', url: section.cover
                     }]:[],
@@ -51,7 +52,7 @@ class AddActive extends Component {
             if (errors) return
             const { section, latLng } = this.state
             const { addSection, editSection, query } = this.props
-            const content = toHTML(this.state.content.getCurrentContent())
+            const content = this.refs.editor.quill.root.innerHTML
             let cover = ''
             const files = this.state.fileList
             if (files && files[0]) {
@@ -195,7 +196,7 @@ class AddActive extends Component {
                             })(<RangePicker showTime format="YYYY/MM/DD hh:mm"  />)}
                         </FormItem>
                         <FormItem label="图文内容" {...formItemLayout}>
-                            <DraftEditor editorState={content} placeholder="请填写内容" onChange={content => this.setState({content})} />
+                            <ReactQuill content={content} ref="editor" />
                         </FormItem>
                         <FormItem {...formItemLayout} label="活动描述">
                             {getFieldDecorator('descript', {

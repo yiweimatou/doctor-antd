@@ -1,0 +1,233 @@
+.f-fc1 {
+  color: #444;
+}
+
+
+/*-黑色-*/
+
+.f-fc2 {
+  color: #84d36c;
+}
+
+
+/*-绿色-*/
+
+.f-fc3 {
+  color: #68caa8;
+}
+
+
+/*-青色-*/
+
+.f-fc4 {
+  color: #5a92d7;
+}
+
+
+/*-深黄色-*/
+
+.picStyle {
+  margin: 20px 0;
+}
+
+.picStyle img {
+  width: 100%;
+}
+
+.wx {
+  display: block;
+  text-decoration: none;
+  margin: 20px 0;
+  padding-left: 55px;
+  overflow: hidden;
+  position: relative;
+  height: 70px;
+  border: 1px solid #d4d8dd;
+  background-color: #f8f9fb;
+}
+
+.doc {
+  display: block;
+  text-decoration: none;
+  margin: 20px 0;
+  padding-left: 55px;
+  overflow: hidden;
+  position: relative;
+  height: 70px;
+  border: 1px solid #d4d8dd;
+  background-color: #f8f9fb;
+}
+
+.bk {
+  display: block;
+  text-decoration: none;
+  margin: 20px 0;
+  padding-left: 55px;
+  overflow: hidden;
+  position: relative;
+  height: 70px;
+  border: 1px solid #d4d8dd;
+  background-color: #f8f9fb;
+}
+
+.wx i {
+  line-height: 70px;
+  font-size: 30px;
+  position: absolute;
+  left: 12px;
+}
+
+.bk i {
+  line-height: 70px;
+  font-size: 30px;
+  position: absolute;
+  left: 12px;
+}
+
+.doc i {
+  line-height: 70px;
+  font-size: 30px;
+  position: absolute;
+  left: 12px;
+}
+
+.wx div {
+  width: 100%;
+}
+
+.doc div {
+  width: 100%;
+}
+
+.bk div {
+  width: 100%;
+}
+
+.wx div span {
+  display: block;
+  font-size: 16px;
+  color: #333;
+  margin-top: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bk div span {
+  display: block;
+  font-size: 16px;
+  color: #333;
+  margin-top: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc div span {
+  display: block;
+  font-size: 16px;
+  color: #333;
+  margin-top: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wx div em {
+  margin-top: 2px;
+  font-style: normal;
+  display: block;
+  font-size: 14px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bk div em {
+  margin-top: 2px;
+  font-style: normal;
+  display: block;
+  font-size: 14px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc div em {
+  margin-top: 2px;
+  font-style: normal;
+  display: block;
+  font-size: 14px;
+  color: #999;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.videoStyle {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.videoStyle div {
+  font-size: 14px;
+  color: #999;
+  margin-top: 5px;
+}
+
+.textStyle {
+  border-left: 5px solid #d4d4d5;
+  margin: 20px 0;
+  padding: 10px 0 10px 20px;
+  overflow: hidden;
+}
+
+.textStyle div {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.textStyle span {
+  font-size: 14px;
+  color: #999;
+}
+
+@font-face {
+  font-family: 'icomoon';
+  src: url('../../fonts/icomoon.eot?16jll7');
+  src: url('../../fonts/icomoon.eot?16jll7#iefix') format('embedded-opentype'), url('../../fonts/icomoon.ttf?16jll7') format('truetype'), url('../../fonts/icomoon.woff?16jll7') format('woff'), url('../../fonts/icomoon.svg?16jll7#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  font-family: 'icomoon' !important;
+  /*speak: none;*/
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-yinp:before {
+  content: "\e926";
+}
+
+.icon-artboard:before {
+  content: "\e927";
+}
+
+.icon-weixin:before {
+  content: "\e928";
+}
+
+.icon-wenxian:before {
+  content: "\e929";
+}
