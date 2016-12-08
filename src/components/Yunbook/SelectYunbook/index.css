@@ -30,7 +30,7 @@
 }
 
 .newArticle {
-    background-color: #00a2e2;
+    background-color: #108ee9;
     border-radius: 0 0 6px 6px;
     overflow: hidden;
     width: 260px;
@@ -43,7 +43,7 @@
     padding: 0;
     line-height: 44px;
     border: none;
-    background-color: #00a2e2;
+    background-color: #108ee9;
     font-size: 16px;
     color: #fff;
     display: block;
@@ -52,7 +52,7 @@
 
 .xmoney {
     border-radius: 0 0 6px 0px;
-    background-color: #00a2e2;
+    background-color: #108ee9;
     display: inline-block;
     position: absolute;
 }

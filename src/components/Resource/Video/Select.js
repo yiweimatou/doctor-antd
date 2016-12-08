@@ -5,6 +5,7 @@ import {VIDEO} from '../../../constants/api'
 import Category from '../../Category'
 import {isVideo} from '../../../utils/index'
 import { get } from '../../../services/html'
+import VideoItem from './item'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -28,7 +29,7 @@ class Select extends Component {
     _getList = offset => {
         list({
             state: 1,
-            limit: 9,
+            limit: 2,
             offset,
             category_id: VIDEO
         }).then(data => {
@@ -58,10 +59,13 @@ class Select extends Component {
             }
             add(params).then(data => {
                 message.success('新建成功')
-                this.setState({fetching: false, visible: false, list: this.state.list.concat({
-                    ...params,
-                    id: data.identity
-                }), total: this.state.total + 1})
+                this.setState({
+                    fetching: false, 
+                    visible: false, 
+                    list: [{ ...params,
+                        id: data.identity
+                    }].concat(this.state.list),
+                    total: this.state.total + 1})
                 if (category.length > 3) {
                     this.props.grow({
                         map_id: 1,
@@ -86,18 +90,14 @@ class Select extends Component {
         const pagination = {
             showTotal: total => `共${total}条`,
             total: total,
+            pageSize: 2,
             onChange: offset => this._getList(offset)
         }
         const columns = [{
-            title: '名称',
-            key: 'title',
-            dataIndex: 'title',
-            width: '40%'
-        }, {
-            title: '链接',
+            title: '视频',
             key: 'path',
             dataIndex: 'path',
-            render: path => (<a target="_blank" href={path}>{path}</a>)
+            render: (text, record) => (<VideoItem video={record}/>)
         }]
         const rowSelection = {
             type: 'radio',
@@ -153,7 +153,7 @@ class Select extends Component {
                         </Form>
                     </Modal>
                 </Spin>
-                <Button type="primary" onClick={() => this.setState({ visible: true })} style={{ marginBottom: 10 }}>上传</Button>
+                <Button type="primary" onClick={() => this.setState({ visible: true })} style={{ marginBottom: 10 }}>添加</Button>
                 <Table dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
             </div>
         );

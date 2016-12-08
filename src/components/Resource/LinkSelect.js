@@ -59,10 +59,12 @@ class LinkSelect extends Component {
             }
             add(params).then(data => {
                 message.success('新建成功')
-                this.setState({fetching: false, visible:false, list: this.state.list.concat({
+                this.setState({
+                    fetching: false, visible:false, 
+                    list: [{
                     ...params,
                     id: data.identity
-                }), total: this.state.total + 1})
+                }].concat(this.state.list), total: this.state.total + 1})
                 if (category.length > 3) {
                     grow({
                         map_id: 1,

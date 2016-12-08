@@ -64,10 +64,10 @@ class Select extends Component {
                 message.success('新建成功')
                 this.setState({
                     fetching: false, visible: false,
-                    list: this.state.list.concat({
+                    list: [{
                         ...params,
                         id: data.identity
-                    }),
+                    }].concat(this.state.list),
                     total: this.state.total + 1
                 })
                 if (category.length > 3) {
@@ -163,7 +163,7 @@ class Select extends Component {
                         </Form>
                     </Modal>
                 </Spin>
-                <Button onClick={() => this.setState({ visible: true })} style={{ marginBottom: 10 }} type="primary">上传</Button>
+                <Button onClick={() => this.setState({ visible: true })} style={{ marginBottom: 10 }} type="primary">添加</Button>
                 <Table key="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
             </div>
         );

@@ -20,7 +20,7 @@ class Team extends Component {
         getList({
             lesson_id: query.id 
         }, list => this.setState({
-            list: list.sort((i,j) => i.state > j.state), loading: false, total: list.length, user: list.find(i => i.id === userId)
+            list: list.sort((i,j) => i.state > j.state), loading: false, total: list.length, user: list.find(i => i.id.toString() === userId)
         }), error => message.error(error))
     }
     render() {

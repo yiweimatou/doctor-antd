@@ -228,3 +228,25 @@ export const TIME_TABLE_GET = `${USER_API_DOMAIN}/timetable/get`
  * url
  */
 export const HTML_GET = `${UPLOAD_DOMAIN}/header/info`
+/**
+ * h5
+ */
+export const H5_GET = `${USER_API_DOMAIN}/h5/get`
+export const H5_ADD = `${USER_API_DOMAIN}/h5/add`
+export const H5_LIST = `${USER_API_DOMAIN}/h5/list`
+export const H5_EDIT = `${USER_API_DOMAIN}/h5/put`
+export const H5_INFO = `${USER_API_DOMAIN}/h5/info`
+export const H5_BUY = `${USER_API_DOMAIN}/h5/buy`
+export const H5_REMOVE = `${USER_API_DOMAIN}/h5/del`
+export const H5_ADMIN_ADD = `${USER_API_DOMAIN}/h5/admin/add`
+export const H5_ADMIN_EDIT = `${USER_API_DOMAIN}/h5/admin/put`
+export const H5_ADMIN_DEL = `${USER_API_DOMAIN}/h5/admin/del`
+/**
+ * task
+ */
+export const TASK_GET = `${USER_API_DOMAIN}/task/get`
+export const TASK_INFO = `${USER_API_DOMAIN}/task/info`
+export const TASK_LIST = `${USER_API_DOMAIN}/task/list`
+export const TASK_ADD = `${USER_API_DOMAIN}/task/add`
+export const TASK_SUBMIT = `${USER_API_DOMAIN}/task/put/submit`
+export const TASK_RECEIVE = `${USER_API_DOMAIN}/task/put/receive`

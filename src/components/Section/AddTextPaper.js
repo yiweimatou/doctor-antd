@@ -57,7 +57,7 @@ class AddTextPaper extends Component {
         id: query.tid
       }, () => {
         this.props.fetchTopics({ id: query.tid }, topics => {
-          this.setState({ visible: false, currentStep: 1, topicList: topics.topic_list, topic_num: topics.topic_list.length })
+          this.setState({ visible: false, currentStep: 1, tempTopics: topics, topicList: topics.topic_list, topic_num: topics.topic_list.length })
         }, error => {
           message.error(error)
         })

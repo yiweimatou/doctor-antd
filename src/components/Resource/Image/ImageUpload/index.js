@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {UPLOAD_IMG_API, IMAGE} from '../../../../constants/api'
+import {UPLOAD_FILE_API, IMAGE} from '../../../../constants/api'
 import {message, Form, Input, Button, Spin, Upload, Icon } from 'antd'
 import Category from '../../../Category'
 const FormItem = Form.Item
@@ -23,7 +23,7 @@ class ImageUpload extends Component {
       fileList = fileList.slice(-1)
       fileList = fileList.map((file) => {
           if (file.response) {
-              file.url = file.response.cover
+              file.url = file.response.file
           }
           return file
       })
@@ -59,7 +59,7 @@ class ImageUpload extends Component {
             let image = ''
             const files = this.state.fileList
             if (files && files[0]) {
-                image = files[0].response.img
+                image = files[0].response.file
             }
             if (!image) {
                 this.setState({loading: false})
@@ -79,6 +79,7 @@ class ImageUpload extends Component {
                     ...params,
                     id: data.identity
                 })
+                this.props.form.resetFields()
                 if (category.length > 3) {
                     this.props.grow({
                         map_id: 1,
@@ -118,7 +119,7 @@ class ImageUpload extends Component {
                     <FormItem {...formItemLayout} label='图片' required>
                       <Upload
                           name = 'upload_file'
-                          action = {UPLOAD_IMG_API}
+                          action = {UPLOAD_FILE_API}
                           listType = 'picture'
                           fileList = {this.state.fileList}
                           onChange = {this.changeHandler}

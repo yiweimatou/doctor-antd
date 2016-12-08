@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import { Table, message, Upload, Button } from 'antd'
 import { add, list, info }from '../../../services/source'
-import { UPLOAD_IMG_API, IMAGE} from '../../../constants/api'
+import { UPLOAD_FILE_API, IMAGE} from '../../../constants/api'
 
 class ImageSelect extends Component {
     state = {
@@ -36,11 +36,12 @@ class ImageSelect extends Component {
                     title: info.file.name.split('.')[0], 
                     category_id: IMAGE,
                     state: 1,
-                    path: info.file.response.img
+                    path: info.file.response.file
                 }
-                add(params).then(() => {
+                add(params).then((data) => {
                     this.setState({
-                        list: this.state.list.concat(params),
+                        list: [{ ...params, id: data.identity }].concat(this.state.list),
+                        total: this.state.total + 1,
                         loading: false
                     })
                 }).catch(error => {
@@ -85,7 +86,7 @@ class ImageSelect extends Component {
             <div>
                 <Upload
                     name = 'upload_file'
-                    action = {UPLOAD_IMG_API}
+                    action = {UPLOAD_FILE_API}
                     showUploadList = {false}
                     accept = 'image/jpeg, image/png'
                     onChange = {this.changeHandler}
@@ -98,7 +99,7 @@ class ImageSelect extends Component {
                       return !isToobig
                   }}
                 >
-                    <Button style={{ marginBottom: 10 }} type="primary">上传</Button>
+                    <Button style={{ marginBottom: 10 }} type="primary">添加</Button>
                 </Upload>
                 <Table dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
             </div>

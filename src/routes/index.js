@@ -13,6 +13,8 @@ import paperRoutes from './paperRoutes'
 import resourceRoutes from './resourceRoutes'
 import { WECHATLOGIN} from '../constants/api'
 import Schedule from '../components/schedule'
+import h5Routes from './h5Routes'
+import taskRoutes from './taskRoutes'
 
 const routes = (store) => ([{
     path: '/',
@@ -56,6 +58,8 @@ const routes = (store) => ([{
         questionRoutes(store),
         textPaperRoutes(store),
         paperRoutes(store),
+        h5Routes,
+        taskRoutes,
         resourceRoutes(),
         {
           path: 'schedule',

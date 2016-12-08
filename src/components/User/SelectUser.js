@@ -1,11 +1,15 @@
 import React,{ Component,PropTypes } from 'react'
-import SearchInput from '../SearchInput'
-import { Button, Modal, message} from 'antd'
+import { Button, Modal, message, Input, Col, Pagination } from 'antd'
 import { connect } from 'react-redux'
 import './SelectUser.css'
 import { DEFAULT_FACE } from '../../constants/api'
+import { info } from '../../services/user'
 
 class SelectUser extends Component {
+    state = {
+        value: '',
+        total: 0
+    }
     static propTypes = {
         list: PropTypes.array,
         invite: PropTypes.func.isRequired,
@@ -14,6 +18,26 @@ class SelectUser extends Component {
         onCancel: PropTypes.func,
         lid: PropTypes.string.isRequired
     }
+    
+    componentWillMount() {
+        this.infoHandler()
+    }
+
+    infoHandler = () => {
+        info({ mobile: this.state.value }).then((data) => {
+            this.setState({ total: data.count })
+            if (data.count ===0){
+                this.setState({ loading: false })
+            } else {
+                this.props.search({
+                    mobile: this.state.value,
+                    offset: 1,
+                    limit: 6
+                })
+            }
+        })
+    }
+    
     inviteHandler = params => {
       this.props.invite(params, () => message.success('成功邀请'), error => message.error(error))
     }
@@ -21,6 +45,7 @@ class SelectUser extends Component {
         const {
             list, lid, search, visible, onCancel
         } = this.props
+        const { total, value } = this.state
         return(
             <Modal
                 footer = {null}
@@ -28,10 +53,14 @@ class SelectUser extends Component {
                 onCancel = {onCancel}
             >
                 <div className='main'>
-                    <SearchInput
-                        onSearch = { (mobile)=>search(mobile) }
-                        placeholder = '请输入手机号码搜索'
-                    />
+                    <Input.Group>
+                        <Col span={12}>
+                            <Input value={this.state.value} onChange={e => this.setState({ value: e.target.value })}/>
+                        </Col>
+                        <Col span={12}>
+                            <Button onClick={this.infoHandler}>搜索</Button> 
+                        </Col>
+                    </Input.Group>
                     <div className='main'>
                     {
                         list.map(item=>{
@@ -58,6 +87,7 @@ class SelectUser extends Component {
                             )
                         })
                     }
+                    <Pagination total={total} showTotal={total => `共${total}条`} pageSize={6} onChange={offset => search({ limit: 6, offset, mobile: value })}/>
                     </div>
                 </div>
             </Modal>
@@ -70,11 +100,9 @@ export default connect(
         list:state.user.list
     }),
     dispatch=>({
-        search: mobile => dispatch({
+        search: params => dispatch({
             type:'user/list',
-            payload: {
-                mobile
-            }
+            payload: params
         }),
         invite: (params, resolve, reject) =>
           dispatch({

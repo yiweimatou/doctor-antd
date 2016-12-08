@@ -35,15 +35,26 @@ class NavMenu extends Component {
                         </Link>
                     </Item>
                 </SubMenu>
-                <SubMenu key = 'sub5' title = { <span><Icon type="book" />我的资源管理</span> } disabled = {user && user.lesson === 1}>
+                <SubMenu key = 'sub5' title = { <span><Icon type="book" />资源管理</span> }>
                     <Item key="book">
                         <Link to='/yunbook/manage'>云板书管理</Link>
                     </Item>
                     <Item key = '13'>
-                        <Link to = '/question/manage'>我的题库</Link>
+                        <Link to = '/question/manage'>题库管理</Link>
                     </Item>
                     <Item key="14">
-                      <Link to="/textpaper/manage">我的试卷</Link>
+                      <Link to="/textpaper/manage">试卷管理</Link>
+                    </Item>
+                    <Item key="h5">
+                        <Link to="/h5/manage">图文管理</Link>
+                    </Item>
+                </SubMenu>
+                <SubMenu key = 'task' title = { <span><Icon type="cloud-o" />任务管理</span> }>
+                    <Item key="market">
+                        <Link to='/task/list'>任务市场</Link>
+                    </Item>
+                    <Item key="myTask">
+                        <Link to='/task/mine'>我的任务</Link>
                     </Item>
                 </SubMenu>
                 <Item key='15'>

@@ -65,7 +65,11 @@ class AddBook extends Component {
         message.error(error)
       })
       fetchYunbook({ id: query.yid }, yunbook => {
-          this.setState({ yunbook, tempYunbook: yunbook, currentStep: 2, pending: false, lbl: yunbook.lbl })
+          this.setState({ yunbook, tempYunbook: yunbook, currentStep: 1, pending: false, lbl: yunbook.lbl })
+          this.props.form.setFieldsValue({
+            title: yunbook.title,
+            descript: yunbook.descript
+          })
       }, error => message.error(error))
     }
   }
@@ -152,6 +156,26 @@ class AddBook extends Component {
             lbl: this.state.lbl,
             cover: cover || tempYunbook.cover
           }, () => message.success('编辑成功!'), error => message.error(error))
+        } else if(query.id) {
+          editSection({
+            title: values.title,
+            descript: values.descript || '',
+            state: 1,
+            category_id: BOOK,
+            foreign_id: tempYunbook.id,
+            lesson_id: query.lid,
+            organize_id: query.oid,
+            lbl: this.state.lbl,
+            cover: cover || tempYunbook.cover,
+            id: query.id
+          }, () => {
+            message.success('保存成功!')
+            if (query.lid>0) {
+              this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+            } else {
+              this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+            }
+          }, error => message.error(error, 8))
         } else {
           addSection({
             title: values.title,
@@ -164,7 +188,7 @@ class AddBook extends Component {
             lbl: this.state.lbl,
             cover: cover || tempYunbook.cover
           }, () => {
-            message.success('创建成功!')
+            message.success('新建成功!')
             if (query.lid>0) {
               this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
             } else {

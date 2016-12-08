@@ -38,8 +38,8 @@ class ImageABlot extends BlockEmbed {
   static create(value) {
     let node = super.create()
     node.setAttribute('src', value.url)
-    node.setAttribute('width', 300)
-    node.setAttribute('heigth', 200)
+    node.setAttribute('width', '100%')
+    node.setAttribute('heigth', '100%')
     return node
   }
   
@@ -149,8 +149,8 @@ class VideoBlot extends BlockEmbed {
   static create(url) {
     let node = super.create()
     node.setAttribute('src', url)
-    node.setAttribute('width', 300)
-    node.setAttribute('height', 200)
+    node.setAttribute('width', '100%')
+    node.setAttribute('height', '100%')
     node.setAttribute('frameborder', '0')
     node.setAttribute('allowfullscreen', true)
     return node
@@ -223,6 +223,9 @@ class ReactQuill extends Component {
             readOnly: false,
             theme: 'snow'
         })
+        if (this.props.content) {
+            this.quill.clipboard.dangerouslyPasteHTML(0, this.props.content)
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -297,13 +300,13 @@ class ReactQuill extends Component {
         return (
             <div>
                 <div id="toolbar">
+                    <ImageButton okHandler={this.imageOkHandler} />
+                    <VideoButton okHandler={this.videoOkHandler} />
+                    <AudioButton okHandler={this.audioOkHandler} />            
                     <TextButton okHandler={this.textOkHandler} />
                     <BaikeButton okHandler={this.bkOkHandler} />
+                    <WxButton okHandler={this.wxOkHandler} />                    
                     <DocButton okHandler={this.docOkHandler} />
-                    <WxButton okHandler={this.wxOkHandler} />
-                    <ImageButton okHandler={this.imageOkHandler} />
-                    <AudioButton okHandler={this.audioOkHandler} />
-                    <VideoButton okHandler={this.videoOkHandler} />
                 </div>
                 <div id="editor" style={{ border: '1px solid #e9e9e9', height: '200px', borderRadius: '4px' }}></div>
             </div>

@@ -39,7 +39,7 @@ class Image extends Component {
                 <Modal visible={visible} title='图片上传' footer='' width={720} onCancel={this._onCancel}>
                     <ImageUpload add={this.props.add} hideModal={image => this.setState({
                         visible: false,
-                        list: this.state.list.concat(image),
+                        list: [image].concat(this.state.list),
                         total: this.state.total + 1
                     })} grow={grow}/>
                 </Modal>

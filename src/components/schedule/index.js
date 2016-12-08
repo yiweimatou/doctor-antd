@@ -106,12 +106,12 @@ class Schedule extends Component {
         let today = new Date()
         let time = today.getTime()
         let dayOfWeek = today.getDay()
-        date[dayOfWeek] = `${today.getMonth()}月${today.getDate()}日`
+        date[dayOfWeek] = `${today.getMonth() + 1}月${today.getDate()}日`
         while (dayOfWeek > 0) {
             time = time - oneDay
             today.setTime(time)
             dayOfWeek = today.getDay()
-            date[dayOfWeek] = `${today.getMonth()}月${today.getDate()}日`
+            date[dayOfWeek] = `${today.getMonth() + 1}月${today.getDate()}日`
         }
         today = new Date()
         time = today.getTime()
@@ -119,7 +119,7 @@ class Schedule extends Component {
             time = time + oneDay
             today.setTime(time)
             dayOfWeek = today.getDay()
-            date[dayOfWeek] = `${today.getMonth()}月${today.getDate()}日`
+            date[dayOfWeek] = `${today.getMonth() + 1}月${today.getDate()}日`
         }
         return (
             <Spin spinning={loading}>

@@ -42,6 +42,9 @@ class New extends Component{
         if (info.file.status === 'error') {
             return message.error('服务器未响应，请稍后再试', 6)
         }
+        if (info.file.status === 'done') {
+            return message.success('上传成功!', 6)
+        }
     }
     submitHandler= e => {
         e.preventDefault()
@@ -147,6 +150,18 @@ class New extends Component{
                             action={action}
                             fileList={this.state.fileList}  
                             onChange = {this.handleChange}
+                            beforeUpload = { file => {
+                                // const fiveM = 5*1024*1024
+                                // const isToobig = file.size > fiveM
+                                // if (isToobig) {
+                                //     message.error('只允许上传不大于5M的图片!')
+                                // }
+                                //     return !isToobig
+                                // }
+                                if (file.name.toLowerCase().indexOf('ppt') > -1) {
+                                    message.info('ppt上传转换较慢请耐心等待！', 6)
+                                }
+                            }}
                         >
                             <Button type='ghost'>
                                 <Icon type="upload" /> 点击上传文件

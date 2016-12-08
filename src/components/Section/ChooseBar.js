@@ -13,6 +13,9 @@ class ChooseBar extends Component {
                 <Menu.Item key="1">
                     <a href={`/section/add/topics?lid=${lid}&oid=${oid}`}>引用试卷</a>
                 </Menu.Item>
+                <Menu.Item key="5">
+                    <a href={`/section/add/h5?lid=${lid}&oid=${oid}`}>引用图文</a>
+                </Menu.Item>
                 <Menu.Item key="2">
                     <a href={`/section/add/notice?lid=${lid}&oid=${oid}`}>创建通知</a>
                 </Menu.Item>

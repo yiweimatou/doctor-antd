@@ -32,6 +32,7 @@ module.exports = function(webpackConfig) {
 
     webpackConfig.module.loaders.push({
         test: /\.(ico|png|jpe?g|gif|svg)(\?.*)?$/,
+        exclude: /node_modules/,
         loader: 'url'
       },
       {

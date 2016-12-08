@@ -5,6 +5,7 @@ import AddBook from '../components/Section/AddBook'
 import Draft from '../components/Section/Draft'
 import AddHtml from '../components/Section/AddHtml'
 import AddNotice from '../components/Section/AddNotice'
+import AddH5 from '../components/Section/AddH5'
 
 const newRoute = (store) => ({
   path: 'add',
@@ -37,6 +38,9 @@ const newRoute = (store) => ({
   }, {
       path: 'notice',
       component: AddNotice
+  }, {
+      path: 'h5',
+      component: AddH5
   }]
 })
 

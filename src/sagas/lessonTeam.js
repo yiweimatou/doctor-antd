@@ -72,8 +72,8 @@ function* watchList() {
           })
           if (action.payload.resolve) {
             action.payload.resolve(users.list.map(item => {
-              let temp = list.find(i=>i.account_id===item.id)
-              if (temp !== undefined){
+              const temp = list.find(i => i.account_id === item.id)
+              if (temp){
                 item.tid = temp.id
                 item.role = temp.role
                 return item

@@ -1,17 +1,17 @@
 import React, {Component,PropTypes} from 'react'
-import { Form, Button, Input, Modal, Radio, Spin, message } from 'antd'
+import { Form, Button, Input, Modal, Spin, message } from 'antd'
 import QRCode from 'qrcode.react'
 // import alipayImage from '../images/alipay.gif'
-import wxImage from '../images/weixin.gif'
+// import wxImage from '../images/weixin.gif'
 import { add, get } from '../services/bill'
-import { ORGANIZE } from '../constants/api'
+import { ORGANIZE, ACCOUNT } from '../constants/api'
 
 const FormItem = Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 12 }
 }
-const RadioGroup = Radio.Group
+// const RadioGroup = Radio.Group
 class Recharge extends Component {
    state = {
      url: '',
@@ -39,14 +39,21 @@ class Recharge extends Component {
      e.preventDefault()
      this.props.form.validateFields( (errors, values) => {
        if(errors) return
-         add({
+       let foreign_id, category_id
+       if (this.props.organize) {
+         foreign_id = this.props.organize.id
+         category_id = ORGANIZE
+       } else {
+         foreign_id = this.props.foreignId
+         category_id = ACCOUNT
+       }
+       add({
            way: 3,
            trade_amount: values.money * 100,
-           foreign_id: this.props.organize.id,
-           category_id: ORGANIZE
+           foreign_id,
+           category_id
          }).then(data => {
            this.interval = setInterval(this.tick, 2000)
-           console.log(data.get)
            this.setState({ url: data.get.code_url, visible: true, record: { id: data.identity, dispose:1 } })
          }).catch(error => message.error(error, 6))
       })
@@ -90,12 +97,6 @@ class Recharge extends Component {
                       }
                     }]})(<Input addonAfter = '元' type='number' />)}
               </FormItem>
-              <FormItem wrapperCol = {{ offset: 6 }}>
-                  {getFieldDecorator('payType',{ initialValue: 2 })(
-                    <RadioGroup>
-                      <Radio value={2}><img src={wxImage} width='100%' /></Radio>
-                    </RadioGroup>)}
-              </FormItem>
               <FormItem wrapperCol={ { offset: 6 } }>
                   <Button type='primary' htmlType='submit'>确定</Button>
               </FormItem>
@@ -107,7 +108,7 @@ class Recharge extends Component {
 }
 
 Recharge.propTypes = {
-  organize: PropTypes.object.isRequired
+  organize: PropTypes.object
 }
 
 export default Form.create()(Recharge)

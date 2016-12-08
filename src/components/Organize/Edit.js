@@ -5,7 +5,7 @@ import {UPLOAD_COVER_API} from '../../constants/api.js'
 
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 4 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 12 },
 }
 class Edit extends Component{

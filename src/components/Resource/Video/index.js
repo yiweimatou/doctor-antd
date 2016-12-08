@@ -5,6 +5,8 @@ import BaikeCard from '../Baike/BaikeCard'
 import {isVideo} from '../../../utils/index'
 import Category from '../../Category'
 import { get } from '../../../services/html'
+import VideoItem from './item'
+import { remove } from '../../../services/source'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -71,6 +73,14 @@ class Video extends Component {
             })
         })
     }
+    del = id => {
+        remove({ id }).then(() => {
+            this.setState({ 
+                list: this.state.list.filter(i => i.id !== id)
+            })
+            message.success('删除成功!')
+        }).catch(error => message.error(error))
+    }
     render() {
         const {loading, total, list, visible} = this.state  
         const form = this.props.form
@@ -128,7 +138,7 @@ class Video extends Component {
                 <Row>
                 {
                     list.map(item => {
-                        return <Col span='6' key={item.id}><BaikeCard record={item}/></Col>
+                        return <Col span='6' key={item.id}><VideoItem video={item} remove={this.del} /></Col>
                     })
                 }
                 </Row>

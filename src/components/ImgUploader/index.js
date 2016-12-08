@@ -6,6 +6,15 @@ class ImgUploader extends Component {
     state = {
         fileList: []
     }
+    
+    componentWillMount() {
+        if (this.props.fileList.length > 0) {
+            this.setState({
+                fileList: this.props.fileList
+            })
+        }
+    }
+    
     componentWillReceiveProps(nextProps) {
         const { fileList } = nextProps
         this.setState({ fileList })

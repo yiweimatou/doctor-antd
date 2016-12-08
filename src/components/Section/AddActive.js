@@ -122,6 +122,15 @@ class AddActive extends Component {
                             this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
                         }
                     }, error => message.error(error))
+                } else if (query.id > 0) {
+                    editSection({ ...params, id: query.id, state: 1 }, () => {
+                        message.success('发布成功', 5)
+                        if (query.lid>0) {
+                            this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+                        } else {
+                            this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+                        }
+                    }, error => message.error(error))
                 } else {
                     addSection({ ...params, state: 1 }, () => {
                         message.success('发布成功', 5)
