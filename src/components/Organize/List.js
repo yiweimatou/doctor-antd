@@ -19,7 +19,6 @@ class List extends Component{
         info({ role: 1, account_id: userId, state: 1 }).then(data => {
             this.setState({ total: data.count })
             if (data.count > 0) {
-                console.log(1111)
                 this.getList(1, 1)
             } else {
                 this.setState({ loading: false })
@@ -40,7 +39,6 @@ class List extends Component{
         changeHandler({
             limit: 9, offset, account_id: userId, state: 1, role
         }, list => {
-            console.log(role, list)
             if (role === 1) {
 
                 this.setState({ list, loading: false })

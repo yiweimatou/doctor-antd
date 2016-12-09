@@ -40,7 +40,7 @@ class Add extends Component {
                 cover = fileList[0].url
             }
             const params = {
-                title, descript, content, sale_amount: sale_amount*100, state: 1, cover
+                title, descript: descript || '', content, sale_amount: sale_amount*100, state: 1, cover
             }
             if (category.length > 0 && category.length < 3) {
                 return message.error('请再选择一级分类')

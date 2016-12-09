@@ -8,6 +8,7 @@ import { ORGANIZE } from '../constants/api'
 import Draft from '../components/Section/Draft'
 import SectionList from  '../components/Section/List'
 import OrganizeTeam from '../components/Organize/organize_team'
+import List from '../components/Organize/link/list'
 
 const teamRoute = store => ({
     path: ':id/team',
@@ -175,7 +176,11 @@ const organizeRoutes = store=>({
         lessonRoute(store),
         sectionRoute(store),
         draftRoute(store),
-        teamRoute(store)
+        teamRoute(store),
+        {
+            path: 'link/:id',
+            component: List
+        }
     ]
 })
 

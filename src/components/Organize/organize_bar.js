@@ -47,6 +47,9 @@ class OrganizeBar extends React.Component {
             <MenuItem key="team" style={{ height: '80px', lineHeight: '80px'}}>
               <Link to={`/organize/${organize.id}/team/`}>机构团队</Link>
             </MenuItem>
+            <MenuItem key="link" style={{ height: '80px', lineHeight: '80px'}}>
+              <Link to={`/organize/link/${organize.id}`}>医务人员</Link>
+            </MenuItem>
           </Menu>
         </div>
       </Paper>

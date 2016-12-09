@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, message, Button } from 'antd'
+import { Table, message, Button, Modal } from 'antd'
 import { info, list, receive } from '../../../services/task'
 
 class List extends Component {
@@ -39,7 +39,10 @@ class List extends Component {
 
     receiveHandler = (id) => {
         receive({ id }).then(() => {
-            message.success('任务已接收!')
+            Modal.success({
+                title: '任务已接收!',
+                content: '去任务管理/我的任务，完成接收的任务吧!' 
+            })
             this.setState(prevState => ({
                 dataSource: prevState.dataSource.filter(i => i.id !== id )
             }))

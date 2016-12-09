@@ -8,7 +8,7 @@ class ImgUploader extends Component {
     }
     
     componentWillMount() {
-        if (this.props.fileList.length > 0) {
+        if (this.props.fileList && this.props.fileList.length > 0) {
             this.setState({
                 fileList: this.props.fileList
             })

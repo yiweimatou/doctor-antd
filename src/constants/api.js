@@ -23,6 +23,7 @@ export const DEFAULT_TOPICS = 'http://image.yiweimatou.com/topics.png'
 /*
 *category
  */
+export const TASK = '18'
 export const TEXT = '17'
 export const DOC = '16'
 export const WX = '15'
@@ -248,5 +249,14 @@ export const TASK_GET = `${USER_API_DOMAIN}/task/get`
 export const TASK_INFO = `${USER_API_DOMAIN}/task/info`
 export const TASK_LIST = `${USER_API_DOMAIN}/task/list`
 export const TASK_ADD = `${USER_API_DOMAIN}/task/add`
-export const TASK_SUBMIT = `${USER_API_DOMAIN}/task/put/submit`
+export const TASK_SUBMIT = `${USER_API_DOMAIN}/section/add/task`
 export const TASK_RECEIVE = `${USER_API_DOMAIN}/task/put/receive`
+/**
+ * link
+ */
+export const ORGANIZE_LINK_GET = `${USER_API_DOMAIN}/organize_link/get`
+export const ORGANIZE_LINK_LIST = `${USER_API_DOMAIN}/organize_link/list`
+export const ORGANIZE_LINK_INFO = `${USER_API_DOMAIN}/organize_link/info`
+export const ORGANIZE_LINK_ADD = `${USER_API_DOMAIN}/organize_link/add`
+export const ORGANIZE_LINK_REMOVE = `${USER_API_DOMAIN}/organize_link/del`
+export const ORGANIZE_LINK_EDIT = `${USER_API_DOMAIN}/organize_link/put`
