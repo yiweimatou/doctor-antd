@@ -9,7 +9,7 @@ function checkStatus(data) {
         code,
         msg
     } = data
-    if (code === 200) {
+    if (code === 200 || code === 403) {
         return data
     } else if (code === 401){
         localStorage.clear()

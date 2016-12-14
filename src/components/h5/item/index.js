@@ -13,7 +13,7 @@ class Item extends Component {
                     <img src={item.cover || DEFAULT_COVER} width="260px" height="100px" />
                 </div>
                 <div style={{ textAlign: 'center' }}>
-                    <span>{item.title}</span>
+                    <span style={{ display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.title}</span>
                 </div>
                 <div className="newArticle">
                     <button onClick = { () => pickHandler(item) }>

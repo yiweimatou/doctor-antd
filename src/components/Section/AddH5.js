@@ -2,9 +2,14 @@ import React, { Component } from 'react'
 import { Steps, Button, Form, Pagination, message, Col, Row, Input, Tabs } from 'antd'
 import H5Item from '../h5/item'
 import { info, list, buy } from '../../services/h5'
+import { newSection } from '../../services/section'
+import { HTML } from '../../constants/api'
+import { add as grow } from '../../services/grow'
 import ReactQuill from '../ReactQuill'
 import ImgUploader from '../ImgUploader'
 import Category from '../Category'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
@@ -27,7 +32,9 @@ class AddH5 extends Component {
             fileList: [],
             category: [],
             latLng: {},
-            content: ''
+            content: '',
+            loading: false,
+            id: null
         }
         this.next = this.next.bind(this)
         this.prev = this.prev.bind(this)
@@ -98,16 +105,71 @@ class AddH5 extends Component {
         })
     }
     submitHandler() {
-
+        this.props.form.validateFields((errors, values) => {
+            if (errors) return
+            const content = this.refs.editor.quill.root.innerHTML
+            if (content === '<p><br></p>') {
+                return message.error('请输入内容')
+            }
+            const { title, descript } = values
+            const { category, latLng, fileList } = this.state
+            let cover = ''
+            if (fileList && fileList[0]) {
+                cover = fileList[0].url
+            }
+            const params = {
+                title, 
+                descript: descript || '', 
+                content, state: 1, 
+                cover,
+                category_id: HTML,
+                lesson_id: this.props.location.query.lid,
+                organize_id: this.props.location.query.oid,
+                foreign_id: this.state.id
+            }
+            if (category.length > 0 && category.length < 3) {
+                return message.error('请再选择一级分类')
+            }
+            this.setState({ loading: true })
+            newSection(params).then(data => {
+                this.setState({ loading: false })
+                message.success('保存成功!', 6)
+                if (this.props.query.lid>0) {
+                    this.props.redirct(`/lesson/section?lid=${this.props.query.lid}&oid=0`)
+                } else {
+                    this.props.redirct(`/organize/section?oid=${this.props.query.oid}&lid=0`)
+                }
+                if (category.length > 0) {
+                    grow({
+                        title, 
+                        lat: latLng.lat, 
+                        lng: latLng.lng, 
+                        state: 1,
+                        category_id: HTML, 
+                        foreign_id: data.identity, 
+                        kind: category[0] === '1' ? category[1] : category[2],
+                        map_id: 1
+                    })
+                }
+            }).catch(error => {
+                message.error(error)
+                this.setState({ loading: false })
+            })
+        })
     }
     pickHandler(record) {
-        buy({ id: record.id, lesson_id: this.props.location.query.lid, organize_id: this.props.location.query.oid }).then(() => {
-            message.info(`购买成功, 花费${record.sale_amount/100}元`)
+        buy({ id: record.id, lesson_id: this.props.location.query.lid, organize_id: this.props.location.query.oid }).then((data) => {
+            if (data.msg === '已购买') {
+                message.info('已购买,直接引用!')
+            } else {
+                message.info(`购买成功, 花费${record.sale_amount/100}元`)
+            }
             this.props.form.setFieldsValue({
                 title: record.title,
                 descript: record.descript
             })
             this.setState({
+                id: record.id,
                 content: record.content,
                 fileList: record.cover
                             ? 
@@ -140,7 +202,7 @@ class AddH5 extends Component {
                             }
                             </Row>
                             <Row style={{ marginTop: 20 }}>
-                                <Pagination total={total1} onChange={offset => this.changeHandler(offset, 0)} showTotal={total => `共${total}条`}/>
+                                <Pagination pageSize={6} total={total1} onChange={offset => this.changeHandler(offset, 0)} showTotal={total => `共${total}条`}/>
                             </Row>
                         </TabPane>
                         <TabPane tab="我的图文" key="2">
@@ -151,7 +213,7 @@ class AddH5 extends Component {
                             }
                             </Row>
                             <Row style={{ marginTop: 20 }}>
-                                <Pagination total={total} onChange={offset => this.changeHandler(offset, JSON.parse(localStorage.auth).key)} showTotal={total => `共${total}条`}/>
+                                <Pagination pageSize={6} total={total} onChange={offset => this.changeHandler(offset, JSON.parse(localStorage.auth).key)} showTotal={total => `共${total}条`}/>
                             </Row>
                         </TabPane>
                         <TabPane tab="全部图文" key="3">
@@ -162,7 +224,7 @@ class AddH5 extends Component {
                             }
                             </Row>
                             <Row style={{ marginTop: 20 }}>
-                                <Pagination total={total2} onChange={offset => this.changeHandler(offset, null)} showTotal={total => `共${total}条`}/>
+                                <Pagination pageSize={6} total={total2} onChange={offset => this.changeHandler(offset, null)} showTotal={total => `共${total}条`}/>
                             </Row>
                         </TabPane>
                     </Tabs>
@@ -215,4 +277,9 @@ class AddH5 extends Component {
     }
 }
 
-export default Form.create()(AddH5)
+export default connect(
+    null,
+    dispatch => ({
+        redirct: path => dispatch(push(path))
+    })
+)(Form.create()(AddH5))

@@ -43,7 +43,11 @@ class New extends Component{
             return message.error('服务器未响应，请稍后再试', 6)
         }
         if (info.file.status === 'done') {
-            return message.success('上传成功!', 6)
+            if (info.file.response.code === 200) {
+                message.success('上传成功!', 6)
+            } else {
+                message.error('上传失败，请稍后再试！', 6)
+            }
         }
     }
     submitHandler= e => {
