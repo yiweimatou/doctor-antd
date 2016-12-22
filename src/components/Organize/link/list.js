@@ -37,7 +37,7 @@ class List extends Component {
             type: type2, cname, mobile, state, organize_id: this.props.params.id
          }).then((data) => {
              if (data.count === 0) {
-                 this.setState({ total: 0, dataSource: [] })
+                 this.setState({ total: 0, dataSource: [], loading: false })
              } else {
                  this.setState({ total: data.count })
                  this.changeHandler(1)
@@ -85,7 +85,7 @@ class List extends Component {
     }
     upload = data => {
         if (data.length === 0) return
-        Promise.all(data.map(item => {
+        Promise.all(data.map(item => 
             add({
                 type: this.state.type,
                 organize_id: this.props.params.id,
@@ -94,7 +94,7 @@ class List extends Component {
                 dept: item['科室'],
                 rank: item['职称']
             }).then(() => this.setState(prveState => ({ resultSTotal: prveState.resultSTotal + 1 })))
-        })).then(() => {
+        )).then(() => {
             this.infoHandler()
             Modal.info({
                 title: '上传结果',

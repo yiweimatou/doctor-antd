@@ -185,6 +185,7 @@ export const UPLOAD_LOGO_API = `${UPLOAD_DOMAIN}/logo`
 export const UPLOAD_AVATAR_API = `${UPLOAD_DOMAIN}/face`
 export const UPLOAD_COVER_API = `${UPLOAD_DOMAIN}/cover`
 export const UPLOAD_PPT_API = `${UPLOAD_DOMAIN}/book/ppt`
+export const UPLOAD_PDF_API = `${UPLOAD_DOMAIN}/book/pdf`
 export const UPLOAD_IMG_API = `${UPLOAD_DOMAIN}/img`
 export const UPLOAD_FILE_API = `${UPLOAD_DOMAIN}/file`
 /**
@@ -260,3 +261,14 @@ export const ORGANIZE_LINK_INFO = `${USER_API_DOMAIN}/organize_link/info`
 export const ORGANIZE_LINK_ADD = `${USER_API_DOMAIN}/organize_link/add`
 export const ORGANIZE_LINK_REMOVE = `${USER_API_DOMAIN}/organize_link/del`
 export const ORGANIZE_LINK_EDIT = `${USER_API_DOMAIN}/organize_link/put`
+
+export function generate(api) {
+    return {
+        get: `${USER_API_DOMAIN}/${api}/get`,
+        add: `${USER_API_DOMAIN}/${api}/add`,
+        edit: `${USER_API_DOMAIN}/${api}/put`,
+        remove: `${USER_API_DOMAIN}/${api}/del`,
+        info: `${USER_API_DOMAIN}/${api}/info`,
+        list: `${USER_API_DOMAIN}/${api}/list`,
+    }
+}

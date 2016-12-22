@@ -9,6 +9,16 @@ import reducers from '../reducers/index';
 import SagaManager from '../sagas/SagaManager';
 import './index.less';
 import App from '../components/App'
+import moment from 'moment';
+import { message } from 'antd';
+import 'quill/dist/quill.core.css'
+
+// 推荐在入口文件全局设置 locale
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
+message.config({
+  duration: 6
+});
 
 //////////////////////
 // Store

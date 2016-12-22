@@ -36,13 +36,16 @@ class List extends Component{
             state: 1,
             lesson_id: query.lid,
             organize_id: query.oid,
-            category_id: value
+            category_id: value,
+            sort: 'desc',
+            order_by: 'add_ms'
         }, null, error => message.error(error))
     }
     componentWillMount() {
       const { getInfo, getList, query } = this.props
       getInfo({ lesson_id: query.lid, organize_id: query.oid , state: 1 }, null, error => message.error(error))
-      getList({ offset: 1, limit: 9, lesson_id: query.lid, organize_id: query.oid , state: 1 }, null, error => message.error(error))
+      getList({ offset: 1, limit: 9, lesson_id: query.lid, organize_id: query.oid , state: 1, sort: 'desc',order_by: 'add_ms' },
+      null, error => message.error(error))
     }
     handleConfirm= id => {
         this.props.delete({ id }, () => message.success('删除成功'), error => message.error(error))
@@ -58,7 +61,7 @@ class List extends Component{
             showTotal:total=>`共 ${total} 条`,
             onChange(current) {
                 getList({
-                  offset: current, limit: 9, lesson_id, state: 1, organize_id
+                  offset: current, limit: 9, lesson_id, state: 1, organize_id, sort: 'desc',order_by: 'add_ms'
                 },null, error => message.error(error, 6))
             }
         }

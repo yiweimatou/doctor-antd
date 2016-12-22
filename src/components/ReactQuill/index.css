@@ -110,8 +110,9 @@
   left: 12px;
 }
 
-.wx div {
+.spandiv {
   width: 100%;
+  display: block;
 }
 
 .audio div {
@@ -146,7 +147,7 @@
   text-overflow: ellipsis;
 }
 
-.bk div span {
+.spandiv span {
   display: block;
   font-size: 16px;
   color: #333;
@@ -166,7 +167,7 @@
   text-overflow: ellipsis;
 }
 
-.wx div em {
+.spandiv em {
   margin-top: 2px;
   font-style: normal;
   display: block;

@@ -14,6 +14,8 @@ class Manage extends Component {
         }
         this.okHandler = this.okHandler.bind(this)
         this.changeHandler = this.changeHandler.bind(this)
+        this.editHandler = this.editHandler.bind(this)
+        this.delHandler = this.delHandler.bind(this)
     }
     
     componentWillMount() {
@@ -43,6 +45,7 @@ class Manage extends Component {
     changeHandler(offset) {
         list({
             account_id: JSON.parse(localStorage['auth']).key,
+            state: 1,
             offset, limit: 6
         }).then(data => {
             this.setState({
@@ -56,6 +59,22 @@ class Manage extends Component {
             message.error(error)
         })
     }
+    editHandler(record) {
+        this.setState((prevState) => ({
+            list: prevState.list.map(item => {
+                if (item.id === record.id) {
+                    return record
+                }
+                return item
+            })
+        }))
+    }
+    delHandler(id) {
+        this.setState((prevState) => ({
+            list: prevState.list.filter(item => item.id !== id),
+            total: prevState.total - 1
+        }))
+    }
     render() {
         const { list, total, loading } = this.state
         return (
@@ -63,7 +82,14 @@ class Manage extends Component {
                 <div style={{ marginBottom: 10 }}>
                     <Add okHandler={this.okHandler}/>
                 </div>
-                <List dataSource={list} loading={loading} total={total} />
+                <List
+                    dataSource={list}
+                    loading={loading}
+                    total={total}
+                    editHandler={this.editHandler}
+                    delHandler={this.delHandler}
+                    onChange={this.changeHandler}
+                />
             </div>
         )
     }

@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import { Form, Button, Upload, Input, Icon, Spin, message } from 'antd'
 import Category from '../Category'
 import { BOOK } from '../../constants/api'
+import { UPLOAD_PPT_API, UPLOAD_PDF_API, UPLOAD_YUNBOOK_API } from '../../constants/api'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -18,37 +19,44 @@ class New extends Component{
         getList: PropTypes.func.isRequired,
         grow: PropTypes.func.isRequired
     }
-    state={
+    state = {
         fileList: [],
         latLng: {},
-        category: []
+        category: [],
+        uploading: false
     }
     handleChange = (info)=> {
         let fileList = info.fileList
         fileList = fileList.slice(-1)
-        fileList = fileList.map((file) => {
-            if (file.response) {
-                file.url = file.response.cover
-            }
-            return file
-        })
+        // fileList = fileList.map((file) => {
+        //     if (file.response) {
+        //         file.url = file.response.cover
+        //     }
+        //     return file
+        // })
         fileList = fileList.filter(file => {
             if (file.response) {
                 return file.response.code === 200
             }
             return true
         })
-        this.setState({ fileList })
         if (info.file.status === 'error') {
+            this.setState({ uploading: false })
             return message.error('服务器未响应，请稍后再试', 6)
         }
         if (info.file.status === 'done') {
+            this.setState({ uploading: false })
             if (info.file.response.code === 200) {
                 message.success('上传成功!', 6)
             } else {
-                message.error('上传失败，请稍后再试！', 6)
+                let err = '服务器错误，请稍后再试！'
+                if (this.props.action === UPLOAD_PPT_API) {
+                    err = '抱歉！PPT文件转换成云板书失败，请将PPT文件另存为PDF文件后，再从PDF途径上传文件（PDF转云板书）'
+                }
+                message.error(err, 6)
             }
         }
+        this.setState({ fileList })        
     }
     submitHandler= e => {
         e.preventDefault()
@@ -63,7 +71,7 @@ class New extends Component{
             const params = {
                 title: values.title,
                 descript: values.descript||'',
-                cover: file.url || '',
+                cover: file.response.cover || '',
                 path: file.response.path,
                 width: file.response.width,
                 height: file.response.height,
@@ -80,7 +88,7 @@ class New extends Component{
                     state: 1,
                     category_id: BOOK,
                     foreign_id: yunbook.id,
-                    cover: file.url,
+                    cover: file.response.cover,
                     map_id: 1,
                     kind: category[0] === '1' ? category[1] : category[2]
                 }, null, error => message.error(error))
@@ -96,7 +104,7 @@ class New extends Component{
         } = form
         return(
             <div>
-                <Spin spinning = { loading } >
+                <Spin spinning = { loading || this.state.uploading } >
                 <Form
                     horizontal
                     className = 'form'
@@ -162,9 +170,23 @@ class New extends Component{
                                 // }
                                 //     return !isToobig
                                 // }
-                                if (file.name.toLowerCase().indexOf('ppt') > -1) {
+                                const ext = file.name.toLowerCase().split('.').slice(-1)
+                                if (action === UPLOAD_PDF_API && ext.indexOf('pdf') === -1) {
+                                    message.error('请上传pdf文件！', 6)
+                                    return false
+                                }
+                                if (action === UPLOAD_YUNBOOK_API && ext &&  ['png', 'jpg', 'jpeg'].indexOf(ext[0]) === -1) {
+                                    message.error('请上传图片！', 6)
+                                    return false
+                                }
+                                if (action === UPLOAD_PPT_API && ext && ['ppt', 'pptx'].indexOf(ext[0]) === -1) {
+                                    message.error('请上传ppt文件！', 6)
+                                    return false
+                                }
+                                if (ext.indexOf('ppt') > -1) {
                                     message.info('ppt上传转换较慢请耐心等待！', 6)
                                 }
+                                this.setState({ uploading: true })
                             }}
                         >
                             <Button type='ghost'>

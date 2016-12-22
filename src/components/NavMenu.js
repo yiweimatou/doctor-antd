@@ -60,6 +60,9 @@ class NavMenu extends Component {
                 <Item key='15'>
                     <Link to='/resource'><Icon type="folder" />个人素材库</Link>
                 </Item>
+                <Item key='record'>
+                    <Link to='/record'><Icon type="folder" />健康档案管理</Link>
+                </Item>
                 <Item key='2'>
                     <Link to='/message/index'>
                         <Icon type="notification" />消息管理

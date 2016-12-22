@@ -15,6 +15,7 @@ import { WECHATLOGIN} from '../constants/api'
 import Schedule from '../components/schedule'
 import h5Routes from './h5Routes'
 import taskRoutes from './taskRoutes'
+import recordRoutes from './recordRoutes'
 
 const routes = (store) => ([{
     path: '/',
@@ -60,6 +61,7 @@ const routes = (store) => ([{
         paperRoutes(store),
         h5Routes,
         taskRoutes,
+        recordRoutes,
         resourceRoutes(),
         {
           path: 'schedule',

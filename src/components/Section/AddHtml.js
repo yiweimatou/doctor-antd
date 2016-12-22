@@ -73,18 +73,21 @@ class AddHtml extends Component {
                             cover,
                             id: this.state.section.id
                         },() => message.success('编辑成功', 6), error => message.error(error))
-                    }else {//add
-                        addSection({
-                            ...params,
-                            state: 1
-                        },() => {
-                            if (query.lid > 0) {
-                                this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
-                            } else {
-                                this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
-                            }
-                            message.success('发布成功', 6)
-                        }, error => message.error(error))
+                    } else {
+                        if (query.id > 0) {
+                            editSection({
+                                ...params,
+                                id: query.id,
+                                state: 1
+                            },() => {
+                                if (query.lid > 0) {
+                                    this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+                                } else {
+                                    this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+                                }
+                                message.success('发布成功', 6)
+                            }, error => message.error(error))
+                        }
                     }
                 }
             } else {

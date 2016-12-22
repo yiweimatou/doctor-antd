@@ -63,7 +63,8 @@ class BkBlot extends BlockEmbed {
     span.innerText = value.title
     let em = document.createElement('em')
     em.innerText = value.descript
-    let div = document.createElement('div')
+    let div = document.createElement('span')
+    div.setAttribute('class', 'spandiv')
     div.appendChild(span)
     div.appendChild(em)
     node.appendChild(i)
@@ -94,7 +95,8 @@ class WxBlot extends BlockEmbed {
     span.innerText = value.title
     let em = document.createElement('em')
     em.innerText = value.descript
-    let div = document.createElement('div')
+    let div = document.createElement('span')
+    div.setAttribute('class', 'spandiv')
     div.appendChild(span)
     div.appendChild(em)
     node.appendChild(i)
@@ -125,7 +127,8 @@ class DocBlot extends BlockEmbed {
     span.innerText = value.title
     let em = document.createElement('em')
     em.innerText = value.descript
-    let div = document.createElement('div')
+    let div = document.createElement('span')
+    div.setAttribute('class', 'spandiv')
     div.appendChild(span)
     div.appendChild(em)
     node.appendChild(i)
@@ -174,7 +177,8 @@ class AudioBlot extends BlockEmbed {
         span.innerText = value.title
         let em = document.createElement('em')
         em.innerText = value.descript
-        let div = document.createElement('div')
+        let div = document.createElement('span')
+        div.setAttribute('class', 'spandiv')
         div.appendChild(span)
         div.appendChild(em)
         node.appendChild(i)

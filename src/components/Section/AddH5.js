@@ -134,10 +134,11 @@ class AddH5 extends Component {
             newSection(params).then(data => {
                 this.setState({ loading: false })
                 message.success('保存成功!', 6)
-                if (this.props.query.lid>0) {
-                    this.props.redirct(`/lesson/section?lid=${this.props.query.lid}&oid=0`)
+                const { lid, oid } = this.props.location.query
+                if (lid > 0) {
+                    this.props.redirct(`/lesson/section?lid=${lid}&oid=0`)
                 } else {
-                    this.props.redirct(`/organize/section?oid=${this.props.query.oid}&lid=0`)
+                    this.props.redirct(`/organize/section?oid=${oid}&lid=0`)
                 }
                 if (category.length > 0) {
                     grow({

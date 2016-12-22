@@ -28,5 +28,5 @@ import {
  }
 
  export function remove(params) {
-     return ApiClient.post(H5_REMOVE, params)
+     return ApiClient.post(H5_REMOVE, params, { needAuth: true })
  }
