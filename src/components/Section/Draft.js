@@ -29,7 +29,9 @@ class Draft extends Component {
             state: 2,
             lesson_id: query.lid,
             organize_id: query.oid,
-            category_id: value
+            category_id: value,
+            sort: 'descß',
+            order_by: 'add_ms'
         }, null, error => message.error(error))
     }
     render() {

@@ -99,10 +99,10 @@ class OrganizeLesson extends Component {
             }
         })
     }
-    
+
     toggleVisible = () => this.setState({ visible: !this.state.visible })
     render() {
-        const { 
+        const {
             dataSource, loading, total, visible, title, cet_cname, cname, mobile,
             dataSource2, loading2, total2
         } = this.state
@@ -186,15 +186,15 @@ class OrganizeLesson extends Component {
                     </Col>
                     <Col span={4}>
                         <Button type="primary" onClick={this.infoHandler}>搜索</Button>
-                        <Button type="ghost" style={{ marginLeft: '10px' }} onClick={() => this.setState({ visible: true })}>认购课程</Button>             
+                        <Button type="ghost" style={{ marginLeft: '10px' }} onClick={() => this.setState({ visible: true })}>认购课程</Button>
                     </Col>
                 </Input.Group>
                 </div>
                 <Tabs defaultActiveKey="1">
-                    <TabPane tab="机构课程" key="1">
+                    <TabPane tab="认购的课程" key="1">
                         <Table dataSource={dataSource} loading={loading} columns={columns} pagination={pagination} />
                     </TabPane>
-                    <TabPane tab="未认证课程" key="2">
+                    <TabPane tab="未认购的课程" key="2">
                         <Table dataSource={dataSource2} loading={loading2} columns={columns2} pagination={pagination2}/>
                     </TabPane>
                 </Tabs>

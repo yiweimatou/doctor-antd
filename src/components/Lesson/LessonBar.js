@@ -27,13 +27,13 @@ class LessonBar extends Component {
                             mode="horizontal"
                         >
                             <Menu.Item key="draft">
-                                <Link to={`/section/draft/?oid=0&lid=${lid}`}>课程资源库</Link>
+                                <Link to={`/section/draft/?oid=0&lid=${lid}`}>草稿箱</Link>
                             </Menu.Item>
                              <Menu.Item key="section">
-                                <Link to={`/lesson/section/?oid=0&lid=${lid}`}>发表列表</Link>
+                                <Link to={`/lesson/section/?oid=0&lid=${lid}`}>已发表</Link>
                             </Menu.Item>
                             <Menu.Item key="detail">
-                                <Link to={`/lesson/show/${lid}`}>课程详情</Link>
+                                <Link to={`/lesson/show/${lid}`}>课程管理</Link>
                             </Menu.Item>
                             <Menu.Item key="team">
                                 <Link to={`/lesson/team/?id=${lid}`}>教师团队</Link>

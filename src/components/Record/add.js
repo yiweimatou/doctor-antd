@@ -25,20 +25,21 @@ class Add extends Component {
         }
         this.okHandler = this.okHandler.bind(this)
     }
-    
+
     componentWillMount() {
         record_category.list({
-            offset: 1, limit: 1000
+            offset: 1, limit: 1000, order_by: 'rank', sort: 'desc'
         }).then((data) => {
             this.setState({
                 options: data.list.map(item => ({
                     label: item.title,
-                    value: item.id
+                    value: item.id,
+                    disabled: item.required === 1
                 }))
             })
         })
     }
-    
+
     okHandler() {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
@@ -54,7 +55,9 @@ class Add extends Component {
                 this.setState({ loading: false })
                 this.props.onOk({
                     ...params,
-                    id: data.identity
+                    birthday: values.birthday.format('X'),
+                    id: data.identity,
+                    share: 2
                 })
             }).catch(error => {
                 message.error(error)
@@ -64,9 +67,10 @@ class Add extends Component {
     }
     render() {
         const { visible, onCancel, form } = this.props
+        const defaultItems = this.state.options.filter(i => i.disabled).map(i => i.value)
         const { getFieldDecorator } = form
         return (
-            <Modal 
+            <Modal
                 title='添加'
                 visible={visible}
                 onOk={this.okHandler}
@@ -83,7 +87,7 @@ class Add extends Component {
                                 }]
                             })(<Input />)}
                         </FormItem>
-                        <FormItem label="手机号" {...formItemLayout}>
+                        <FormItem required label="手机号" {...formItemLayout}>
                             {getFieldDecorator('mobile', {
                                 validateTrigger: 'onBlur',
                                 rules: [
@@ -121,7 +125,9 @@ class Add extends Component {
                             {getFieldDecorator('descript')(<Input type="textarea" rows={5} />)}
                         </FormItem>
                         <FormItem label="选择需要填写健康数据" {...formItemLayout}>
-                            {getFieldDecorator('items')(<CheckboxGroup options={this.state.options} />)}
+                            {getFieldDecorator('items', {
+                                initialValue: defaultItems
+                            })(<CheckboxGroup options={this.state.options} />)}
                         </FormItem>
                     </Form>
                 </Spin>
@@ -132,7 +138,7 @@ class Add extends Component {
 
 Add.propTypes = {
     visible: PropTypes.bool.isRequired,
-    onOk: PropTypes.func.isRequired, 
+    onOk: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
 }
 

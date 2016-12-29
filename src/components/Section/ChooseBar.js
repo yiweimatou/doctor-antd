@@ -4,7 +4,7 @@ import { Menu, Dropdown, Icon, Button } from 'antd'
 
 class ChooseBar extends Component {
     render() {
-        const { lid, oid } = this.props        
+        const { lid, oid } = this.props
         const menu = (
             <Menu>
                 <Menu.Item key="0">
@@ -30,7 +30,7 @@ class ChooseBar extends Component {
         return (
                 <Dropdown overlay={menu}>
                     <Button type="primary" style={{ marginLeft: 8 }}>
-                            创建资源 <Icon type="down" />
+                            引用·创建文章 <Icon type="down" />
                     </Button>
                 </Dropdown>
         );

@@ -2,6 +2,21 @@ import {
     HTML, ACCOUNT, ACTIVE, TOPICS, BOOK, NOTICE
 } from '../constants/api'
 
+export function displayage(yr, mon, day) {
+    // Starter Variables
+    const today = new Date();
+    yr = parseInt(yr);
+    mon = parseInt(mon);
+    day = parseInt(day);
+    let return_value = 0;
+
+    const yearspast = today.getFullYear()-yr-1;
+    const tail = ( today.getMonth() > mon - 1 || today.getMonth() == mon - 1 && today.getDate() >= day ) ? 1 : 0;
+    return_value = yearspast + tail;
+
+    return return_value;
+}
+
 export function keyToDisplayname(key) {
     switch (key.toString()) {
         case HTML:

@@ -131,7 +131,7 @@ class AddNotice extends Component {
                     </FormItem>
                     <FormItem wrapperCol={{ offset: 6 }}>
                     { query.edit === '1' ? null:
-                        <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到课程资源库</Button>
+                        <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到草稿箱</Button>
                     }
                         <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
                     </FormItem>

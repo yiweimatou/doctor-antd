@@ -36,19 +36,19 @@ class OrganizeBar extends React.Component {
               <Link to={`/organize/show/${organize.id}`}>机构详情</Link>
             </MenuItem>
             <MenuItem key="lesson" style={{ height: '80px', lineHeight: '80px'}}>
-              <Link to={`/organize/lesson/${organize.id}`}>机构课程</Link>
+              <Link to={`/organize/lesson/${organize.id}`}>认购的课程</Link>
             </MenuItem>
             <MenuItem key="draft" style={{ height: '80px', lineHeight: '80px'}}>
-              <Link to={`/organize/draft?oid=${organize.id}&lid=0`}>机构资源库</Link>
+              <Link to={`/organize/draft?oid=${organize.id}&lid=0`}>草稿箱</Link>
             </MenuItem>
             <MenuItem key="section" style={{ height: '80px', lineHeight: '80px'}}>
-              <Link to={`/organize/section?oid=${organize.id}&lid=0`}>发表列表</Link>
+              <Link to={`/organize/section?oid=${organize.id}&lid=0`}>已发表</Link>
             </MenuItem>
             <MenuItem key="team" style={{ height: '80px', lineHeight: '80px'}}>
-              <Link to={`/organize/${organize.id}/team/`}>机构团队</Link>
+              <Link to={`/organize/${organize.id}/team/`}>管理团队</Link>
             </MenuItem>
             <MenuItem key="link" style={{ height: '80px', lineHeight: '80px'}}>
-              <Link to={`/organize/link/${organize.id}`}>医务人员</Link>
+              <Link to={`/organize/link/${organize.id}`}>成员</Link>
             </MenuItem>
           </Menu>
         </div>

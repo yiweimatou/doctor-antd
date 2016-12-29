@@ -49,24 +49,24 @@ class Add extends Component {
         return (
             <Spin spinning={loading}>
                 <Form onSubmit={this.submitHandler}>
-                    <FormItem label="任务标题" {...formItemLayout}>
+                    <FormItem label="图文标题" {...formItemLayout}>
                         {getFieldDecorator('title', {
                             rules: [{
                                 required: true,
-                                message: '请输入任务标题'
+                                message: '请输入图文标题'
                             }]
                         })(<Input />)}
                     </FormItem>
-                    <FormItem label="任务描述" {...formItemLayout}>
+                    <FormItem label="图文描述" {...formItemLayout}>
                         {getFieldDecorator('descript', {
                             rules: [{
                                 required: true,
-                                message: '请输入任务描述'
+                                message: '请输入图文描述'
                             }]
                         })(<Input type="textarea" rows={5} />)}
                     </FormItem>
                     <FormItem wrapperCol={{ offset: 6 }}>
-                        <Button type="primary" htmlType="submit">确认提交</Button>
+                        <Button type="primary" htmlType="submit">提交任务</Button>
                     </FormItem>
                 </Form>
             </Spin>

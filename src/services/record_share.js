@@ -1,8 +1,8 @@
 import ApiClient from './ApiClient'
-import { generate, USER_API_DOMAIN } from '../constants/api'
+import { generate } from '../constants/api'
 
-const api = generate('record')
-const record = {
+const api = generate('record_share')
+const record_share = {
     get: function(params) {
         return ApiClient.get(api.get, params)
     },
@@ -13,14 +13,14 @@ const record = {
         return ApiClient.post(api.remove, params, { needAuth: true })
     },
     info: function(params) {
-        return ApiClient.get(`${USER_API_DOMAIN}/record/info/ext`, params, { needAuth: true })
+        return ApiClient.get(api.info, params)
     },
     add: function(params) {
         return ApiClient.post(api.add, params, { needAuth: true })
     },
     list: function(params) {
-        return ApiClient.get(`${USER_API_DOMAIN}/record/list/ext`, params, { needAuth: true })
+        return ApiClient.get(api.list, params)
     }
 }
 
-export default record 
+export default record_share 
