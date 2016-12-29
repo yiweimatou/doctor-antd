@@ -28,17 +28,18 @@ class Edit extends Component {
 
     componentWillMount() {
         record_category.list({
-            offset: 1, limit: 1000
+            offset: 1, limit: 1000, order_by: 'rank', sort: 'desc'
         }).then((data) => {
             this.setState({
                 options: data.list.map(item => ({
                     label: item.title,
-                    value: item.id.toString()
+                    value: item.id.toString(),
+                    disabled: item.required === 1
                 }))
             })
         })
     }
-    
+
     okHandler() {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
@@ -64,7 +65,7 @@ class Edit extends Component {
         const { visible, onCancel, form, item } = this.props
         const { getFieldDecorator } = form
         return (
-            <Modal 
+            <Modal
                 title='编辑'
                 visible={visible}
                 onOk={this.okHandler}
@@ -134,7 +135,7 @@ class Edit extends Component {
 
 Edit.propTypes = {
     visible: PropTypes.bool.isRequired,
-    onOk: PropTypes.func.isRequired, 
+    onOk: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
 }
 

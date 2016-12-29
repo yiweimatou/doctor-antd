@@ -4,6 +4,9 @@ import { Link } from 'react-router'
 import record from '../../services/record'
 import Add from './add'
 import Edit from './edit'
+import AddShare from './share/add'
+import Share from './share'
+import { displayage } from '../../utils'
 
 const TabPane = Tabs.TabPane
 class List extends Component {
@@ -15,6 +18,7 @@ class List extends Component {
             total: 0,
             addVisible: false,
             editVisible: false,
+            shareVisible: false,
             item: {}
         }
         this.addVisibleToggle = this.addVisibleToggle.bind(this)
@@ -23,13 +27,14 @@ class List extends Component {
         this.addHandler = this.addHandler.bind(this)
         this.editClickHandler = this.editClickHandler.bind(this)
         this.removeHandler = this.removeHandler.bind(this)
+        this.shareVisibleToggle = this.shareVisibleToggle.bind(this)
     }
-    
+
     componentWillMount() {
         const userId = JSON.parse(localStorage['auth']).key
         this.infoHandler({ account_id: userId })
     }
-    
+
     infoHandler = (params) => {
         record.info(params).then(data => {
             if (data.count === 0) {
@@ -57,6 +62,14 @@ class List extends Component {
         })
     }
 
+    shareVisibleToggle() {
+        this.setState(prevState => ({ shareVisible: !prevState.shareVisible }))
+    }
+
+    shareClickHandler = item => {
+        this.setState({ item, shareVisible: true })
+    }
+
     addVisibleToggle() {
         this.setState(prevState => ({ addVisible: !prevState.addVisible }))
     }
@@ -72,7 +85,7 @@ class List extends Component {
             addVisible: false
         }))
     }
-    
+
     editHandler(record) {
         this.setState(prevState => ({
             dataSource: prevState.dataSource.map(i => {
@@ -89,7 +102,7 @@ class List extends Component {
             editVisible: true
         })
     }
-    
+
     removeHandler(id) {
         record.remove({ id }).then(() => {
             this.setState(prevState => ({
@@ -100,7 +113,7 @@ class List extends Component {
         }).catch(error => message.error(error))
     }
     render() {
-        const { loading, dataSource, total, addVisible, editVisible, item } = this.state
+        const { loading, dataSource, total, addVisible, editVisible, item, shareVisible } = this.state
         const columns = [{
             title: '姓名',
             dataIndex: 'cname',
@@ -113,12 +126,20 @@ class List extends Component {
             title: '性别',
             dataIndex: 'sex',
             key: 'sex',
-            render: text => 
-                text === 1 && '保密' 
-                || 
-                text === 2 && '男' 
-                || 
+            render: text =>
+                text === 1 && '保密'
+                ||
+                text === 2 && '男'
+                ||
                 text === 3 && '女'
+        }, {
+            title: '年龄',
+            key: 'birthday',
+            dataIndex: 'birthday',
+            render: text => {
+                const arr = new Date(text * 1000)
+                return displayage(arr.getFullYear(), arr.getMonth(), arr.getDate())
+            }
         }, {
             title: '主要健康问题',
             dataIndex: 'descript',
@@ -132,6 +153,7 @@ class List extends Component {
                     <Popconfirm title="确定删除？" onConfirm={() => this.removeHandler(rcd.id)}>
                         <Button>删除</Button>
                     </Popconfirm>
+                    <Button style={{ marginLeft: 10 }} onClick={() => this.shareClickHandler(rcd)}>分享</Button>
                     <Button style={{ marginLeft: 10 }}>
                         <Link to={`/record/${rcd.id}`}>查看档案记录</Link>
                     </Button>
@@ -148,9 +170,10 @@ class List extends Component {
             <div>
                 <Add visible={addVisible} onOk={this.addHandler} onCancel={this.addVisibleToggle}/>
                 <Edit visible={editVisible} item={item} onOk={this.editHandler} onCancel={this.editVisibleToggle}/>
+                <AddShare visible={shareVisible} item={item} onCancel={this.shareVisibleToggle} />
                 <Tabs defaultActiveKey='1'>
                     <TabPane key='1' tab='我的健康档案'>
-                        <Button type='primary' onClick={this.addVisibleToggle} style={{ marginBottom: 20 }}>添加档案</Button>                        
+                        <Button type='primary' onClick={this.addVisibleToggle} style={{ marginBottom: 20 }}>添加档案</Button>
                         <Table
                             rowKey='id'
                             bordered
@@ -160,7 +183,8 @@ class List extends Component {
                             pagination={pagination}
                         />
                     </TabPane>
-                    <TabPane key='2' tab='共享的健康档案'>
+                    <TabPane key='2' tab='共享给我的健康档案'>
+                        <Share />
                     </TabPane>
                 </Tabs>
             </div>

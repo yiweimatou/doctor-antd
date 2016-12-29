@@ -28,10 +28,10 @@ class Edit extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.record.id !== nextProps.record.id) {
-            records_item.list({
+            records_item.listAsync({
                 state: 1, limit: 1000, offset: 1, records_id: nextProps.record.id
             }).then((data) => {
-                this.setState({ items: data.list })
+                this.setState({ items: data })
             }).catch(error => {
                 message.error(`模板选项初始化失败:${error}`)
             })
@@ -53,8 +53,8 @@ class Edit extends Component {
             }
         }
     }
-    
-    
+
+
     okHandler = () => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
@@ -76,14 +76,13 @@ class Edit extends Component {
                     return {
                         id: item.uid,
                         path: item.url
-                    }      
+                    }
                 })).then((imgResult) => {
-                    Promise.all(this.state.items.map((item, idx) => 
+                    Promise.all(this.state.items.map((item, idx) =>
                         records_item.edit({
                             val: values[idx],
                             id: item.id
                         }).then(() => ({ ...item, val: values[idx]}))
-                        .catch(error => message.error(error))
                     )).then((itemsResult) => {
                         onOk({
                             ...values,
@@ -91,11 +90,12 @@ class Edit extends Component {
                             items: itemsResult,
                             id: record.id
                         })
+                        this.setState({ loading: false })
                     })
                 })
             }).catch(error => {
                     message.success(error)
-                    this.setState({ loading: false })                                      
+                    this.setState({ loading: false })
                 })
             })
     }
@@ -112,9 +112,9 @@ class Edit extends Component {
                 }
                 message.error('服务器未响应，请稍后再试')
                 return false
-            })          
+            })
         }
-        this.setState({ fileList })        
+        this.setState({ fileList })
     }
     render() {
         const { onCancel, visible, form, record } = this.props
@@ -130,10 +130,6 @@ class Edit extends Component {
         const formItems = this.state.items.map((item, idx) => (
             <FormItem key={idx} label={item.title} {...formItemLayout}>
                 {getFieldDecorator(idx.toString(), {
-                    rules: [{
-                        required: true,
-                        message: `必须填写${item.title}`
-                    }],
                     initialValue: item.val
                 })(<Input />)}
             </FormItem>
@@ -149,18 +145,13 @@ class Edit extends Component {
             >
                 <Spin spinning={this.state.loading}>
                     <Form>
-                        <FormItem label="就诊记录" {...formItemLayout}>
-                            {getFieldDecorator('visit', { initialValue: record.visit })(
-                                <Input type="textarea" rows={3} />
-                            )}
-                        </FormItem>
-                        {formItems}                        
                         <FormItem label="健康描述" {...formItemLayout}>
                             {getFieldDecorator('descript', { initialValue: record.descript })(
                                 <Input type="textarea" rows={3} />
                             )}
                         </FormItem>
-                        <FormItem label="饮食" {...formItemLayout}>
+                        {formItems}
+                        <FormItem label="饮食/营养" {...formItemLayout}>
                             {getFieldDecorator('diet', { initialValue: record.diet })(
                                 <Input type="textarea" rows={3} />
                             )}
@@ -172,6 +163,11 @@ class Edit extends Component {
                         </FormItem>
                         <FormItem label="药物" {...formItemLayout}>
                             {getFieldDecorator('drug', { initialValue: record.drug })(
+                                <Input type="textarea" rows={3} />
+                            )}
+                        </FormItem>
+                        <FormItem label="就诊记录" {...formItemLayout}>
+                            {getFieldDecorator('visit', { initialValue: record.visit })(
                                 <Input type="textarea" rows={3} />
                             )}
                         </FormItem>

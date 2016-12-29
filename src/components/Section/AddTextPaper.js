@@ -83,7 +83,7 @@ class AddTextPaper extends Component {
       id: this.state.tempTopics.id
     }, () => {
       this.props.fetchTopics({ id: this.state.tempTopics.id }, topics => {
-        message.success('引用成功')        
+        message.success('引用成功')
         this.setState({ visible: false, currentStep: 1, confirmLoading: false, topicList: topics.topic_list, topic_num: topics.topic_list.length })
       }, error => {
         this.setState({ confirmLoading: false })
@@ -294,7 +294,7 @@ class AddTextPaper extends Component {
                   <FormItem wrapperCol={{ offset: 6 }}>
                     <Button style={{marginRight: 30}} onClick={()=>this.handleNext(0)}>上一步</Button>
                     { query.edit === '1' ? null:
-                      <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到课程资源库</Button>
+                      <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到草稿箱</Button>
                     }
                     <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
                   </FormItem>

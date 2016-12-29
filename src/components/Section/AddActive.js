@@ -156,7 +156,7 @@ class AddActive extends Component {
             <div>
                 <Spin spinning={loading}>
                     {
-                        query.oid > 0 ? 
+                        query.oid > 0 ?
                         <OrganizeBar organize={this.props.organize} /> : <LessonBar lid={query.lid} current=""/>
                     }
                     <Form>
@@ -214,7 +214,7 @@ class AddActive extends Component {
                         </FormItem>
                         <FormItem wrapperCol={{ offset: 6 }}>
                             {   query.id && query.edit ? null :
-                                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到课程资源库</Button>
+                                <Button style={{marginRight: 30}} onClick={() => this.submitHandler(0)}>保存到草稿箱</Button>
                             }
                             <Button type='primary' onClick={() => this.submitHandler(1)}>保存并发布</Button>
                         </FormItem>

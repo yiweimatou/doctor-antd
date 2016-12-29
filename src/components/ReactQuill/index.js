@@ -42,7 +42,7 @@ class ImageABlot extends BlockEmbed {
     node.setAttribute('heigth', '100%')
     return node
   }
-  
+
   static value(node) {
     return {
       url: node.getAttribute('src')
@@ -71,7 +71,7 @@ class BkBlot extends BlockEmbed {
     node.appendChild(div)
     return node
   }
-  
+
   static value(node) {
     return {
         url: node.getAttribute('href'),
@@ -103,7 +103,7 @@ class WxBlot extends BlockEmbed {
     node.appendChild(div)
     return node
   }
-  
+
   static value(node) {
     return {
         url: node.getAttribute('href'),
@@ -135,7 +135,7 @@ class DocBlot extends BlockEmbed {
     node.appendChild(div)
     return node
   }
-  
+
   static value(node) {
     return {
         url: node.getAttribute('href'),
@@ -234,11 +234,12 @@ class ReactQuill extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.content !== nextProps.content && this.quill) {
+            this.quill.root.innerHTML = ''
             this.quill.clipboard.dangerouslyPasteHTML(0, nextProps.content)
         }
     }
-    
-    
+
+
     textOkHandler(record) {
         let range = this.quill.getSelection(true)
         this.quill.insertEmbed(range.index, 'mingci', {
@@ -306,10 +307,10 @@ class ReactQuill extends Component {
                 <div id="toolbar">
                     <ImageButton okHandler={this.imageOkHandler} />
                     <VideoButton okHandler={this.videoOkHandler} />
-                    <AudioButton okHandler={this.audioOkHandler} />            
+                    <AudioButton okHandler={this.audioOkHandler} />
                     <TextButton okHandler={this.textOkHandler} />
                     <BaikeButton okHandler={this.bkOkHandler} />
-                    <WxButton okHandler={this.wxOkHandler} />                    
+                    <WxButton okHandler={this.wxOkHandler} />
                     <DocButton okHandler={this.docOkHandler} />
                 </div>
                 <div id="editor" style={{ border: '1px solid #e9e9e9', height: '200px', borderRadius: '4px' }}></div>

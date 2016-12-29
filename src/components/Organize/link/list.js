@@ -23,14 +23,14 @@ class List extends Component {
             record: {}
         }
     }
-    
+
     componentWillMount() {
         if (!window.XLSX) {
             loadJS('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.core.min.js')
         }
         this.infoHandler()
     }
-    
+
     infoHandler = () => {
         const { type2, cname, mobile, state } = this.state
         info({
@@ -85,7 +85,7 @@ class List extends Component {
     }
     upload = data => {
         if (data.length === 0) return
-        Promise.all(data.map(item => 
+        Promise.all(data.map(item =>
             add({
                 type: this.state.type,
                 organize_id: this.props.params.id,
@@ -194,26 +194,26 @@ class List extends Component {
                         <Input placeholder="手机号" value={mobile} onChange={e => this.setState({ mobile: e.target.value })} />
                     </Col>
                     <Col span={8}>
-                        人员类型: 
+                        人员类型:
                         <Select style={{ margin: '0 10px', width: '70px' }} defaultValue="" onSelect={val => this.setState({ type2: val })}>
                             <Option value="">全部</Option>
                             <Option value="在职">在职</Option>
                             <Option value="聘用">聘用</Option>
                             <Option value="校友">校友</Option>
                         </Select>
-                        状态: 
+                        状态:
                         <Select style={{ margin: '0 10px', width: '70px' }} defaultValue="null" onSelect={val => this.setState({ state: val })}>
                             <Option value="null">全部</Option>
                             <Option value="1">已加入</Option>
                             <Option value="2">未加入</Option>
                         </Select>
-                        <Button type="primary" onClick={this.infoHandler}>搜索</Button>                        
+                        <Button type="primary" onClick={this.infoHandler}>搜索</Button>
                     </Col>
                     <Col span={8}>
                         <a style={{ marginRight: 10 }} target="_blank" href="http://7xp3s1.com1.z0.glb.clouddn.com/%E6%A8%A1%E6%9D%BF.xlsx">下载Excel模板</a>
                         <Dropdown overlay={menu}>
                             <Button type="ghost" style={{ marginLeft: 8 }}>
-                                导入医生 <Icon type="down" />
+                                导入成员 <Icon type="down" />
                             </Button>
                         </Dropdown>
                     </Col>

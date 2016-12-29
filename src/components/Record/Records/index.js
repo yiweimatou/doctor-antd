@@ -24,7 +24,7 @@ class List extends Component {
         this.removeHandler = this.removeHandler.bind(this)
         this.editClick = this.editClick.bind(this)
     }
-    
+
     componentWillMount() {
         this.infoHandler()
     }
@@ -42,7 +42,7 @@ class List extends Component {
             }
         })
     }
-    
+
     listHandler(offset) {
         this.setState({ loading: true })
         records.listAsync({
@@ -106,15 +106,22 @@ class List extends Component {
     render() {
         const { loading, dataSource, total, addVisible, editVisible } = this.state
         const columns = [{
-            title: '就诊记录',
-            dataIndex: 'visit',
-            key: 'visit'
+            title: '创建时间',
+            key: 'add_ms',
+            dataIndex: 'add_ms',
+            render: text => (new Date(text * 1000)).toLocaleString()
         }, {
             title: '健康描述',
             dataIndex: 'descript',
             key: 'descript'
         }, {
-            title: '饮食',
+            title: '健康数据',
+            key: 'items',
+            render: (text, record) => (
+                record.items.map(item => <div key={item.id}>{`${item.title}:${item.val}`}</div>)
+            )
+        }, {
+            title: '饮食/营养',
             dataIndex: 'diet',
             key: 'diet'
         }, {
@@ -126,11 +133,9 @@ class List extends Component {
             dataIndex: 'drug',
             key: 'drug'
         }, {
-            title: '选项',
-            key: 'items',
-            render: (text, record) => (
-                record.items.map(item => <div key={item.id}>{`${item.title}:${item.val}`}</div>)
-            )
+            title: '就诊记录',
+            dataIndex: 'visit',
+            key: 'visit'
         }, {
             title: '图片',
             key: 'imgs',
@@ -140,7 +145,7 @@ class List extends Component {
                 </div>
             )
         }, {
-            title: '',
+            title: '操作',
             key: 'oper',
             render: (text, record) => (
                 <div>

@@ -87,7 +87,7 @@ class Show extends Component {
                             </div>
                             <div>
                                 <ChooseBar lid={id} oid="0"/>
-                                <Button onClick = {() => push(`/task/add/${id}`)} className='marginLeft' type='ghost' size='large'>发布图文任务</Button>
+                                <Button onClick = {() => push(`/task/add/${id}`)} className='marginLeft' type='ghost' size='large'>请求创建图文</Button>
                                 <Button onClick = {() => push(`/lesson/edit/${id}`)} className='marginLeft' type='ghost' size='large'>编辑课程</Button>
                                 <Button onClick = {() => push(`/lesson/bill?id=${id}`)} className='marginLeft' type='ghost' size='large'>交易明细</Button>
                             </div>

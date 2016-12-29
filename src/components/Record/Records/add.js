@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { Form, Modal, Spin, Input, Upload, Button, Icon, message } from 'antd'
 import records_category from '../../../services/records_category'
 import { UPLOAD_FILE_API } from '../../../constants/api'
+import record from '../../../services/record'
 import records from '../../../services/records'
 import records_img from '../../../services/records_img'
 import records_item from '../../../services/records_item'
@@ -21,21 +22,62 @@ class Add extends Component {
         this.state = {
             loading: false,
             items: [],
-            fileList: []
+            fileList: [],
+            record: {}
         }
         this.changeHandler = this.changeHandler.bind(this)
     }
-    
+
     componentWillMount() {
-        records_category.list({
-            state: 1, limit: 1000, offset: 1
-        }).then((data) => {
-            this.setState({ items: data.list })
-        }).catch(error => {
-            message.error(`模板选项初始化失败:${error}`)
+        record.get({ id: this.props.record_id }).then((data) => {
+            if (data.get.id > 0) {
+                records_category.list({
+                    state: 1,
+                    limit: 1000,
+                    offset: 1,
+                    id_list: data.get.items,
+                    order_by: 'rank',
+                    sort: 'desc'
+                }).then((data) => {
+                    this.setState({ items: data.list })
+                }).catch(error => {
+                    message.error(`模板选项初始化失败:${error}`)
+                })
+            }
+        })
+        records.listAsync({
+            limit: 1,
+            order_by: 'add_ms',
+            sort: 'desc',
+            account_id:JSON.parse(localStorage['auth']).key
+        }, (error, result) => {
+            if (error) {
+                message.error(error)
+            } else if (result.length > 0) {
+                records_item.list({
+                    records_id: result[0].id
+                }).then((data) => {
+                    if (data.list.length > 0) {
+                        this.setState(prevState => ({
+                            items: prevState.items.map(i => {
+                                const item = data.list.find(rd => rd.item_id === i.id)
+                                if (item) {
+                                    return {
+                                        title: i.title,
+                                        val: item.val,
+                                        item_id: i.id
+                                    }
+                                }
+                                return i
+                            })
+                        }))
+                    }
+                })
+                this.setState({ record: result[0] })
+            }
         })
     }
-    
+
     okHandler = () => {
         this.props.form.validateFields((errors, values) => {
             if (errors) return
@@ -48,10 +90,10 @@ class Add extends Component {
                         path: item.response.file
                     }).then((data) => ({ id: data.identity, path: item.response.file }))
                 )).then((imgResult) => {
-                    Promise.all(this.state.items.map((item, idx) => 
+                    Promise.all(this.state.items.map((item, idx) =>
                         records_item.add({
                             val: values[idx],
-                            title: item.title,
+                            item_id: item.id,
                             records_id: id,
                             record_id
                         }).then((data) => ({ id: data.identity, title: item.title, val: values[idx]}))
@@ -61,10 +103,11 @@ class Add extends Component {
                             ...values,
                             imgs: imgResult,
                             items: itemsResult,
-                            id
+                            id,
+                            add_ms: (new Date())/1000
                         })
                         message.success('新建成功!')
-                        this.setState({ loading: false })                                      
+                        this.setState({ loading: false })
                     })
                 }).catch(error => message.error(error))
             }).catch(error => {
@@ -86,12 +129,13 @@ class Add extends Component {
                 }
                 message.error('服务器未响应，请稍后再试')
                 return false
-            })          
+            })
         }
-        this.setState({ fileList })        
+        this.setState({ fileList })
     }
     render() {
         const { onCancel, visible, form } = this.props
+        const { record } = this.state
         const { getFieldDecorator } = form
         const props = {
             action: UPLOAD_FILE_API,
@@ -104,11 +148,7 @@ class Add extends Component {
         const formItems = this.state.items.map((item, idx) => (
             <FormItem key={idx} label={item.title} {...formItemLayout}>
                 {getFieldDecorator(idx.toString(), {
-                    rules: [{
-                        required: item.required === 1,
-                        message: `必须填写${item.title}`
-                    }],
-                    initialValue: 0
+                    initialValue: item.val
                 })(<Input />)}
             </FormItem>
         ))
@@ -123,29 +163,29 @@ class Add extends Component {
             >
                 <Spin spinning={this.state.loading}>
                     <Form>
-                        <FormItem label="就诊记录" {...formItemLayout}>
-                            {getFieldDecorator('visit', { initialValue: '' })(
-                                <Input type="textarea" rows={3} />
-                            )}
-                        </FormItem>
-                        {formItems}                        
                         <FormItem label="健康描述" {...formItemLayout}>
-                            {getFieldDecorator('descript', { initialValue: '' })(
+                            {getFieldDecorator('descript', { initialValue: record.descript })(
                                 <Input type="textarea" rows={3} />
                             )}
                         </FormItem>
-                        <FormItem label="饮食" {...formItemLayout}>
-                            {getFieldDecorator('diet', { initialValue: '' })(
+                        {formItems}
+                        <FormItem label="饮食/营养" {...formItemLayout}>
+                            {getFieldDecorator('diet', { initialValue: record.diet })(
                                 <Input type="textarea" rows={3} />
                             )}
                         </FormItem>
                         <FormItem label="运动" {...formItemLayout}>
-                            {getFieldDecorator('sports', { initialValue: '' })(
+                            {getFieldDecorator('sports', { initialValue: record.sports })(
                                 <Input type="textarea" rows={3} />
                             )}
                         </FormItem>
                         <FormItem label="药物" {...formItemLayout}>
-                            {getFieldDecorator('drug', { initialValue: '' })(
+                            {getFieldDecorator('drug', { initialValue: record.drug })(
+                                <Input type="textarea" rows={3} />
+                            )}
+                        </FormItem>
+                        <FormItem label="就诊记录" {...formItemLayout}>
+                            {getFieldDecorator('visit', { initialValue: record.visit })(
                                 <Input type="textarea" rows={3} />
                             )}
                         </FormItem>
