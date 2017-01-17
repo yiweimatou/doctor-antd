@@ -1,6 +1,6 @@
 import List from '../components/Paper/List'
 
-const listRoute = store => ({
+const listRoute = () => ({
     path: 'list',
     component: List,
     onEnter: (nextState, replace) => {
@@ -8,18 +8,18 @@ const listRoute = store => ({
         if (!id) {
             return replace({ pathname: '/' })
         }
-        store.dispatch({
-            type: 'paper/info',
-            payload: {
-                params: { section_id: id }
-            }
-        })
-        store.dispatch({
-            type: 'paper/list',
-            payload: {
-                params: { section_id: id, offset: 1, limit: 9 }
-            }
-        })
+        // store.dispatch({
+        //     type: 'paper/info',
+        //     payload: {
+        //         params: { section_id: id }
+        //     }
+        // })
+        // store.dispatch({
+        //     type: 'paper/list',
+        //     payload: {
+        //         params: { section_id: id, offset: 1, limit: 9 }
+        //     }
+        // })
     }
 })
 

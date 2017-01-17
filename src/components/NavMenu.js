@@ -68,6 +68,11 @@ class NavMenu extends Component {
                         <Icon type="notification" />消息管理
                     </Link>
                 </Item>
+                <Item key="businesscard">
+                    <Link to="/businesscard">
+                        <Icon type="credit-card" />个人名片
+                    </Link>
+                </Item>
                 <Item key="schedule">
                     <Link to='/schedule'>
                         <Icon type="calendar" />排班表管理

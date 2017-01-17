@@ -1,6 +1,6 @@
 import { takeEvery } from 'redux-saga'
 import { put, call, fork } from 'redux-saga/effects'
-import { list, info, get } from '../services/paper'
+import { listAsync, info, get } from '../services/paper'
 
 function* watchGet() {
     yield takeEvery('paper/get', function* (action) {
@@ -27,15 +27,16 @@ function* watchGet() {
 function* watchList() {
     yield takeEvery('paper/list', function* (action) {
         try {
-            const result = yield call(list, action.payload.params)
+            const result = yield listAsync(action.payload.params)
             if (action.payload.resolve) {
-                action.payload.resolve(result.list)
+                action.payload.resolve(result)
             }
             yield put({
                 type: 'paper/list/success',
-                payload: result.list
+                payload: result
             })
         } catch (error) {
+            console.log(error)
             if (action.payload.reject) {
                 action.payload.reject(error)
             }

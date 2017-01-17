@@ -21,7 +21,7 @@ class LessonBar extends Component {
                     <div style={{ display: 'inline-block', float: 'left', height: '40px', overFlow: 'hidden', width: 200 }}>
                         { lesson && lesson.title || '' }
                     </div>
-                    <div style={{display: 'inline-block', marginLeft: 30}}>
+                    <div style={{display: 'inline-block', marginLeft: 10}}>
                         <Menu
                             selectedKeys={[current]}
                             mode="horizontal"
@@ -38,11 +38,8 @@ class LessonBar extends Component {
                             <Menu.Item key="team">
                                 <Link to={`/lesson/team/?id=${lid}`}>教师团队</Link>
                             </Menu.Item>
-                            <Menu.Item key="2">
-                                <Link to={`/lesson/show/${lid}`}>学员</Link>
-                            </Menu.Item>
-                            <Menu.Item key="3">
-                                <Link to={`/lesson/show/${lid}`}>统计</Link>
+                            <Menu.Item key="card">
+                                <Link to={`/lesson/card/${lid}`}>课程名片</Link>
                             </Menu.Item>
                         </Menu>
                     </div>

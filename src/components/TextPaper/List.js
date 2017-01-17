@@ -29,7 +29,7 @@ class List extends Component {
         }, {
             title: '操作',
             key: 'opreation',
-            render: (text, record) => 
+            render: (text, record) =>
                     <div>
                         <Button type="ghost" onClick={() => this.props.onClick(record.id)}>发布到课程</Button>
                         <span className="ant-divider"></span>
@@ -44,7 +44,7 @@ class List extends Component {
                     </div>
         }]
         return (
-            <Table dataSource={list} loading={loading} columns={columns} pagination = {{
+            <Table rowKey="id" dataSource={list} loading={loading} columns={columns} pagination = {{
                 ...pagination,
                 total
             }} />

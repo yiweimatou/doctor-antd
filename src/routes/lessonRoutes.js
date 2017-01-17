@@ -6,6 +6,7 @@ import editContainer from '../components/Lesson/Edit.js'
 import Bill from '../components/Lesson/Bill'
 import Team from '../components/Lesson/Team'
 import SectionList from '../components/Section/List'
+import LessonBusinessCard from '../components/Lesson/Card'
 
 
 const sectionListRoute = () => ({
@@ -93,7 +94,11 @@ const lessonRoutes = store => ({
         editRoute(store),
         billRoute(),
         teamRoute(store),
-        sectionListRoute()
+        sectionListRoute(),
+        {
+            path: 'card/:id',
+            component: LessonBusinessCard
+        }
     ]
 })
 

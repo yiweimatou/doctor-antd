@@ -9,6 +9,7 @@ import Draft from '../components/Section/Draft'
 import SectionList from  '../components/Section/List'
 import OrganizeTeam from '../components/Organize/organize_team'
 import List from '../components/Organize/link/list'
+import OrganizeBusinessCard from '../components/Organize/Card'
 
 const teamRoute = store => ({
     path: ':id/team',
@@ -165,7 +166,20 @@ const lessonRoute = (store) => ({
     }
 })
 
-const organizeRoutes = store=>({
+const cardRoute = store => ({
+    path: 'card/:id',
+    component: OrganizeBusinessCard,
+    onEnter: (nextState) => {
+        const id = nextState.params.id
+        store.dispatch({
+            type: 'organize/get',
+            payload: {
+                params: { id }
+            }
+        })
+    }
+})
+const organizeRoutes = store =>({
     path:'organize',
     childRoutes:[
         listRoute(store),
@@ -177,10 +191,11 @@ const organizeRoutes = store=>({
         sectionRoute(store),
         draftRoute(store),
         teamRoute(store),
+        cardRoute(store),
         {
             path: 'link/:id',
             component: List
-        }
+        },
     ]
 })
 

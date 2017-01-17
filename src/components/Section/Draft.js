@@ -103,7 +103,7 @@ class Draft extends Component {
                     </div>
                 </div>
                 <hr style={{margin: '20px 0'}}/>
-                <Table loading={loading} dataSource={list} columns={columns} pagination={{
+                <Table rowKey="id" loading={loading} dataSource={list} columns={columns} pagination={{
                     ...pagination,
                     total
                 }}/>

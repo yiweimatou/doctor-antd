@@ -33,13 +33,12 @@ class Select extends Component {
   }
   _changeHandler = (value, latLng, area) => {
       Promise.resolve(this.setState({value, area})).then(() => {
-        this._search(1)        
+        this._search(1)
       })
   }
   _search = offset => {
      const {search, getList, searchInfo, userId, clear} = this.props
      const {value, area} = this.state
-     console.log(value, area)
      if (value.length === 0) {
        getList({
          offset, limit: 8, account_id: userId, state: 1
@@ -53,7 +52,7 @@ class Select extends Component {
         map_id: 1
       }
       if ((value.length <= 3 && value[0].startsWith('2')) || (value.length <= 2 && value[0].startsWith('1')) ) {
-        params = { 
+        params = {
           ...params,
           kind: value.slice(-1)[0]
         }
@@ -113,6 +112,7 @@ class Select extends Component {
     }]
     const rowSelection = {
       selectedRowKeys: this.state.selectedList.map(i => i.id),
+      onChange: (selectedRowKeys, selectedRows) => this.setState({ selectedList: selectedRows }),
       onSelect: (record, selected) => {
         let selectedList = this.state.selectedList
         if (selected) {

@@ -42,7 +42,7 @@ class List extends Component {
             key: 'answer'
         }, {
             title: '操作',
-            render: (text, record) => 
+            render: (text, record) =>
                 <Popconfirm
                         title="确定要删除这个试卷吗？"
                         onConfirm={() => deleteTopic(record.id)}
@@ -51,7 +51,7 @@ class List extends Component {
                 </Popconfirm>
         }]
         return (
-            <Table dataSource={list} columns={columns} loading={loading} pagination={{
+            <Table rowKey="id" dataSource={list} columns={columns} loading={loading} pagination={{
                 ...pagination,
                 total
             }}/>

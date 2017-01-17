@@ -218,7 +218,7 @@ class List extends Component {
                         </Dropdown>
                     </Col>
                 </Group>
-                <Table bordered bodyStyle={{ marginTop: 20 }} dataSource={dataSource} loading={loading} columns={columns} pagination={pagination} />
+                <Table rowKey="id" bordered bodyStyle={{ marginTop: 20 }} dataSource={dataSource} loading={loading} columns={columns} pagination={pagination} />
             </div>
         )
     }

@@ -24,7 +24,6 @@ const records_item = {
     },
     listAsync: async function(params) {
         const result = await this.list(params)
-        console.log(result.list)
         const categorys = await records_category.list({
             id_list: result.list.map(i => i.item_id).join(',')
         })

@@ -4,6 +4,9 @@
 import React, { Component } from 'react'
 import { Form, Spin, Input, InputNumber, Button, Table, message } from 'antd'
 import Select from '../Question/Select'
+import Category from '../Category'
+import { TOPICS } from '../../constants/api'
+import { add as grow } from '../../services/grow'
 const FormItem = Form.Item
 const formItemLayout = {
   labelCol: { span: 6 },
@@ -14,6 +17,8 @@ class Add extends Component {
   state = {
     loading: false,
     topicList: [],
+    category: '',
+    latLng: {},
     visible: false,
     pagination: {
       showSizeChanger: true,
@@ -40,6 +45,10 @@ class Add extends Component {
     e.preventDefault()
     this.props.form.validateFields((errors, values) => {
       if (errors) return
+      const category = this.state.category
+      if (category.length > 0 && category.length < 3) {
+          return message.error('请再选择一级分类')
+      }
       let topic_id_list = ''
       if (this.state.topicList.length === 1) {
         topic_id_list = this.state.topicList[0].id
@@ -66,6 +75,19 @@ class Add extends Component {
       }, record => {
         message.success('新建成功')
         this.setState({ loading: false, topicList: [] })
+        if (category.length >= 3) {
+          grow({
+              lat: this.state.latLng.lat,
+              lng: this.state.latLng.lng,
+              title: values.question,
+              state: 1,
+              category_id: TOPICS,
+              foreign_id: record.id,
+              // cover: cover,
+              map_id: 1,
+              kind: category[0] === '1' ? category[1] : category[2]
+          }, null, error => message.error(error))
+        }
         this.props.form.resetFields()
         this.props.afterAddHandler(record)
       }, error => {
@@ -103,6 +125,9 @@ class Add extends Component {
             {getFieldDecorator('sale_amount', {
               initialValue: 2
             })(<InputNumber min={0}/>)}
+          </FormItem>
+          <FormItem label = '分类' {...formItemLayout}>
+            <Category onChange={(value, latLng) => this.setState({category: value, latLng})}/>
           </FormItem>
           <FormItem {...formItemLayout} label="试题列表">
             <Table pagination={this.state.pagination} dataSource={this.state.topicList} columns={columns} bordered title={

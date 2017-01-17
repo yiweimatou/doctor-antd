@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { connect } from 'react-redux'
-import { Table, message } from 'antd' 
+import { Table, message } from 'antd'
 
 
 class Show extends Component {
@@ -61,7 +61,7 @@ class Show extends Component {
             key: 'answer'
         }]
         return (
-            <Table columns={columns} dataSource={list} loading={loading} pagination={
+            <Table rowKey="id" columns={columns} dataSource={list} loading={loading} pagination={
                 {
                     ...pagination, total
                 }

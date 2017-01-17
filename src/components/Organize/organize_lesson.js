@@ -192,10 +192,10 @@ class OrganizeLesson extends Component {
                 </div>
                 <Tabs defaultActiveKey="1">
                     <TabPane tab="认购的课程" key="1">
-                        <Table dataSource={dataSource} loading={loading} columns={columns} pagination={pagination} />
+                        <Table rowKey="id" dataSource={dataSource} loading={loading} columns={columns} pagination={pagination} />
                     </TabPane>
                     <TabPane tab="未认购的课程" key="2">
-                        <Table dataSource={dataSource2} loading={loading2} columns={columns2} pagination={pagination2}/>
+                        <Table rowKey="id" dataSource={dataSource2} loading={loading2} columns={columns2} pagination={pagination2}/>
                     </TabPane>
                 </Tabs>
             </div>

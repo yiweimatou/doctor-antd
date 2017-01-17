@@ -5,10 +5,6 @@ import record from '../../services/record'
 import Add from './add'
 import Edit from './edit'
 import AddShare from './share/add'
-<<<<<<< HEAD
-=======
-import Share from './share'
->>>>>>> 233868ba5af55980ec7b7f58034e4b56a2c5b6de
 import { displayage } from '../../utils'
 
 class List extends Component {
@@ -152,17 +148,11 @@ class List extends Component {
             render: (text, rcd) => (
                 <div>
                     <Button style={{ marginRight: 10 }} onClick={() => this.editClickHandler(rcd)}>修改</Button>
-<<<<<<< HEAD
                     {
                         rcd.share === 2 && <Popconfirm title="确定删除？" onConfirm={() => this.removeHandler(rcd.id)}>
                             <Button>删除</Button>
                         </Popconfirm>
                     }
-=======
-                    <Popconfirm title="确定删除？" onConfirm={() => this.removeHandler(rcd.id)}>
-                        <Button>删除</Button>
-                    </Popconfirm>
->>>>>>> 233868ba5af55980ec7b7f58034e4b56a2c5b6de
                     <Button style={{ marginLeft: 10 }} onClick={() => this.shareClickHandler(rcd)}>分享</Button>
                     <Button style={{ marginLeft: 10 }}>
                         <Link to={`/record/${rcd.id}`}>查看档案记录</Link>

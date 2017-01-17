@@ -16,6 +16,7 @@ import Schedule from '../components/schedule'
 import h5Routes from './h5Routes'
 import taskRoutes from './taskRoutes'
 import recordRoutes from './recordRoutes'
+import BusinessCard from '../components/BusinessCard/Personal'
 
 const routes = (store) => ([{
     path: '/',
@@ -66,7 +67,11 @@ const routes = (store) => ([{
         {
           path: 'schedule',
           component: Schedule
-        }
+      },
+      {
+          path: 'businesscard',
+          component: BusinessCard
+      }
     ]
 }, {
     path: '*',

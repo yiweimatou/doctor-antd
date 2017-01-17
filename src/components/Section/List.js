@@ -129,6 +129,7 @@ class List extends Component{
                 </div>
                 <hr style={{margin: '20px 0'}}/>
                 <Table
+                    rowKey="id"
                     dataSource = {list}
                     columns = { columns }
                     pagination = {{

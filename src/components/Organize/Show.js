@@ -3,7 +3,7 @@ import Paper from '../Paper'
 import { Button, message, Spin, Upload, Input } from 'antd'
 import { DEFAULT_COVER } from '../../constants/api'
 import OrganizeBar from './organize_bar'
-import { UPLOAD_LOGO_API } from '../../constants/api'
+import { UPLOAD_LOGO_API, UPLOAD_COVER_API } from '../../constants/api'
 import { Link } from 'react-router'
 
 class Show extends Component {
@@ -29,6 +29,33 @@ class Show extends Component {
         this.props.edit({
           id: this.props.organize.id,
           logo: info.file.response.logo
+        }, () => {
+          message.success('更换logo成功!')
+          this.setState({ uploading: false })
+        }, error => {
+          message.error(error)
+          this.setState({ uploading: false })
+        })
+      } else {
+        this.setState({
+          uploading: false
+        })
+        message.error(`文件上传出错: ${info.file.response.msg}`)
+      }
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} 上传失败!`);
+      this.setState({ uploading: false })
+    }
+  }
+  changeHandler2 = info => {
+    if (info.file.status === 'uploading' && this.state.uploading === false) {
+      this.setState({ uploading: true })
+    }
+    if (info.file.status === 'done') {
+      if (info.file.response.code === 200) {
+        this.props.edit({
+          id: this.props.organize.id,
+          cover: info.file.response.cover
         }, () => {
           message.success('更换封面成功!')
           this.setState({ uploading: false })
@@ -107,6 +134,29 @@ class Show extends Component {
                     showUploadList = {false}
                     accept = 'image/jpeg, image/png'
                     onChange = {this.changeHandler}
+                    beforeUpload = {file => {
+                      const fiveM = 5*1024*1024
+                      const isToobig = file.size > fiveM
+                      if (isToobig) {
+                          message.error('只允许上传不大于5M的图片!')
+                      }
+                      return !isToobig
+                  }}
+                  >
+                    <Button loading={uploading}>修改logo</Button>
+                  </Upload>
+                </div>
+              </div>
+              <div style={{ margin: '40px 0', padding: '20px 0', borderBottom: '2px solid #ddd' }}>
+                <span>机构封面</span>
+                <img style={{ marginLeft: '30px' }} src={ organize.cover || DEFAULT_COVER } width={100} height={100} />
+                <div style={{ float: 'right', display: 'inline-block', lineHeight: '100px' }}>
+                  <Upload
+                    name = 'upload_file'
+                    action = {UPLOAD_COVER_API}
+                    showUploadList = {false}
+                    accept = 'image/jpeg, image/png'
+                    onChange = {this.changeHandler2}
                     beforeUpload = {file => {
                       const fiveM = 5*1024*1024
                       const isToobig = file.size > fiveM

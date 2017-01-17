@@ -9,7 +9,7 @@ import {
     Spin, Switch
 } from 'antd'
 import Paper from '../Paper'
-import {UPLOAD_COVER_API} from '../../constants/api.js'
+import {UPLOAD_COVER_API, UPLOAD_LOGO_API} from '../../constants/api.js'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import LessonBar from './LessonBar'
@@ -29,6 +29,7 @@ class Edit extends Component{
     }
     state = {
         fileList: [],
+        fileList2: [],
         options: [],
         defaultValue: []
     }
@@ -56,17 +57,36 @@ class Edit extends Component{
         })
         this.setState({ fileList })
     }
+    handleChange2 = (info)=> {
+        let fileList = info.fileList
+        fileList = fileList.slice(-1)
+        fileList = fileList.map((file) => {
+            if (file.response) {
+                file.url = file.response.logo
+            }
+            return file
+        })
+        fileList = fileList.filter((file) => {
+            if (file.response) {
+                return file.response.code === 200
+            }
+            return true
+        })
+        this.setState({ fileList2: fileList })
+    }
     submitHandler= e => {
         e.preventDefault()
         this.props.form.validateFields((errors,values)=>{
             if(errors){
                 return
             }
-            const cover = this.state.fileList[0].url
+            const cover = this.state.fileList.length > 0 ? this.state.fileList[0].url : ''
+            const logo = this.state.fileList2.length > 0 ? this.state.fileList2[0].url : ''
             const params = {
                 title:values.lname,
                 descript:values.descript,
                 cover:cover,
+                logo,
                 organize_amount: values.organize_money*100,
                 account_amount: values.account_money*100,
                 id:this.props.lesson.id,
@@ -78,6 +98,28 @@ class Edit extends Component{
             }, error => message.error(error, 6))
         })
     }
+    componentWillMount() {
+        if (this.props.lesson.cover) {
+            this.setState({
+                fileList:[{
+                    uid:-1,
+                    name: '封面.png',
+                    status: 'done',
+                    url: this.props.lesson.cover
+                }]
+            })
+        }
+        if (this.props.lesson.logo) {
+            this.setState({
+                fileList2: [{
+                    uid:-1,
+                    name: 'logo.png',
+                    status: 'done',
+                    url: this.props.lesson.logo
+                }]
+            })
+        }
+    }
     componentWillReceiveProps(nextProps){
         //prelesson is null next is not null
         if(this.props.lesson.cover !== nextProps.lesson.cover){
@@ -87,6 +129,16 @@ class Edit extends Component{
                     name: '封面.png',
                     status: 'done',
                     url: nextProps.lesson.cover
+                }]
+            })
+        }
+        if(this.props.lesson.logo !== nextProps.lesson.logo2){
+            this.setState({
+                fileList2:[{
+                    uid:-1,
+                    name: 'logo.png',
+                    status: 'done',
+                    url: nextProps.lesson.logo
                 }]
             })
         }
@@ -149,9 +201,9 @@ class Edit extends Component{
                                         if(value >= 0) {
                                             callback()
                                         }else {
-                                            callback('金额必须大于等于零')   
+                                            callback('金额必须大于等于零')
                                         }
-                                    }  
+                                    }
                                 }],
                                 initialValue: organize_amount
                             })(<Input type = 'number' addonAfter = '元' />)}
@@ -161,7 +213,7 @@ class Edit extends Component{
                     </FormItem>
                     <FormItem
                         {...formItemLayout}
-                        label = 'logo'
+                        label = '封面'
                         required
                     >
                         <Upload
@@ -177,10 +229,27 @@ class Edit extends Component{
                         </Upload>
                     </FormItem>
                     <FormItem
+                        {...formItemLayout}
+                        label = 'logo'
+                        required
+                    >
+                        <Upload
+                            name="upload_file"
+                            action={UPLOAD_LOGO_API}
+                            listType="picture"
+                            fileList={this.state.fileList2}
+                            onChange = {this.handleChange2}
+                        >
+                            <Button type="ghost">
+                                <Icon type="upload" /> 点击上传
+                            </Button>
+                        </Upload>
+                    </FormItem>
+                    <FormItem
                         label='课程简介'
                         {...formItemLayout}
                     >
-                        
+
                             {getFieldDecorator('descript',{
                                 rules:[{
                                     required:false,

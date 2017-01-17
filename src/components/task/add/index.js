@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Spin, Input, Button, message } from 'antd'
 import { add } from '../../../services/task'
+import { add as addH5 } from '../../../services/h5'
 
 const FormItem = Form.Item
 const formItemLayout = {
@@ -32,6 +33,12 @@ class Add extends Component {
                     lesson_id: id
                 }).then(() => {
                     message.success('提交成功!')
+                    addH5({
+                        title: values.title,
+                        content: values.descript,
+                        sale_amount: 200,
+                        state: 1
+                    })
                     this.setState({ loading: false })
                     this.props.form.resetFields()
                 }).catch(error => {

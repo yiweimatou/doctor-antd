@@ -184,7 +184,7 @@ class List extends Component {
                         </Form>
                     </Spin>
                 </Modal>
-                <Table loading={loading} dataSource={dataSource} columns={columns} pagination={pagination}/>
+                <Table rowKey="id" loading={loading} dataSource={dataSource} columns={columns} pagination={pagination}/>
             </div>
         )
     }

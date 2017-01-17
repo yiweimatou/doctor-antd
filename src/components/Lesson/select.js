@@ -34,7 +34,7 @@ class LessonSelect extends Component {
     }
 
     render() {
-        const { loading, dataSource, total } = this.state
+        const { loading, total, dataSource } = this.state
         const columns = [{
             title: '课程标题',
             dataIndex: 'title',
@@ -48,10 +48,10 @@ class LessonSelect extends Component {
         }
         const rowSelection = {
             type: 'radio',
-            onChange: (selectedRowKeys, selectedRows) => this.props.onChange(selectedRows[0])
+            onSelect: (record) => this.props.onChange(record)
         }
         return (
-            <Table columns={columns} loading={loading} dataSource={dataSource} pagination={pagination} rowSelection={rowSelection}/>
+            <Table rowKey="id" columns={columns} loading={loading} dataSource={dataSource} pagination={pagination} rowSelection={rowSelection}/>
         )
     }
 }
