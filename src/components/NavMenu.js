@@ -9,7 +9,7 @@ class NavMenu extends Component {
     render(){
         const { user } = this.props
         return(
-            <Menu mode="inline" >
+            <Menu mode="inline" defaultOpenKeys={['sub2', 'sub5', 'task']}>
                 <Item key='10'>
                     <Link to='/dashboard'><Icon type="laptop" />工作台</Link>
                 </Item>

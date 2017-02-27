@@ -39,7 +39,7 @@ class YunbookCard extends Component{
                         编辑
                         <Icon type="edit" />
                     </Link>
-                    <h3>{yunbook.title}</h3>
+                    <h3 style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{yunbook.title}</h3>
                 </div>
             </Card>
         )

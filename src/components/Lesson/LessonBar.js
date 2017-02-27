@@ -4,6 +4,7 @@ import Paper from '../Paper'
 import { Menu } from 'antd'
 import { connect } from 'react-redux'
 import { DEFAULT_COVER } from '../../constants/api'
+import Help from '../help'
 
 class LessonBar extends Component {
     componentWillMount() {
@@ -32,8 +33,8 @@ class LessonBar extends Component {
                              <Menu.Item key="section">
                                 <Link to={`/lesson/section/?oid=0&lid=${lid}`}>已发表</Link>
                             </Menu.Item>
-                            <Menu.Item key="detail">
-                                <Link to={`/lesson/show/${lid}`}>课程管理</Link>
+                            <Menu.Item key="edit">
+                                <Link to={`/lesson/edit/${lid}`}>管理课程</Link>
                             </Menu.Item>
                             <Menu.Item key="team">
                                 <Link to={`/lesson/team/?id=${lid}`}>教师团队</Link>
@@ -41,8 +42,12 @@ class LessonBar extends Component {
                             <Menu.Item key="card">
                                 <Link to={`/lesson/card/${lid}`}>课程名片</Link>
                             </Menu.Item>
+                            <Menu.Item key="detail">
+                                <Link to={`/lesson/show/${lid}`}>课程详情</Link>
+                            </Menu.Item>
                         </Menu>
                     </div>
+                    <Help help_id={26} style={{ float: 'right'}}/>                    
                 </div>
             </Paper>
         );

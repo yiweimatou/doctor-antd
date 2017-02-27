@@ -99,7 +99,7 @@ class Avatar extends Component {
         const styles = getStyles(this.props)
         if(src){
             return (
-                <div 
+                <div
                     style = {
                         styles.root
                     }
@@ -120,7 +120,7 @@ class Avatar extends Component {
                         style: Object.assign(styles.icon, icon.props.style),
                     })
                 }
-                {this.props.children}
+                    {this.props.children}
                 </div>
             )
         }

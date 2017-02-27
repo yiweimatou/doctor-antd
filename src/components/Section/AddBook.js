@@ -136,6 +136,9 @@ class AddBook extends Component {
           }, id => {
             message.success('保存到课程资源库', 6)
             this.setState({ section: { id } })
+            if (query.lid>0) {
+              this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+            }
           }, error => message.error(error, 8))
         } else {
           editSection({
@@ -144,7 +147,12 @@ class AddBook extends Component {
             descript: values.descript || '',
             lbl: this.state.lbl,
             cover: cover || tempYunbook.cover
-          }, () => message.success('保存成功!'), error => message.error(error))
+          }, () => {
+            message.success('保存成功!')
+            if (query.lid>0) {
+              this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+            }
+          }, error => message.error(error))
         }
       } else if (state === 1) {
         if (query.edit === '1') {
@@ -155,7 +163,14 @@ class AddBook extends Component {
             descript: values.descript || '',
             lbl: this.state.lbl,
             cover: cover || tempYunbook.cover
-          }, () => message.success('编辑成功!'), error => message.error(error))
+          }, () => {
+            message.success('编辑成功!')
+            if (query.lid > 0) {
+              this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+            } else {
+              this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+            }
+          }, error => message.error(error))
         } else if(query.id) {
           editSection({
             title: values.title,
@@ -234,7 +249,7 @@ class AddBook extends Component {
         { currentStep === 2 ?
         <Spin spinning={loading}>
           <Form horizontal>
-            <FormItem {...formItemLayout} hasFeedback label="文章标题">
+            <FormItem {...formItemLayout} hasFeedback label="云板书标题">
               {getFieldDecorator('title', {
                 rules: [{
                   required: true,
@@ -244,10 +259,10 @@ class AddBook extends Component {
                 initialValue: section.title
               })(<Input />)}
             </FormItem>
-            <FormItem {...formItemLayout} label="文章封面">
+            <FormItem {...formItemLayout} label="云板书封面">
               <ImgUploader ref='uploader'/>
             </FormItem>
-            <FormItem {...formItemLayout} label="文章描述">
+            <FormItem {...formItemLayout} label="云板书描述">
                 {getFieldDecorator('descript',{ initialValue: section.descript })(<Input type="textarea" rows={5} />)}
             </FormItem>
             <FormItem wrapperCol={{ offset: 6 }}>
@@ -269,7 +284,7 @@ class AddBook extends Component {
           </div> :null }
         { currentStep === 0 ?
           <div>
-          <Tabs>
+          <Tabs defaultActiveKey="2">
             <TabPane tab='全部云板书' key='1'>
               <Row>
                 {

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { get, add, edit } from '../../services/timetable'
 import { message, Spin, Button } from 'antd'
 import Item from './item'
+import Help from '../help'
 import './index.css'
 
 class Schedule extends Component {
@@ -123,6 +124,7 @@ class Schedule extends Component {
         }
         return (
             <Spin spinning={loading}>
+                <Help help_id={24} style={{ float: 'left', margin: '20px 0'}}/>
                 <div style={{ float: 'right', margin: '20px' }}>
                     { btn }
                 </div>

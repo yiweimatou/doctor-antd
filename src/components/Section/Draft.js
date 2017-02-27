@@ -30,7 +30,7 @@ class Draft extends Component {
             lesson_id: query.lid,
             organize_id: query.oid,
             category_id: value,
-            sort: 'descß',
+            sort: 'desc',
             order_by: 'add_ms'
         }, null, error => message.error(error))
     }
@@ -99,6 +99,7 @@ class Draft extends Component {
                         </Select>
                     </div>
                     <div style={{float: 'right'}}>
+                        <Button onClick = {() => push(`/task/add/${ query.lid }`)} className='marginLeft' type='ghost' size='large'>请求创建图文</Button>
                         <ChooseBar lid={ query.lid } oid={query.oid}/>
                     </div>
                 </div>

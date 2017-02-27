@@ -313,7 +313,7 @@ class ReactQuill extends Component {
                     <WxButton okHandler={this.wxOkHandler} />
                     <DocButton okHandler={this.docOkHandler} />
                 </div>
-                <div id="editor" style={{ border: '1px solid #e9e9e9', height: '200px', borderRadius: '4px' }}></div>
+                <div id="editor" style={{ border: '1px solid #e9e9e9', height: '600px', borderRadius: '4px' }}></div>
             </div>
         )
     }

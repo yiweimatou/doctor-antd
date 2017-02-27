@@ -13,10 +13,12 @@ class Audio extends Component {
         total: 0,
         list: [],
         visible: false,
+        editVisible: false,
         loading: true,
         category: [],
         latLng: {},
-        path: ''
+        path: '',
+        item: {}
     }
     componentWillMount() {
         const {info, list} = this.props
@@ -52,10 +54,10 @@ class Audio extends Component {
                 message.success('新建成功')
                 this.setState({
                     loading: false, visible: false,
-                    list: this.state.list.concat({
+                    list: [{
                         ...params,
                         id: data.identity
-                    }),
+                    }].concat(this.state.list),
                     total: this.state.total + 1
                 })
                 if (category.length > 3) {
@@ -76,14 +78,53 @@ class Audio extends Component {
             })
         })
     }
+    submitHandler = e => {
+        e.preventDefault()
+        this.props.form.validateFields((erros, values) => {
+            if (erros) return
+            this._editHandler({
+                id: this.state.item.id,
+                title: values.title,
+                descript: values.descript
+            }).catch(err => {
+                message.error(err)
+            })
+        })
+    }
+    eidtVisibleToggle = ()  => this.setState(prevState => ({
+        editVisible: !prevState.editVisible
+    }))
     _onCancel = () => this.setState({visible: false})
+    _editHandler = audio => {
+        this.props.edit(audio).then(() => {
+            this.setState(prevState => ({
+                list: prevState.list.map(v => {
+                    if (v.id === audio.id) {
+                        return {
+                            ...v,
+                            title: audio.title,
+                            descript: audio.descript
+                        }
+                    }
+                    return v
+                }),
+                editVisible: false
+            }))
+        })
+    }
     _removeHandler = id => {
-        this.props.remove({id}).then(() => {
-            this.setState({
-                list: this.state.list.filter(i => i.id !== id),
-                total: this.state.total - 1
-            })    
-        }).catch(error => message.error(error))
+        Modal.confirm({
+            onOk: () => {
+                this.props.remove({id}).then(() => {
+                    this.setState({
+                        list: this.state.list.filter(i => i.id !== id),
+                        total: this.state.total - 1
+                    })    
+                }).catch(error => message.error(error))
+            },
+            title: '确认',
+            content: '是否删除？'
+        })
     }
     render() {
         const {list, visible, total, loading} = this.state
@@ -115,7 +156,7 @@ class Audio extends Component {
         }
         return (
             <Spin spinning = {loading}>
-                <Modal visible={visible} title="上传音频" footer="" onCancel={this._onCancel} width={720} maskClosable={false}>
+                <Modal visible={visible} title="新增音频" footer="" onCancel={this._onCancel} width={720} maskClosable={false}>
                     <Form onSubmit={this._submitHandler}>
                         <FormItem {...formItemLayout} label="音频素材名称" hasFeedback>
                         {getFieldDecorator('title', {rules:[{required: true, whitespace: true, message: '请填写名称'}]})(<Input />)}
@@ -134,12 +175,30 @@ class Audio extends Component {
                         {getFieldDecorator('descript')(<Input type='textarea' rows={5} />)}
                         </FormItem>
                          <FormItem wrapperCol={{ offset: 6 }}>
-                            <Button type="primary" htmlType="submit">保存</Button>
+                            <Button type="primary" htmlType="submit">保存至个人素材库</Button>
+                        </FormItem>
+                    </Form>
+                </Modal>
+                <Modal visible={this.state.editVisible} title="修改" footer="" onCancel={this.editVisibleToggle} maskClosable={false}>
+                    <Form onSubmit={this.submitHandler}>
+                        <FormItem {...formItemLayout} label="音频素材名称" hasFeedback>
+                            {getFieldDecorator('title', {
+                                rules:[{required: true, whitespace: true, message: '请填写名称'}],
+                                initialValue: this.state.item.title
+                            })(<Input />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="说明">
+                        {getFieldDecorator('descript', {
+                            initialValue: this.state.item.descript
+                        })(<Input type='textarea' rows={5} />)}
+                        </FormItem>
+                         <FormItem wrapperCol={{ offset: 6 }}>
+                            <Button type="primary" htmlType="submit">保存至个人素材库</Button>
                         </FormItem>
                     </Form>
                 </Modal>
                 <div className='image-div-topbar'>
-                        <Button type='primary' onClick={() => this.setState({visible: true})}>上传音频</Button>
+                        <Button type='primary' onClick={() => this.setState({visible: true})}>新增音频</Button>
                         <span className='image-div-topbar-span'>格式支持mp3,wma,wav,amr,文件大小不超过30M</span>
                 </div>
                 <Row>
@@ -147,10 +206,18 @@ class Audio extends Component {
                     list.map(item => {
                         return (<Col key={item.id} span={6}>
                                     <div style={{width: 302, borderRadius: '4px', border: '1px solid #d9d9d9'}}>
-                                        <div onClick={() => this._removeHandler(item.id)} style={{color: 'red', float: 'right', padding: '2px 6px'}}>
-                                            <Icon type="close" />
-                                        </div>
                                         <div style={{ padding: '10px 16px'}}>
+                                            <div style={{float:'right'}}>
+                                                <a style={{ marginRight: 5 }} onClick={() => {
+                                                    this.eidtVisibleToggle()
+                                                    this.setState({
+                                                        item
+                                                    })
+                                                }}><Icon type="edit" /> 编辑</a>
+                                                <a onClick={() => this._removeHandler(item.id)}>
+                                                    <Icon type="close" />删除
+                                                </a>
+                                            </div>
                                             <h3>{item.title}</h3>
                                             <p style={{color: '#999'}}>{item.descript||'无'}</p>
                                         </div>
@@ -163,7 +230,11 @@ class Audio extends Component {
                  {
                     total === 0 ? <p style={{marginTop: 20, textAlign: 'center'}}>暂无数据</p> :
                     <div style={{marginTop: 20}}>
-                        <Pagination total={total} pageSize={8} showTotal={total => `共${total}条`}/>
+                        <Pagination total={total} pageSize={8} showTotal={total => `共${total}条`} onChange={
+                            offset => this.props.list({state: 1, limit: 8, offset, category_id: AUDIO})
+                                        .then(data => this.setState({list: data.list, loading: false}))
+                                        .catch(error => message.error(error))
+                        }/>
                     </div>
                 }
             </Spin>

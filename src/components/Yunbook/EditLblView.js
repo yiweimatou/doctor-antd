@@ -55,7 +55,7 @@ class EditLblView extends React.Component{
             const { record } = this.state
             if (record){
                 const content = this.toHtml(record)
-                console.log('content',content)
+                // console.log('content',content)
                 if( content ){
                     const popup  = L.popup()
                     popup.setContent(content)

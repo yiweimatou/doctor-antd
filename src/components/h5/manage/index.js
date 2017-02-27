@@ -3,6 +3,7 @@ import Add from '../add'
 import List from '../list'
 import { info, list } from '../../../services/h5'
 import { message } from 'antd' 
+import Help from '../../help'
 
 class Manage extends Component {
     constructor(props) {
@@ -79,6 +80,7 @@ class Manage extends Component {
         const { list, total, loading } = this.state
         return (
             <div>
+                <Help help_id={17} />
                 <div style={{ marginBottom: 10 }}>
                     <Add okHandler={this.okHandler}/>
                 </div>

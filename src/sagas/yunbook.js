@@ -203,6 +203,9 @@ function* watchGet() {
 function* handleList(action) {
   try {
     const result = yield call(getYunbookList, action.payload)
+    if (action.resolve) {
+      action.resolve()
+    }
     yield put({
       type: 'yunbook/list/success',
       payload: result.list,
@@ -224,6 +227,9 @@ function* watchList() {
 function* handleMyList(action) {
   try {
     const result = yield call(getYunbookList, action.payload)
+    if (action.resolve) {
+      action.resolve()
+    }
     yield put({
       type: 'yunbook/mylist/success',
       payload: result.list

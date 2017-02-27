@@ -45,7 +45,7 @@ class VideoButton extends Component {
                     >
                         <VideoSelect onChange={this.changeHandler} />
                     </Modal>
-                    添加视频
+                    插入视频
                 </Button>
         )
     }

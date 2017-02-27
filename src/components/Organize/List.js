@@ -1,7 +1,8 @@
 import React,{ Component,PropTypes } from 'react'
 import OrganizeCard from './OrganizeCard.js'
-import { Row, Col, Pagination, message, Spin, Tabs } from 'antd'
+import { Row, Col, Pagination, message, Spin, Tabs, Button, Modal } from 'antd'
 import { info } from '../../services/organizeTeam'
+import help from '../../services/help'
 import styles from './List.css'
 
 const TabPane = Tabs.TabPane
@@ -12,7 +13,10 @@ class List extends Component{
         total: 0,
         total2: 0,
         list2: [],
-        loading2: true
+        loading2: true,
+        visible: false,
+        content: '',
+        title: ''
     }
     componentWillMount() {
         const { userId } = this.props
@@ -32,7 +36,17 @@ class List extends Component{
                 this.setState({ loading2: false })
             }
         })
+        help.get({ id: 11 }).then(data => {
+            this.setState({
+                content: data.get.content,
+                title: data.get.title
+            })
+        })
     }
+
+    toggleVisible = () => this.setState(prevState => ({
+        visible: !prevState.visible
+    }))
 
     getList = (offset, role) => {
         const { changeHandler, userId } = this.props
@@ -54,6 +68,7 @@ class List extends Component{
     render(){
         const { list, loading, list2, loading2, total, total2 } = this.state
         return(
+            <div>
             <Tabs defaultActiveKey="1">
                 <TabPane tab="超级管理员" key="1">
                     <Spin spinning={loading}>
@@ -104,6 +119,11 @@ class List extends Component{
                     </Spin>
                 </TabPane>
             </Tabs>
+            <Button style={{ position: 'absolute', top: 0, right: 20 }} type="primary" onClick={this.toggleVisible}>帮助</Button>     
+            <Modal visible={this.state.visible} title={this.state.title} onOk={this.toggleVisible} onCancel={this.toggleVisible}>
+                <div dangerouslySetInnerHTML={{ __html: this.state.content }}/>
+            </Modal>       
+            </div>
         )
     }
 }

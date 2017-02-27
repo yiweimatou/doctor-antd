@@ -112,7 +112,13 @@ class Select extends Component {
     }]
     const rowSelection = {
       selectedRowKeys: this.state.selectedList.map(i => i.id),
-      onChange: (selectedRowKeys, selectedRows) => this.setState({ selectedList: selectedRows }),
+      onChange: (selectedRowKeys, selectedRows) => this.setState((prevState) => ({
+        selectedList: prevState.selectedList.concat(selectedRows.map(item => {
+          if (prevState.selectedList.find(x => x.id != item.id)) {
+            return item
+          }
+        }))
+      })),
       onSelect: (record, selected) => {
         let selectedList = this.state.selectedList
         if (selected) {

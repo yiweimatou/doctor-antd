@@ -45,6 +45,9 @@ class AddNotice extends Component {
                                 }
                             }),
                             message.success('素材保存成功', 6)
+                            if (query.lid > 0) {
+                                this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+                            }
                         }, error => message.error(error, 6))
                     } else {
                         editSection({
@@ -52,7 +55,12 @@ class AddNotice extends Component {
                             descript: values.descript || '',
                             content,
                             id: section.id
-                        },() => message.success('素材保存成功', 6), error => message.error(error))
+                        },() => {
+                            message.success('素材保存成功', 6)
+                            if (query.lid > 0) {
+                                this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+                            }
+                        }, error => message.error(error))
                     }
                 } else {
                     if (query.edit === '1') {//edit
@@ -61,25 +69,49 @@ class AddNotice extends Component {
                             descript: values.descript || '',
                             content,
                             id: section.id
-                        },() => message.success('编辑成功', 6), error => message.error(error))
-                    }else {//add
-                        addSection({
-                            title: values.title,
-                            descript: values.descript || '',
-                            organize_id: query.oid,
-                            lesson_id: query.lid,
-                            category_id: NOTICE,
-                            foreign_id: 0,
-                            content,
-                            state: 1
                         },() => {
-                            if (query.lid>0) {
+                            message.success('编辑成功', 6)
+                            if (query.lid > 0) {
                                 this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
                             } else {
                                 this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
                             }
-                            message.success('发布成功', 6)
                         }, error => message.error(error))
+                    }else {//add
+                        if (query.id > 0) {
+                            editSection({
+                                title: values.title,
+                                descript: values.descript || '',
+                                content,
+                                state: 1,
+                                id: query.id
+                            },() => {
+                                if (query.lid>0) {
+                                    this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+                                } else {
+                                    this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+                                }
+                                message.success('发布成功', 6)
+                            }, error => message.error(error))
+                        } else {
+                            addSection({
+                                title: values.title,
+                                descript: values.descript || '',
+                                organize_id: query.oid,
+                                lesson_id: query.lid,
+                                category_id: NOTICE,
+                                foreign_id: 0,
+                                content,
+                                state: 1
+                            },() => {
+                                if (query.lid>0) {
+                                    this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+                                } else {
+                                    this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+                                }
+                                message.success('发布成功', 6)
+                            }, error => message.error(error))
+                        }
                     }
                 }
             } else {

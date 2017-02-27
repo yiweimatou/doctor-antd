@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import { Table } from 'antd'
 import { connect } from 'react-redux'
 import { keyToName } from '../../utils'
+import Help from '../help'
 
 class Message extends React.Component {
   render () {
@@ -31,12 +32,16 @@ class Message extends React.Component {
       }
     }
     return(
-      <Table
-        dataSource = { message.records }
-        columns = { columns }
-        pagination = { {...pagination, total: message.total } }
-        loading = { message.loading }
-      />
+      <div>
+        <Help help_id={22} style={{ margin: '10px 0' }}/>
+        <Table
+          rowKey="id"
+          dataSource = { message.records }
+          columns = { columns }
+          pagination = { {...pagination, total: message.total } }
+          loading = { message.loading }
+        />
+      </div>
     )
   }
 }

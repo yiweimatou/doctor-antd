@@ -97,9 +97,15 @@ class Select extends Component {
             onChange: offset => this._getList(offset)
         }
         const columns = [{
-            title: '名称',
+            title: '',
             key: 'title',
-            dataIndex: 'title'
+            dataIndex: 'title',
+            render: (text, record) => (
+                <div>
+                    <p>{text}</p>
+                    <p>{record.descript}</p>
+                </div>
+            )
         }, {
             title: '音频',
             key: 'path',
@@ -163,8 +169,8 @@ class Select extends Component {
                         </Form>
                     </Modal>
                 </Spin>
-                <Button onClick={() => this.setState({ visible: true })} style={{ marginBottom: 10 }} type="primary">添加</Button>
-                <Table key="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
+                <Button onClick={() => this.setState({ visible: true })} style={{ marginBottom: 10 }} type="primary">新增</Button>
+                <Table rowKey="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
             </div>
         );
     }

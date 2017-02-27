@@ -70,7 +70,7 @@ class Add extends Component {
         this.setState({ loading: true })
         this.props.add(params, topic => {
           message.success('新增成功', 5)
-          this.setState({ loading: false })
+          this.setState({ loading: false, num: 65 })
           this.props.form.resetFields()
           this.props.afterAddHandler()
           if (category.length >= 3) {

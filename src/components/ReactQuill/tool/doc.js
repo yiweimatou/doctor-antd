@@ -46,7 +46,7 @@ class DocButton extends Component {
                     >
                         <LinkSelect category={DOC} onChange={this.changeHandler} />
                     </Modal>
-                    添加文献
+                    新增文献
                 </Button>
         )
     }

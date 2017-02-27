@@ -5,7 +5,7 @@ import { Tabs, Spin, Icon, message, Modal, Table } from 'antd'
 import { connect } from 'react-redux'
 import Category from '../Category'
 import { TOPIC } from '../../constants/api'
-
+import Help from '../help'
 
 const TabPane = Tabs.TabPane
 const columns = [{
@@ -148,6 +148,7 @@ class Manage extends Component {
     render() {
         const { activeKey } = this.state
         return (
+          <div>
            <Tabs defaultActiveKey='1' activeKey={activeKey} onTabClick={
                activeKey => this.setState({ activeKey })
            }>
@@ -177,6 +178,8 @@ class Manage extends Component {
                     </Spin>
                 </TabPane>
            </Tabs>
+           <Help help_id={15} />
+           </div>
         );
     }
 }

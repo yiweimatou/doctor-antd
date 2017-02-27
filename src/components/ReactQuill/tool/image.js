@@ -38,14 +38,14 @@ class ImageButton extends Component {
                 <Button style={{ marginLeft: '5px' }} onClick={this.toggleVisible}>
                     <Modal
                         visible={visible}
-                        title="选择图片"
+                        title="选择插入的图片"
                         onOk={this.okHandler}
                         onCancel={this.toggleVisible}
                         maskClosable={false}
                     >
                         <ImageSelect onChange={this.changeHandler} />
                     </Modal>
-                    添加图片
+                    插入图片
                 </Button>
         )
     }

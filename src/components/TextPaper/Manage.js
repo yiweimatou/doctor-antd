@@ -5,6 +5,7 @@ import { push } from 'react-router-redux'
 import List from './List'
 import Add from './Add'
 import LessonSelect from '../Lesson/select'
+import Help from '../help'
 
 const TabPane = Tabs.TabPane
 
@@ -75,6 +76,7 @@ class Manage extends Component {
                         <Add add={this.props.addTopics} afterAddHandler={this.afterAddHandler}/>
                     </TabPane>
                 </Tabs>
+                <Help help_id={16} />
             </div>
         );
     }

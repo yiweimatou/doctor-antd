@@ -5,7 +5,7 @@ import L from 'leaflet'
 // import 'leaflet-draw'
 import { Spin, message, Button } from 'antd'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push, goBack } from 'react-router-redux'
 
 const styles = {
     map:{
@@ -77,6 +77,8 @@ class Show extends React.Component{
         return (
             <Spin spinning = {this.state.loading}>
                 <div>
+                    <Button type="primary" onClick={this.props.goBack} style={{ marginRight: 10 }}>返回</Button>
+                    
                     {lid?<Button type='primary' onClick={() => {
                         this.setState({ loading:true })
                         this.props.buy({ id: this.state.yid, lesson_id: lid, organize_id: oid }, () => {
@@ -92,7 +94,7 @@ class Show extends React.Component{
 }
 
 export default connect(state => ({
-    params: state.routing.locationBeforeTransitions.query
+    params: state.routing.locationBeforeTransitions.query,
 }), dispatch => ({
     buy(params, resolve, reject) {
         dispatch({
@@ -110,6 +112,9 @@ export default connect(state => ({
     },
     push(path) {
         dispatch(push(path))
+    },
+    goBack() {
+        dispatch(goBack())
     }
 })
 )(Show)

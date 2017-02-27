@@ -7,7 +7,8 @@ class ImageSelect extends Component {
     state = {
         loading: true,
         total: 0,
-        list: []
+        list: [],
+        selectedRowKey: []
     }
     componentWillMount() {
         info({state: 1, category_id: IMAGE}).then(data => this.setState({total: data.count}))
@@ -60,7 +61,7 @@ class ImageSelect extends Component {
         }
     }
     render() {
-        const { total, loading, list } = this.state
+        const { total, loading, list, selectedRowKey } = this.state
         const { onChange } = this.props
         const pagination = {
             showTotal: total => `共${total}条`,
@@ -69,18 +70,29 @@ class ImageSelect extends Component {
             onChange: offset => this._getList(offset)
         }
         const columns = [{
-            title: '名称',
-            key: 'title',
-            dataIndex: 'title'
-        }, {
             title: '图片',
             key: 'path',
             dataIndex: 'path',
             render: path => (<img src={path} width='100' height='80'/>)
+        }, {
+            title: '',
+            key: 'title',
+            dataIndex: 'title',
+            render: (text, record) => (
+                <div>
+                    <p>{text}</p>
+                    <p>{record.descript}</p>
+                </div>
+            )
         }]
+
         const rowSelection = {
             type: 'radio',
-            onChange: (selectedRowKeys, selectedRows) => onChange(selectedRows[0])
+            selectedRowKeys: selectedRowKey,
+            onChange: (selectedRowKeys, selectedRows) => {
+                this.setState({ selectedRowKey: selectedRowKeys })
+                onChange(selectedRows[0])
+            }
         }
         return (
             <div>
@@ -99,9 +111,14 @@ class ImageSelect extends Component {
                       return !isToobig
                   }}
                 >
-                    <Button style={{ marginBottom: 10 }} type="primary">添加</Button>
+                    <Button style={{ marginBottom: 10 }} type="primary">新增</Button>
                 </Upload>
-                <Table dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
+                <Table rowKey="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection} onRowClick={
+                    (record) => {
+                        this.setState({ selectedRowKey: [record.id] })
+                        onChange(record)
+                    }
+                }/>
             </div>
         );
     }

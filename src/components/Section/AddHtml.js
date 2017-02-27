@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Form, Button, Spin, Input, message, Upload, Icon } from 'antd'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
+import { push, goBack } from 'react-router-redux'
 import { HTML, UPLOAD_COVER_API } from '../../constants/api'
 import LessonBar from '../Lesson/LessonBar'
 import OrganizeBar from '../Organize/organize_bar'
@@ -41,7 +41,9 @@ class AddHtml extends Component {
                 cover,
                 content,
             }
-            if (content) {
+            if (content === '<p><br></p>') {
+                return message.error('请填写内容!', 6)                
+            } else {
                 if (state === 0){
                     if (this.state.section.id === undefined){
                         addSection({
@@ -53,7 +55,12 @@ class AddHtml extends Component {
                                     id
                                 }
                             }),
-                            message.success('素材保存成功', 6)
+                            () => {
+                                if (query.lid > 0) {
+                                    this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+                                }
+                                message.success('素材保存成功', 6)
+                            }
                         }, error => message.error(error, 6))
                     } else {
                         editSection({
@@ -62,7 +69,12 @@ class AddHtml extends Component {
                             content,
                             cover,
                             id: this.state.section.id
-                        },() => message.success('素材保存成功', 6), error => message.error(error))
+                        },() => {
+                            if (query.lid > 0) {
+                                this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+                            }
+                            message.success('素材保存成功', 6)
+                        }, error => message.error(error))
                     }
                 } else {
                     if (query.edit === '1') {//edit
@@ -72,7 +84,10 @@ class AddHtml extends Component {
                             content,
                             cover,
                             id: this.state.section.id
-                        },() => message.success('编辑成功', 6), error => message.error(error))
+                        }, () => {
+                            message.success('编辑成功', 6)
+                            this.props.goBack()
+                        }, error => message.error(error))
                     } else {
                         if (query.id > 0) {
                             editSection({
@@ -87,11 +102,21 @@ class AddHtml extends Component {
                                 }
                                 message.success('发布成功', 6)
                             }, error => message.error(error))
+                        } else {
+                            addSection({
+                                ...params,
+                                state: 1
+                            }, () => {
+                                if (query.lid > 0) {
+                                    this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+                                } else {
+                                    this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+                                }
+                                message.success('发布成功', 6)
+                            }, err => message.error(err))
                         }
                     }
                 }
-            } else {
-                return message.error('请填写内容!', 6)
             }
         })
     }
@@ -143,7 +168,7 @@ class AddHtml extends Component {
                 </Paper>
                 <Spin spinning={loading}>
                     <Form>
-                        <FormItem {...formItemLayout} hasFeedback label="文章标题">
+                        <FormItem {...formItemLayout} hasFeedback label="图文标题">
                             {getFieldDecorator('title', {
                                 rules: [{
                                     required: true,
@@ -153,12 +178,12 @@ class AddHtml extends Component {
                                 initialValue: section.title
                             })(<Input />)}
                         </FormItem>
-                        <FormItem {...formItemLayout} label="文章描述">
+                        <FormItem {...formItemLayout} label="图文摘要">
                             {getFieldDecorator('descript', {
                                 initialValue: section.descript
                             })(<Input type="textarea" rows={5}  />)}
                         </FormItem>
-                        <FormItem {...formItemLayout} label="文章封面">
+                        <FormItem {...formItemLayout} label="图文封面">
                             <Upload
                                 accept='image/jpg,image/jpeg,image/png'
                                 name='upload_file'
@@ -205,6 +230,7 @@ export default connect(
         organize: state.organize.entity
     }),
     dispatch => ({
+        goBack: () => dispatch(goBack()),
         redirct: path => dispatch(push(path)),
         fetchSection: (params, resolve, reject) => {
             dispatch({ type: 'section/get', payload: {

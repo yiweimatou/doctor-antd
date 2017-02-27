@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import {
-    Row, Col, Pagination, Tabs, Spin, message
+    Row, Col, Pagination, Tabs, Spin, message, Button, Modal
 } from 'antd'
 import LessonCard from './LessonCard.js'
+import help from '../../services/help'
 
 const TabPane = Tabs.TabPane
 class List extends Component{
@@ -10,7 +11,10 @@ class List extends Component{
       loading: true,
       list1: [],
       list2: [],
-      list: []
+      list: [],
+      content: '',
+      title: '',
+      visible: false
     }
     static propTypes = {
         changeHandler: PropTypes.func.isRequired,
@@ -29,9 +33,20 @@ class List extends Component{
               list1, list2, loading: false, list
           })
       }, error => message.error(error))
+      help.get({ id: 12 }).then(data => {
+          this.setState({
+              content: data.get.content,
+              title: data.get.title
+          })
+      })
     }
+
+    visibleToggle = () => this.setState(prevState => ({
+        visible: !prevState.visible
+    }))
+
     render(){
-        const { list, list1, list2, loading } = this.state
+        const { list, list1, list2, loading, content, title, visible } = this.state
         return(
             <Spin spinning={loading}>            
                 <Tabs defaultActiveKey = '0'>
@@ -98,6 +113,10 @@ class List extends Component{
                         }
                     </TabPane>
                 </Tabs>
+                <Button type="primary" style={{ position: 'absolute', top: 0, right: 20 }} onClick={this.visibleToggle}>帮助</Button>
+                <Modal title={title} visible={visible} onOk={this.visibleToggle} onCancel={this.visibleToggle}>
+                    <div dangerouslySetInnerHTML={{ __html: content }}/>
+                </Modal>
             </Spin>
         )
     }

@@ -9,8 +9,8 @@ import { HTML } from '../../../constants/api'
 
 const FormItem = Form.Item
 const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 12 }
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 }
 }
 class List extends Component {
     constructor(props) {
@@ -100,19 +100,23 @@ class List extends Component {
         const columns = [{
             title: '标题',
             dataIndex: 'title',
-            key: 'title'
+            key: 'title',
+            width: '10%'
         }, {
             title: '描述',
             dataIndex: 'descript',
-            key: 'descript'
+            key: 'descript',
+            width: '50%'
         }, {
             title: '出售金额',
             dataIndex: 'sale_amount',
             key: 'sale_amount',
-            render: text => `${text/100}元`
+            render: text => `${text/100}元`,
+            width: '10%'
         }, {
             title: '操作',
             key: 'opreator',
+            width: '30%',
             render: (text, record) =>
             <div>
                 <Button onClick={() => this.setState({ record, visible2: true })}>发送到课程</Button>
@@ -146,10 +150,10 @@ class List extends Component {
         }
         return (
             <div>
-                <Modal visible={visible2} title="选择课程" onOk={this.okHandler} onCancel={this.toggleVisible2} maskClosable={false}>
+                <Modal width="720" visible={visible2} title="选择课程" onOk={this.okHandler} onCancel={this.toggleVisible2} maskClosable={false}>
                     <LessonSelect onChange={record => this.setState({ record2: record })} />
                 </Modal>
-                <Modal title="编辑" onOk={this.submitHandler} onCancel={this.toggleVisible} maskClosable={false} visible={visible} width={720}>
+                <Modal title="编辑" width={1024} onOk={this.submitHandler} onCancel={this.toggleVisible} maskClosable={false} visible={visible} >
                     <Spin spinning={fetching}>
                         <Form>
                             <FormItem {...formItemLayout} label="标题">

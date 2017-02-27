@@ -47,7 +47,7 @@ class TextButton extends Component {
                     >
                         <TextSelect category={TEXT} onChange={this.changeHandler} />
                     </Modal>
-                    添加名词
+                    插入名词
                 </Button>
         )
     }

@@ -6,6 +6,7 @@ import Add from './add'
 import Edit from './edit'
 import AddShare from './share/add'
 import { displayage } from '../../utils'
+import Help from '../help'
 
 class List extends Component {
     constructor(props) {
@@ -180,6 +181,7 @@ class List extends Component {
                     columns={columns}
                     pagination={pagination}
                 />
+                <Help help_id={21} />
             </div>
         )
     }

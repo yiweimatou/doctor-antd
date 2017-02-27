@@ -75,7 +75,7 @@ export function nameToKey(name) {
 }
 
 export const isNullOrEmpty = value => {
-    return value === '' && value === null && value === undefined
+    return value === '' || value === null || value === undefined
 }
 
 export const matchRegexp = (value, regexp) => {
@@ -87,7 +87,7 @@ export const isMobile = value => {
 }
 
 export const isUrl = value => {
-    return matchRegexp(value, /^(https?:\/\/)?((([a-z\d]([a-z\d-]*[a-z\d])*)\.?)+[a-z]{2,}|((\d{1,3}\.){3}\d{1,3}))(\:\d+)?(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\\d_]*)?$/i)
+    return matchRegexp(value, /^(https?:\/\/)*/)
 }
 
 export const isBaike = value => {

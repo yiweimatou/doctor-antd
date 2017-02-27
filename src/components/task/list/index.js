@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Table, message, Button, Modal } from 'antd'
 import { info, list, receive } from '../../../services/task'
+import Help from '../../help'
 
 class List extends Component {
     constructor(props) {
@@ -70,7 +71,10 @@ class List extends Component {
             onChange: this.listHandler
         }
         return (
-            <Table columns={columns} dataSource={dataSource} pagination={pagination} loading={loading} />
+            <div>
+                <Help help_id={19} style={{ margin: '10px 0'}} />
+                <Table rowKey="id" columns={columns} dataSource={dataSource} pagination={pagination} loading={loading} />
+            </div>
         )
     }
 }

@@ -153,8 +153,8 @@ class Select extends Component {
                         </Form>
                     </Modal>
                 </Spin>
-                <Button type="primary" onClick={() => this.setState({ visible: true })} style={{ marginBottom: 10 }}>添加</Button>
-                <Table dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
+                <Button type="primary" onClick={() => this.setState({ visible: true })} style={{ marginBottom: 10 }}>新增</Button>
+                <Table rowKey="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
             </div>
         );
     }

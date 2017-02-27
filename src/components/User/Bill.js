@@ -4,6 +4,7 @@ import {
 } from 'antd'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import Help from '../help'
 
 class Money extends Component {
     render() {
@@ -51,20 +52,20 @@ class Money extends Component {
         }]
         return (
             <div>
-                <Row>
+                <Row gutter={16}>
                     <Col span = {12} >
                         <span>
                             账户余额:<em style={{color:'orange'}}>{user.amount/100}</em>元
                         </span>
                     </Col>
-                    <Col span = {12} >
-                        <Row>
-                            <Col span={8}>
+                    <Col span = {8} offset={4}>
+                        <Row gutter={16}>
+                            <Col span={5}>
                                 <Button type='primary' onClick={()=>push('/user/recharge')}>
                                     充值
                                 </Button>
                             </Col>
-                            <Col span={8}>
+                            <Col span={5}>
                                  <Button type='ghost' onClick={()=>push('/user/deposit')}>
                                     提现
                                 </Button>
@@ -74,10 +75,14 @@ class Money extends Component {
                                     设置提现账户
                                 </Button>
                             </Col>
+                            <Col span={6}>
+                                <Help help_id={25} style={{ margin: '0'}} />
+                            </Col>
                         </Row>
                     </Col>
                 </Row>
                 <Table
+                    rowKey="id"
                     dataSource = {list}
                     columns = { columns }
                     pagination = { { ...pagination, total } }
@@ -91,7 +96,6 @@ class Money extends Component {
 
 Money.propTypes = {
     list: PropTypes.array,
-    user: PropTypes.object,
     total: PropTypes.number.isRequired,
     push: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired

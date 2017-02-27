@@ -3,7 +3,7 @@ import showContainer from '../containers/lesson/showContainer.js'
 import listContainer from '../containers/lesson/listContainer.js'
 import List from '../components/Lesson/Tlist'
 import editContainer from '../components/Lesson/Edit.js'
-import Bill from '../components/Lesson/Bill'
+// import Bill from '../components/Lesson/Bill'
 import Team from '../components/Lesson/Team'
 import SectionList from '../components/Section/List'
 import LessonBusinessCard from '../components/Lesson/Card'
@@ -40,10 +40,10 @@ const teamRoute = store => ({
     }
 })
 
-const billRoute = () => ({
-    path: 'bill',
-    component: Bill
-})
+// const billRoute = () => ({
+//     path: 'bill',
+//     component: Bill
+// })
 
 const newRoute = () => ({
     path:'new',
@@ -92,7 +92,7 @@ const lessonRoutes = store => ({
         listRoute(),
         tlistRoute(),
         editRoute(store),
-        billRoute(),
+        // billRoute(),
         teamRoute(store),
         sectionListRoute(),
         {

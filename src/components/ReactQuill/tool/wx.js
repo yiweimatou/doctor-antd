@@ -46,7 +46,7 @@ class WxButton extends Component {
                     >
                         <LinkSelect category={WX} onChange={this.changeHandler} />
                     </Modal>
-                添加微信</Button>
+                新增微信</Button>
         )
     }
 }

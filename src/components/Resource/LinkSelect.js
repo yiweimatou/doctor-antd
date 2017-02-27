@@ -20,7 +20,8 @@ class LinkSelect extends Component {
         list: [],
         visible: false,
         category: [],
-        latLng: {}
+        latLng: {},
+        selectedRowKey: []
     }
     componentWillMount() {
         info({state: 1, category_id: this.props.category}).then(data => this.setState({total: data.count}))
@@ -84,7 +85,7 @@ class LinkSelect extends Component {
         })
     }
     render() {
-        const { total, loading, list, visible, fetching } = this.state
+        const { total, loading, list, visible, fetching, selectedRowKey } = this.state
         const { onChange, category, form } = this.props
         const {getFieldDecorator} = form        
         const pagination = {
@@ -93,18 +94,22 @@ class LinkSelect extends Component {
             onChange: offset => this._getList(offset)
         }
         const columns = [{
-            title: '名称',
-            key: 'title',
-            dataIndex: 'title'
-        }, {
-            title: '链接',
+            title: '',
             key: 'path',
             dataIndex: 'path',
-            render: path => (<a target="_blank" href={path}>{path}</a>)
+            render: (path, record) => (
+            <div>
+                <p>{record.title}</p>
+                <p><a target="_blank" href={path}>{record.descript}</a></p>
+            </div>)
         }]
         const rowSelection = {
             type: 'radio',
+            selectedRowKeys: selectedRowKey,
             onChange: (selectedRowKeys, selectedRows) => {
+                this.setState({
+                    selectedRowKey: selectedRowKeys
+                })
                 onChange(selectedRows[0])
             }
         }
@@ -129,8 +134,7 @@ class LinkSelect extends Component {
                                     callback()
                                 }
                             }
-                        }],
-                        validateTrigger: 'onBlur'
+                        }]
                     })(<Input />)}
                 </FormItem>
             )
@@ -154,8 +158,7 @@ class LinkSelect extends Component {
                                     callback()
                                 }
                             }
-                        }],
-                        validateTrigger: 'onBlue'
+                        }]
                     })(<Input />)}
                 </FormItem>
             )
@@ -179,8 +182,7 @@ class LinkSelect extends Component {
                                     callback()
                                 }
                             }
-                        }],
-                        validateTrigger: 'onBlur'
+                        }]
                     })(<Input />)}
                 </FormItem>
             )
@@ -212,8 +214,13 @@ class LinkSelect extends Component {
                         </Form>
                     </Modal>
                 </Spin>
-                <Button style={{ marginBottom: 10 }} onClick={() => this.setState({ visible: true })} type="primary">添加</Button>
-                <Table rowKey="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection}/>
+                <Button style={{ marginBottom: 10 }} onClick={() => this.setState({ visible: true })} type="primary">新增</Button>
+                <Table rowKey="id" dataSource={list} pagination={pagination} loading={loading} columns = {columns} rowSelection= {rowSelection} onRowClick={
+                    (record) => {
+                        this.setState({ selectedRowKey: [record.id] })
+                        onChange(record)
+                    }
+                } />
             </div>
         );
     }

@@ -47,7 +47,7 @@ class BaikeButton extends Component {
                     >
                         <LinkSelect category={BAIKE} onChange={this.changeHandler} />
                     </Modal>
-                添加百科</Button>
+                新增百科</Button>
         )
     }
 }

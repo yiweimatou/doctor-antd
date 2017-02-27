@@ -162,7 +162,7 @@ class Edit extends Component{
                 >
                     <FormItem
                         {...formItemLayout}
-                        label='课程名'
+                        label='课程标题'
                         hasFeedback
                     >
                     {getFieldDecorator('lname',{
@@ -175,7 +175,7 @@ class Edit extends Component{
                             })(<Input type='text' />)}
                     </FormItem>
                     <FormItem
-                        label = '报名费'
+                        label = '加入课程价格'
                         {...formItemLayout}
                     >
                      {getFieldDecorator('account_money',{
@@ -192,7 +192,7 @@ class Edit extends Component{
                             })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
                     <FormItem
-                        label = '机构认证费'
+                        label = '机构认证年费'
                         {...formItemLayout}
                     >
                     {getFieldDecorator('organize_money',{
@@ -208,7 +208,7 @@ class Edit extends Component{
                                 initialValue: organize_amount
                             })(<Input type = 'number' addonAfter = '元' />)}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="上下架">
+                    <FormItem {...formItemLayout} label="课程状态（公开\隐藏）">
                         {getFieldDecorator('state', { valuePropName: 'checked', initialValue: lesson && lesson.state === 1})(<Switch />)}
                     </FormItem>
                     <FormItem

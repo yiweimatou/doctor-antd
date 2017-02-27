@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Row,Col,Pagination, Spin, message, Modal } from 'antd'
 import LessonSelect from '../Lesson/select'
 import YunbookCard from './YunbookCard'
-import { push } from 'react-router-redux'
+import { push, replace } from 'react-router-redux'
 
 class List extends Component {
     static propTypes = {
@@ -16,7 +16,9 @@ class List extends Component {
         yid: 0
     }
     changeHandler = (offset, account_id) => {
-        this.props.fetchYunbookList({ offset, limit: 6, account_id },error => message.error(error))
+        this.props.fetchYunbookList({ offset, limit: 6, account_id }, () => {
+            this.props.replace(`/yunbook/manage?page=${offset}`)
+        },error => message.error(error))
     }
     componentWillMount() {
         this.props.fetchYunbookInfo(
@@ -24,11 +26,15 @@ class List extends Component {
             null,
             error => message.error(error)
         )
+        let offset = 1
+        if(this.props.query.page) {
+            offset = this.props.query.page
+        }
         this.props.fetchYunbookList({
             limit: 6,
-            offset: 1,
+            offset,
             account_id: this.props.uid
-        }, error => message.error(error))
+        }, null, error => message.error(error))
     }
     toggleVisible = () => this.setState((prevState) => ({
         visible: !prevState.visible
@@ -40,11 +46,16 @@ class List extends Component {
     }
     render(){
         const {
-            loading, list, total, uid
+            loading, list, total, uid, query
         } = this.props
+        let page = 1
+        if (query.page) {
+            page = parseInt(query.page, 10)
+        }
         const pagination = {
             total,
             defaultPageSize: 6,
+            defaultCurrent: page,
             showTotal: total => `共 ${total} 条`,
             onChange: offset => this.changeHandler(offset, uid)
         }
@@ -85,12 +96,14 @@ export default connect(
         uid: state.auth.key,
         loading: state.yunbook.myLoading,
         total: state.yunbook.myTotal,
-        list: state.yunbook.mylist
+        list: state.yunbook.mylist,
+        query: state.routing.locationBeforeTransitions.query
     }),
     dispatch=>({
-        fetchYunbookList:(params, reject)=>{
+        fetchYunbookList:(params, resolve, reject)=>{
             dispatch({
                 type:'yunbook/mylist',
+                resolve,
                 payload: params, reject
             })
         },
@@ -101,6 +114,7 @@ export default connect(
                 resolve, reject
             })
         },
+        replace: path => dispatch(replace(path)),
         go: path => dispatch(push(path))
     })
 )(List)

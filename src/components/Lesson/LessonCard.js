@@ -30,7 +30,7 @@ class LessonCard extends Component{
                     </div>
                     <ul className="courseOther">
                         <li>
-                            <em>粉丝数</em><span>{lesson.uv||0}</span>
+                            <em>学员数</em><span>{lesson.uv||0}</span>
                         </li>
                         <li>
                             <em>浏览量</em><span>{lesson.pv||0}</span>

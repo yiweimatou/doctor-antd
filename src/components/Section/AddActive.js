@@ -83,6 +83,9 @@ class AddActive extends Component {
                     }, id => {
                         message.success('保存到课程资源库库')
                         this.setState({ section: { id } })
+                        if (query.lid>0) {
+                        this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+                        }
                     }, error=> message.error(error, 5))
                 } else {
                     editSection({
@@ -97,7 +100,12 @@ class AddActive extends Component {
                         content,
                         cover,
                         id: section.id
-                    }, () => message.success('素材保存成功'), error => message.error(error))
+                    }, () => {
+                        message.success('素材保存成功')
+                        if (query.lid>0) {
+                        this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+                        }
+                    }, error => message.error(error))
                 }
             } else {
                 if (query.edit === '1') {

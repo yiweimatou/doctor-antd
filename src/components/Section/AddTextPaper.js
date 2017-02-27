@@ -128,6 +128,9 @@ class AddTextPaper extends Component {
           }, id => {
             message.success('保存到课程资源库', 6)
             this.setState({ section: { id } })
+            if (query.lid>0) {
+              this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+            }
           }, error => message.error(error, 8))
         } else {
           editSection({
@@ -136,7 +139,12 @@ class AddTextPaper extends Component {
             topic_num: values.topic_num,
             topic_id_list: topicList.map(i => i.id).toString(),
             descript: values.descript || ''
-          }, () => message.success('保存成功!'), error => message.error(error))
+          }, () => {
+            message.success('保存成功!')
+            if (query.lid>0) {
+              this.props.redirct(`/section/draft?lid=${query.lid}&oid=0`)
+            }
+          }, error => message.error(error))
         }
       } else if (state === 1) {
         if (query.edit === '1') {
@@ -147,26 +155,51 @@ class AddTextPaper extends Component {
             topic_num: values.topic_num,
             topic_id_list: topicList.map(i => i.id).toString(),
             descript: values.descript || ''
-          }, () => message.success('编辑成功!'), error => message.error(error))
-        } else {
-          addSection({
-            title: values.title,
-            topic_num: values.topic_num,
-            descript: values.descript || '',
-            state: 1,
-            category_id: TOPICS,
-            foreign_id: tempTopics.id,
-            lesson_id: query.lid,
-            organize_id: query.oid,
-            topic_id_list: topicList.map(i => i.id).toString()
           }, () => {
-            message.success('创建成功!')
+            message.success('编辑成功!')
             if (query.lid > 0) {
               this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
             } else {
               this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
             }
-          }, error => message.error(error, 8))
+          }, error => message.error(error))
+        } else {
+          if (query.id > 0) {
+            editSection({
+              id: query.id,
+              title: values.title,
+              topic_num: values.topic_num,
+              topic_id_list: topicList.map(i => i.id).toString(),
+              descript: values.descript || '',
+              state: 1
+            }, () => {
+              message.success('编辑成功!')
+              if (query.lid > 0) {
+                this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+              } else {
+                this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+              }
+            }, error => message.error(error))
+          } else {
+            addSection({
+              title: values.title,
+              topic_num: values.topic_num,
+              descript: values.descript || '',
+              state: 1,
+              category_id: TOPICS,
+              foreign_id: tempTopics.id,
+              lesson_id: query.lid,
+              organize_id: query.oid,
+              topic_id_list: topicList.map(i => i.id).toString()
+            }, () => {
+              message.success('创建成功!')
+              if (query.lid > 0) {
+                this.props.redirct(`/lesson/section?lid=${query.lid}&oid=0`)
+              } else {
+                this.props.redirct(`/organize/section?oid=${query.oid}&lid=0`)
+              }
+            }, error => message.error(error, 8))
+          }
         }
       }
     })
@@ -229,7 +262,7 @@ class AddTextPaper extends Component {
           </Steps>
           { currentStep === 0 ?
             <div>
-              <Tabs>
+              <Tabs defaultActiveKey="2">
                 <TabPane tab="全部试卷" key="1">
                   <Table dataSource={list}
                         columns={columns}
@@ -256,10 +289,10 @@ class AddTextPaper extends Component {
             currentStep === 1 ?
               <Spin spinning={loading}>
                 <Form horizontal>
-                  <FormItem hasFeedback {...formItemLayout} label="文章标题">
+                  <FormItem hasFeedback {...formItemLayout} label="试卷标题">
                     {getFieldDecorator('title', {
                       rules: [{
-                        required: true, whitespace: false, message: '请填写文章标题'
+                        required: true, whitespace: false, message: '请填写试卷标题'
                       }],
                       initialValue: section.title
                     })(<Input type='text' />)}
@@ -286,7 +319,7 @@ class AddTextPaper extends Component {
                     <Table pagination={pagination} dataSource={this.state.topicList} columns={columns2} bordered>
                     </Table>
                   </FormItem>
-                  <FormItem {...formItemLayout} label="文章描述">
+                  <FormItem {...formItemLayout} label="试卷描述">
                     {getFieldDecorator('descript',{
                       initialValue: section.descript
                     })(<Input type="textarea" rows={5} />)}
@@ -375,7 +408,7 @@ export default connect(
       dispatch({
         type: 'section/edit',
         payload: {
-          params: resolve, reject
+          params, resolve, reject
         }
       })
     },

@@ -5,19 +5,19 @@ import { LESSON } from '../../constants/api'
 
 class Bill extends Component {
     componentWillMount() {
-      const { changeHandler, query } = this.props
-      if (!query.id) return
+      const { changeHandler, id } = this.props
+      if (!id) return
       changeHandler({
         category_id: LESSON,
-        foreign_id: query.id,
+        foreign_id: id,
         limit: 9,
         offset: 1
       }, null, error => message.error(error))
     }
     render() {
-        const { list, changeHandler, loading, query } = this.props
-        if (!query.id) {
-          return (<div>参数错误</div>)
+        const { list, changeHandler, loading, id } = this.props
+        if (!id) {
+          return (<div></div>)
         }
         const pagination = {
             total: list.total,
@@ -26,7 +26,7 @@ class Bill extends Component {
             onChange(current) {
                 changeHandler({
                   category_id: LESSON,
-                  foreign_id: query.id,
+                  foreign_id: id,
                   limit: 9,
                   offset:current
                 }, null, error => message.error(error))
@@ -68,6 +68,7 @@ class Bill extends Component {
         }]
         return (
             <Table
+                rowKey="id"
                 dataSource = {list}
                 columns = { columns }
                 pagination = { pagination }
@@ -80,7 +81,7 @@ class Bill extends Component {
 Bill.propTypes = {
     list: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
-    query: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired,
     changeHandler: PropTypes.func.isRequired
 };
 
@@ -88,7 +89,6 @@ export default connect(
     state => ({
         list: state.bill.list,
         loading: state.bill.loading,
-        query: state.routing.locationBeforeTransitions.query
     }),
     dispatch => ({
         changeHandler: (params, resolve, reject) => dispatch({

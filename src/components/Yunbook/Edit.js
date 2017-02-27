@@ -1,5 +1,6 @@
 import React,{ Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { goBack } from 'react-router-redux'
 import { Tabs, Button, Form, Input, Spin, message } from 'antd'
 import EditLblView from './EditLblView.js'
 import { BOOK } from '../../constants/api'
@@ -165,20 +166,23 @@ class Edit extends Component{
                         />
                     </TabPane>
                 </Tabs>
-                <Button style={{top:0,padding: '4px 20px 5px 20px',position:'absolute',right:23}} size='large' type='primary' onClick={()=>{
-                        const submit = document.getElementById('_submit_')
-                        if(!submit){
-                            this.props.save({
-                                lbl: this.state.lbl,
-                                id: this.props.yunbook.id
-                            })
-                        }else{
-                            submit.click()
+                <div style={{top: 0, position: 'absolute', right: 0}}>
+                    <Button size='large' type='primary' onClick={this.props.goBack} style={{ marginRight: 5 }}>返回</Button>
+                    <Button size='large' type='primary' onClick={()=>{
+                            const submit = document.getElementById('_submit_')
+                            if(!submit){
+                                this.props.save({
+                                    lbl: this.state.lbl,
+                                    id: this.props.yunbook.id
+                                })
+                            }else{
+                                submit.click()
+                            }
                         }
-                    }
-                }>
-                        保存
-                </Button>
+                    }>
+                            保存
+                    </Button>
+                </div>
                 </Spin>
             </div>
         )
@@ -190,6 +194,7 @@ export default connect(
         yunbook: state.yunbook.entity
     }),
     dispatch=>({
+        goBack: () => dispatch(goBack()),
         save: (params, resolve, reject)=>{
             dispatch({
                 type: 'yunbook/edit',

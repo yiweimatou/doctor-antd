@@ -142,7 +142,7 @@ class ImageUpload extends Component {
                         {getFieldDecorator('descript')(<Input type='textarea' rows={5} />)}
                     </FormItem>
                     <FormItem wrapperCol={{ offset: 6 }}>
-                        <Button type="primary" htmlType="submit">保存</Button>
+                        <Button type="primary" htmlType="submit">保存至个人素材库</Button>
                     </FormItem>
                 </Form>
             </Spin>

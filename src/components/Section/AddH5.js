@@ -10,6 +10,7 @@ import ImgUploader from '../ImgUploader'
 import Category from '../Category'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import LessonBar from '../Lesson/LessonBar'
 
 const TabPane = Tabs.TabPane
 const Step = Steps.Step
@@ -187,6 +188,7 @@ class AddH5 extends Component {
         const { getFieldDecorator } = this.props.form
         return (
             <div>
+                <LessonBar lid={this.props.location.query.lid} current="" />
                 <Steps current={current}>
                     <Step key={1} title="选择图文" />                    
                     <Step key={2} title="确认保存" />
@@ -194,7 +196,7 @@ class AddH5 extends Component {
                 {
                     current === 0 
                     &&
-                    <Tabs defaultActiveKey="1">
+                    <Tabs defaultActiveKey="2">
                         <TabPane tab="系统图文" key="1">
                             <Row>
                             {

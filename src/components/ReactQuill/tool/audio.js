@@ -45,7 +45,7 @@ class AudioButton extends Component {
                     >
                         <AudioSelect onChange={this.changeHandler} />
                     </Modal>
-                    添加音频
+                    插入音频
                 </Button>
         )
     }

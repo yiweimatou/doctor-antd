@@ -114,7 +114,7 @@ class List extends Component{
                 <div style={{margin: '20px 0', height: '30px'}}>
                     <div style={{float: 'left'}}>
                         <span>资源类型</span>
-                        <Select defaultValue='null' sbyle={{margin: '0 10px'}} size="large" onSelect={this.selectHandler}>
+                        <Select defaultValue='null' style={{margin: '0 10px'}} size="large" onSelect={this.selectHandler}>
                             <Option value='null'>全部</Option>
                             <Option value='5'>云板书</Option>
                             <Option value='6'>试卷</Option>
@@ -124,6 +124,7 @@ class List extends Component{
                         </Select>
                     </div>
                     <div style={{float: 'right'}}>
+                        <Button onClick = {() => push(`/task/add/${lesson_id}`)} className='marginLeft' type='ghost' size='large'>请求创建图文</Button>
                         <ChooseBar lid={ lesson_id } oid={organize_id}/>
                     </div>
                 </div>

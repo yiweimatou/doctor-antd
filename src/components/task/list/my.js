@@ -7,6 +7,7 @@ import ImgUploader from '../../ImgUploader'
 import H5Select from './H5Select'
 import { add as grow } from '../../../services/grow'
 import { TASK } from '../../../constants/api'
+import Help from '../../help'
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item
@@ -202,6 +203,8 @@ class MyList extends Component {
             onChange: (offset) => this.changeHandler({ offset, limit:6, receive_account_id: this.userId })
         }
         return (
+            <div>
+                <Help help_id={20} />
             <Tabs defaultActiveKey="1">
                 <TabPane tab="我接收的任务" key="1">
                     <Modal title="" visible={visible} onOk={this.submitHandler} onCancel={this.toggleVisible} maskClosable={false} width={720}>
@@ -266,12 +269,13 @@ class MyList extends Component {
                             currentStep === 1 && <Button type="primary" onClick={() => this.setState({ currentStep: 0 })}>上一步</Button>
                         }
                     </Modal>
-                    <Table dataSource={list2} columns={columns2} loading={loading2} pagination={pagination2} />
+                    <Table rowKey="id" dataSource={list2} columns={columns2} loading={loading2} pagination={pagination2} />
                 </TabPane>
                 <TabPane tab="我发布的任务" key="2">
-                    <Table dataSource={list1} columns={columns1} loading={loading1} pagination={pagination1} />
+                    <Table rowKey="id" dataSource={list1} columns={columns1} loading={loading1} pagination={pagination1} />
                 </TabPane>
             </Tabs>
+            </div>
         )
     }
 }
