@@ -60,18 +60,18 @@ const organize = handleActions({
         ...state,
         total: action.payload
     }),
-    ['organize/get']:(state)=>({
-        ...state,
-        loading: true,
-        entity: {}
-    }),
+    // ['organize/get']:(state)=>({
+    //     ...state,
+    //     loading: true,
+    //     entity: {}
+    // }),
     ['organize/get/failure']: state => ({
       ...state,
-      loading: false
+    //   loading: false
     }),
     ['organize/get/success']: (state, action) => ({
         ...state,
-        loading: false,
+        // loading: false,
         entity: action.payload.entity
     })
 },initialState)

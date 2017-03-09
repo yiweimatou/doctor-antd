@@ -194,7 +194,20 @@ const organizeRoutes = store =>({
         cardRoute(store),
         {
             path: 'link/:id',
-            component: List
+            component: List,
+            onEnter(nextState, replace) {
+                const id = nextState.params.id
+                if (id) {
+                    store.dispatch({
+                        type: 'organize/get',
+                        payload: {
+                            params: { id }
+                        }
+                    })
+                } else {
+                    replace({ pathname: '/' })
+                }
+            }
         },
     ]
 })

@@ -238,7 +238,7 @@ class EditLblView extends React.Component{
     }
     componentDidMount(){
         const { yunbook } = this.props
-        if(this._map || !yunbook) return
+        if(this._map || !yunbook.id) return
         this.initMap(yunbook)
     }
     render(){

@@ -5,7 +5,8 @@ import {
     YUNBOOK_GET_API,
     YUNBOOK_LIST_API,
     YUNBOOK_INFO_API,
-    YUNBOOK_BUY_API
+    YUNBOOK_BUY_API,
+    YUNBOOK_DEL_API,
 } from '../constants/api'
 
 export function buy(params) {
@@ -30,4 +31,8 @@ export function getYunbook(params) {
 
 export function getYunbookInfo(params) {
     return ApiClient.get(YUNBOOK_INFO_API,params)
+}
+
+export function delYunbook(params) {
+    return ApiClient.remove(YUNBOOK_DEL_API, params)
 }

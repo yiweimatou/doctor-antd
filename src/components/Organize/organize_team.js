@@ -100,7 +100,7 @@ class OrganizeTeam extends Component {
                     <UserSelector visible={visible} selectHandler={this.selectHandler} cancelHandler={() => this.setState({ visible: false })}/>
                 </div>
                 : null }
-                <Table columns={columns} dataSource={dataSource} loading={loading} />
+                <Table rowKey="id" columns={columns} dataSource={dataSource} loading={loading} />
             </div>
         )
     }

@@ -119,7 +119,7 @@ class List extends Component{
                     </Spin>
                 </TabPane>
             </Tabs>
-            <Button style={{ position: 'absolute', top: 0, right: 20 }} type="primary" onClick={this.toggleVisible}>帮助</Button>     
+            <Button style={{ position: 'absolute', top: 115, right: 75 }} type="primary" onClick={this.toggleVisible}>帮助</Button>     
             <Modal visible={this.state.visible} title={this.state.title} onOk={this.toggleVisible} onCancel={this.toggleVisible}>
                 <div dangerouslySetInnerHTML={{ __html: this.state.content }}/>
             </Modal>       

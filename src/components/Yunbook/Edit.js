@@ -5,6 +5,7 @@ import { Tabs, Button, Form, Input, Spin, message } from 'antd'
 import EditLblView from './EditLblView.js'
 import { BOOK } from '../../constants/api'
 import Category from '../Category'
+import { getYunbook } from '../../services/yunbook'
 
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item
@@ -20,20 +21,27 @@ class Edit extends Component{
         loading: false,
         id: 0,
         category: '',
-        latLng: {}
+        latLng: {},
+        yunbook: {},
     }
     static propTypes = {
-        yunbook: PropTypes.object,
+        // yunbook: PropTypes.object,
         save: PropTypes.func,
         loading: PropTypes.bool
     }
-    componentWillReceiveProps(nextProps){
-        const { yunbook, getGrow, getCategory, init } = this.props
-        if(nextProps.yunbook && !yunbook){
-            this.setState({
-                lbl:nextProps.yunbook.lbl
+    
+    componentWillMount() {
+        const id = this.props.params.id
+        if (id) {
+            this.setState({ loading: true })
+            getYunbook({ id }).then(data => {
+                this.setState({ yunbook: data.get, loading:false })
+            }).catch(err => {
+                message.error(err)
+                this.setState({ loading: false })
             })
-            getGrow({ category_id: BOOK, foreign_id: nextProps.yunbook.id }, record => {
+            const { getGrow, getCategory, init } = this.props
+            getGrow({ category_id: BOOK, foreign_id: id }, record => {
                 if (record.id > 0){
                     this.setState({ id: record.id })
                     getCategory({ lat: record.lat, lng: record.lng }, list => {
@@ -55,11 +63,13 @@ class Edit extends Component{
             }, error => message.error(error))
         }
     }
+
     changeLbl = lbl => this.setState({ lbl })
 
     submitHandler=(e)=>{
         e.preventDefault()
-        const { grow, save, yunbook, addGrow } = this.props
+        const { grow, save, addGrow } = this.props
+        const yunbook = this.state.yunbook
         this.props.form.validateFields((errors,values)=>{
             if(errors){
                 return
@@ -97,8 +107,9 @@ class Edit extends Component{
     }
     render(){
         const {
-            form, yunbook
+            form
         } = this.props
+        const yunbook = this.state.yunbook
         const { getFieldDecorator }=form
         return(
             <div>
@@ -121,7 +132,7 @@ class Edit extends Component{
                                             max:30,
                                             message:'请填写最多30字标题'
                                         }],
-                                        initialValue:yunbook&&yunbook.title
+                                        initialValue: yunbook.title
                             })(<Input type='text' />)}
                             </FormItem>
                             <FormItem
@@ -137,7 +148,7 @@ class Edit extends Component{
                                                 }
                                             }
                                         }],
-                                        initialValue:yunbook&&yunbook.sale_amount/100
+                                        initialValue: yunbook.sale_amount/100
                             })(<Input type = 'number' addonAfter = '元' />)}
                             </FormItem>
                             <FormItem {...formItemLayout} label='分类'>
@@ -153,7 +164,7 @@ class Edit extends Component{
                                             max:300,
                                             message:'最多300字'
                                         }],
-                                        initialValue:yunbook&&yunbook.descript
+                                        initialValue: yunbook.descript
                             })(<Input type='textarea' rows = '5' />)}
                             </FormItem>
                             <button type='submit' id='_submit_'></button>
@@ -173,7 +184,7 @@ class Edit extends Component{
                             if(!submit){
                                 this.props.save({
                                     lbl: this.state.lbl,
-                                    id: this.props.yunbook.id
+                                    id: this.state.yunbook.id
                                 })
                             }else{
                                 submit.click()
@@ -189,10 +200,7 @@ class Edit extends Component{
     }
 }
 
-export default connect(
-    state => ({
-        yunbook: state.yunbook.entity
-    }),
+export default connect(null,
     dispatch=>({
         goBack: () => dispatch(goBack()),
         save: (params, resolve, reject)=>{

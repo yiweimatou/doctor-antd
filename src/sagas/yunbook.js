@@ -10,7 +10,8 @@ import {
   editYunbook,
   newYunbook,
   getYunbookInfo,
-  buy
+  buy,
+  delYunbook
 } from '../services/yunbook.js'
 import { push } from 'react-router-redux'
 import { info as getBillInfo } from '../services/bill'
@@ -248,6 +249,25 @@ function* watchMyList() {
   yield takeEvery('yunbook/mylist', handleMyList)
 }
 
+function* watchDel() {
+  yield takeLatest('yunbook/del', function* (action) {
+    try {
+      yield call(delYunbook, action.payload)
+      if (action.resolve) {
+        action.resolve()
+      }
+      yield put({
+        type: 'yunbook/del/success',
+        payload: action.payload
+      })
+    } catch (error) {
+      if (action.reject) {
+        action.reject(error)
+      }
+    }
+  })
+}
+
 export default function*() {
   yield * [
     fork(watchNew),
@@ -259,6 +279,7 @@ export default function*() {
     fork(watchMyInfo),
     fork(watchFetchYunbookList),
     fork(watchFetchYunbookInfo),
-    fork(watchBuy)
+    fork(watchBuy),
+    fork(watchDel)
   ]
 }

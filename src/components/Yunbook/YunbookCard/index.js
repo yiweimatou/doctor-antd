@@ -1,5 +1,5 @@
 import React,{ Component,PropTypes } from 'react'
-import { Card,Icon } from 'antd'
+import { Card, Icon, Modal } from 'antd'
 import { Link } from 'react-router'
 import './index.css'
 
@@ -16,6 +16,17 @@ class YunbookCard extends Component{
     static propTypes = {
         yunbook:PropTypes.object
     }
+
+    remove = id => {
+        Modal.confirm({
+            onOk: () => {
+                this.props.afterDel(id)
+            },
+            title: '确认',
+            content: '是否删除?'
+        })
+    }
+
     render(){
         const {
             yunbook
@@ -32,13 +43,19 @@ class YunbookCard extends Component{
                 </div>
                 <div className='yunbook-card'>
                     <a onClick={this.props.onClick}><Icon type="to-top" />发布到课程</a>
-                    <Link 
-                        to={`/yunbook/edit/${yunbook.id}`}
-                        style = {{float:'right'}}
-                    >
-                        编辑
-                        <Icon type="edit" />
-                    </Link>
+                    <div style={{ float: 'right' }}>
+                        <Link 
+                            to={`/yunbook/edit/${yunbook.id}`}
+                            style={{ marginRight: 5 }}
+                        >
+                            编辑
+                            <Icon type="edit" />
+                        </Link>
+                        <a onClick={() => this.remove(yunbook.id)}>
+                            删除<Icon type="close" />
+                        </a>
+                    </div>
+                    
                     <h3 style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{yunbook.title}</h3>
                 </div>
             </Card>

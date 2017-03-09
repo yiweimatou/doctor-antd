@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { Table, Input, Col, Select, Button, Menu, Dropdown, Icon, message, Modal } from 'antd'
+import OrganizeBar from '../organize_bar'
+import { connect } from 'react-redux'
 import { info, list, add, remove } from '../../../services/link'
 import { loadJS } from '../../../utils'
 import Edit from './edit'
@@ -20,7 +22,8 @@ class List extends Component {
             mobile: '',
             resultTotal: 0,
             resultSTotal: 0,
-            record: {}
+            record: {},
+            organize: {}
         }
     }
 
@@ -29,7 +32,21 @@ class List extends Component {
             loadJS('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.core.min.js')
         }
         this.infoHandler()
+        if (this.props.organize.id) {
+            this.setState({
+                organize: this.props.organize
+            })
+        }
     }
+
+    componentWillReceiveProps(nextProps) {
+        if (!this.state.organize.id) {
+            this.setState({
+                organize: nextProps.organize
+            })
+        }
+    }
+    
 
     infoHandler = () => {
         const { type2, cname, mobile, state } = this.state
@@ -184,8 +201,10 @@ class List extends Component {
         }
         return (
             <div>
+                <OrganizeBar organize={this.state.organize} selectedKey="link" />
                 <Input id="file" accept="xls,xlsx" onChange={this.fileChangeHandler} type="file" style={{ display: 'none' }}/>
                 <Edit visible={visible} record={record} onOk={this.okHandler} onCancel={() => this.setState({ visible: false })}/>
+                <div style={{ marginTop: 30 }}>
                 <Group>
                     <Col span={4}>
                         <Input placeholder="姓名" value={cname} onChange={e => this.setState({ cname: e.target.value })} />
@@ -218,10 +237,14 @@ class List extends Component {
                         </Dropdown>
                     </Col>
                 </Group>
+                </div>
                 <Table rowKey="id" bordered bodyStyle={{ marginTop: 20 }} dataSource={dataSource} loading={loading} columns={columns} pagination={pagination} />
             </div>
         )
     }
 }
 
-export default List
+export default connect(
+    state => ({
+    organize: state.organize.entity
+}))(List)

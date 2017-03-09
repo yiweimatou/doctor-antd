@@ -57,7 +57,8 @@ const showRoute = () => ({
 
 const listRoute = () => ({
     path:'list',
-    component:listContainer
+    component:listContainer,
+    breadcrumbName: '课程列表'
 })
 
 const tlistRoute = () => ({

@@ -73,7 +73,7 @@ class Resource extends Component {
                     <Text add={this._add} edit={edit} list={this._list} info={this._info} remove={this._remove}/>
                 </TabPane>
             </Tabs>
-            <Button type="primary" style={{ position: 'absolute', top: 0, right: 20 }} onClick={this.visibleToggle}>帮助</Button>
+            <Button type="primary" style={{ position: 'absolute', top: 115, right: 75 }} onClick={this.visibleToggle}>帮助</Button>
             <Modal title={title} visible={visible} onOk={this.visibleToggle} onCancel={this.visibleToggle}>
                 <div dangerouslySetInnerHTML={{ __html: content }}/>
             </Modal>

@@ -17,7 +17,7 @@ class OrganizeBar extends React.Component {
     const { selectedKey, organize } = this.props
     return (
       <Paper>
-        <div style={{ margin: '10px', height: '80px' }}>
+        <div style={{ margin: '0 10px 10px', height: '80px' }}>
           <div style={{ display: 'inline-block', float: 'left', margin: '5px', width: 70, height: 70 }}>
             <img
               style={{ borderRadius: '50%' }}

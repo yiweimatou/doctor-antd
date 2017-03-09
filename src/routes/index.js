@@ -24,6 +24,7 @@ const routes = (store) => ([{
     indexRoute: {
         component: Dashboard
     },
+    breadcrumbName: '主页',
     onEnter(nextState) {
         const { key, token } = nextState.location.query
         const auth = localStorage.auth

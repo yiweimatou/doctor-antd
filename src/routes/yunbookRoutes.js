@@ -66,7 +66,7 @@ const showRoute = () => ({
     }
 })
 
-const editRoute = store => ({
+const editRoute = () => ({
     path:'edit/:id',
     component:Edit,
     onEnter(nextState,replace){
@@ -76,12 +76,12 @@ const editRoute = store => ({
                 pathname:'/yunbook/list'
             })
         }
-        store.dispatch({
-            type:'yunbook/get',
-            payload:{
-                id
-            }
-        })
+        // store.dispatch({
+        //     type:'yunbook/get',
+        //     payload:{
+        //         id
+        //     }
+        // })
     }
 })
 
@@ -89,7 +89,7 @@ const yunbookRoutes = store => ({
     path:'yunbook',
     childRoutes:[
         showRoute(),
-        editRoute(store),
+        editRoute(),
         manageRoute(store)
     ]
 })

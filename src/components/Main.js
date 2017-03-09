@@ -1,11 +1,12 @@
-import React, { Component, PropTypes } from 'react';
-import './Main.css';
+import React, { Component, PropTypes } from 'react'
+import './Main.css'
 import NavMenu from './NavMenu'
 import { Button } from 'antd'
 
 class Main extends Component{
     render(){
-        const { auth, children, logout } = this.props
+        const { auth, children, logout, routes, params } = this.props
+        const year = (new Date()).getFullYear()
         return (
             <div className="ant-layout-topaside">
                 <div className="ant-layout-header">
@@ -32,12 +33,12 @@ class Main extends Component{
                         <aside className="ant-layout-sider">
                             <NavMenu user={auth&&auth.user}/>
                         </aside>
-                        <div className="ant-layout-content">
+                        <main className="ant-layout-content">
                             <div style={{clear: 'both'}}>{children}</div>
-                        </div>
+                        </main>
                     </div>
                     <div className="ant-layout-footer">
-                        版权所有 © 2016 由医卫里技术部支持
+                        版权所有 © {year} 由医卫里技术部支持
                     </div>
                 </div>
             </div>

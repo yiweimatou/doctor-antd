@@ -91,7 +91,7 @@ function* organizeGetHandler(action){
     try{
       const { entity, list } = yield select(state => state.organize)
       let organize = {}
-      if (entity.id === action.payload.params.id) {
+      if (entity.id && entity.id.toString() === action.payload.params.id.toString()) {
         organize = entity
       } else if(list.length > 0 && list.some(i => i.id === action.payload.params.id)) {
         organize = list.find(i => i.id === action.payload.params.id)

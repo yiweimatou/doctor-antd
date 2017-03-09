@@ -256,14 +256,14 @@ class AddBook extends Component {
                   whitespace: false,
                   message: '请填写标题'
                 }],
-                initialValue: section.title
+                initialValue: section.title? section.title: this.state.tempYunbook.title
               })(<Input />)}
             </FormItem>
             <FormItem {...formItemLayout} label="云板书封面">
               <ImgUploader ref='uploader'/>
             </FormItem>
             <FormItem {...formItemLayout} label="云板书描述">
-                {getFieldDecorator('descript',{ initialValue: section.descript })(<Input type="textarea" rows={5} />)}
+                {getFieldDecorator('descript',{ initialValue: section.descript? section.descript: this.state.tempYunbook.descript })(<Input type="textarea" rows={5} />)}
             </FormItem>
             <FormItem wrapperCol={{ offset: 6 }}>
               <Button style={{marginRight: 30}} onClick={()=>this.handleNext(1)}>上一步</Button>

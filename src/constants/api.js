@@ -197,6 +197,7 @@ export const YUNBOOK_EDIT_API = `${BOOK_API_DOMAIN}/book/put`
 export const YUNBOOK_LIST_API = `${BOOK_API_DOMAIN}/book/list`
 export const YUNBOOK_INFO_API = `${BOOK_API_DOMAIN}/book/info`
 export const YUNBOOK_BUY_API = `${BOOK_API_DOMAIN}/book/buy`
+export const YUNBOOK_DEL_API = `${BOOK_API_DOMAIN}/book/del`
 /**
 *organize_focus
 */

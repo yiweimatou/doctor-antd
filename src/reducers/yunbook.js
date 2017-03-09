@@ -82,6 +82,10 @@ const yunbook = handleActions({
         myLoading: false,
         mylist: action.payload
     }),
+    ['yunbook/del/success']: (state, action) => ({
+        ...state,
+        mylist: state.mylist.filter(v => v.id !== action.payload.id)
+    }),
     ['yunbook/mylist/failure']:state=>({
         ...state,
         myLoading: false

@@ -81,17 +81,25 @@ class New extends Component{
             }
             this.props.handleNew(params, yunbook => {
                 this.props.addAfterHandler()
-                this.props.grow({
-                    lat: this.state.latLng.lat,
-                    lng: this.state.latLng.lng,
-                    title: values.title,
-                    state: 1,
-                    category_id: BOOK,
-                    foreign_id: yunbook.id,
-                    cover: file.response.cover,
-                    map_id: 1,
-                    kind: category[0] === '1' ? category[1] : category[2]
-                }, null, error => message.error(error))
+                this.props.form.resetFields()
+                if (category.length > 0) {
+                    this.props.grow({
+                        lat: this.state.latLng.lat,
+                        lng: this.state.latLng.lng,
+                        title: params.title,
+                        state: 1,
+                        category_id: BOOK,
+                        foreign_id: yunbook.id,
+                        cover: file.response.cover,
+                        map_id: 1,
+                        kind: category[0] === '1' ? category[1] : category[2]
+                    }, null, error => message.error(error))
+                }
+                this.setState({
+                    latLng: {},
+                    category: [],
+                    fileList: []
+                })
             }, error => message.error(error))
         })
     }

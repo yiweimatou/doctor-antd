@@ -60,6 +60,7 @@ class LinkSelect extends Component {
             }
             add(params).then(data => {
                 message.success('新建成功')
+                this.props.form.resetFields()
                 this.setState({
                     fetching: false, visible:false, 
                     list: [{

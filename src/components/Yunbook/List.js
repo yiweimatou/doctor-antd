@@ -16,13 +16,13 @@ class List extends Component {
         yid: 0
     }
     changeHandler = (offset, account_id) => {
-        this.props.fetchYunbookList({ offset, limit: 6, account_id }, () => {
+        this.props.fetchYunbookList({ offset, limit: 6, account_id, state: 1 }, () => {
             this.props.replace(`/yunbook/manage?page=${offset}`)
         },error => message.error(error))
     }
     componentWillMount() {
         this.props.fetchYunbookInfo(
-            { account_id: this.props.uid }, 
+            { account_id: this.props.uid, state: 1 }, 
             null,
             error => message.error(error)
         )
@@ -33,6 +33,7 @@ class List extends Component {
         this.props.fetchYunbookList({
             limit: 6,
             offset,
+            state: 1,
             account_id: this.props.uid
         }, null, error => message.error(error))
     }
@@ -44,6 +45,11 @@ class List extends Component {
         const { record, yid } = this.state
         this.props.go(`/section/add/book?lid=${record.id}&oid=0&yid=${yid}`)
     }
+
+    afterDel = id => {
+        this.props.delYunbook({ id }, () => message.success('删除成功！'), error => message.error(error))
+    }
+
     render(){
         const {
             loading, list, total, uid, query
@@ -73,7 +79,9 @@ class List extends Component {
                                                 this.toggleVisible()
                                                 this.setState({ yid: yunbook.id })
                                             }
-                                        } yunbook={yunbook} />
+                                        } yunbook={yunbook} 
+                                            afterDel = {this.afterDel}
+                                        />
                                     </Col>
                                 )
                         })
@@ -92,19 +100,27 @@ class List extends Component {
 }
 
 export default connect(
-    state=>({
+    state => ({
         uid: state.auth.key,
         loading: state.yunbook.myLoading,
         total: state.yunbook.myTotal,
         list: state.yunbook.mylist,
         query: state.routing.locationBeforeTransitions.query
     }),
-    dispatch=>({
+    dispatch => ({
         fetchYunbookList:(params, resolve, reject)=>{
             dispatch({
                 type:'yunbook/mylist',
                 resolve,
                 payload: params, reject
+            })
+        },
+        delYunbook: (params, resolve, reject) => {
+            dispatch({
+                type: 'yunbook/del',
+                resolve,
+                payload: params,
+                reject
             })
         },
         fetchYunbookInfo(params, resolve, reject) {
