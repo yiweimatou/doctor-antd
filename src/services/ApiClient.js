@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { WECHATLOGIN } from '../constants/api'
+import { isNullOrEmpty } from '../utils'
 
 const initialFetchConfig = {
     needAuth:false
@@ -9,7 +10,7 @@ function checkStatus(data) {
         code,
         msg
     } = data
-    if (code === 200 || code === 403) {
+    if (code === 200) {
         return data
     } else if (code === 401){
         localStorage.clear()
@@ -75,7 +76,7 @@ const ApiClient = {
 function queryString(params) {
     let s = ''
     for(let p in params){
-        if(params.hasOwnProperty(p)){
+        if(params.hasOwnProperty(p) && !isNullOrEmpty(params[p])){
             s+=`${p}=${encodeURIComponent(params[p])}&`
         }
     }

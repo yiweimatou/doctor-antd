@@ -5,7 +5,7 @@
   "private": true,
   "entry": {},
   "dependencies": {
-    "antd": "^2.7.3",
+    "antd": "^2.8.0",
     "atool-build": "^0.8.1",
     "babel-plugin-transform-runtime": "^6.8.0",
     "babel-polyfill": "^6.16.0",
@@ -32,7 +32,8 @@
     "react-router-redux": "^4.0.6",
     "redux": "^3.5.2",
     "redux-actions": "^0.12.0",
-    "redux-saga": "^0.11.1"
+    "redux-saga": "^0.11.1",
+    "services": "0.0.3"
   },
   "devDependencies": {
     "babel-core": "^6.16.0",

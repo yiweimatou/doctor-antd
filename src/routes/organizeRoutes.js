@@ -8,7 +8,7 @@ import { ORGANIZE } from '../constants/api'
 import Draft from '../components/Section/Draft'
 import SectionList from  '../components/Section/List'
 import OrganizeTeam from '../components/Organize/organize_team'
-import List from '../components/Organize/link/list'
+import Person from '../components/Organize/person'
 import OrganizeBusinessCard from '../components/Organize/Card'
 
 const teamRoute = store => ({
@@ -193,8 +193,8 @@ const organizeRoutes = store =>({
         teamRoute(store),
         cardRoute(store),
         {
-            path: 'link/:id',
-            component: List,
+            path: 'person/:id',
+            component: Person,
             onEnter(nextState, replace) {
                 const id = nextState.params.id
                 if (id) {
