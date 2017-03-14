@@ -57,7 +57,7 @@ class List extends Component{
                         }
                         </Row>
                         {
-                            list.length > 0?
+                            /*list.length > 0?
                                 <div className='pagination'>
                                     <Pagination
                                         total={ list.length }
@@ -65,7 +65,7 @@ class List extends Component{
                                         pageSize = {6}
                                     />
                                 </div>:
-                                <p style={{textAlign: 'center'}}>没有数据</p>
+                                <p style={{textAlign: 'center'}}>没有数据</p>*/
                         }
                     </TabPane>
                     <TabPane tab = '已上架课程' key = '1'>
@@ -79,7 +79,7 @@ class List extends Component{
                         }
                         </Row>
                         {
-                            list1.length > 0?
+                            /*list1.length > 0?
                                 <div className='pagination'>
                                     <Pagination
                                         total={ list1.length }
@@ -87,7 +87,7 @@ class List extends Component{
                                         pageSize = {6}
                                     />
                                 </div>:
-                                <p style={{textAlign: 'center'}}>没有数据</p>
+                                <p style={{textAlign: 'center'}}>没有数据</p>*/
                         }
                     </TabPane>
                     <TabPane tab = '未上架课程' key = '2'>
@@ -101,7 +101,7 @@ class List extends Component{
                         }
                         </Row>
                         {
-                            list2.length > 0?
+                            /*list2.length > 0?
                                 <div className='pagination'>
                                     <Pagination
                                         total={ list2.length }
@@ -109,7 +109,7 @@ class List extends Component{
                                         pageSize = {6}
                                     />
                                 </div>:
-                                <p style={{textAlign: 'center'}}>没有数据</p>
+                                <p style={{textAlign: 'center'}}>没有数据</p>*/
                         }
                     </TabPane>
                 </Tabs>

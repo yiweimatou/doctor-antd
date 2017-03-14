@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Input, message, Table, Modal } from 'antd'
+import { Button, Input, message, Table, Modal, Col } from 'antd'
 import organize_referee from '../../../services/organize_referee'
 import RefereeAdd from './referee_add'
 import RefereeEdit from './referee_edit'
@@ -83,7 +83,7 @@ class Referee extends Component {
   }
 
   editHandler = referee => {
-    organize_referee.edit(referee).then(() => {
+    return organize_referee.edit(referee).then(() => {
       this.setState(prevState => ({
         editVisible: false,
         list: prevState.list.map(v => {
@@ -97,7 +97,7 @@ class Referee extends Component {
           }
         })
       }))
-    }).catch(err => message.error(err))
+    })
   }
 
   render() {
@@ -141,24 +141,32 @@ class Referee extends Component {
         <Modal visible={editVisible} maskClosable={false} onCancel={this.editVisibleToggle} footer={null}>
           <RefereeEdit referee={this.state.record} edit={this.editHandler} />
         </Modal>
-        <div style={{ width: 600, display: 'flex' }}>
-          <Button style={{ marginRight: 10 }} onClick={this.addVisibleToggle}>
+        <Input.Group>
+          <Col span={2}>
+          <Button onClick={this.addVisibleToggle}>
             添加医药代表
           </Button>
+          </Col>
+          <Col span={3}>
           <Input 
             placeholder="姓名" 
             style={{ width: 160, marginRight: 10 }}
             value = { cname }
             onChange={e => this.setState({ cname: e.target.value })} />
+          </Col>
+          <Col span={3}>
           <Input 
             placeholder="手机号码" 
             style={{ width: 160, marginRight: 10 }}
             value={ mobile }
             onChange={ e => this.setState({ mobile: e.target.value })} />
+          </Col>
+          <Col span={2}>
           <Button type="primary" onClick={this.infoHandler}>
             搜索
           </Button>
-        </div>
+          </Col>
+        </Input.Group>
         <Table 
           rowKey="id" 
           columns={columns} 

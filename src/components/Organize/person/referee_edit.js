@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, message } from 'antd'
 import { isMobile } from '../../../utils'
 
 const FormItem = Form.Item
@@ -22,7 +22,9 @@ class RefereeEdit extends Component {
         cname: values.cname,
         mobile: values.mobile,
         remark: values.remark ? values.remark: ''
-      })
+      }).then(() => {
+        this.props.form.resetFields()
+      }).catch(err => message.error(err))
     })
   }
   render() {

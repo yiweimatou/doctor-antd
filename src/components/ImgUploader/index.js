@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import { Upload, Icon, Button, message } from 'antd'
-import { UPLOAD_COVER_API } from '../../constants/api'
+import { UPLOAD_COVER_API, UPLOAD_LOGO_API } from '../../constants/api'
 
 class ImgUploader extends Component {
     state = {
@@ -24,7 +24,11 @@ class ImgUploader extends Component {
         fileList = fileList.slice(-1)
         fileList = fileList.map((file) => {
             if (file.response) {
-                file.url = file.response.cover
+                if (this.props.action === UPLOAD_LOGO_API) {
+                    file.url = file.response.logo
+                } else {
+                    file.url = file.response.cover
+                }
             }
             return file
         })

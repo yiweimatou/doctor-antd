@@ -10,6 +10,8 @@ import SectionList from  '../components/Section/List'
 import OrganizeTeam from '../components/Organize/organize_team'
 import Person from '../components/Organize/person'
 import OrganizeBusinessCard from '../components/Organize/Card'
+import Product from '../components/Organize/product'
+import ProductDetail from '../components/Organize/product/detail'
 
 const teamRoute = store => ({
     path: ':id/team',
@@ -193,7 +195,7 @@ const organizeRoutes = store =>({
         teamRoute(store),
         cardRoute(store),
         {
-            path: 'person/:id',
+            path: ':id/person',
             component: Person,
             onEnter(nextState, replace) {
                 const id = nextState.params.id
@@ -209,6 +211,37 @@ const organizeRoutes = store =>({
                 }
             }
         },
+        {
+            path: ':id/product',
+            component: Product,
+            onEnter(nextState, replace) {
+                const id = nextState.params.id
+                if (id) {
+                    store.dispatch({
+                        type: 'organize/get',
+                        payload: {
+                            params: { id }
+                        }
+                    })
+                } else {
+                    replace({ pathname: '/' })
+                }
+            }      
+        },
+        { path: ':id/product/:pid', component: ProductDetail, onEnter(nextState, replace) {
+                const id = nextState.params.id
+                if (id) {
+                    store.dispatch({
+                        type: 'organize/get',
+                        payload: {
+                            params: { id }
+                        }
+                    })
+                } else {
+                    replace({ pathname: '/' })
+                }
+            } 
+        }
     ]
 })
 

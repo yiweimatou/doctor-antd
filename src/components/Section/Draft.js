@@ -82,7 +82,7 @@ class Draft extends Component {
                 </div>
         }]
         return (
-             <div style={{margin:10}}>
+             <div style={{marginBottom: 10}}>
                 {query.lid > 0 ?
                     <LessonBar lid={query.lid} current='draft' />: <OrganizeBar selectedKey="draft" organize={this.props.organize}/>
                 }

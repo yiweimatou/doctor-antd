@@ -103,7 +103,7 @@ class List extends Component{
                 </div>
         }]
         return(
-            <div style={{margin:10}}>
+            <div style={{marginBottom: 10}}>
                 <Paper>
                     <div style={{marginBottom: 10}}>
                         { organize_id > 0 ?

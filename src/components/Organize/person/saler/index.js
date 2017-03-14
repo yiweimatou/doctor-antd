@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Table, Button, message } from 'antd'
+import { Input, Table, Button, message, Col } from 'antd'
 import organize_saler from '../../../../services/organize_saler'
 import organize_referee from '../../../../services/organize_referee'
 import SalerEditor from './edit'
@@ -28,7 +28,7 @@ class OrganizeSaler extends Component {
     } = this.state
     let params = {
       cname: name2,
-      state: 1,
+      state: 2,
       organize_id: this.props.id
     }
     if (name1) {
@@ -58,7 +58,7 @@ class OrganizeSaler extends Component {
     let params = {
       cname: name2,
       limit: 9,
-      offset, state: 1, organize_id: this.props.id
+      offset, state: 2, organize_id: this.props.id
     }
     if (name1) {
       try {
@@ -154,19 +154,24 @@ class OrganizeSaler extends Component {
          <SalerEditor saler={this.state.record} onCancel={() => {
             this.setState({ editVisible: false })
           }} edit={this.editHandler} visible={this.state.editVisible}/>
-         <div style={{ display: 'flex', width: 600, marginBottom: 20 }}>
-           <Input type="text" value={name1} 
-                  onChange={e => this.setState({ name1: e.target.value })} 
-                  placeholder="医药代表姓名" 
-                  style={{ marginRight: 10 }}
-           />
-           <Input type="text" value={name2}
-                  onChange={e => this.setState({ name2: e.target.value })}
-                  placeholder="销售姓名" style={{ marginRight: 10 }} 
-           />
-           <Button type="primary" onClick={this.infoHandler}>搜索</Button>
-         </div> 
-         <Table rowKey="id" dataSource={dataSource} loading={loading} bordered columns={columns} pagination={pagination} />
+         <Input.Group>
+           <Col span={4}>
+            <Input type="text" value={name1} 
+                    onChange={e => this.setState({ name1: e.target.value })} 
+                    placeholder="医药代表姓名" 
+            />
+           </Col>
+           <Col span={4}>
+            <Input type="text" value={name2}
+                    onChange={e => this.setState({ name2: e.target.value })}
+                    placeholder="销售姓名"
+            />
+           </Col>
+           <Col span={4}>
+            <Button type="primary" onClick={this.infoHandler}>搜索</Button>
+           </Col>
+         </Input.Group> 
+         <Table bodyStyle={{ marginTop: 20 }} rowKey="id" dataSource={dataSource} loading={loading} bordered columns={columns} pagination={pagination} />
       </div>
     );
   }

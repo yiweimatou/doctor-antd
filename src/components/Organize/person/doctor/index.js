@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Button, Input, message, Modal } from 'antd'
+import { Table, Button, Input, message, Modal, Col } from 'antd'
 import organize_doctor from '../../../../services/organize_doctor'
 import organize_referee from '../../../../services/organize_referee'
 import DoctorEdit from './edit'
@@ -41,7 +41,7 @@ class Doctor extends Component {
   infoHandler = async () => {
     const { name1, name2 } = this.state
     let params = {
-      state: 1, organize_id: this.props.id, cname: name2
+      state: 2, organize_id: this.props.id, cname: name2
     }
     if (name1) {
       let ids = ''
@@ -82,7 +82,7 @@ class Doctor extends Component {
     const { name1, name2 } = this.state
     let params = {
       cname: name2,
-      state: 1,
+      state: 2,
       organize_id: this.props.id,
       offset, limit: 9
     }
@@ -210,21 +210,25 @@ class Doctor extends Component {
         >
           <DoctorEdit doctor={record} edit={this.editHandler}/>
         </Modal>
-        <div style={{ width: 600, display: 'flex' }}>
-          <Input 
-            placeholder="医药代表姓名" 
-            style={{ marginRight: 10 }}
-            value = { name1 }
-            onChange={e => this.setState({ name1: e.target.value })} />
-          <Input 
-            placeholder="医生姓名" 
-            style={{ marginRight: 10 }}
-            value={ name2 }
-            onChange={ e => this.setState({ name2: e.target.value })} />
-          <Button type="primary" onClick={this.infoHandler}>
-            搜索
-          </Button>
-        </div>
+        <Input.Group>
+          <Col span={4}>
+            <Input 
+              placeholder="医药代表姓名" 
+              value = { name1 }
+              onChange={e => this.setState({ name1: e.target.value })} />
+          </Col>
+          <Col span={4}>
+            <Input 
+              placeholder="医生姓名" 
+              value={ name2 }
+              onChange={ e => this.setState({ name2: e.target.value })} />
+          </Col>
+          <Col span={4}>
+            <Button type="primary" onClick={this.infoHandler}>
+              搜索
+            </Button>
+          </Col>
+        </Input.Group>
         <Table 
           rowKey="id" 
           columns={columns} 

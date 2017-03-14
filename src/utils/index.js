@@ -151,3 +151,12 @@ export function loadJS(url, success) {
     }
     document.getElementsByTagName('head')[0].appendChild(domScript);
 }
+
+export function downloadURI(uri, name) {
+    if (isUrl(uri)) {
+        var link = document.createElement('a')
+        link.download = name
+        link.href = uri
+        link.click()
+    }
+}
