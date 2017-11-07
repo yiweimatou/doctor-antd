@@ -91,7 +91,7 @@ export const isUrl = value => {
 }
 
 export const isBaike = value => {
-    return isUrl(value) && matchRegexp(value, /^http:\/\/baike.baidu.com*/)
+    return isUrl(value) && matchRegexp(value, /^https?:\/\/baike.baidu.com*/)
 }
 
 export const isWX = value => {

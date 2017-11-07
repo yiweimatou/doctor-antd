@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { Table, Col, Input, Button, message, DatePicker } from 'antd'
+import { Table, Col, Row, Input, Button, message, DatePicker, Tabs } from 'antd'
 import organize_products from '../../../services/organize_products'
 import organize_referee from '../../../services/organize_referee'
 import organize_doctor from '../../../services/organize_doctor'
 import organize_saler from '../../../services/organize_saler'
 import { getUser } from '../../../services/user'
+import ShopRecord from './shop_record'
 
 const RangePicker = DatePicker.RangePicker
 class ProductRecord extends Component {
@@ -41,7 +42,7 @@ class ProductRecord extends Component {
         cname: doctor_cname
       })
       if (doctor.list && doctor.list.length > 0) {
-        params.doctor_account_id = doctor.list.map(v => v.account_id).join(',')
+        params.doctor_account_id_list = doctor.list.map(v => v.account_id).join(',')
       }
     }
     if (saler_cname) {
@@ -81,7 +82,7 @@ class ProductRecord extends Component {
         cname: doctor_cname
       })
       if (doctor.list && doctor.list.length > 0) {
-        params.doctor_account_id = doctor.list.map(v => v.account_id).join(',')
+        params.doctor_account_id_list = doctor.list.map(v => v.account_id).join(',')
       }
     }
     if (saler_cname) {
@@ -118,13 +119,13 @@ class ProductRecord extends Component {
           v.doctor_cname = '无'
         } else {
           const doctor = await organize_doctor.get({ account_id: v.doctor_account_id })
-          v.doctor_cname = doctor.cname
+          v.doctor_cname = doctor.get.cname
         }
         if (v.saler_account_id === 0) {
           v.saler_cname = '无'
         } else {
           const saler = await organize_saler.get({ account_id: v.saler_account_id })
-          v.saler_cname = saler.cname
+          v.saler_cname = saler.get.cname
         }
         if (v.rmcd_customer_account_id === 0) {
           v.rmcd_customer_cname = '无'
@@ -164,37 +165,42 @@ class ProductRecord extends Component {
       onChange: this.listHandler
     }
     return (
-      <div>
-        <Input.Group>
-          <Col span={7}>
-            <RangePicker onChange={(dates, dateStrings) => this.setState({dateStrings})} format="YYYY-MM-DD HH:mm:ss" showTime={true}/>
-          </Col>
-          <Col span={4}>
-            <Input type="text" value={referee_cname}
-              onChange={e => this.setState({ referee_cname: e.target.value })}
-              placeholder="医药代表姓名"
-            />
-          </Col>
-          <Col span={4}>
-            <Input type="text" value={doctor_cname}
-              onChange={e => this.setState({ doctor_cname: e.target.value })}
-              placeholder="医生姓名"
-            />
-          </Col>
-          <Col span={4}>
-            <Input type="text" value={saler_cname}
-              onChange={e => this.setState({ saler_cname: e.target.value })}
-              placeholder="销售姓名"
-            />
-          </Col>
-          <Col span={2}>
-            <Button type="primary" onClick={this.infoHandler}>搜索</Button>
-          </Col>
-        </Input.Group>
-        <Table rowKey="id" bodyStyle={{ marginTop: 20 }}
-          bordered loading={loading} dataSource={dataSource} columns={columns} pagination={pagination}
-        />
-      </div>
+        <Tabs>
+			<Tabs.TabPane key="1" tab="线下二维码">
+				<Row gutter={16}>
+					<Col lg={9} xl={7}>
+					<RangePicker onChange={(dates, dateStrings) => this.setState({dateStrings})} format="YYYY-MM-DD HH:mm:ss" showTime={true}/>
+					</Col>
+					<Col lg={4} xl={4}>
+					<Input type="text" value={referee_cname}
+						onChange={e => this.setState({ referee_cname: e.target.value })}
+						placeholder="医药代表姓名"
+					/>
+					</Col>
+					<Col lg={4} xl={4}>
+					<Input type="text" value={doctor_cname}
+						onChange={e => this.setState({ doctor_cname: e.target.value })}
+						placeholder="医生姓名"
+					/>
+					</Col>
+					<Col lg={4} xl={4}>
+					<Input type="text" value={saler_cname}
+						onChange={e => this.setState({ saler_cname: e.target.value })}
+						placeholder="销售姓名"
+					/>
+					</Col>
+					<Col lg={2} xl={2}>
+					<Button type="primary" onClick={this.infoHandler}>搜索</Button>
+					</Col>
+				</Row>
+				<Table rowKey="id" bodyStyle={{ marginTop: 20 }}
+					bordered loading={loading} dataSource={dataSource} columns={columns} pagination={pagination}
+				/>
+			</Tabs.TabPane>
+			<Tabs.TabPane key="2" tab="商城">
+				<ShopRecord id={this.props.id} pid={this.props.pid}/>
+			</Tabs.TabPane>
+        </Tabs>
     )
   }
 }

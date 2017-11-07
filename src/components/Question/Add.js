@@ -115,7 +115,7 @@ class Add extends Component {
         })
         return (
             <Spin spinning = {this.state.loading}>
-                      <Form horizontal onSubmit = {this.submitHandler}>
+                      <Form onSubmit = {this.submitHandler}>
                           <FormItem label = '试题' {...formItemLayout} hasFeedback required>
                               {getFieldDecorator('question', {
                                 rules: [{

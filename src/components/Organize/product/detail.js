@@ -9,6 +9,7 @@ import ProductEdit from './edit'
 import ProductSetting from './setting'
 import ProductRecord from './record'
 import ProductQrcode from './qrcode'
+import DealerProduct from './dealer_product'
 
 class ProductDetail extends Component {
   constructor(props) {
@@ -73,6 +74,9 @@ class ProductDetail extends Component {
             </Tabs.TabPane>
             <Tabs.TabPane tab="购买记录" key="records">
               <ProductRecord id={organize.id} pid={product.id}/>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="库存管理" key="dealer_product">
+              <DealerProduct id={organize.id} pid={product.id} />
             </Tabs.TabPane>
           </Tabs>
       </div>

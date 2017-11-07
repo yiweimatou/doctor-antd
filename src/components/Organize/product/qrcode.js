@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Form, Table, Button, Input, InputNumber, Col, Modal, DatePicker, Select, message, Spin } from 'antd'
+import { Form, Table, Button, Input, Row, InputNumber, Col, Modal, DatePicker, Select, message, Spin } from 'antd'
+import RefereeSelect from '../person/referee_select'
 import organize_products from '../../../services/organize_products'
 import { downloadURI } from '../../../utils'
 
@@ -23,6 +24,8 @@ class ProductQrcode extends Component {
       dateStrings: ['', ''],
       state: '',
       downloading: false,
+      selectVisible: false,
+      referee: {}
     }
   }
   
@@ -78,13 +81,15 @@ class ProductQrcode extends Component {
 
   submitHandler = e => {
     e.preventDefault()
+    if (!this.state.referee.account_id) return
     this.props.form.validateFields((erros, values) => {
       if (erros) return
       const params = {
         num: values.num,
         remark: values.remark,
         organize_id: this.props.id,
-        product_id: this.props.pid
+        product_id: this.props.pid,
+        referee_account_id: this.state.referee.account_id
       }
       this.setState({ downloading: true })
       organize_products.add(params).then(data => {
@@ -97,9 +102,16 @@ class ProductQrcode extends Component {
       })
     })
   }
+
+  selectHandler = referee => {
+    this.setState({
+      referee,
+      selectVisible: false
+    })
+  }
   
   render() {
-    const { visible, loading, dataSource, total, state } = this.state
+    const { visible, loading, dataSource, total, state, selectVisible } = this.state
     const { getFieldDecorator } = this.props.form
     const columns = [
       { title: '编号', dataIndex: 'id', key: 'id' },
@@ -120,6 +132,10 @@ class ProductQrcode extends Component {
         <Modal title="生产二维码" visible={visible} maskClosable={false} footer={null} onCancel={this.visibleToggle}>
           <Spin spinning = {this.state.downloading}>
             <Form onSubmit={this.submitHandler}>
+              <Form.Item required label="医药代表" {...formItemLayout}>
+                {this.state.referee.cname}<Button onClick={() => this.setState({ selectVisible: true})}>更换医药代表</Button>
+                <RefereeSelect id={this.props.id} visible={selectVisible} onCancel={() => this.setState({ selectVisible: false })} onSelect={this.selectHandler} />
+              </Form.Item>
               <Form.Item label="备注" {...formItemLayout}>
                 {getFieldDecorator('remark', {
                   rules: [{ required: true }]
@@ -136,14 +152,14 @@ class ProductQrcode extends Component {
             </Form>
           </Spin>
         </Modal>
-        <div style={{ marginBottom: 20 }}>
-          <Col span={3}>
+        <Row gutter={16} style={{ marginBottom: 20 }}>
+          <Col lg={4} xl={3}>
             <Button onClick={this.visibleToggle}>添加产品二维码</Button>
           </Col>
-          <Col span={7}>
+          <Col lg={9} xl={7}>
             <RangePicker showTime={true} onChange={(dates, dateStrings) => this.setState({dateStrings})} format="YYYY-MM-DD HH:mm:ss"/>
           </Col>
-          <Col span={3}>
+          <Col lg={3} xl={2}>
             <Select style={{ width: 90 }} onChange={v => this.setState({ state: v })} value={state}>
               <Select.Option value=''>
                 选择状态
@@ -159,10 +175,10 @@ class ProductQrcode extends Component {
               </Select.Option>
             </Select>
           </Col>
-          <Col span={1}>
+          <Col lg={1} xl={1}>
             <Button type="primary" onClick={this.infoHandler}>搜索</Button>
           </Col>
-        </div>
+        </Row>
         <Table rowKey="id" bordered loading={loading} columns={columns} dataSource={dataSource} pagination={pagination}/> 
       </div>
     )

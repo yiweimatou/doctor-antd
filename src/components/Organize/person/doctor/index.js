@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Button, Input, message, Modal, Col } from 'antd'
+import { Table, Button, Input, message, Modal, Row, Col } from 'antd'
 import organize_doctor from '../../../../services/organize_doctor'
 import organize_referee from '../../../../services/organize_referee'
 import DoctorEdit from './edit'
@@ -144,7 +144,7 @@ class Doctor extends Component {
         dataSource: prevState.dataSource.filter(v => v.id !== id),
         total: prevState.total - 1
       }))
-    })
+    }).catch(err => message.error(err))
   }
   render() {
     const { name1, name2, total, loading, dataSource, record, editVisible } = this.state
@@ -210,25 +210,25 @@ class Doctor extends Component {
         >
           <DoctorEdit doctor={record} edit={this.editHandler}/>
         </Modal>
-        <Input.Group>
-          <Col span={4}>
+        <Row gutter={16}>
+          <Col lg={4} xl={4}>
             <Input 
               placeholder="医药代表姓名" 
               value = { name1 }
               onChange={e => this.setState({ name1: e.target.value })} />
           </Col>
-          <Col span={4}>
+          <Col lg={4} xl={4}>
             <Input 
               placeholder="医生姓名" 
               value={ name2 }
               onChange={ e => this.setState({ name2: e.target.value })} />
           </Col>
-          <Col span={4}>
+          <Col lg={4} xl={4}>
             <Button type="primary" onClick={this.infoHandler}>
               搜索
             </Button>
           </Col>
-        </Input.Group>
+        </Row>
         <Table 
           rowKey="id" 
           columns={columns} 

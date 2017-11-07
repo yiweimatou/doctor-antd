@@ -1,25 +1,25 @@
-export const HOST = 'http://api.yiweimatou.com'
+export const HOST = 'https://api.yiweimatou.com'
 
 export const WECHATLOGIN = 'https://open.weixin.qq.com/connect/qrconnect?appid=wxe17a9f1153e4a1b5&scope=snsapi_login&redirect_uri=http%3A%2F%2Fwww.yiweimatou.com&state=doctor'
 
-export const USER_API_DOMAIN = `${HOST}:4001`
-export const ADMIN_API_DOMAIN = `${HOST}:4001`
+export const USER_API_DOMAIN = `${HOST}`
+export const ADMIN_API_DOMAIN = `${HOST}`
 export const UPLOAD_DOMAIN = 'http://image.yiweimatou.com:999'
-export const ORGANIZE_API_DOMAIN = `${HOST}:4001`
-export const LESSON_API_DOMAIN = `${HOST}:4001`
-export const AREA_API_DOMAIN = `${HOST}:4001`
-export const SECTION_API_DOMAIN = `${HOST}:4001`
-export const BOOK_API_DOMAIN = `${HOST}:4001`
+export const ORGANIZE_API_DOMAIN = `${HOST}`
+export const LESSON_API_DOMAIN = `${HOST}`
+export const AREA_API_DOMAIN = `${HOST}`
+export const SECTION_API_DOMAIN = `${HOST}`
+export const BOOK_API_DOMAIN = `${HOST}`
 export const IMG_URL = 'http://image.yiweimatou.com/ywmt/'
-export const BILL_API_DOMAIN = `${HOST}:4001`
-export const MSG_API_DOMAIN = `${HOST}:4001`
+export const BILL_API_DOMAIN = `${HOST}`
+export const MSG_API_DOMAIN = `${HOST}`
 /**
  * default images
  */
-export const DEFAULT_FACE = 'http://image.yiweimatou.com/ywmt/face/default.png'
-export const DEFAULT_COVER = 'http://image.yiweimatou.com/ywmt/cover/lesson.png'
-export const DEFAULT_LOGO = 'http://image.yiweimatou.com/ywmt/logo/default.png'
-export const DEFAULT_TOPICS = 'http://image.yiweimatou.com/topics.png'
+export const DEFAULT_FACE = 'https://image.yiweimatou.com/ywmt/face/default.png'
+export const DEFAULT_COVER = 'https://image.yiweimatou.com/ywmt/cover/lesson.png'
+export const DEFAULT_LOGO = 'https://image.yiweimatou.com/ywmt/logo/default.png'
+export const DEFAULT_TOPICS = 'https://image.yiweimatou.com/topics.png'
 /*
 *category
  */
@@ -74,7 +74,7 @@ export const CAPTCHA_API = `${HOST}:4001/captcha/add`
 /**
  * category api
  */
-export const CATEGORY_API = 'http://m.yiweimatou.com/api/area'
+export const CATEGORY_API = 'http://www.yiweimatou.com/api/area'
 /**
  *msg apis
  */

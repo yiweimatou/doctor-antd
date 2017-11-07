@@ -111,7 +111,7 @@ class Add extends Component {
     return (
       <Spin spinning={this.state.loading}>
         <Select selectedIdList={this.state.topicList.map(i=>({id: i.id,question: i.question}))} visible={this.state.visible} okHandler={this.okHandler} cancelHandler={this.cancelHandler}/>
-        <Form horizontal onSubmit = {this.submitHandler}>
+        <Form onSubmit = {this.submitHandler}>
           <FormItem {...formItemLayout} hasFeedback label="试卷标题">
                    {getFieldDecorator('title', {
                      rules: [{
@@ -130,7 +130,7 @@ class Add extends Component {
             <Category onChange={(value, latLng) => this.setState({category: value, latLng})}/>
           </FormItem>
           <FormItem {...formItemLayout} label="试题列表">
-            <Table pagination={this.state.pagination} dataSource={this.state.topicList} columns={columns} bordered title={
+            <Table rowKey="id" pagination={this.state.pagination} dataSource={this.state.topicList} columns={columns} bordered title={
               () => <Button onClick={this.addQuestion}>添加试题</Button>
             }>
             </Table>

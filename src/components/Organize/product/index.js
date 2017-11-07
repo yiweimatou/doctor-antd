@@ -19,8 +19,17 @@ class Product extends Component {
   }
   
   componentWillMount() {
-    this.infoHandler()
+    if (this.props.organize.id) {
+      this.infoHandler()
+    }
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.organize.id !== nextProps.organize.id) {
+      this.infoHandler()
+    }
+  }
+  
   
   infoHandler = () => {
     organize_product.info({

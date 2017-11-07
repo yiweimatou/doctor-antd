@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Table, Input, Col, Select, Button, Menu, Dropdown, Icon, message, Modal } from 'antd'
+import { Table, Input, Row, Col, Select, Button, Menu, Dropdown, Icon, message, Modal } from 'antd'
 import { info, list, add, remove } from '../../../services/link'
 import { loadJS } from '../../../utils'
 import Edit from './edit'
 
-const Group = Input.Group
 const Option = Select.Option
 class List extends Component {
     constructor(props) {
@@ -187,14 +186,14 @@ class List extends Component {
             <div>
                 <Input id="file" accept="xls,xlsx" onChange={this.fileChangeHandler} type="file" style={{ display: 'none' }}/>
                 <Edit visible={visible} record={record} onOk={this.okHandler} onCancel={() => this.setState({ visible: false })}/>
-                <Group>
-                    <Col span={4}>
+                <Row gutter={16}>
+                    <Col lg={4} xl={4}>
                         <Input placeholder="姓名" value={cname} onChange={e => this.setState({ cname: e.target.value })} />
                     </Col>
-                    <Col span={4}>
+                    <Col lg={4} xl={4}>
                         <Input placeholder="手机号" value={mobile} onChange={e => this.setState({ mobile: e.target.value })} />
                     </Col>
-                    <Col span={8}>
+                    <Col lg={10} xl={8}>
                         人员类型:
                         <Select style={{ margin: '0 10px', width: '70px' }} defaultValue="" onSelect={val => this.setState({ type2: val })}>
                             <Option value="">全部</Option>
@@ -210,7 +209,7 @@ class List extends Component {
                         </Select>
                         <Button type="primary" onClick={this.infoHandler}>搜索</Button>
                     </Col>
-                    <Col span={8}>
+                    <Col lg={6} xl={6}>
                         <a style={{ marginRight: 10 }} target="_blank" href="http://7xp3s1.com1.z0.glb.clouddn.com/%E6%A8%A1%E6%9D%BF.xlsx">下载Excel模板</a>
                         <Dropdown overlay={menu}>
                             <Button type="ghost" style={{ marginLeft: 8 }}>
@@ -218,7 +217,7 @@ class List extends Component {
                             </Button>
                         </Dropdown>
                     </Col>
-                </Group>
+                </Row>
                 <Table rowKey="id" bordered bodyStyle={{ marginTop: 20 }} dataSource={dataSource} loading={loading} columns={columns} pagination={pagination} />
             </div>
         )

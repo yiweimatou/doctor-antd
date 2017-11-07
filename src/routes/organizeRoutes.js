@@ -12,6 +12,7 @@ import Person from '../components/Organize/person'
 import OrganizeBusinessCard from '../components/Organize/Card'
 import Product from '../components/Organize/product'
 import ProductDetail from '../components/Organize/product/detail'
+import TradeList from '../components/Organize/trade'
 
 const teamRoute = store => ({
     path: ':id/team',
@@ -241,6 +242,20 @@ const organizeRoutes = store =>({
                     replace({ pathname: '/' })
                 }
             } 
+        },
+        { path: 'trade/:id', component: TradeList, onEnter(nextState, replace) {
+                const id = nextState.params.id
+                if (id) {
+                    store.dispatch({
+                            type: 'organize/get',
+                            payload: {
+                                params: { id }
+                            }
+                    })
+                } else {
+                    replace({ pathname: '/' })
+                }
+            }
         }
     ]
 })

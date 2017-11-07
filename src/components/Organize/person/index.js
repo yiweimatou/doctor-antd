@@ -6,6 +6,7 @@ import Link from '../link/list'
 import Referee from './referee'
 import Doctor from './doctor'
 import Saler from './saler'
+import Dealer from './dealer'
 
 const TabPane = Tabs.TabPane
 class person extends Component {
@@ -49,6 +50,9 @@ class person extends Component {
           </TabPane>
           <TabPane tab="销售" key="saler">
             <Saler id={organize.id} />
+          </TabPane>
+          <TabPane tab="经销商" key="dealer">
+            <Dealer id={organize.id} />
           </TabPane>
         </Tabs>
       </div>

@@ -22,7 +22,7 @@
         "react"
     ],
     "globals": {
-        "$": "jQuery"
+        "$": false
     },
     "settings": {
         "import/parser": "babel-eslint",

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Input, message, Table, Modal, Col } from 'antd'
+import { Button, Input, message, Table, Modal, Row, Col } from 'antd'
 import organize_referee from '../../../services/organize_referee'
 import RefereeAdd from './referee_add'
 import RefereeEdit from './referee_edit'
@@ -75,6 +75,7 @@ class Referee extends Component {
   }))
 
   addResolve = referee => {
+    // console.log(referee)
     this.setState(prevState => ({
       list: [referee].concat(prevState.list),
       total: prevState.total + 1,
@@ -141,32 +142,30 @@ class Referee extends Component {
         <Modal visible={editVisible} maskClosable={false} onCancel={this.editVisibleToggle} footer={null}>
           <RefereeEdit referee={this.state.record} edit={this.editHandler} />
         </Modal>
-        <Input.Group>
-          <Col span={2}>
+        <Row gutter={16}>
+          <Col lg={3} xl={2}>
           <Button onClick={this.addVisibleToggle}>
             添加医药代表
           </Button>
           </Col>
-          <Col span={3}>
+          <Col lg={4} xl={3}>
           <Input 
             placeholder="姓名" 
-            style={{ width: 160, marginRight: 10 }}
             value = { cname }
             onChange={e => this.setState({ cname: e.target.value })} />
           </Col>
-          <Col span={3}>
+          <Col lg={4} xl={3}>
           <Input 
             placeholder="手机号码" 
-            style={{ width: 160, marginRight: 10 }}
             value={ mobile }
             onChange={ e => this.setState({ mobile: e.target.value })} />
           </Col>
-          <Col span={2}>
+          <Col lg={4} xl={2}>
           <Button type="primary" onClick={this.infoHandler}>
             搜索
           </Button>
           </Col>
-        </Input.Group>
+        </Row>
         <Table 
           rowKey="id" 
           columns={columns} 
