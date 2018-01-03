@@ -74,7 +74,8 @@ function* handleList(action) {
        */
       if ( list && list.length > 0) {
         const result = yield call(listLesson, {
-          id_list: list.map(item => item.lesson_id).join(',')
+          id_list: list.map(item => item.lesson_id).join(','),
+          limit: 1000,
         })
         if (action.payload.resolve) {
           action.payload.resolve(result.list)

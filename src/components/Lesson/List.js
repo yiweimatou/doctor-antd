@@ -25,7 +25,8 @@ class List extends Component{
       changeHandler({
         role: 1,//1:主讲,2:辅导员,3:助教
         state: 1,//1:正常,2:冻结,3:删除,
-        account_id: userId
+        account_id: userId,
+        limit: 1000,
       }, list => {
           const list1 = list.filter(i => i.state === 1)
           const list2 = list.filter(i => i.state === 2)
@@ -57,15 +58,15 @@ class List extends Component{
                         }
                         </Row>
                         {
-                            /*list.length > 0?
+                            list.length > 0?
                                 <div className='pagination'>
                                     <Pagination
                                         total={ list.length }
                                         showTotal={total => `共 ${total} 条`}
-                                        pageSize = {6}
+                                        pageSize = {9}
                                     />
                                 </div>:
-                                <p style={{textAlign: 'center'}}>没有数据</p>*/
+                                <p style={{textAlign: 'center'}}>没有数据</p>
                         }
                     </TabPane>
                     <TabPane tab = '已上架课程' key = '1'>
@@ -79,15 +80,15 @@ class List extends Component{
                         }
                         </Row>
                         {
-                            /*list1.length > 0?
+                            list1.length > 0?
                                 <div className='pagination'>
                                     <Pagination
                                         total={ list1.length }
                                         showTotal={total => `共 ${total} 条`}
-                                        pageSize = {6}
+                                        pageSize = {9}
                                     />
                                 </div>:
-                                <p style={{textAlign: 'center'}}>没有数据</p>*/
+                                <p style={{textAlign: 'center'}}>没有数据</p>
                         }
                     </TabPane>
                     <TabPane tab = '未上架课程' key = '2'>
@@ -101,15 +102,15 @@ class List extends Component{
                         }
                         </Row>
                         {
-                            /*list2.length > 0?
+                            list2.length > 0?
                                 <div className='pagination'>
                                     <Pagination
                                         total={ list2.length }
                                         showTotal={total => `共 ${total} 条`}
-                                        pageSize = {6}
+                                        pageSize = {9}
                                     />
                                 </div>:
-                                <p style={{textAlign: 'center'}}>没有数据</p>*/
+                                <p style={{textAlign: 'center'}}>没有数据</p>
                         }
                     </TabPane>
                 </Tabs>

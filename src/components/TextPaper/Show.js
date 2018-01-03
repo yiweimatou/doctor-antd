@@ -12,10 +12,11 @@ class Show extends Component {
     componentWillMount() {
         const { getTopics, getList, query } = this.props
         getTopics({
-            id: query.id
+            id: query.id,
         }, topics => {
             getList({
-                id_list: topics.topic_id_list
+                id_list: topics.topic_id_list,
+                limit: 1000
             }, list => this.setState({ loading: false, list }), error => {
                 message.error(error)
                 this.setState({ loading: false })

@@ -1,7 +1,7 @@
 /**
  * Created by zhangruofan on 2016/9/17.
  */
-import { takeEvery } from 'redux-saga'
+import { takeEvery, } from 'redux-saga'
 import { fork, call, put } from 'redux-saga/effects'
 import { add, list, info, remove } from '../services/topic'
 
